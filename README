@@ -2,3 +2,9 @@ libkdeaccessibilityclient
 =========================
 
 This library is used when writing accessibility clients such as screen readers.
+
+Coding style: http://techbase.kde.org/Policies/Kdelibs_Coding_Style
+Generally this library follows http://techbase.kde.org/Policies/Library_Code_Policy
+
+Be aware that it is in an early stage of development right now so no compatibility is guaranteered.
+
