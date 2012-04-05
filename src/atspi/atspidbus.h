@@ -32,11 +32,13 @@ namespace KAccessibleClient {
 class AtSpiDBus
 {
 public:
-    AtSpiDBus();
+    AtSpiDBus(DBusConnection *conn);
     ~AtSpiDBus();
 
 //    AccessibleObject *parent(AccessibleObjectPrivate *d);
     QString name(const QString &service, const QString &path) const;
+
+    QList<AccessibleObject> topLevelAccessibles() const;
 
 private:
 

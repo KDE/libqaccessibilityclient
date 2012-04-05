@@ -42,7 +42,7 @@ class LIBKDEACCESSIBILITYCLIENT_EXPORT Registry :public QObject
     Q_OBJECT
 
 public:
-
+    ~Registry();
     static Registry *instance();
 
     /**

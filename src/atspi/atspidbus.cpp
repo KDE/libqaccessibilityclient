@@ -26,20 +26,26 @@
 
 using namespace KAccessibleClient;
 
-AtSpiDBus::AtSpiDBus()
-    : m_connection(new DBusConnection())
+AtSpiDBus::AtSpiDBus(DBusConnection *conn)
+    : m_connection(conn)
 {
 }
 
 AtSpiDBus::~AtSpiDBus()
 {
-    delete m_connection;
 }
 
 //AccessibleObject AtSpiDBus::parent(AccessibleObjectPrivate *d)
 //{
 //    return ;
 //}
+
+QList<AccessibleObject> AtSpiDBus::topLevelAccessibles() const
+{
+    QList<AccessibleObject> accs;
+
+    return accs;
+}
 
 QString AtSpiDBus::name(const QString &service, const QString &path) const
 {

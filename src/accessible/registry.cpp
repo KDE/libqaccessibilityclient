@@ -20,12 +20,33 @@
 
 #include "registry.h"
 
+#include "atspi/dbusconnection.h"
+#include "atspi/atspidbus.h"
+
 namespace KAccessibleClient {
+
+class RegistryPrivate
+{
+public:
+    DBusConnection *conn;
+    AtSpiDBus *bus;
+};
 
 Q_GLOBAL_STATIC(Registry, reg)
 
 Registry::Registry()
-{}
+    : d(new RegistryPrivate())
+{
+    d->conn = new DBusConnection();
+    d->bus = new AtSpiDBus(d->conn);
+}
+
+Registry::~Registry()
+{
+    delete d->bus;
+    delete d->conn;
+    delete d;
+}
 
 Registry *Registry::instance()
 {
@@ -34,7 +55,7 @@ Registry *Registry::instance()
 
 QList<AccessibleObject> Registry::applications()
 {
-    return QList<AccessibleObject>();
+    return d->bus->topLevelAccessibles();
 }
 
 }
