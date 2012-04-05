@@ -8,7 +8,13 @@ configure_file( "${LibKdeAccessibilityClient_SOURCE_DIR}/LibKdeAccessibilityClie
 
 find_package(KDE4 REQUIRED)
 include(KDE4Defaults)
-include_directories (${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR} ${KDE4_INCLUDES})
+
+include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR} ${KDE4_INCLUDES})
+
+# Require libatspi2-core headers for building:
+include(FindPkgConfig)
+pkg_check_modules(ATSPI2 REQUIRED atspi-2)
+include_directories(${ATSPI2_INCLUDE_DIRS})
 
 set(CMAKE_INSTALL_NAME_DIR ${LIB_INSTALL_DIR})
 

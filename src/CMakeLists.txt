@@ -1,11 +1,19 @@
 
 set(LibKdeAccessibilityClient_SRCS
-
+    accessible/accessibleobject.cpp
 )
 
-kde4_add_library(libkdeaccessibilityclient SHARED ${LibKdeAccessibilityClient_SRCS})
+set(LibKdeAccessibilityClientPrivate_SRCS
+    atspi/atspiaction.cpp
+    atspi/accessibleobject.cpp
+    atspi/atspiwatcher.cpp
+    atspi/dbusconnection.cpp
+    atspi/qt-atspi.cpp
+)
 
-target_link_libraries(libkdeaccessibilityclient ${QT_QTDBUS_LIBRARY})
+kde4_add_library(libkdeaccessibilityclient SHARED ${LibKdeAccessibilityClient_SRCS} ${LibKdeAccessibilityClientPrivate_SRCS})
+
+target_link_libraries(libkdeaccessibilityclient ${QT_QTCORE_LIBRARY} ${QT_QTDBUS_LIBRARY})
 
 set(LIBKDEACCESSIBILITYCLIENT_VERSION "0.1.0")
 set(LIBKDEACCESSIBILITYCLIENT_SOVERSION "0")
@@ -21,6 +29,6 @@ install(TARGETS libkdeaccessibilityclient EXPORT LibKdeAccessibilityClient ${INS
 
 install(FILES
     libkdeaccessibilityclient_export.h
-
+    accessible/accessibleobject.h
     DESTINATION ${INCLUDE_INSTALL_DIR}/libkdeaccessibilityclient COMPONENT Devel
 )

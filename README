@@ -8,3 +8,11 @@ Generally this library follows http://techbase.kde.org/Policies/Library_Code_Pol
 
 Be aware that it is in an early stage of development right now so no compatibility is guaranteered.
 
+The public api should reside in:
+src/accessible
+
+The abstraction of DBus and related at-spi tools should go into
+src/atspi
+but not exported.
+
+
