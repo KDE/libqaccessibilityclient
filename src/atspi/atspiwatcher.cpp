@@ -230,5 +230,6 @@ void AtspiWatcher::slotPropertyChange(const QString &state, int detail1, int det
 
 AccessibleObject *AtspiWatcher::accessibleFromPath(const QString &service, const QString &path) const
 {
-     return new AccessibleObject(service, path);
+    // FIXME!!!
+     return 0; // new AccessibleObject(service, path);
 }

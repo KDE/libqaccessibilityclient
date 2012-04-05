@@ -19,4 +19,74 @@
 */
 
 #include "accessibleobject.h"
+#include "accessibleobject_p.h"
+
+#include "atspi/atspidbus.h"
+
+#include <qstring.h>
+
+using namespace KAccessibleClient;
+
+AccessibleObject::AccessibleObject(AccessibleObjectPrivate *accPrivate)
+    :d(accPrivate)
+{
+}
+
+AccessibleObject::AccessibleObject(const AccessibleObject &other)
+    :d(other.d)
+{
+}
+
+AccessibleObject::~AccessibleObject()
+{
+    delete d;
+}
+
+AccessibleObject &AccessibleObject::operator=(const AccessibleObject &other)
+{
+    d = other.d;
+    return *this;
+}
+
+//AccessibleObject AccessibleObject::parent() const
+//{
+//    return d->bus->parent(d);
+//}
+
+//int AccessibleObject::indexInParent() const
+//{
+//}
+
+//int AccessibleObject::childCount() const
+//{
+//}
+
+//AccessibleObject AccessibleObject::getChild(int index) const
+//{
+//}
+
+QString AccessibleObject::name() const
+{
+    return d->name();
+}
+
+//QString AccessibleObject::localizedName() const
+//{
+//}
+
+//QString AccessibleObject::description() const
+//{
+//}
+
+//int AccessibleObject::role() const
+//{
+//}
+
+//QString AccessibleObject::roleName() const
+//{
+//}
+
+//QString AccessibleObject::localizedRoleName() const
+//{
+//}
 

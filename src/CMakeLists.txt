@@ -1,34 +1,35 @@
 
 set(LibKdeAccessibilityClient_SRCS
     accessible/accessibleobject.cpp
+    accessible/registry.cpp
 )
 
 set(LibKdeAccessibilityClientPrivate_SRCS
     atspi/atspiaction.cpp
-    atspi/accessibleobject.cpp
+    atspi/atspidbus.cpp
     atspi/atspiwatcher.cpp
     atspi/dbusconnection.cpp
     atspi/qt-atspi.cpp
 )
 
-kde4_add_library(libkdeaccessibilityclient SHARED ${LibKdeAccessibilityClient_SRCS} ${LibKdeAccessibilityClientPrivate_SRCS})
+kde4_add_library(kdeaccessibilityclient SHARED ${LibKdeAccessibilityClient_SRCS} ${LibKdeAccessibilityClientPrivate_SRCS})
 
-target_link_libraries(libkdeaccessibilityclient ${QT_QTCORE_LIBRARY} ${QT_QTDBUS_LIBRARY})
+target_link_libraries(kdeaccessibilityclient ${QT_QTCORE_LIBRARY} ${QT_QTDBUS_LIBRARY})
 
-set(LIBKDEACCESSIBILITYCLIENT_VERSION "0.1.0")
-set(LIBKDEACCESSIBILITYCLIENT_SOVERSION "0")
-set_target_properties(libkdeaccessibilityclient
+set(LIBKDEACCESSIBILITYCLIENT_SOVERSION ${LIBKDEACCESSIBILITYCLIENT_VERSION_MAJOR})
+set_target_properties(kdeaccessibilityclient
     PROPERTIES VERSION ${LIBKDEACCESSIBILITYCLIENT_VERSION}
     SOVERSION ${LIBKDEACCESSIBILITYCLIENT_SOVERSION}
 )
 
 
-install(TARGETS libkdeaccessibilityclient EXPORT LibKdeAccessibilityClient ${INSTALL_TARGETS_DEFAULT_ARGS})
+install(TARGETS kdeaccessibilityclient EXPORT LibKdeAccessibilityClient ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 ########### install files ###############
 
 install(FILES
     libkdeaccessibilityclient_export.h
     accessible/accessibleobject.h
-    DESTINATION ${INCLUDE_INSTALL_DIR}/libkdeaccessibilityclient COMPONENT Devel
+    accessible/registry.h
+    DESTINATION ${INCLUDE_INSTALL_DIR}/kdeaccessibilityclient COMPONENT Devel
 )

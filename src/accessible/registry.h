@@ -18,48 +18,46 @@
     License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef LIBKDEACCESSIBILITYCLIENT_ACCESSIBLEOBJECT_H
-#define LIBKDEACCESSIBILITYCLIENT_ACCESSIBLEOBJECT_H
+#ifndef LIBKDEACCESSIBILITYCLIENT_REGISTRY_H
+#define LIBKDEACCESSIBILITYCLIENT_REGISTRY_H
+
+#include <qobject.h>
 
 #include "libkdeaccessibilityclient_export.h"
+#include "accessibleobject.h"
+
+#define accessibleRegistry (KAccessibleClient::Registry::instance())
 
 namespace KAccessibleClient {
 
-class AccessibleObjectPrivate;
+class RegistryPrivate;
 
 /**
-    This class represents an accessible object.
+    This class represents the global accessibility registry.
 
-    It is implicitly shared and only created by the library.
+    It provides information about running applications.
 */
-class LIBKDEACCESSIBILITYCLIENT_EXPORT AccessibleObject
+class LIBKDEACCESSIBILITYCLIENT_EXPORT Registry :public QObject
 {
+    Q_OBJECT
+
 public:
-    AccessibleObject(const AccessibleObject &other);
-    AccessibleObject(AccessibleObjectPrivate *d);
-    ~AccessibleObject();
 
-    AccessibleObject &operator=(const AccessibleObject &other);
+    static Registry *instance();
 
-    AccessibleObject parent() const;
-    int indexInParent() const;
+    /**
+        List of all currently running applications that
+        expose and accessibility interface.
+      */
+    QList<AccessibleObject> applications();
 
-    int childCount() const;
-    AccessibleObject getChild(int index) const;
-
-    QString name() const;
-    QString localizedName() const;
-    QString description() const;
-
-    int role() const;
-    QString roleName() const;
-    QString localizedRoleName() const;
-
+    Registry();
 private:
-    AccessibleObjectPrivate *d;
+    Q_DISABLE_COPY(Registry)
+    static Registry *self;
+    RegistryPrivate *d;
 };
 
-bool operator==(const AccessibleObject &lhs, const AccessibleObject &rhs);
 
 }
 
