@@ -22,7 +22,6 @@
 
 #include <qdbusmessage.h>
 #include <qdbusargument.h>
-#include <qdbusreply.h>
 
 using namespace KAccessibleClient;
 
@@ -35,10 +34,6 @@ AtSpiDBus::~AtSpiDBus()
 {
 }
 
-//AccessibleObject AtSpiDBus::parent(AccessibleObjectPrivate *d)
-//{
-//    return ;
-//}
 
 QList<AccessibleObject> AtSpiDBus::topLevelAccessibles() const
 {

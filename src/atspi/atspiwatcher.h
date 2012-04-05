@@ -33,7 +33,6 @@
 
 #include "accessibleobject.h"
 
-
 class AtspiWatcher :public QObject, public QDBusContext
 {
     Q_OBJECT

@@ -29,6 +29,11 @@ namespace KAccessibleClient {
 class AccessibleObjectPrivate
 {
 public:
+    AccessibleObjectPrivate(const QString &service_, const QString &path_)
+        : service(service_), path(path_)
+    {
+    }
+
     AtSpiDBus *bus;
     QString service;
     QString path;

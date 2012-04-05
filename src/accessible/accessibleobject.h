@@ -36,7 +36,6 @@ class LIBKDEACCESSIBILITYCLIENT_EXPORT AccessibleObject
 {
 public:
     AccessibleObject(const AccessibleObject &other);
-    AccessibleObject(AccessibleObjectPrivate *d);
     ~AccessibleObject();
 
     AccessibleObject &operator=(const AccessibleObject &other);
@@ -56,7 +55,10 @@ public:
     QString localizedRoleName() const;
 
 private:
+    AccessibleObject(const QString &service, const QString &path);
     AccessibleObjectPrivate *d;
+
+    friend class RegistryPrivate;
 };
 
 bool operator==(const AccessibleObject &lhs, const AccessibleObject &rhs);

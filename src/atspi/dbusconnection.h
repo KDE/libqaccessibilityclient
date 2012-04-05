@@ -24,6 +24,8 @@
 #include <QtCore/QString>
 #include <QtDBus/QDBusConnection>
 
+namespace KAccessibleClient {
+
 class DBusConnection
 {
 public:
@@ -38,5 +40,6 @@ private:
 
     QDBusConnection dbusConnection;
 };
+}
 
 #endif // DBUSCONNECTION_H

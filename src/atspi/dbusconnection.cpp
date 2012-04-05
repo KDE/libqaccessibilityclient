@@ -24,6 +24,8 @@
 #include <QtDBus/QDBusMessage>
 #include <QtCore/QDebug>
 
+using namespace KAccessibleClient;
+
 DBusConnection::DBusConnection()
     : dbusConnection(connectDBus())
 {}

@@ -23,17 +23,21 @@
 
 #include <qobject.h>
 
-#include "dbusconnection.h"
+#include <qobject.h>
+#include <qdbuscontext.h>
 
 #include "accessible/accessibleobject.h"
 
+#include "dbusconnection.h"
+
 namespace KAccessibleClient {
 
-class AtSpiDBus
+class AtSpiDBus :public QObject, public QDBusContext
 {
 public:
     AtSpiDBus(DBusConnection *conn);
     ~AtSpiDBus();
+
 
 //    AccessibleObject *parent(AccessibleObjectPrivate *d);
     QString name(const QString &service, const QString &path) const;
@@ -41,6 +45,7 @@ public:
     QList<AccessibleObject> topLevelAccessibles() const;
 
 private:
+    void init();
 
     QVariant getProperty ( const QString &service, const QString &path, const QString &interface, const QString &name ) const;
 

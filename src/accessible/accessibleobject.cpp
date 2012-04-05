@@ -27,8 +27,8 @@
 
 using namespace KAccessibleClient;
 
-AccessibleObject::AccessibleObject(AccessibleObjectPrivate *accPrivate)
-    :d(accPrivate)
+AccessibleObject::AccessibleObject(const QString &service, const QString &path)
+    :d(new AccessibleObjectPrivate(service, path))
 {
 }
 
