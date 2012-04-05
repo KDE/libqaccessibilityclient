@@ -1,0 +1,4 @@
+libkdeaccessibilityclient
+=========================
+
+This library is used when writing accessibility clients such as screen readers.

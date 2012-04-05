@@ -1,0 +1,8 @@
+/** @mainpage The LibKdeAccessibilityClient API Reference
+
+LibKdeAccessibilityClient is a foo bar.
+*/
+// DOXYGEN_VERSION=4.0
+// DOXYGEN_NAME=libkdeaccessibilityclient
+// DOXYGEN_ENABLE=YES
+// DOXYGEN_SET_RECURSIVE = YES
