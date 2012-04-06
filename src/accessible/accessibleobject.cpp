@@ -42,16 +42,26 @@ AccessibleObject::~AccessibleObject()
     delete d;
 }
 
+bool AccessibleObject::isValid() const
+{
+    return (!d->path.isEmpty()) && (!d->service.isEmpty());
+}
+
 AccessibleObject &AccessibleObject::operator=(const AccessibleObject &other)
 {
     d = other.d;
     return *this;
 }
 
-//AccessibleObject AccessibleObject::parent() const
-//{
-//    return d->bus->parent(d);
-//}
+AccessibleObject AccessibleObject::parent() const
+{
+    return d->bus->parent(*this);
+}
+
+QList<AccessibleObject> AccessibleObject::children() const
+{
+    return d->bus->children(*this);
+}
 
 //int AccessibleObject::indexInParent() const
 //{

@@ -40,10 +40,11 @@ public:
     ~AtSpiDBus();
 
 
-//    AccessibleObject *parent(AccessibleObjectPrivate *d);
     QString name(const QString &service, const QString &path) const;
 
     QList<AccessibleObject> topLevelAccessibles() const;
+    AccessibleObject parent(const AccessibleObject &object);
+    QList<AccessibleObject> children(const AccessibleObject &object) const;
 
 private:
     QVariant getProperty ( const QString &service, const QString &path, const QString &interface, const QString &name ) const;

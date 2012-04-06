@@ -43,9 +43,12 @@ public:
 
     AccessibleObject &operator=(const AccessibleObject &other);
 
+    bool isValid() const;
+
     AccessibleObject parent() const;
     int indexInParent() const;
 
+    QList<AccessibleObject> children() const;
     int childCount() const;
     AccessibleObject getChild(int index) const;
 
