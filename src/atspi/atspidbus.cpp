@@ -80,7 +80,6 @@ QList<AccessibleObject> AtSpiDBus::children(const AccessibleObject &object) cons
     return accs;
 }
 
-
 QList<AccessibleObject> AtSpiDBus::topLevelAccessibles() const
 {
     QString service = QLatin1String("org.a11y.atspi.Registry");
@@ -95,20 +94,20 @@ QString AtSpiDBus::name(const QString &service, const QString &path) const
     return getProperty(service, path, QLatin1String("org.a11y.atspi.Accessible"), QLatin1String("Name")).toString();
 }
 
-QVariant AtSpiDBus::getProperty ( const QString &service, const QString &path, const QString &interface, const QString &name ) const
+QVariant AtSpiDBus::getProperty(const QString &service, const QString &path, const QString &interface, const QString &name) const
 {
     QVariantList args;
-    args.append ( interface );
-    args.append ( name );
+    args.append(interface);
+    args.append(name);
 
     QDBusMessage message = QDBusMessage::createMethodCall (
-                service, path, QLatin1String("org.freedesktop.DBus.Properties"), QLatin1String("Get") );
+                service, path, QLatin1String("org.freedesktop.DBus.Properties"), QLatin1String("Get"));
 
-    message.setArguments ( args );
-    QDBusMessage reply = m_connection->connection().call ( message );
+    message.setArguments(args);
+    QDBusMessage reply = m_connection->connection().call(message);
     if (reply.arguments().isEmpty()) return QVariant();
 
-    QDBusVariant v = reply.arguments().at ( 0 ).value<QDBusVariant>();
+    QDBusVariant v = reply.arguments().at(0).value<QDBusVariant>();
     return v.variant();
 }
 
