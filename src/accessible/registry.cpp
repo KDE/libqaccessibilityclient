@@ -80,8 +80,6 @@
 
 namespace KAccessibleClient {
 
-Q_GLOBAL_STATIC(Registry, reg)
-
 Registry::Registry()
     : d(new RegistryPrivate())
 {
@@ -96,11 +94,6 @@ Registry::~Registry()
     delete d->bus;
     delete d->conn;
     delete d;
-}
-
-Registry *Registry::instance()
-{
-    return reg();
 }
 
 void RegistryPrivate::init()

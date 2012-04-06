@@ -42,8 +42,8 @@ class LIBKDEACCESSIBILITYCLIENT_EXPORT Registry :public QObject
     Q_OBJECT
 
 public:
+    Registry();
     ~Registry();
-    static Registry *instance();
 
     /**
         List of all currently running applications that
@@ -51,10 +51,8 @@ public:
       */
     QList<AccessibleObject> applications();
 
-    Registry();
 private:
     Q_DISABLE_COPY(Registry)
-    static Registry *self;
     RegistryPrivate *d;
 };
 
