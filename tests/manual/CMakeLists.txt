@@ -3,22 +3,17 @@ project(accessibleapps)
 find_package(KDE4 REQUIRED)
 include(KDE4Defaults)
 
+#To find the installed library:
+#set(LibKdeAccessibilityClient_DIR /usr/local/lib/cmake/)
+#find_package(LibKdeAccessibilityClient REQUIRED)
 
-#FIXME
-set(LibKdeAccessibilityClient_DIR /usr/local/lib/cmake/)
-
-message(${CMAKE_MODULE_PATH})
-
-set(CMAKE_MODULE_PATH /usr/local/lib/cmake)
-find_package(LibKdeAccessibilityClient REQUIRED)
-
+#Instead we just use the one in the build directory since that's what we want to test.
 
 set(accessibleapps_SRCS
     main.cpp
 )
 kde4_add_executable(accessibleapps ${accessibleapps_SRCS})
 
-include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR} ${KDE4_INCLUDES} ${LIBKDEACCESSIBILITYCLIENT_INCLUDE_DIR})
-target_link_libraries(accessibleapps ${QT_QTCORE_LIBRARY} ${LIBKDEACCESSIBILITYCLIENT_LIBS})
-
+include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR} ${KDE4_INCLUDES} ${CMAKE_SOURCE_DIR}/../../src) # ${LIBKDEACCESSIBILITYCLIENT_INCLUDE_DIR})
+target_link_libraries(accessibleapps ${QT_QTCORE_LIBRARY} kdeaccessibilityclient)
 
