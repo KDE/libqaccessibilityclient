@@ -45,21 +45,18 @@ AccessibleObject AtSpiDBus::parent(const AccessibleObject &object)
     QDBusMessage message = QDBusMessage::createMethodCall (
                 object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Accessible"), QLatin1String("GetParent"));
 
-    QDBusMessage reply = m_connection->connection().call(message);
-//    if (!reply.isE()) {
-//        qWarning() << "Could not access parent." << reply.error().message();
-//        return AccessibleObject(0, QString(), QString());
-//    }
+    QDBusReply<QVariant> reply = m_connection->connection().call(message);
+    if (!reply.isValid()) {
+        qWarning() << "Could not access parent." << reply.error().message();
+        return AccessibleObject(0, QString(), QString());
+    }
 
-    QString service;
-    QString path;
-    const QDBusArgument arg = reply.arguments().at(0).value<QDBusArgument>();
-    arg.beginStructure();
-    arg >> service;
-    arg >> path;
-    arg.endStructure();
+    QVariant v = reply.value();
+    const QDBusArgument arg = v.value<QDBusArgument>();
+    QSpiObjectReference ref;
+    arg >> ref;
 
-    return AccessibleObject(const_cast<AtSpiDBus*>(this), service, path);
+    return AccessibleObject(const_cast<AtSpiDBus*>(this), ref.service, ref.path.path());
 }
 
 QList<AccessibleObject> AtSpiDBus::children(const AccessibleObject &object) const
