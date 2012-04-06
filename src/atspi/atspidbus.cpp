@@ -21,7 +21,12 @@
 #include "atspidbus.h"
 
 #include <qdbusmessage.h>
+#include <qdbusreply.h>
 #include <qdbusargument.h>
+
+#include <qdebug.h>
+
+#include "atspi/qt-atspi.h"
 
 using namespace KAccessibleClient;
 
@@ -39,6 +44,40 @@ QList<AccessibleObject> AtSpiDBus::topLevelAccessibles() const
 {
     QList<AccessibleObject> accs;
 
+
+    QString service = QLatin1String("org.a11y.atspi.Registry");
+    QString path = QLatin1String("/org/a11y/atspi/accessible/root");
+    QDBusMessage message = QDBusMessage::createMethodCall (
+                service, path, QLatin1String("org.a11y.atspi.Accessible"), QLatin1String("GetChildren"));
+
+//    message.setArguments ( QVariantList() << index );
+
+    QDBusMessage reply = m_connection->connection().call(message);
+    if (reply.arguments().isEmpty())
+        return accs;
+
+
+    QString p = QLatin1String("foo");
+    QString s = QLatin1String("bar");
+
+//    const QDBusArgument arg = reply.arguments().at(0).value<QDBusArgument>();
+//    arg.beginArray();
+//    arg.beginStructure();
+//    arg >> s;
+//    arg >> p;
+//    arg.endStructure();
+//    arg.endArray();
+
+    accs.append(AccessibleObject(const_cast<AtSpiDBus*>(this), s, p));
+
+//    const QSpiObjectReferenceList children = reply.value();
+//    Q_FOREACH(const QSpiObjectReference &child, children) {
+//        qDebug() << "Path: " << child.path.path();
+//        QString copy = QLatin1String(child.path.path().toLatin1());
+//        copy.detach();
+//        accs.append(AccessibleObject(child.service, copy));
+//    }
+
     return accs;
 }
 
@@ -52,6 +91,9 @@ QVariant AtSpiDBus::getProperty ( const QString &service, const QString &path, c
     QVariantList args;
     args.append ( interface );
     args.append ( name );
+
+
+    qDebug() << "DBUSPATH: " << path;
 
     QDBusMessage message = QDBusMessage::createMethodCall (
                 service, path, QLatin1String("org.freedesktop.DBus.Properties"), QLatin1String("Get") );

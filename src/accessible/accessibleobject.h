@@ -21,11 +21,14 @@
 #ifndef LIBKDEACCESSIBILITYCLIENT_ACCESSIBLEOBJECT_H
 #define LIBKDEACCESSIBILITYCLIENT_ACCESSIBLEOBJECT_H
 
+#include <qdbusargument.h>
+
 #include "libkdeaccessibilityclient_export.h"
 
 namespace KAccessibleClient {
 
 class AccessibleObjectPrivate;
+class AtSpiDBus;
 
 /**
     This class represents an accessible object.
@@ -55,10 +58,11 @@ public:
     QString localizedRoleName() const;
 
 private:
-    AccessibleObject(const QString &service, const QString &path);
+    AccessibleObject(AtSpiDBus *bus, const QString &service, const QString &path);
     AccessibleObjectPrivate *d;
 
     friend class RegistryPrivate;
+    friend class AtSpiDBus;
 };
 
 bool operator==(const AccessibleObject &lhs, const AccessibleObject &rhs);

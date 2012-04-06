@@ -85,6 +85,8 @@ Q_GLOBAL_STATIC(Registry, reg)
 Registry::Registry()
     : d(new RegistryPrivate())
 {
+    registerDBusTypes();
+
     d->conn = new DBusConnection();
     d->bus = new AtSpiDBus(d->conn);
 }
@@ -103,7 +105,6 @@ Registry *Registry::instance()
 
 void RegistryPrivate::init()
 {
-    QtATSPI::registerTypes();
     conn->connection().registerService(QLatin1String("org.kde.a11y.library"));
 
     bool success = conn->connection().connect(QString(), QString(), QLatin1String("org.a11y.atspi.Event.Window"), QLatin1String("Activate"), this,
@@ -196,14 +197,12 @@ QList<AccessibleObject> Registry::applications()
     return d->bus->topLevelAccessibles();
 }
 
-
-
 void RegistryPrivate::slotWindowCreated(const QString &change, int detail1, int detail2, const QDBusVariant &args, const QSpiObjectReference &reference)
 {
 #ifdef ATSPI_DEBUG
     qDebug() << "New window: " << change << detail1 << detail2 << args.variant() << reference.path.path();
 #endif
-    AccessibleObject accessible = accessibleFromPath(reference.service, QDBusContext::message().path());
+//    AccessibleObject accessible = accessibleFromPath(reference.service, QDBusContext::message().path());
     //emit signalWindowCreated(QSharedPointer<AccessibleObject>(accessible));
 }
 
@@ -212,7 +211,7 @@ void RegistryPrivate::slotWindowActivated(const QString &change, int detail1, in
 #ifdef ATSPI_DEBUG
     qDebug() << "Window activated: " << change << detail1 << detail2 << args.variant() << reference.path.path();
 #endif
-    AccessibleObject accessible = accessibleFromPath(reference.service, QDBusContext::message().path());
+//    AccessibleObject accessible = accessibleFromPath(reference.service, QDBusContext::message().path());
 //    emit signalWindowActivated(QSharedPointer<AccessibleObject>(accessible));
 }
 
@@ -228,7 +227,7 @@ void RegistryPrivate::slotStateChanged(const QString &state, int detail1, int de
     // find accessible, emit signal
 
     if ((state == QLatin1String("focused")) && (detail1 == 1)) {
-        AccessibleObject accessible = accessibleFromPath(reference.service, QDBusContext::message().path());
+//        AccessibleObject accessible = accessibleFromPath(reference.service, QDBusContext::message().path());
 //        emit signalFocusChanged(QSharedPointer<AccessibleObject>(accessible));
     }
 }
@@ -249,11 +248,8 @@ void RegistryPrivate::slotPropertyChange(const QString &state, int detail1, int 
 
 AccessibleObject RegistryPrivate::accessibleFromPath(const QString &service, const QString &path) const
 {
-     return AccessibleObject(service, path);
+     return AccessibleObject(bus, service, path);
 }
 
-
-
 }
-
 

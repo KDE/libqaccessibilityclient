@@ -27,8 +27,8 @@
 
 using namespace KAccessibleClient;
 
-AccessibleObject::AccessibleObject(const QString &service, const QString &path)
-    :d(new AccessibleObjectPrivate(service, path))
+AccessibleObject::AccessibleObject(AtSpiDBus *bus, const QString &service, const QString &path)
+    :d(new AccessibleObjectPrivate(bus, service, path))
 {
 }
 

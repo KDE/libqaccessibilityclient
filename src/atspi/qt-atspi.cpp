@@ -22,23 +22,24 @@
 #include <QtDBus/QDBusArgument>
 #include <QtDBus/qdbusmetatype.h>
 
-void QtATSPI::registerTypes()
+namespace KAccessibleClient {
+
+void registerDBusTypes()
 {
   qRegisterMetaType<QSpiUIntList>();
-  qRegisterMetaType<QSpiObjectReference>();
   qDBusRegisterMetaType<QSpiUIntList>();
+
+  qRegisterMetaType<QSpiObjectReference>();
   qDBusRegisterMetaType<QSpiObjectReference>();
+
+  qRegisterMetaType<QSpiObjectReferenceList>();
+  qDBusRegisterMetaType<QSpiObjectReferenceList>();
 }
-
-
-QSpiObjectReference::QSpiObjectReference()
-    : path(QDBusObjectPath(QSPI_OBJECT_PATH_ACCESSIBLE_NULL))
-{}
 
 /* QSpiObjectReference */
 /*---------------------------------------------------------------------------*/
 
-QDBusArgument &operator<<(QDBusArgument &argument, const QSpiObjectReference &address)
+QDBusArgument &operator<<(QDBusArgument &argument, const KAccessibleClient::QSpiObjectReference &address)
 {
     argument.beginStructure();
     argument << address.service;
@@ -47,11 +48,13 @@ QDBusArgument &operator<<(QDBusArgument &argument, const QSpiObjectReference &ad
     return argument;
 }
 
-const QDBusArgument &operator>>(const QDBusArgument &argument, QSpiObjectReference &address)
+const QDBusArgument &operator>>(const QDBusArgument &argument, KAccessibleClient::QSpiObjectReference &address)
 {
     argument.beginStructure();
     argument >> address.service;
     argument >> address.path;
     argument.endStructure();
     return argument;
+}
+
 }

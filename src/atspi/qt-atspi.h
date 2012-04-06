@@ -31,24 +31,26 @@
 typedef QList<uint> QSpiUIntList;
 Q_DECLARE_METATYPE(QSpiUIntList);
 
-namespace QtATSPI {
-  void registerTypes();
-}
+namespace KAccessibleClient {
+
+void registerDBusTypes();
+
 
 struct QSpiObjectReference
 {
     QString service;
     QDBusObjectPath path;
-
-    QSpiObjectReference();
-    QSpiObjectReference(const QDBusConnection& connection, const QDBusObjectPath& path)
-        : service(connection.baseService()), path(path) {}
 };
 
-Q_DECLARE_METATYPE(QSpiObjectReference);
+typedef QList<QSpiObjectReference> QSpiObjectReferenceList;
 
 
 QDBusArgument &operator<<(QDBusArgument &argument, const QSpiObjectReference &address);
 const QDBusArgument &operator>>(const QDBusArgument &argument, QSpiObjectReference &address);
+
+}
+
+Q_DECLARE_METATYPE(KAccessibleClient::QSpiObjectReference);
+Q_DECLARE_METATYPE(KAccessibleClient::QSpiObjectReferenceList);
 
 #endif

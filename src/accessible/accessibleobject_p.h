@@ -22,6 +22,8 @@
 #define LIBKDEACCESSIBILITYCLIENT_ACCESSIBLEOBJECT_P_H
 
 #include <qstring.h>
+#include <qdbusargument.h>
+
 #include "atspi/atspidbus.h"
 
 namespace KAccessibleClient {
@@ -29,9 +31,22 @@ namespace KAccessibleClient {
 class AccessibleObjectPrivate
 {
 public:
-    AccessibleObjectPrivate(const QString &service_, const QString &path_)
-        : service(service_), path(path_)
+    AccessibleObjectPrivate(AtSpiDBus *bus_, const QString &service_, const QString &path_)
+        : bus(bus_), service(service_), path(path_)
     {
+    }
+
+    AccessibleObjectPrivate(const AccessibleObjectPrivate &other)
+        : bus(other.bus), service(other.service), path(other.path)
+    {
+    }
+
+    AccessibleObjectPrivate &operator=(const AccessibleObjectPrivate &other)
+    {
+        bus = other.bus;
+        service = other.service;
+        path = other.path;
+        return *this;
     }
 
     AtSpiDBus *bus;

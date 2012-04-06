@@ -18,34 +18,30 @@
     License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef DBUSWATCHER_H
-#define DBUSWATCHER_H
+#ifndef LIBKDEACCESSIBILITYCLIENT_REGISTRY_P_H
+#define LIBKDEACCESSIBILITYCLIENT_REGISTRY_P_H
 
-#include <QtCore/qobject.h>
-#include <QtDBus/qdbusvirtualobject.h>
-#include <QtDBus/QDBusVariant>
-#include <QtDBus/qdbuscontext.h>
 
-#include <QtCore/QSharedPointer>
+#include <qobject.h>
+#include <qdbuscontext.h>
+#include <qdbusargument.h>
 
-#include "dbusconnection.h"
-#include "qt-atspi.h"
+#include "accessible/accessibleobject.h"
+#include "atspi/qt-atspi.h"
 
-#include "accessibleobject.h"
+namespace KAccessibleClient {
 
-class AtspiWatcher :public QObject, public QDBusContext
+class DBusConnection;
+class AtSpiDBus;
+
+class RegistryPrivate :public QObject, public QDBusContext
 {
     Q_OBJECT
 public:
-    static AtspiWatcher *instance();
-    AtspiWatcher();
-    void init();
-    QDBusConnection connection() const {return c.connection();}
+    DBusConnection *conn;
+    AtSpiDBus *bus;
 
-Q_SIGNALS:
-    void signalWindowActivated(QSharedPointer<AccessibleObject>);
-    void signalWindowCreated(QSharedPointer<AccessibleObject>);
-    void signalFocusChanged(QSharedPointer<AccessibleObject>);
+    void init();
 
 private Q_SLOTS:
     void slotWindowActivated(const QString &change, int detail1, int detail2, const QDBusVariant &args, const QSpiObjectReference &reference);
@@ -53,13 +49,9 @@ private Q_SLOTS:
     void slotStateChanged(const QString &state, int detail1, int detail2, const QDBusVariant &args, const QSpiObjectReference &reference);
     void slotChildrenChanged(const QString &state, int detail1, int detail2, const QDBusVariant &args, const QSpiObjectReference &reference);
     void slotPropertyChange(const QString &state, int detail1, int detail2, const QDBusVariant &args, const QSpiObjectReference &reference);
-
-private:
-    AccessibleObject *accessibleFromPath(const QString &service, const QString &path) const;
-//    QString introspect(const QString &path) const;
-//    bool handleMessage(const QDBusMessage &message, const QDBusConnection &connection);
-
-    DBusConnection c;
+    AccessibleObject accessibleFromPath(const QString &service, const QString &path) const;
 };
+
+}
 
 #endif

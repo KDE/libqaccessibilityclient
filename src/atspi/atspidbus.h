@@ -25,6 +25,7 @@
 
 #include <qobject.h>
 #include <qdbuscontext.h>
+#include <qdbusargument.h>
 
 #include "accessible/accessibleobject.h"
 
