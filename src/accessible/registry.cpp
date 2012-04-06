@@ -197,6 +197,8 @@ QList<AccessibleObject> Registry::applications()
     return d->bus->topLevelAccessibles();
 }
 
+#define ATSPI_DEBUG
+
 void RegistryPrivate::slotWindowCreated(const QString &change, int detail1, int detail2, const QDBusVariant &args, const QSpiObjectReference &reference)
 {
 #ifdef ATSPI_DEBUG

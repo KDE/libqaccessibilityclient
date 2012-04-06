@@ -46,8 +46,6 @@ public:
     QList<AccessibleObject> topLevelAccessibles() const;
 
 private:
-    void init();
-
     QVariant getProperty ( const QString &service, const QString &path, const QString &interface, const QString &name ) const;
 
     DBusConnection *m_connection;

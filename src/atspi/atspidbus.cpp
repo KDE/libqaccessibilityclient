@@ -50,33 +50,16 @@ QList<AccessibleObject> AtSpiDBus::topLevelAccessibles() const
     QDBusMessage message = QDBusMessage::createMethodCall (
                 service, path, QLatin1String("org.a11y.atspi.Accessible"), QLatin1String("GetChildren"));
 
-//    message.setArguments ( QVariantList() << index );
-
-    QDBusMessage reply = m_connection->connection().call(message);
-    if (reply.arguments().isEmpty())
+    QDBusReply<QSpiObjectReferenceList> reply = m_connection->connection().call(message);
+    if (!reply.isValid()) {
+        qWarning() << "Could not access children." << reply.error().message();
         return accs;
+    }
 
-
-    QString p = QLatin1String("foo");
-    QString s = QLatin1String("bar");
-
-//    const QDBusArgument arg = reply.arguments().at(0).value<QDBusArgument>();
-//    arg.beginArray();
-//    arg.beginStructure();
-//    arg >> s;
-//    arg >> p;
-//    arg.endStructure();
-//    arg.endArray();
-
-    accs.append(AccessibleObject(const_cast<AtSpiDBus*>(this), s, p));
-
-//    const QSpiObjectReferenceList children = reply.value();
-//    Q_FOREACH(const QSpiObjectReference &child, children) {
-//        qDebug() << "Path: " << child.path.path();
-//        QString copy = QLatin1String(child.path.path().toLatin1());
-//        copy.detach();
-//        accs.append(AccessibleObject(child.service, copy));
-//    }
+    const QSpiObjectReferenceList children = reply.value();
+    Q_FOREACH(const QSpiObjectReference &child, children) {
+        accs.append(AccessibleObject(const_cast<AtSpiDBus*>(this), child.service, child.path.path()));
+    }
 
     return accs;
 }
@@ -93,7 +76,7 @@ QVariant AtSpiDBus::getProperty ( const QString &service, const QString &path, c
     args.append ( name );
 
 
-    qDebug() << "DBUSPATH: " << path;
+    qDebug() << "DBUSPATH: " << path << service;
 
     QDBusMessage message = QDBusMessage::createMethodCall (
                 service, path, QLatin1String("org.freedesktop.DBus.Properties"), QLatin1String("Get") );
