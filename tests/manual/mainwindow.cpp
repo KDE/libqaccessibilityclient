@@ -23,6 +23,20 @@
 #include <qplaintextedit.h>
 #include <qstring.h>
 
+#include "accessible/registry.h"
+
+MainWindow::MainWindow(QWidget *parent)
+    :KMainWindow(parent)
+{
+    ui.setupUi(this);
+
+    KAccessibleClient::Registry *reg = new KAccessibleClient::Registry(this);
+    reg->subscribeEventListeners(KAccessibleClient::Registry::Focus);
+    connect(reg, SIGNAL(focusChanged(KAccessibleClient::AccessibleObject)), this, SLOT(focusChanged(KAccessibleClient::AccessibleObject)));
+
+    listAccessibles();
+}
+
 void MainWindow::listAccessibles()
 {
     QString accessibles;
@@ -40,3 +54,11 @@ void MainWindow::listAccessibles()
     ui.plainTextEdit->setReadOnly(true);
     ui.plainTextEdit->setPlainText(accessibles);
 }
+
+void MainWindow::focusChanged(const KAccessibleClient::AccessibleObject &object)
+{
+    ui.label->setText(i18n("Focus changed to: %1 - %2 (%3)", object.name(), object.roleName(), object.role()));
+}
+
+#include <mainwindow.moc>
+

@@ -7,7 +7,6 @@ set(LibKdeAccessibilityClient_SRCS
 )
 
 set(LibKdeAccessibilityClientPrivate_SRCS
-    atspi/atspidbus.cpp
     atspi/dbusconnection.cpp
     atspi/qt-atspi.cpp
 )

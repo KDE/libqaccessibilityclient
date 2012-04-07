@@ -24,32 +24,27 @@
 #include <qstring.h>
 #include <qdbusargument.h>
 
-#include "atspi/atspidbus.h"
-
 namespace KAccessibleClient {
+
+class RegistryPrivate;
 
 class AccessibleObjectPrivate :public QSharedData
 {
 public:
-    AccessibleObjectPrivate(AtSpiDBus *bus_, const QString &service_, const QString &path_)
-        : bus(bus_), service(service_), path(path_)
+    AccessibleObjectPrivate(RegistryPrivate *reg, const QString &service_, const QString &path_)
+        : registryPrivate(reg), service(service_), path(path_)
     {
     }
 
-    AtSpiDBus *bus;
+    RegistryPrivate *registryPrivate;
     QString service;
     QString path;
 
     bool operator==(const AccessibleObjectPrivate &other) const
     {
-        return bus == other.bus &&
+        return registryPrivate == other.registryPrivate &&
                service == other.service &&
                path == other.path;
-    }
-
-    QString name() const
-    {
-        return bus->name(service, path);
     }
 };
 

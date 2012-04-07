@@ -21,11 +21,13 @@
 #ifndef LIBKDEACCESSIBILITYCLIENT_REGISTRY_P_H
 #define LIBKDEACCESSIBILITYCLIENT_REGISTRY_P_H
 
+#include <atspi/atspi-constants.h>
 
 #include <qobject.h>
 #include <qdbuscontext.h>
 #include <qdbusargument.h>
 
+#include "atspi/dbusconnection.h"
 #include "accessible/registry.h"
 #include "accessible/accessibleobject.h"
 #include "atspi/qt-atspi.h"
@@ -46,8 +48,37 @@ public:
 
     void init();
 
-    DBusConnection *conn;
-    AtSpiDBus *bus;
+    void subscribeEventListeners(const Registry::EventListeners & listeners);
+    Registry::EventListeners eventListeners() const;
+
+    QString name(const AccessibleObject &object) const;
+    QString description(const AccessibleObject &object) const;
+    AtspiRole role(const AccessibleObject &object) const;
+    QString roleName(const AccessibleObject &object) const;
+    QString localizedRoleName(const AccessibleObject &object) const;
+
+    QList<AccessibleObject> topLevelAccessibles() const;
+    AccessibleObject parentAccessible(const AccessibleObject &object) const;
+
+    int childCount(const AccessibleObject &object) const;
+    AccessibleObject child(const AccessibleObject &object, int index) const;
+    QList<AccessibleObject> children(const AccessibleObject &object) const;
+
+Q_SIGNALS:
+    void focusChanged(const KAccessibleClient::AccessibleObject &object);
+
+private Q_SLOTS:
+    void slotChildrenChanged(const QString &state, int detail1, int detail2, const QDBusVariant &args, const QSpiObjectReference &reference);
+    void slotPropertyChange(const QString &state, int detail1, int detail2, const QDBusVariant &args, const QSpiObjectReference &reference);
+    void slotStateChanged(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const QSpiObjectReference &reference);
+    void slotWindowActivated(const QString &change, int detail1, int detail2, const QDBusVariant &args, const QSpiObjectReference &reference);
+    void slotWindowCreated(const QString &change, int detail1, int detail2, const QDBusVariant &args, const QSpiObjectReference &reference);
+    AccessibleObject accessibleFromPath(const QString &service, const QString &path) const;
+
+private:
+    QVariant getProperty ( const QString &service, const QString &path, const QString &interface, const QString &name ) const;
+
+    DBusConnection conn;
     Registry *q;
 };
 

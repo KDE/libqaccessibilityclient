@@ -55,7 +55,7 @@ public:
     Q_DECLARE_FLAGS(EventListeners, EventListener)
 
 
-    Registry();
+    Registry(QObject *parent = 0);
     ~Registry();
 
     /**

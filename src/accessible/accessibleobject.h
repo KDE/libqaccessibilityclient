@@ -29,7 +29,7 @@
 namespace KAccessibleClient {
 
 class AccessibleObjectPrivate;
-class AtSpiDBus;
+class RegistryPrivate;
 
 /**
     This class represents an accessible object.
@@ -55,7 +55,6 @@ public:
     AccessibleObject child(int index) const;
 
     QString name() const;
-    QString localizedName() const;
     QString description() const;
 
     int role() const;
@@ -63,7 +62,7 @@ public:
     QString localizedRoleName() const;
 
 private:
-    AccessibleObject(AtSpiDBus *bus, const QString &service, const QString &path);
+    AccessibleObject(RegistryPrivate *reg, const QString &service, const QString &path);
     QSharedDataPointer<AccessibleObjectPrivate> d;
 
     friend class RegistryPrivate;

@@ -24,12 +24,12 @@
 #include <qdebug.h>
 
 #include "accessibleobject_p.h"
-#include "atspi/atspidbus.h"
+#include "registry_p.h"
 
 using namespace KAccessibleClient;
 
-AccessibleObject::AccessibleObject(AtSpiDBus *bus, const QString &service, const QString &path)
-    :d(new AccessibleObjectPrivate(bus, service, path))
+AccessibleObject::AccessibleObject(RegistryPrivate *registryPrivate, const QString &service, const QString &path)
+    :d(new AccessibleObjectPrivate(registryPrivate, service, path))
 {
 }
 
@@ -44,7 +44,7 @@ AccessibleObject::~AccessibleObject()
 
 bool AccessibleObject::isValid() const
 {
-    return d->bus
+    return d->registryPrivate
             && (!d->service.isEmpty())
             && (!d->path.isEmpty())
             && (d->path != QLatin1String("/org/a11y/atspi/null"));
@@ -63,58 +63,50 @@ bool AccessibleObject::operator==(const AccessibleObject &other) const
 
 AccessibleObject AccessibleObject::parent() const
 {
-    return d->bus->parent(*this);
+    return d->registryPrivate->parentAccessible(*this);
 }
 
 QList<AccessibleObject> AccessibleObject::children() const
 {
-    return d->bus->children(*this);
+    return d->registryPrivate->children(*this);
 }
 
 int AccessibleObject::childCount() const
 {
-    return d->bus->childCount(*this);
+    return d->registryPrivate->childCount(*this);
 }
 
 AccessibleObject AccessibleObject::child(int index) const
 {
-    return d->bus->child(*this, index);
+    return d->registryPrivate->child(*this, index);
 }
 
 //int AccessibleObject::indexInParent() const
 //{
 //}
 
-//int AccessibleObject::childCount() const
-//{
-//}
-
-//AccessibleObject AccessibleObject::getChild(int index) const
-//{
-//}
-
 QString AccessibleObject::name() const
 {
-    return d->name();
+    return d->registryPrivate->name(*this);
 }
 
-//QString AccessibleObject::localizedName() const
-//{
-//}
+QString AccessibleObject::description() const
+{
+    return d->registryPrivate->description(*this);
+}
 
-//QString AccessibleObject::description() const
-//{
-//}
+int AccessibleObject::role() const
+{
+    return d->registryPrivate->role(*this);
+}
 
-//int AccessibleObject::role() const
-//{
-//}
+QString AccessibleObject::roleName() const
+{
+    return d->registryPrivate->roleName(*this);
+}
 
-//QString AccessibleObject::roleName() const
-//{
-//}
-
-//QString AccessibleObject::localizedRoleName() const
-//{
-//}
+QString AccessibleObject::localizedRoleName() const
+{
+    return d->registryPrivate->localizedRoleName(*this);
+}
 

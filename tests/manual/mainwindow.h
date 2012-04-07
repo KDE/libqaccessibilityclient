@@ -27,22 +27,19 @@
 #include <kmainwindow.h>
 #include <qdebug.h>
 
-#include "accessible/registry.h"
 #include "accessible/accessibleobject.h"
 
 
 class MainWindow :public KMainWindow
 {
+    Q_OBJECT
+
 public:
-    MainWindow(QWidget *parent = 0)
-        :KMainWindow(parent)
-    {
-        ui.setupUi(this);
-
-        listAccessibles();
-    }
-
+    MainWindow(QWidget *parent = 0);
     void listAccessibles();
+
+private Q_SLOTS:
+    void focusChanged(const KAccessibleClient::AccessibleObject &object);
 
 private:
     Ui::MainWindow ui;
