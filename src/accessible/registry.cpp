@@ -96,96 +96,13 @@ Registry::~Registry()
     delete d;
 }
 
-void RegistryPrivate::init()
+void Registry::subscribeEventListeners(const EventListeners &listeners) const
 {
-    conn->connection().registerService(QLatin1String("org.kde.a11y.library"));
-
-    bool success = conn->connection().connect(QString(), QString(), QLatin1String("org.a11y.atspi.Event.Window"), QLatin1String("Activate"), this,
-                           SLOT(slotWindowActivated(QString,int,int,QDBusVariant,QSpiObjectReference)));
-    Q_ASSERT(success); // for now make sure we connect, else nothing will work
-    conn->connection().connect(QString(), QString(),
-                           QLatin1String("org.a11y.atspi.Event.Window"), QLatin1String("Create"), this,
-                           SLOT(slotWindowCreated(QString,int,int,QDBusVariant,QSpiObjectReference)));
-    conn->connection().connect(QString(), QString(),
-                           QLatin1String("org.a11y.atspi.Event.Window"), QLatin1String("Activate"), this,
-                           SLOT(slotWindowActivated(QString,int,int,QDBusVariant,QSpiObjectReference)));
-
-    conn->connection().connect(QString(), QLatin1String(""), QLatin1String("org.a11y.atspi.Event.Object"), QLatin1String("StateChanged"), this,
-                                  SLOT(slotStateChanged(QString, int, int, QDBusVariant, QSpiObjectReference)));
-    conn->connection().connect(QString(), QLatin1String(""), QLatin1String("org.a11y.atspi.Event.Object"), QLatin1String("ChildrenChanged"), this,
-                                  SLOT(slotChildrenChanged(QString, int, int, QDBusVariant, QSpiObjectReference)));
-    conn->connection().connect(QString(), QLatin1String(""), QLatin1String("org.a11y.atspi.Event.Object"), QLatin1String("PropertyChanged"), this,
-                                  SLOT(slotPropertyChange(QString, int, int, QDBusVariant, QSpiObjectReference)));
-
-    QStringList subscriptions;
-
-    subscriptions << QLatin1String("object:children-changed")
-                  << QLatin1String("object:property-change:accessiblename")
-                  << QLatin1String("object:state-changed")
-                  << QLatin1String("object:bounds-changed")
-                  << QLatin1String("object:visibledata-changed")
-                  << QLatin1String("object:state-changed")
-                  << QLatin1String("object:selection-changed")
-    << QLatin1String("object:")
-    << QLatin1String("focus:")
-    << QLatin1String("window:");
-
-// accerciser
-//     (u':1.7', u'Object:StateChanged:'),
-//     (u':1.7', u'Object:BoundsChanged:'),
-//     (u':1.7', u'Object:VisibleDataChanged:'),
-//     (u':1.7', u'Object:StateChanged:'),
-// orca
-//    [(u':1.8', u'Object:ChildrenChanged:'),
-//     (u':1.8', u'Mouse:Button:'),
-//     (u':1.8', u'Mouse:Abs:'),
-//     (u':1.8', u'Object:StateChanged:Selected'),
-//     (u':1.8', u'Object:StateChanged:Expanded'),
-//     (u':1.8', u'Object:ValueChanged:'),
-//     (u':1.8', u'Object:StateChanged:Focused'),
-//     (u':1.8', u'Object:StateChanged:Active'),
-//     (u':1.8', u'Window:Create:'),
-//     (u':1.8', u'Object:TextAttributesChanged:'),
-//     (u':1.8', u'Object:TextCaretMoved:'),
-//     (u':1.8', u'Object:SelectionChanged:'),
-//     (u':1.8', u'Focus::'),
-//     (u':1.8', u'Object:ActiveDescendantChanged:'),
-//     (u':1.8', u'Object:PropertyChange:AccessibleName'),
-//     (u':1.8', u'Window:Activate:'),
-//     (u':1.8', u'Window:Deactivate:'),
-//     (u':1.8', u'Mouse:Button:'),
-//     (u':1.8', u'Object:StateChanged:Indeterminate'),
-//     (u':1.8', u'Object:LinkSelected:'),
-//     (u':1.8', u'Object:TextChanged:Insert'),
-//     (u':1.8', u'Object:PropertyChange:AccessibleValue'),
-//     (u':1.8', u'Object:TextSelectionChanged:'),
-//     (u':1.8', u'Object:StateChanged:Showing'),
-//     (u':1.8', u'Object:TextChanged:Delete'),
-//     (u':1.8', u'Object:StateChanged:Pressed'),
-//     (u':1.8', u'Object:StateChanged:Checked'),
-//     (u':1.8', u'Object:ChildrenChanged:Remove')]
-
-    Q_FOREACH(const QString &subscription, subscriptions) {
-        QDBusMessage m = QDBusMessage::createMethodCall(QLatin1String("org.a11y.atspi.Registry"),
-                                                        QLatin1String("/org/a11y/atspi/registry"),
-                                                        QLatin1String("org.a11y.atspi.Registry"), QLatin1String("RegisterEvent"));
-        m.setArguments(QVariantList() << subscription);
-
-        QDBusMessage reply = conn->connection().call(m);
-        Q_UNUSED(reply)
-        //qDebug() << "reply: " << reply << reply.type() << reply.arguments();
-    }
-    qDebug() << "AtspiWatcher done init";
+    Q_UNUSED(listeners);
+    d->bus->subscribeEventListeners(listeners);
 }
 
-
-//AccessibleObject AtSpiDBus::parent(AccessibleObjectPrivate *d)
-//{
-//    return ;
-//}
-
-
-QList<AccessibleObject> Registry::applications()
+QList<AccessibleObject> Registry::applications() const
 {
     return d->bus->topLevelAccessibles();
 }

@@ -41,8 +41,6 @@ public:
     DBusConnection *conn;
     AtSpiDBus *bus;
 
-    void init();
-
 private Q_SLOTS:
     void slotWindowActivated(const QString &change, int detail1, int detail2, const QDBusVariant &args, const QSpiObjectReference &reference);
     void slotWindowCreated(const QString &change, int detail1, int detail2, const QDBusVariant &args, const QSpiObjectReference &reference);

@@ -27,6 +27,7 @@
 #include <qdbuscontext.h>
 #include <qdbusargument.h>
 
+#include "accessible/registry.h"
 #include "accessible/accessibleobject.h"
 
 #include "dbusconnection.h"
@@ -39,6 +40,7 @@ public:
     AtSpiDBus(DBusConnection *conn);
     ~AtSpiDBus();
 
+    void subscribeEventListeners(const Registry::EventListeners & listeners);
 
     QString name(const QString &service, const QString &path) const;
 

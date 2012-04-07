@@ -42,14 +42,34 @@ class LIBKDEACCESSIBILITYCLIENT_EXPORT Registry :public QObject
     Q_OBJECT
 
 public:
+
+    enum EventListener {
+        NoEventListeners = 0x0,
+        Focus = 0x1,
+        Object = 0x2,
+        Window = 0x4,
+
+        AllEventListeners = 0xffff
+    };
+
+    Q_DECLARE_FLAGS(EventListeners, EventListener)
+
+
     Registry();
     ~Registry();
+
+    /** FIXME: add parameters to select _which_ listeners.
+        In order to get notified of changes in accessible applications
+        it is neccessary to subscribe to the listeners that are relevant.
+    */
+    void subscribeEventListeners(const EventListeners &listeners) const;
+
 
     /**
         List of all currently running applications that
         expose and accessibility interface.
-      */
-    QList<AccessibleObject> applications();
+    */
+    QList<AccessibleObject> applications() const;
 
 private:
     Q_DISABLE_COPY(Registry)
