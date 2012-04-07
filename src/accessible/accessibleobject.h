@@ -21,7 +21,8 @@
 #ifndef LIBKDEACCESSIBILITYCLIENT_ACCESSIBLEOBJECT_H
 #define LIBKDEACCESSIBILITYCLIENT_ACCESSIBLEOBJECT_H
 
-#include <qdbusargument.h>
+#include <qlist.h>
+#include <qshareddata.h>
 
 #include "libkdeaccessibilityclient_export.h"
 
@@ -62,7 +63,7 @@ public:
 
 private:
     AccessibleObject(AtSpiDBus *bus, const QString &service, const QString &path);
-    AccessibleObjectPrivate *d;
+    QSharedDataPointer<AccessibleObjectPrivate> d;
 
     friend class RegistryPrivate;
     friend class AtSpiDBus;

@@ -39,7 +39,6 @@ AccessibleObject::AccessibleObject(const AccessibleObject &other)
 
 AccessibleObject::~AccessibleObject()
 {
-    delete d;
 }
 
 bool AccessibleObject::isValid() const

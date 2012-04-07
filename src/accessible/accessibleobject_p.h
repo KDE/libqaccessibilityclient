@@ -28,7 +28,7 @@
 
 namespace KAccessibleClient {
 
-class AccessibleObjectPrivate
+class AccessibleObjectPrivate :public QSharedData
 {
 public:
     AccessibleObjectPrivate(AtSpiDBus *bus_, const QString &service_, const QString &path_)
@@ -36,24 +36,11 @@ public:
     {
     }
 
-    AccessibleObjectPrivate(const AccessibleObjectPrivate &other)
-        : bus(other.bus), service(other.service), path(other.path)
-    {
-    }
-
-    AccessibleObjectPrivate &operator=(const AccessibleObjectPrivate &other)
-    {
-        bus = other.bus;
-        service = other.service;
-        path = other.path;
-        return *this;
-    }
-
     AtSpiDBus *bus;
     QString service;
     QString path;
 
-    QString name()
+    QString name() const
     {
         return bus->name(service, path);
     }
