@@ -43,6 +43,7 @@ public:
     ~AccessibleObject();
 
     AccessibleObject &operator=(const AccessibleObject &other);
+    bool operator==(const AccessibleObject &other) const;
 
     bool isValid() const;
 
@@ -51,7 +52,7 @@ public:
 
     QList<AccessibleObject> children() const;
     int childCount() const;
-    AccessibleObject getChild(int index) const;
+    AccessibleObject child(int index) const;
 
     QString name() const;
     QString localizedName() const;
@@ -69,7 +70,6 @@ private:
     friend class AtSpiDBus;
 };
 
-bool operator==(const AccessibleObject &lhs, const AccessibleObject &rhs);
 
 }
 

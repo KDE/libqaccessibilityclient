@@ -40,6 +40,13 @@ public:
     QString service;
     QString path;
 
+    bool operator==(const AccessibleObjectPrivate &other) const
+    {
+        return bus == other.bus &&
+               service == other.service &&
+               path == other.path;
+    }
+
     QString name() const
     {
         return bus->name(service, path);

@@ -9,6 +9,8 @@ cmake_minimum_required(VERSION 2.6)
 add_definitions(-DQT_NO_CAST_FROM_ASCII -DQT_NO_CAST_TO_ASCII)
 add_definitions(-DQT_USE_FAST_CONCATENATION -DQT_USE_FAST_OPERATOR_PLUS)
 
+# override the KDE defaults and build tests unless explicitly disabled
+option(KDE4_BUILD_TESTS  "Build the tests" ON)
 
 find_package(KDE4 REQUIRED)
 include(KDE4Defaults)

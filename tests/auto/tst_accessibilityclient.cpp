@@ -18,18 +18,63 @@
     License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QTest>
+#define QT_GUI_LIB
+#include <qtest.h>
+
+#include <qpushbutton.h>
+#include <qdebug.h>
+
+#include "accessible/registry.h"
+#include "accessible/accessibleobject.h"
+
+#include "atspi/dbusconnection.h"
+
+using namespace KAccessibleClient;
 
 class AccessibilityClientTest :public QObject
 {
     Q_OBJECT
-private slots:
-    void tst_name();
+
+private Q_SLOTS:
+//    void initTestCase();
+    void tst_navigation();
+
+private:
+    DBusConnection m_conn;
 };
 
-void AccessibilityClientTest::tst_name()
+void AccessibilityClientTest::tst_navigation()
 {
-    QVERIFY(true);
+    QPushButton button;
+    button.setText(QLatin1String("Hello a11y"));
+    button.show();
+
+    QTest::qWaitForWindowShown(&button);
+
+    Registry r;
+
+    QString appname = QLatin1String("Lib KAccessibleClient test");
+    qApp->setApplicationName(appname);
+    AccessibleObject app = r.applications().last();
+    QVERIFY(app.isValid());
+    QCOMPARE(app.name(), appname);
+
+    QCOMPARE(app.childCount(), 1);
+    AccessibleObject child1 = app.child(0);
+    QVERIFY(child1.isValid());
+    QCOMPARE(child1.name(), button.text());
+    AccessibleObject child2 = app.children().first();
+    QCOMPARE(child1, child2);
+    AccessibleObject parent = child1.parent();
+    QCOMPARE(parent, app);
+
+    AccessibleObject invalidChild = child1.child(0);
+    QVERIFY(!invalidChild.isValid());
+    QVERIFY(invalidChild.name().isEmpty());
+
+    AccessibleObject invalidParent = app.parent();
+    QVERIFY(!invalidParent.isValid());
+    QVERIFY(invalidParent.name().isEmpty());
 }
 
 QTEST_MAIN(AccessibilityClientTest)

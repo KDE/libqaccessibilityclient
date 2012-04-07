@@ -47,6 +47,9 @@ public:
 
     QList<AccessibleObject> topLevelAccessibles() const;
     AccessibleObject parent(const AccessibleObject &object);
+
+    int childCount(const AccessibleObject &object) const;
+    AccessibleObject child(const AccessibleObject &object, int index) const;
     QList<AccessibleObject> children(const AccessibleObject &object) const;
 
 private:

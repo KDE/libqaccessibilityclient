@@ -19,11 +19,12 @@
 */
 
 #include "accessibleobject.h"
-#include "accessibleobject_p.h"
-
-#include "atspi/atspidbus.h"
 
 #include <qstring.h>
+#include <qdebug.h>
+
+#include "accessibleobject_p.h"
+#include "atspi/atspidbus.h"
 
 using namespace KAccessibleClient;
 
@@ -43,13 +44,21 @@ AccessibleObject::~AccessibleObject()
 
 bool AccessibleObject::isValid() const
 {
-    return (!d->path.isEmpty()) && (!d->service.isEmpty());
+    return d->bus
+            && (!d->service.isEmpty())
+            && (!d->path.isEmpty())
+            && (d->path != QLatin1String("/org/a11y/atspi/null"));
 }
 
 AccessibleObject &AccessibleObject::operator=(const AccessibleObject &other)
 {
     d = other.d;
     return *this;
+}
+
+bool AccessibleObject::operator==(const AccessibleObject &other) const
+{
+    return (d == other.d) || *d == *other.d;
 }
 
 AccessibleObject AccessibleObject::parent() const
@@ -60,6 +69,16 @@ AccessibleObject AccessibleObject::parent() const
 QList<AccessibleObject> AccessibleObject::children() const
 {
     return d->bus->children(*this);
+}
+
+int AccessibleObject::childCount() const
+{
+    return d->bus->childCount(*this);
+}
+
+AccessibleObject AccessibleObject::child(int index) const
+{
+    return d->bus->child(*this, index);
 }
 
 //int AccessibleObject::indexInParent() const

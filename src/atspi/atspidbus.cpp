@@ -156,6 +156,36 @@ AccessibleObject AtSpiDBus::parent(const AccessibleObject &object)
     return AccessibleObject(const_cast<AtSpiDBus*>(this), ref.service, ref.path.path());
 }
 
+int AtSpiDBus::childCount(const AccessibleObject &object) const
+{
+    QDBusMessage message = QDBusMessage::createMethodCall (
+                object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Accessible"), QLatin1String("GetChildCount"));
+
+    QDBusReply<QVariant> reply = m_connection->connection().call(message);
+    if (!reply.isValid()) {
+        qWarning() << "Could not access childCount." << reply.error().message();
+        return 0;
+    }
+    return reply.value().toInt();
+}
+
+AccessibleObject AtSpiDBus::child(const AccessibleObject &object, int index) const
+{
+    QDBusMessage message = QDBusMessage::createMethodCall (
+                object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Accessible"), QLatin1String("GetChildAtIndex"));
+    QVariantList args;
+    args << index;
+    message.setArguments(args);
+
+    QDBusReply<QSpiObjectReference> reply = m_connection->connection().call(message);
+    if (!reply.isValid()) {
+        qWarning() << "Could not access child." << reply.error().message();
+        return AccessibleObject(0, QString(), QString());
+    }
+    const QSpiObjectReference child = reply.value();
+    return AccessibleObject(const_cast<AtSpiDBus*>(this), child.service, child.path.path());
+}
+
 QList<AccessibleObject> AtSpiDBus::children(const AccessibleObject &object) const
 {
     QList<AccessibleObject> accs;
