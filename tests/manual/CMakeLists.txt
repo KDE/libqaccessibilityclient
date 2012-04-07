@@ -14,6 +14,6 @@ set(accessibleapps_SRCS
 )
 kde4_add_executable(accessibleapps ${accessibleapps_SRCS})
 
-include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR} ${KDE4_INCLUDES} ${CMAKE_SOURCE_DIR}/../../src) # ${LIBKDEACCESSIBILITYCLIENT_INCLUDE_DIR})
+include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR} ${KDE4_INCLUDES} ${CMAKE_SOURCE_DIR}/src)
 target_link_libraries(accessibleapps ${QT_QTCORE_LIBRARY} kdeaccessibilityclient)
 

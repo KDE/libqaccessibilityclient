@@ -3,8 +3,8 @@
 
 #include <qdebug.h>
 
-#include "kdeaccessibilityclient/registry.h"
-#include "kdeaccessibilityclient/accessibleobject.h"
+#include "accessible/registry.h"
+#include "accessible/accessibleobject.h"
 
 int main(int argc, char**args)
 {
