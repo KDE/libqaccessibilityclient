@@ -80,13 +80,20 @@
 
 namespace KAccessibleClient {
 
+void RegistryPrivate::init()
+{
+    connect(bus, SIGNAL(focusChanged(KAccessibleClient::AccessibleObject)), q, SIGNAL(focusChanged(KAccessibleClient::AccessibleObject)));
+}
+
+
 Registry::Registry()
-    : d(new RegistryPrivate())
+    : d(new RegistryPrivate(this))
 {
     registerDBusTypes();
 
     d->conn = new DBusConnection();
     d->bus = new AtSpiDBus(d->conn);
+    d->init();
 }
 
 Registry::~Registry()
@@ -110,62 +117,6 @@ Registry::EventListeners Registry::subscribedEventListeners() const
 QList<AccessibleObject> Registry::applications() const
 {
     return d->bus->topLevelAccessibles();
-}
-
-#define ATSPI_DEBUG
-
-void RegistryPrivate::slotWindowCreated(const QString &change, int detail1, int detail2, const QDBusVariant &args, const QSpiObjectReference &reference)
-{
-#ifdef ATSPI_DEBUG
-    qDebug() << "New window: " << change << detail1 << detail2 << args.variant() << reference.path.path();
-#endif
-//    AccessibleObject accessible = accessibleFromPath(reference.service, QDBusContext::message().path());
-    //emit signalWindowCreated(QSharedPointer<AccessibleObject>(accessible));
-}
-
-void RegistryPrivate::slotWindowActivated(const QString &change, int detail1, int detail2, const QDBusVariant &args, const QSpiObjectReference &reference)
-{
-#ifdef ATSPI_DEBUG
-    qDebug() << "Window activated: " << change << detail1 << detail2 << args.variant() << reference.path.path();
-#endif
-//    AccessibleObject accessible = accessibleFromPath(reference.service, QDBusContext::message().path());
-//    emit signalWindowActivated(QSharedPointer<AccessibleObject>(accessible));
-}
-
-void RegistryPrivate::slotStateChanged(const QString &state, int detail1, int detail2, const QDBusVariant &args, const QSpiObjectReference &reference)
-{
-#ifdef ATSPI_DEBUG
-    qDebug() << "State changed: " << state << detail1 << detail2 << args.variant() << reference.path.path();
-#endif
-
-    // have a cache or create a qml accessible?
-    // let it be spoken
-
-    // find accessible, emit signal
-
-    if ((state == QLatin1String("focused")) && (detail1 == 1)) {
-//        AccessibleObject accessible = accessibleFromPath(reference.service, QDBusContext::message().path());
-//        emit signalFocusChanged(QSharedPointer<AccessibleObject>(accessible));
-    }
-}
-
-void RegistryPrivate::slotChildrenChanged(const QString &state, int detail1, int detail2, const QDBusVariant &args, const QSpiObjectReference &reference)
-{
-#ifdef ATSPI_DEBUG
-    qDebug() << "Children changed: " << state << detail1 << detail2 << args.variant() << reference.path.path();
-#endif
-}
-
-void RegistryPrivate::slotPropertyChange(const QString &state, int detail1, int detail2, const QDBusVariant &args, const QSpiObjectReference &reference)
-{
-#ifdef ATSPI_DEBUG
-    qDebug() << "Children changed: " << state << detail1 << detail2 << args.variant() << reference.path.path();
-#endif
-}
-
-AccessibleObject RegistryPrivate::accessibleFromPath(const QString &service, const QString &path) const
-{
-     return AccessibleObject(bus, service, path);
 }
 
 }

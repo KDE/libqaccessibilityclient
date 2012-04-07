@@ -71,11 +71,14 @@ public:
     */
     QList<AccessibleObject> applications() const;
 
+Q_SIGNALS:
+    void focusChanged(KAccessibleClient::AccessibleObject);
+
 private:
     Q_DISABLE_COPY(Registry)
     RegistryPrivate *d;
+    friend class RegistryPrivate;
 };
-
 
 }
 

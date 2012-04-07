@@ -46,8 +46,9 @@ void AtSpiDBus::subscribeEventListeners(const Registry::EventListeners &listener
 
     if (listeners & Registry::Focus) {
         subscriptions << QLatin1String("focus:");
+        subscriptions << QLatin1String("object:state-changed");
         bool success = m_connection->connection().connect(
-                    QString(), QString(), QLatin1String("org.a11y.atspi.Event.Object"), QLatin1String("StateChanged"),
+                    QString(), QLatin1String(""), QLatin1String("org.a11y.atspi.Event.Object"), QLatin1String("StateChanged"),
                     this, SLOT(slotStateChanged(QString, int, int, QDBusVariant, QSpiObjectReference)));
         if (!success) {
             qWarning() << "Could not subscribe to accessibility focus events.";
@@ -237,4 +238,54 @@ QVariant AtSpiDBus::getProperty(const QString &service, const QString &path, con
     QDBusVariant v = reply.arguments().at(0).value<QDBusVariant>();
     return v.variant();
 }
+
+void AtSpiDBus::slotStateChanged(const QString &state, int detail1, int /*detail2*/, const QDBusVariant &/*args*/, const QSpiObjectReference &reference)
+{
+    qDebug() << "State changes: " << state;
+    if ((state == QLatin1String("focused")) && (detail1 == 1)) {
+        KAccessibleClient::AccessibleObject accessible = accessibleFromPath(reference.service, QDBusContext::message().path());
+        emit focusChanged(accessible);
+    }
+}
+
+#define ATSPI_DEBUG
+
+void AtSpiDBus::slotWindowCreated(const QString &change, int detail1, int detail2, const QDBusVariant &args, const QSpiObjectReference &reference)
+{
+#ifdef ATSPI_DEBUG
+    qDebug() << "New window: " << change << detail1 << detail2 << args.variant() << reference.path.path();
+#endif
+//    AccessibleObject accessible = accessibleFromPath(reference.service, QDBusContext::message().path());
+    //emit signalWindowCreated(QSharedPointer<AccessibleObject>(accessible));
+}
+
+void AtSpiDBus::slotWindowActivated(const QString &change, int detail1, int detail2, const QDBusVariant &args, const QSpiObjectReference &reference)
+{
+#ifdef ATSPI_DEBUG
+    qDebug() << "Window activated: " << change << detail1 << detail2 << args.variant() << reference.path.path();
+#endif
+//    AccessibleObject accessible = accessibleFromPath(reference.service, QDBusContext::message().path());
+//    emit signalWindowActivated(QSharedPointer<AccessibleObject>(accessible));
+}
+
+void AtSpiDBus::slotChildrenChanged(const QString &state, int detail1, int detail2, const QDBusVariant &args, const QSpiObjectReference &reference)
+{
+#ifdef ATSPI_DEBUG
+    qDebug() << "Children changed: " << state << detail1 << detail2 << args.variant() << reference.path.path();
+#endif
+}
+
+void AtSpiDBus::slotPropertyChange(const QString &state, int detail1, int detail2, const QDBusVariant &args, const QSpiObjectReference &reference)
+{
+#ifdef ATSPI_DEBUG
+    qDebug() << "Children changed: " << state << detail1 << detail2 << args.variant() << reference.path.path();
+#endif
+}
+
+AccessibleObject AtSpiDBus::accessibleFromPath(const QString &service, const QString &path) const
+{
+     return AccessibleObject(const_cast<AtSpiDBus*>(this), service, path);
+}
+
+#include <atspidbus.moc>
 

@@ -26,6 +26,7 @@
 #include <qdbuscontext.h>
 #include <qdbusargument.h>
 
+#include "accessible/registry.h"
 #include "accessible/accessibleobject.h"
 #include "atspi/qt-atspi.h"
 
@@ -38,16 +39,16 @@ class RegistryPrivate :public QObject, public QDBusContext
 {
     Q_OBJECT
 public:
+    RegistryPrivate(Registry *qq)
+        :q(qq)
+    {
+    }
+
+    void init();
+
     DBusConnection *conn;
     AtSpiDBus *bus;
-
-private Q_SLOTS:
-    void slotWindowActivated(const QString &change, int detail1, int detail2, const QDBusVariant &args, const QSpiObjectReference &reference);
-    void slotWindowCreated(const QString &change, int detail1, int detail2, const QDBusVariant &args, const QSpiObjectReference &reference);
-    void slotStateChanged(const QString &state, int detail1, int detail2, const QDBusVariant &args, const QSpiObjectReference &reference);
-    void slotChildrenChanged(const QString &state, int detail1, int detail2, const QDBusVariant &args, const QSpiObjectReference &reference);
-    void slotPropertyChange(const QString &state, int detail1, int detail2, const QDBusVariant &args, const QSpiObjectReference &reference);
-    AccessibleObject accessibleFromPath(const QString &service, const QString &path) const;
+    Registry *q;
 };
 
 }

@@ -21,7 +21,9 @@
 #define QT_GUI_LIB
 #include <qtest.h>
 
+#include <qmainwindow.h>
 #include <qpushbutton.h>
+#include <qboxlayout.h>
 #include <qdebug.h>
 
 #include "accessible/registry.h"
@@ -31,12 +33,33 @@
 
 using namespace KAccessibleClient;
 
+struct Event {
+    Event(const AccessibleObject &object)
+        : m_object(object)
+    {}
+
+    AccessibleObject m_object;
+};
+
+class EventListener : public QObject
+{
+    Q_OBJECT
+public Q_SLOTS:
+    void focus(const KAccessibleClient::AccessibleObject &object) {
+        events.append(Event(object));
+    }
+
+public:
+    QList<Event> events;
+};
+
 class AccessibilityClientTest :public QObject
 {
     Q_OBJECT
 
 private Q_SLOTS:
     void tst_navigation();
+    void tst_focus();
 };
 
 void AccessibilityClientTest::tst_navigation()
@@ -72,6 +95,38 @@ void AccessibilityClientTest::tst_navigation()
     QVERIFY(!invalidParent.isValid());
     QVERIFY(invalidParent.name().isEmpty());
 }
+
+void AccessibilityClientTest::tst_focus()
+{
+    QMainWindow window;
+    QWidget *w = new QWidget();
+    window.setCentralWidget(w);
+    QVBoxLayout *l = new QVBoxLayout();
+    w->setLayout(l);
+    QPushButton *button = new QPushButton();
+    QPushButton *button2 = new QPushButton();
+    l->addWidget(button);
+    l->addWidget(button2);
+
+    button->setText(QLatin1String("Button 1"));
+    button2->setText(QLatin1String("Button 2"));
+    window.show();
+    button->setFocus();
+
+    QTest::qWaitForWindowShown(&window);
+
+    Registry r;
+    r.subscribeEventListeners(Registry::Focus);
+    EventListener listener;
+    connect(&r, SIGNAL(focusChanged(KAccessibleClient::AccessibleObject)), &listener, SLOT(focus(KAccessibleClient::AccessibleObject)));
+
+    button2->setFocus();
+
+    QTest::qWait(100);
+
+    QCOMPARE(listener.events.size(), 1);
+}
+
 
 QTEST_MAIN(AccessibilityClientTest)
 

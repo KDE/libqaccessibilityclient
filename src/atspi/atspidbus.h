@@ -31,11 +31,13 @@
 #include "accessible/accessibleobject.h"
 
 #include "dbusconnection.h"
+#include "qt-atspi.h"
 
 namespace KAccessibleClient {
 
 class AtSpiDBus :public QObject, public QDBusContext
 {
+    Q_OBJECT
 public:
     AtSpiDBus(DBusConnection *conn);
     ~AtSpiDBus();
@@ -51,6 +53,17 @@ public:
     int childCount(const AccessibleObject &object) const;
     AccessibleObject child(const AccessibleObject &object, int index) const;
     QList<AccessibleObject> children(const AccessibleObject &object) const;
+
+Q_SIGNALS:
+    void focusChanged(const KAccessibleClient::AccessibleObject &object);
+
+private Q_SLOTS:
+    void slotChildrenChanged(const QString &state, int detail1, int detail2, const QDBusVariant &args, const QSpiObjectReference &reference);
+    void slotPropertyChange(const QString &state, int detail1, int detail2, const QDBusVariant &args, const QSpiObjectReference &reference);
+    void slotStateChanged(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const QSpiObjectReference &reference);
+    void slotWindowActivated(const QString &change, int detail1, int detail2, const QDBusVariant &args, const QSpiObjectReference &reference);
+    void slotWindowCreated(const QString &change, int detail1, int detail2, const QDBusVariant &args, const QSpiObjectReference &reference);
+    AccessibleObject accessibleFromPath(const QString &service, const QString &path) const;
 
 private:
     QVariant getProperty ( const QString &service, const QString &path, const QString &interface, const QString &name ) const;
