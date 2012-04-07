@@ -41,6 +41,7 @@ public:
     ~AtSpiDBus();
 
     void subscribeEventListeners(const Registry::EventListeners & listeners);
+    Registry::EventListeners subscribedEventListeners() const;
 
     QString name(const QString &service, const QString &path) const;
 

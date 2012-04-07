@@ -58,12 +58,12 @@ public:
     Registry();
     ~Registry();
 
-    /** FIXME: add parameters to select _which_ listeners.
+    /**
         In order to get notified of changes in accessible applications
         it is neccessary to subscribe to the listeners that are relevant.
     */
     void subscribeEventListeners(const EventListeners &listeners) const;
-
+    EventListeners subscribedEventListeners() const;
 
     /**
         List of all currently running applications that

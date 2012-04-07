@@ -102,6 +102,11 @@ void Registry::subscribeEventListeners(const EventListeners &listeners) const
     d->bus->subscribeEventListeners(listeners);
 }
 
+Registry::EventListeners Registry::subscribedEventListeners() const
+{
+    return d->bus->subscribedEventListeners();
+}
+
 QList<AccessibleObject> Registry::applications() const
 {
     return d->bus->topLevelAccessibles();
