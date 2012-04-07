@@ -34,8 +34,8 @@ AccessibleObject::AccessibleObject(AtSpiDBus *bus, const QString &service, const
 }
 
 AccessibleObject::AccessibleObject(const AccessibleObject &other)
+    :d(other.d)
 {
-    d = new AccessibleObjectPrivate(other.d->bus, other.d->service, other.d->path);
 }
 
 AccessibleObject::~AccessibleObject()
