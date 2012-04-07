@@ -36,11 +36,7 @@ class AccessibilityClientTest :public QObject
     Q_OBJECT
 
 private Q_SLOTS:
-//    void initTestCase();
     void tst_navigation();
-
-private:
-    DBusConnection m_conn;
 };
 
 void AccessibilityClientTest::tst_navigation()
