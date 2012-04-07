@@ -18,25 +18,34 @@
     License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <kapplication.h>
-#include <kaboutdata.h>
-#include <kcmdlineargs.h>
 
-#include "mainwindow.h"
+#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
 
-int main(int argc, char** argv)
+#include "ui_mainwindow.h"
+
+#include <kmainwindow.h>
+#include <qdebug.h>
+
+#include "accessible/registry.h"
+#include "accessible/accessibleobject.h"
+
+
+class MainWindow :public KMainWindow
 {
-    KAboutData about("LibKAccessibilityClient",
-                     "l10n-cat",
-                     ki18n("KAccessibilityClient"),
-                     "0.0.1-example",
-                     ki18n("An accessibility testing app"),
-                     KAboutData::License_LGPL);
-    KCmdLineArgs::init(argc, argv, &about);
-    KApplication app;
+public:
+    MainWindow(QWidget *parent = 0)
+        :KMainWindow(parent)
+    {
+        ui.setupUi(this);
 
-    MainWindow *window = new MainWindow;
-    window->show();
+        listAccessibles();
+    }
 
-    return app.exec();
-}
+    void listAccessibles();
+
+private:
+    Ui::MainWindow ui;
+};
+
+#endif

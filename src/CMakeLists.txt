@@ -1,4 +1,6 @@
 
+add_definitions(-DQT_NO_CAST_FROM_ASCII -DQT_NO_CAST_TO_ASCII)
+
 set(LibKdeAccessibilityClient_SRCS
     accessible/accessibleobject.cpp
     accessible/registry.cpp

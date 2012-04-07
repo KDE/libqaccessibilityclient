@@ -18,25 +18,25 @@
     License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <kapplication.h>
-#include <kaboutdata.h>
-#include <kcmdlineargs.h>
-
 #include "mainwindow.h"
 
-int main(int argc, char** argv)
+#include <qplaintextedit.h>
+#include <qstring.h>
+
+void MainWindow::listAccessibles()
 {
-    KAboutData about("LibKAccessibilityClient",
-                     "l10n-cat",
-                     ki18n("KAccessibilityClient"),
-                     "0.0.1-example",
-                     ki18n("An accessibility testing app"),
-                     KAboutData::License_LGPL);
-    KCmdLineArgs::init(argc, argv, &about);
-    KApplication app;
+    QString accessibles;
 
-    MainWindow *window = new MainWindow;
-    window->show();
-
-    return app.exec();
+    KAccessibleClient::Registry registry;
+    QList<KAccessibleClient::AccessibleObject> apps = registry.applications();
+    accessibles += "Accessible applications:" + QString::number(apps.count()) + '\n';
+    foreach(const KAccessibleClient::AccessibleObject &obj, apps) {
+        accessibles += QString("App: %1  (parent: %2)\n").arg(obj.name(), obj.parent().name());
+        foreach(const KAccessibleClient::AccessibleObject &child, obj.children()) {
+            accessibles += QString(" Window: %1  (parent: %2)\n").arg(child.name(), child.parent().name());
+        }
+        accessibles.append('\n');
+    }
+    ui.plainTextEdit->setReadOnly(true);
+    ui.plainTextEdit->setPlainText(accessibles);
 }
