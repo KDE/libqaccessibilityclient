@@ -23,7 +23,7 @@
 #include <qplaintextedit.h>
 #include <qstring.h>
 
-#include "accessible/registry.h"
+#include "kdeaccessibilityclient/registry.h"
 
 MainWindow::MainWindow(QWidget *parent)
     :KMainWindow(parent)

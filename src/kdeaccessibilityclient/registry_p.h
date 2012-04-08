@@ -28,8 +28,8 @@
 #include <qdbusargument.h>
 
 #include "atspi/dbusconnection.h"
-#include "accessible/registry.h"
-#include "accessible/accessibleobject.h"
+#include "kdeaccessibilityclient/registry.h"
+#include "kdeaccessibilityclient/accessibleobject.h"
 #include "atspi/qt-atspi.h"
 
 namespace KAccessibleClient {

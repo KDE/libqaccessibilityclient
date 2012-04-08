@@ -27,8 +27,8 @@
 #include <qaccessible.h>
 #include <qdebug.h>
 
-#include "accessible/registry.h"
-#include "accessible/accessibleobject.h"
+#include "kdeaccessibilityclient/registry.h"
+#include "kdeaccessibilityclient/accessibleobject.h"
 
 #include "atspi/dbusconnection.h"
 #include "atspi/atspi-constants.h"

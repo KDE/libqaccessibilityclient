@@ -27,7 +27,7 @@
 #include <kmainwindow.h>
 #include <qdebug.h>
 
-#include "accessible/accessibleobject.h"
+#include "kdeaccessibilityclient/accessibleobject.h"
 
 
 class MainWindow :public KMainWindow

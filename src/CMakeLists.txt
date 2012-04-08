@@ -2,8 +2,8 @@
 add_definitions(-DQT_NO_CAST_FROM_ASCII -DQT_NO_CAST_TO_ASCII)
 
 set(LibKdeAccessibilityClient_SRCS
-    accessible/accessibleobject.cpp
-    accessible/registry.cpp
+    kdeaccessibilityclient/accessibleobject.cpp
+    kdeaccessibilityclient/registry.cpp
 )
 
 set(LibKdeAccessibilityClientPrivate_SRCS
@@ -27,8 +27,8 @@ install(TARGETS kdeaccessibilityclient EXPORT LibKdeAccessibilityClient ${INSTAL
 ########### install files ###############
 
 install(FILES
-    libkdeaccessibilityclient_export.h
-    accessible/accessibleobject.h
-    accessible/registry.h
+    kdeaccessibilityclient/libkdeaccessibilityclient_export.h
+    kdeaccessibilityclient/accessibleobject.h
+    kdeaccessibilityclient/registry.h
     DESTINATION ${INCLUDE_INSTALL_DIR}/kdeaccessibilityclient COMPONENT Devel
 )
