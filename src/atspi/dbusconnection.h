@@ -26,6 +26,11 @@
 
 namespace KAccessibleClient {
 
+
+/**
+    Connection to the a11y dbus bus.
+    \internal
+ */
 class DBusConnection
 {
 public:

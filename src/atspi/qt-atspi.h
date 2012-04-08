@@ -33,9 +33,16 @@ Q_DECLARE_METATYPE(QSpiUIntList);
 
 namespace KAccessibleClient {
 
+/**
+    Register meta types for dbus.
+    \internal
+ */
 void registerDBusTypes();
 
-
+/**
+    The QSpiObjectReference struct is a dbus service and path representing a remote accessible object.
+    \internal
+ */
 struct QSpiObjectReference
 {
     QString service;
@@ -44,8 +51,14 @@ struct QSpiObjectReference
 
 typedef QList<QSpiObjectReference> QSpiObjectReferenceList;
 
-
+/**
+    \internal
+ */
 QDBusArgument &operator<<(QDBusArgument &argument, const QSpiObjectReference &address);
+
+/**
+    \internal
+ */
 const QDBusArgument &operator>>(const QDBusArgument &argument, QSpiObjectReference &address);
 
 }
