@@ -48,7 +48,7 @@ public:
     bool operator==(const AccessibleObject &other) const;
 
     /**
-        \brief Returns true if AccessibleObject is valid.
+        \brief Returns true if this object is valid.
 
         Invalid objects are for example returned when asking for the
         parent of the top most item, or for a child that is out of range.
@@ -56,13 +56,13 @@ public:
     bool isValid() const;
 
     /**
-        \brief Returns the parent AccessibleObject.
+        \brief Returns this object's parent.
         \return The parent AccessibleObject
      */
     AccessibleObject parent() const;
 
     /**
-        \brief Returns this accessible's index in it's parent's child list.
+        \brief Returns this accessible's index in it's parent's list of children.
         \return index
      */
     int indexInParent() const;
@@ -74,13 +74,13 @@ public:
     QList<AccessibleObject> children() const;
 
     /**
-        \brief Returns the number of children for this AccessibleObject.
+        \brief Returns the number of children for this accessible.
         \return number of children
      */
     int childCount() const;
 
     /**
-        \brief Returns a specific child at \a index position.
+        \brief Returns a specific child at position \a index.
 
         The list of children is 0-based.
         \return number of children
@@ -88,7 +88,7 @@ public:
     AccessibleObject child(int index) const;
 
     /**
-        \brief Returns the name of this AccessibleObject.
+        \brief Returns the name of this accessible.
 
         The name is a short descriptive one or two words.
         It is localized.
@@ -96,7 +96,7 @@ public:
     QString name() const;
 
     /**
-        \brief Returns the description for this AccessibleObject.
+        \brief Returns the description for this accessible.
 
         The description is more of an explanation than the name.
         This can be a sentence. The string is localized.
@@ -104,21 +104,21 @@ public:
     QString description() const;
 
     /**
-        \brief Returns the role as integer value of this AccessibleObject.
+        \brief Returns the role as integer value of this accessible.
         FIXME: this is currently the ATSPI_ROLE_xxx constant.
         Either include the atspi-constants.h or figure out what else to do with this.
      */
     int role() const;
 
     /**
-        \brief Returns the name of the role of this AccessibleObject.
+        \brief Returns the name of the role of this accessible.
 
         This name is not localized to allow tools to work with the english string.
      */
     QString roleName() const;
 
     /**
-        \brief Returns the name of the role of this AccessibleObject.
+        \brief Returns the name of the role of this accessible.
 
         This name is localized and can be presented to the user.
      */
