@@ -36,22 +36,22 @@ class RegistryPrivate;
     This class represents the global accessibility registry.
 
     It provides information about running applications.
+    All updates of accessible objects will result in signals emitted by this class.
 */
 class LIBKDEACCESSIBILITYCLIENT_EXPORT Registry :public QObject
 {
     Q_OBJECT
 
 public:
-
     enum EventListener {
-        NoEventListeners = 0x0,
-        Focus = 0x1,
-        Object = 0x2,
-        Window = 0x4,
+        NoEventListeners = 0x0,           /*!< No event listeners registered or wanted */
+        Focus = 0x1,                      /*!< Focus listener reacts to focus changes - see signal @focusChanged */
+        Object = 0x2,                     /*!< Object changes, such as checked state etc. */
+        // FIXME many more detailed event listeners are possible
+        Window = 0x4,                     /*!< Window changes, such as new applications being started */
 
-        AllEventListeners = 0xffff
+        AllEventListeners = 0xffff        /*!< All possible event listeners */
     };
-
     Q_DECLARE_FLAGS(EventListeners, EventListener)
 
 
@@ -72,7 +72,10 @@ public:
     QList<AccessibleObject> applications() const;
 
 Q_SIGNALS:
-    void focusChanged(KAccessibleClient::AccessibleObject);
+    /**
+        \brief Emitted when subscribed to Focus EventListener.
+    */
+    void focusChanged(const KAccessibleClient::AccessibleObject &);
 
 private:
     Q_DISABLE_COPY(Registry)
