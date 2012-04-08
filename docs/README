@@ -1,0 +1,3 @@
+To generate the documentation locally, just run:
+$ doxygen doxygenconfig
+ 
