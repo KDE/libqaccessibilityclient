@@ -45,7 +45,7 @@ class LIBKDEACCESSIBILITYCLIENT_EXPORT Registry :public QObject
 public:
     enum EventListener {
         NoEventListeners = 0x0,           /*!< No event listeners registered or wanted */
-        Focus = 0x1,                      /*!< Focus listener reacts to focus changes - see signal @focusChanged */
+        Focus = 0x1,                      /*!< Focus listener reacts to focus changes - see signal \sa focusChanged */
         Object = 0x2,                     /*!< Object changes, such as checked state etc. */
         // FIXME many more detailed event listeners are possible
         Window = 0x4,                     /*!< Window changes, such as new applications being started */
