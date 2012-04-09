@@ -81,9 +81,10 @@ AccessibleObject AccessibleObject::child(int index) const
     return d->registryPrivate->child(*this, index);
 }
 
-//int AccessibleObject::indexInParent() const
-//{
-//}
+int AccessibleObject::indexInParent() const
+{
+    return d->registryPrivate->indexInParent(*this);
+}
 
 QString AccessibleObject::name() const
 {
@@ -95,7 +96,7 @@ QString AccessibleObject::description() const
     return d->registryPrivate->description(*this);
 }
 
-int AccessibleObject::role() const
+AtspiRole AccessibleObject::role() const
 {
     return d->registryPrivate->role(*this);
 }

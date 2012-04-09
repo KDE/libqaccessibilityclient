@@ -23,6 +23,8 @@
 
 #include <qmainwindow.h>
 #include <qpushbutton.h>
+#include <qlabel.h>
+#include <qlineedit.h>
 #include <qboxlayout.h>
 #include <qaccessible.h>
 #include <qdebug.h>
@@ -66,45 +68,93 @@ private Q_SLOTS:
 
 void AccessibilityClientTest::tst_navigation()
 {
-    QPushButton button;
-    button.setText(QLatin1String("Hello a11y"));
-    QString desc = "This is a button...";
-    button.setAccessibleDescription(desc);
-    button.show();
+    QWidget w;
+    w.setAccessibleName("Root Widget");
+    w.setAccessibleDescription("This is a useless widget");
+    QVBoxLayout *layout = new QVBoxLayout;
+    w.setLayout(layout);
 
-    QTest::qWaitForWindowShown(&button);
+    QPushButton *button = new QPushButton;
+    layout->addWidget(button);
+    button->setText(QLatin1String("Hello a11y"));
+    QString desc = "This is a button...";
+    button->setAccessibleDescription(desc);
+    w.show();
+
+    QTest::qWaitForWindowShown(&w);
 
     Registry r;
 
+    // App
     QString appname = QLatin1String("Lib KAccessibleClient test");
     qApp->setApplicationName(appname);
-    AccessibleObject app = r.applications().last();
-    QVERIFY(app.isValid());
-    QCOMPARE(app.name(), appname);
+    AccessibleObject accApp = r.applications().last();
+    QVERIFY(accApp.isValid());
+    QCOMPARE(accApp.name(), appname);
+    QCOMPARE(accApp.childCount(), 1);
 
-    QCOMPARE(app.childCount(), 1);
-    AccessibleObject child1 = app.child(0);
-    QVERIFY(child1.isValid());
-    QCOMPARE(child1.name(), button.text());
-    QCOMPARE(child1.description(), desc);
-    QCOMPARE(child1.role(), (int)ATSPI_ROLE_PUSH_BUTTON);
-    QCOMPARE(child1.roleName(), QLatin1String("push button"));
-    QVERIFY(!child1.localizedRoleName().isEmpty());
-    QCOMPARE(child1.description(), desc);
+    // What should this return?
+    QCOMPARE(accApp.indexInParent(), -1);
 
-    AccessibleObject child2 = app.children().first();
-    QCOMPARE(child1, child2);
+    // Root widget
+    AccessibleObject accW = accApp.child(0);
+    QVERIFY(accW.isValid());
+    QCOMPARE(accW.name(), w.accessibleName());
+    QCOMPARE(accW.description(), w.accessibleDescription());
+    QCOMPARE(accW.role(), ATSPI_ROLE_FILLER);
+    QCOMPARE(accW.roleName(), QLatin1String("filler"));
+    QCOMPARE(accW.childCount(), 1);
+    QCOMPARE(accW.indexInParent(), 0);
 
-    AccessibleObject parent = child1.parent();
-    QCOMPARE(parent, app);
+    // Button
+    AccessibleObject accButton = accW.child(0);
+    QVERIFY(accButton.isValid());
+    QCOMPARE(accButton.name(), button->text());
+    QCOMPARE(accButton.description(), desc);
+    QCOMPARE(accButton.role(), ATSPI_ROLE_PUSH_BUTTON);
+    QCOMPARE(accButton.roleName(), QLatin1String("push button"));
+    QVERIFY(!accButton.localizedRoleName().isEmpty());
+    QCOMPARE(accButton.indexInParent(), 0);
 
-    AccessibleObject invalidChild = child1.child(0);
+    AccessibleObject accButton2 = accW.children().first();
+    QCOMPARE(accButton, accButton2);
+    AccessibleObject parent = accButton.parent();
+    QCOMPARE(parent, accW);
+    AccessibleObject parentParent = parent.parent();
+    QCOMPARE(parentParent, accApp);
+
+    AccessibleObject invalidChild = accButton.child(0);
     QVERIFY(!invalidChild.isValid());
     QVERIFY(invalidChild.name().isEmpty());
 
-    AccessibleObject invalidParent = app.parent();
+    AccessibleObject invalidParent = accApp.parent();
     QVERIFY(!invalidParent.isValid());
     QVERIFY(invalidParent.name().isEmpty());
+
+    // Add a label and line edit
+    QLabel *label = new QLabel;
+    label->setText("Name:");
+    layout->addWidget(label);
+    QLineEdit *line = new QLineEdit;
+    layout->addWidget(line);
+    label->setBuddy(line);
+    QCOMPARE(accW.childCount(), 3);
+
+    AccessibleObject accLabel = accW.child(1);
+    QVERIFY(accLabel.isValid());
+    QCOMPARE(accLabel.name(), label->text());
+    QCOMPARE(accLabel.role(), ATSPI_ROLE_LABEL);
+    QCOMPARE(accLabel.roleName(), QLatin1String("label"));
+    QCOMPARE(accLabel.indexInParent(), 1);
+
+    AccessibleObject accLine = accW.child(2);
+    QVERIFY(accLine.isValid());
+    QCOMPARE(accLine.name(), label->text());
+    QCOMPARE(accLine.role(), ATSPI_ROLE_TEXT);
+    QCOMPARE(accLine.roleName(), QLatin1String("text"));
+    QCOMPARE(accLine.indexInParent(), 2);
+    AccessibleObject parent1 = accLine.parent();
+    QCOMPARE(parent1, accW);
 }
 
 void AccessibilityClientTest::tst_focus()

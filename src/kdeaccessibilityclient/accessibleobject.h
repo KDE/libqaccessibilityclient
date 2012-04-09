@@ -24,6 +24,8 @@
 #include <qlist.h>
 #include <qshareddata.h>
 
+#include <atspi/atspi-constants.h>
+
 #include "libkdeaccessibilityclient_export.h"
 
 namespace KAccessibleClient {
@@ -108,7 +110,7 @@ public:
         FIXME: this is currently the ATSPI_ROLE_xxx constant.
         Either include the atspi-constants.h or figure out what else to do with this.
      */
-    int role() const;
+    AtspiRole role() const;
 
     /**
         \brief Returns the name of the role of this accessible.
@@ -123,6 +125,13 @@ public:
         This name is localized and can be presented to the user.
      */
     QString localizedRoleName() const;
+
+    /**
+        \brief Returns the state as integer value of this accessible.
+        FIXME: this is currently the ATSPI_ROLE_xxx constant.
+        Either include the atspi-constants.h or figure out what else to do with this.
+     */
+    AtspiStateType state() const;
 
 private:
     AccessibleObject(RegistryPrivate *reg, const QString &service, const QString &path);

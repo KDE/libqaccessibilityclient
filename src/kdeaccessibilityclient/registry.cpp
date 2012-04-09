@@ -246,6 +246,19 @@ int RegistryPrivate::childCount(const AccessibleObject &object) const
     return reply.value().toInt();
 }
 
+int RegistryPrivate::indexInParent(const AccessibleObject &object) const
+{
+    QDBusMessage message = QDBusMessage::createMethodCall (
+                object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Accessible"), QLatin1String("GetIndexInParent"));
+
+    QDBusReply<int> reply = conn.connection().call(message);
+    if (!reply.isValid()) {
+        qWarning() << "Could not access index in parent." << reply.error().message();
+        return -1;
+    }
+    return reply.value();
+}
+
 AccessibleObject RegistryPrivate::child(const AccessibleObject &object, int index) const
 {
     QDBusMessage message = QDBusMessage::createMethodCall (
