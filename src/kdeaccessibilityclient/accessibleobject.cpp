@@ -111,3 +111,97 @@ QString AccessibleObject::localizedRoleName() const
     return d->registryPrivate->localizedRoleName(*this);
 }
 
+bool AccessibleObject::hasSelectableText() const
+{
+    return d->registryPrivate->state(*this) & (quint64(1) << ATSPI_STATE_SELECTABLE_TEXT);
+}
+
+bool AccessibleObject::hasToolTip() const
+{
+    return d->registryPrivate->state(*this) & (quint64(1) << ATSPI_STATE_HAS_TOOLTIP);
+}
+
+bool AccessibleObject::isActive() const
+{
+    return d->registryPrivate->state(*this) & (quint64(1) << ATSPI_STATE_ACTIVE);
+}
+
+bool AccessibleObject::isCheckable() const
+{
+    // FIXME
+    //return d->registryPrivate->state(*this) & (quint64(1) << ATSPI_STATE_);
+    qWarning() << "IMPLEMENT: AccessibleObject::isCheckable";
+    return 0;
+}
+
+bool AccessibleObject::isChecked() const
+{
+    return d->registryPrivate->state(*this) & (quint64(1) << ATSPI_STATE_CHECKED);
+}
+
+bool AccessibleObject::isDefault() const
+{
+    return d->registryPrivate->state(*this) & (quint64(1) << ATSPI_STATE_IS_DEFAULT);
+}
+
+bool AccessibleObject::isEditable() const
+{
+    return d->registryPrivate->state(*this) & (quint64(1) << ATSPI_STATE_EDITABLE);
+}
+
+bool AccessibleObject::isExpandable() const
+{
+    return d->registryPrivate->state(*this) & (quint64(1) << ATSPI_STATE_EXPANDABLE);
+}
+
+bool AccessibleObject::isExpanded() const
+{
+    return d->registryPrivate->state(*this) & (quint64(1) << ATSPI_STATE_EXPANDED);
+}
+
+bool AccessibleObject::isFocusable() const
+{
+    return d->registryPrivate->state(*this) & (quint64(1) << ATSPI_STATE_FOCUSABLE);
+}
+
+bool AccessibleObject::isFocused() const
+{
+    return d->registryPrivate->state(*this) & (quint64(1) << ATSPI_STATE_FOCUSED);
+}
+
+bool AccessibleObject::isMultiLine() const
+{
+    return d->registryPrivate->state(*this) & (quint64(1) << ATSPI_STATE_MULTI_LINE);
+}
+
+bool AccessibleObject::isSelectable() const
+{
+    return d->registryPrivate->state(*this) & (quint64(1) << ATSPI_STATE_SELECTABLE);
+}
+
+bool AccessibleObject::isSelected() const
+{
+    return d->registryPrivate->state(*this) & (quint64(1) << ATSPI_STATE_SELECTED);
+}
+
+bool AccessibleObject::isSensitive() const
+{
+    return d->registryPrivate->state(*this) & (quint64(1) << ATSPI_STATE_SENSITIVE);
+}
+
+bool AccessibleObject::isSingleLine() const
+{
+    return d->registryPrivate->state(*this) & (quint64(1) << ATSPI_STATE_SINGLE_LINE);
+}
+
+bool AccessibleObject::isVisible() const
+{
+    return d->registryPrivate->state(*this) & (quint64(1) << ATSPI_STATE_VISIBLE);
+}
+
+bool AccessibleObject::supportsAutocompletion() const
+{
+    return d->registryPrivate->state(*this) & (quint64(1) << ATSPI_STATE_SUPPORTS_AUTOCOMPLETION);
+}
+
+

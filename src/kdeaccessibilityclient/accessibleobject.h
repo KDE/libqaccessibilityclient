@@ -107,8 +107,6 @@ public:
 
     /**
         \brief Returns the role as integer value of this accessible.
-        FIXME: this is currently the ATSPI_ROLE_xxx constant.
-        Either include the atspi-constants.h or figure out what else to do with this.
      */
     AtspiRole role() const;
 
@@ -126,12 +124,51 @@ public:
      */
     QString localizedRoleName() const;
 
-    /**
-        \brief Returns the state as integer value of this accessible.
-        FIXME: this is currently the ATSPI_ROLE_xxx constant.
-        Either include the atspi-constants.h or figure out what else to do with this.
+    // states
+    bool isActive() const;
+    bool isCheckable() const;
+    bool isChecked() const;
+//    bool isDefunct() const;
+    bool isEditable() const;
+    bool isExpandable() const;
+    bool isExpanded() const;
+    bool isFocusable() const;
+    bool isFocused() const;
+    bool isMultiLine() const;
+    bool isSelectable() const;
+    bool isSelected() const;
+    bool isSensitive() const;
+    bool isSingleLine() const;
+
+    /*
+     * \internal
+     * \brief isTransient marks an object as being unreliable in that it can quickly disappear or change
+     *
+     * This is mostly a hint that the object should not be cached.
+     * \return true if the object is transient
      */
-    AtspiStateType state() const;
+//    bool isTransient() const;
+
+    bool isVisible() const;
+
+    /*
+     * \internal
+     * \brief managesDescendants marks an object as being responsible for its children
+     *
+     * This is to notify that this object handles signals for it's children.
+     * The property is typically used for tables and lists or other collection objects.
+     * \return true if the object is transient
+     */
+//    bool managesDescendants() const;
+//    bool isRequired() const;
+//    bool isAnimated() const;
+//    bool isInvalidEntry() const;
+    bool isDefault() const;
+//    bool isVisited() const;
+
+    bool hasSelectableText() const;
+    bool hasToolTip() const;
+    bool supportsAutocompletion() const;
 
 private:
     AccessibleObject(RegistryPrivate *reg, const QString &service, const QString &path);

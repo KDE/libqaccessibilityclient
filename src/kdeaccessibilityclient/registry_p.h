@@ -56,6 +56,7 @@ public:
     AtspiRole role(const AccessibleObject &object) const;
     QString roleName(const AccessibleObject &object) const;
     QString localizedRoleName(const AccessibleObject &object) const;
+    quint64 state(const AccessibleObject &object) const;
 
     QList<AccessibleObject> topLevelAccessibles() const;
     AccessibleObject parentAccessible(const AccessibleObject &object) const;

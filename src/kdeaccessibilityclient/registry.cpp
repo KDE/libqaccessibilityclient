@@ -360,6 +360,22 @@ QString RegistryPrivate::localizedRoleName(const AccessibleObject &object) const
     return reply.value();
 }
 
+quint64 RegistryPrivate::state(const AccessibleObject &object) const
+{
+    QDBusMessage message = QDBusMessage::createMethodCall (
+                object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Accessible"), QLatin1String("GetState"));
+
+    QDBusReply<QList<quint32> > reply = conn.connection().call(message);
+    if (!reply.isValid()) {
+        qWarning() << "Could not access state." << reply.error().message();
+        return 0;
+    }
+    int low = reply.value().at(0);
+    int high = reply.value().at(1);
+    quint64 state = low + ((quint64)high << 32);
+    return state;
+}
+
 QVariant RegistryPrivate::getProperty(const QString &service, const QString &path, const QString &interface, const QString &name) const
 {
     QVariantList args;

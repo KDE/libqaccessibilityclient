@@ -80,6 +80,7 @@ void AccessibilityClientTest::tst_navigation()
     QString desc = "This is a button...";
     button->setAccessibleDescription(desc);
     w.show();
+    button->setFocus();
 
     QTest::qWaitForWindowShown(&w);
 
@@ -105,6 +106,7 @@ void AccessibilityClientTest::tst_navigation()
     QCOMPARE(accW.roleName(), QLatin1String("filler"));
     QCOMPARE(accW.childCount(), 1);
     QCOMPARE(accW.indexInParent(), 0);
+    QVERIFY(accW.isActive());
 
     // Button
     AccessibleObject accButton = accW.child(0);
@@ -138,6 +140,7 @@ void AccessibilityClientTest::tst_navigation()
     QLineEdit *line = new QLineEdit;
     layout->addWidget(line);
     label->setBuddy(line);
+    QApplication::processEvents();
     QCOMPARE(accW.childCount(), 3);
 
     AccessibleObject accLabel = accW.child(1);
@@ -146,6 +149,13 @@ void AccessibilityClientTest::tst_navigation()
     QCOMPARE(accLabel.role(), ATSPI_ROLE_LABEL);
     QCOMPARE(accLabel.roleName(), QLatin1String("label"));
     QCOMPARE(accLabel.indexInParent(), 1);
+    QVERIFY(accLabel.isVisible());
+    QVERIFY(!accLabel.isCheckable());
+    QVERIFY(!accLabel.isChecked());
+    QVERIFY(!accLabel.isFocusable());
+    QVERIFY(!accLabel.isFocused());
+    QEXPECT_FAIL("", "Labels in Qt 4 report themselves as editable.", Continue);
+    QVERIFY(!accLabel.isEditable());
 
     AccessibleObject accLine = accW.child(2);
     QVERIFY(accLine.isValid());
@@ -153,8 +163,25 @@ void AccessibilityClientTest::tst_navigation()
     QCOMPARE(accLine.role(), ATSPI_ROLE_TEXT);
     QCOMPARE(accLine.roleName(), QLatin1String("text"));
     QCOMPARE(accLine.indexInParent(), 2);
+    QVERIFY(accLine.isEditable());
     AccessibleObject parent1 = accLine.parent();
     QCOMPARE(parent1, accW);
+
+    QVERIFY(accLine.isFocusable());
+    QVERIFY(accButton.isFocusable());
+    QVERIFY(accButton.isFocused());
+    QVERIFY(!accLine.isFocused());
+    line->setFocus();
+    QApplication::processEvents();
+    QVERIFY(accLine.isFocused());
+    QVERIFY(!accButton.isFocused());
+
+    label->setVisible(false);
+    line->setVisible(false);
+    QApplication::processEvents();
+    QTest::qWait(1000);
+    QVERIFY(!accLabel.isVisible());
+    QVERIFY(!accLine.isVisible());
 }
 
 void AccessibilityClientTest::tst_focus()
