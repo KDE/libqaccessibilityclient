@@ -28,7 +28,7 @@
 #include <qdebug.h>
 
 #include "kdeaccessibilityclient/accessibleobject.h"
-
+#include "accessibletree.h"
 
 class MainWindow :public KMainWindow
 {
@@ -44,6 +44,8 @@ private Q_SLOTS:
 
 private:
     Ui::MainWindow ui;
+    AccessibleTree *m_model;
+    KAccessibleClient::Registry *m_registry;
 };
 
 #endif

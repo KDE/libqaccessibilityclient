@@ -7,25 +7,42 @@
     <x>0</x>
     <y>0</y>
     <width>681</width>
-    <height>471</height>
+    <height>556</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QHBoxLayout" name="horizontalLayout">
+   <layout class="QVBoxLayout" name="verticalLayout">
     <item>
      <widget class="QSplitter" name="splitter">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
-      <widget class="QTreeView" name="treeView"/>
-      <widget class="QPlainTextEdit" name="plainTextEdit"/>
+      <widget class="QTreeView" name="treeView">
+       <property name="accessibleName">
+        <string>Tree of accessibles</string>
+       </property>
+      </widget>
+      <widget class="QPlainTextEdit" name="plainTextEdit">
+       <property name="accessibleName">
+        <string>Text area</string>
+       </property>
+      </widget>
      </widget>
     </item>
     <item>
      <widget class="QLabel" name="label">
+      <property name="accessibleName">
+       <string>Info label</string>
+      </property>
       <property name="text">
        <string/>
       </property>

@@ -21,6 +21,7 @@
 #include "accessibletree.h"
 
 #include <qdebug.h>
+#include <qstack.h>
 
 using namespace KAccessibleClient;
 
@@ -176,6 +177,7 @@ void AccessibleTree::setRegistry(KAccessibleClient::Registry* registry)
 
 void AccessibleTree::resetModel()
 {
+    qDebug() << "reset model...";
     qDeleteAll(m_apps);
     m_apps.clear();
     if (m_registry) {
@@ -185,6 +187,33 @@ void AccessibleTree::resetModel()
         }
     }
     reset();
+}
+
+QModelIndex AccessibleTree::indexForAccessible(const AccessibleObject& object)
+{
+    //if (object.isValid()) {
+        if (object.parent().isValid()) {
+            QModelIndex parent = indexForAccessible(object.parent());
+            QModelIndex in = index(object.indexInParent(), 0, parent);
+            qDebug() << "indexForAccessible: " << object.name() << data(in).toString()  << " parent: " << data(parent).toString();//" row: " << object.indexInParent() << "parent: " << parent;
+            return in;
+
+        } else {
+            // top level
+            for (int i = 0; i < m_apps.size(); ++i) {
+                if (m_apps.at(i)->acc == object)
+                    return createIndex(i, 0, m_apps.at(i));
+            }
+            // not found? try again...
+            // FIXME
+            resetModel();
+            for (int i = 0; i < m_apps.size(); ++i) {
+                if (m_apps.at(i)->acc == object)
+                    return createIndex(i, 0, m_apps.at(i));
+            }
+        }
+    //}
+    return QModelIndex();
 }
 
 

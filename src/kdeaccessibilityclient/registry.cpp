@@ -22,7 +22,6 @@
 #include "registry_p.h"
 
 
-
 #include <qdbusmessage.h>
 #include <qdbusargument.h>
 #include <qdbusreply.h>
@@ -381,7 +380,7 @@ QVariant RegistryPrivate::getProperty(const QString &service, const QString &pat
 
 void RegistryPrivate::slotStateChanged(const QString &state, int detail1, int /*detail2*/, const QDBusVariant &/*args*/, const QSpiObjectReference &reference)
 {
-    qDebug() << "State changes: " << state;
+    //qDebug() << "State changes: " << state;
     if ((state == QLatin1String("focused")) && (detail1 == 1)) {
         KAccessibleClient::AccessibleObject accessible = accessibleFromPath(reference.service, QDBusContext::message().path());
         emit focusChanged(accessible);

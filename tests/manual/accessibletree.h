@@ -54,6 +54,8 @@ public:
     ~AccessibleTree();
     void setRegistry(KAccessibleClient::Registry *registry);
 
+    QModelIndex indexForAccessible(const KAccessibleClient::AccessibleObject &object);
+
 public Q_SLOTS:
     void resetModel();
 

@@ -35,30 +35,35 @@
 using namespace KAccessibleClient;
 
 MainWindow::MainWindow(QWidget *parent)
-    :KMainWindow(parent)
+    :KMainWindow(parent), m_model(0)
 {
     ui.setupUi(this);
 
-    KAccessibleClient::Registry *reg = new KAccessibleClient::Registry(this);
-    reg->subscribeEventListeners(KAccessibleClient::Registry::Focus);
-    connect(reg, SIGNAL(focusChanged(KAccessibleClient::AccessibleObject)), this, SLOT(focusChanged(KAccessibleClient::AccessibleObject)));
+    m_registry = new KAccessibleClient::Registry(this);
+    connect(m_registry, SIGNAL(focusChanged(KAccessibleClient::AccessibleObject)), this, SLOT(focusChanged(KAccessibleClient::AccessibleObject)));
+    m_registry->subscribeEventListeners(KAccessibleClient::Registry::Focus);
 
-    AccessibleTree *model = new AccessibleTree(this);
-
-    ui.treeView->setModel(model);
-    model->setRegistry(reg);
+    m_model = new AccessibleTree(this);
+    ui.treeView->setModel(m_model);
+    m_model->setRegistry(m_registry);
 
     // The ultimate model verificaton helper :p
-    new ModelTest(model, this);
+    new ModelTest(m_model, this);
 
     connect(ui.treeView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(selectionChanged(QModelIndex,QModelIndex)));
-    connect(ui.action_Reset_tree, SIGNAL(triggered()), model, SLOT(resetModel()));
+    connect(ui.action_Reset_tree, SIGNAL(triggered()), m_model, SLOT(resetModel()));
     ui.action_Reset_tree->setShortcut(QKeySequence(QKeySequence::Refresh));
 }
 
 void MainWindow::focusChanged(const KAccessibleClient::AccessibleObject &object)
 {
     ui.label->setText(i18n("Focus changed to: %1 - %2 (%3)", object.name(), object.roleName(), object.role()));
+
+    QModelIndex index = m_model->indexForAccessible(object);
+    if (index.isValid()) {
+        ui.treeView->scrollTo(index);
+        ui.treeView->selectionModel()->setCurrentIndex(index, QItemSelectionModel::ClearAndSelect);
+    }
 }
 
 void MainWindow::selectionChanged(const QModelIndex& current, const QModelIndex& old)
@@ -66,13 +71,13 @@ void MainWindow::selectionChanged(const QModelIndex& current, const QModelIndex&
     QString text;
 
     if (current.isValid() && current.internalPointer()) {
-        AccessibleObject acc = static_cast<AccessibleWrapper*>(current.internalPointer())->acc;
+        KAccessibleClient::AccessibleObject acc = static_cast<AccessibleWrapper*>(current.internalPointer())->acc;
         text += acc.name() + " (" + acc.description() + ")\n";
         text += " role: " + acc.roleName();
         text += "\n childCount: " + QString::number(acc.childCount());
         text += "\n Checked: " + (acc.isChecked() ? QLatin1String("yes") : QLatin1String("no")) + '\n';
 
-        foreach (const AccessibleObject &child, acc.children()) {
+        foreach (const KAccessibleClient::AccessibleObject &child, acc.children()) {
             text += "\nChild: " + child.name() + " (" + child.roleName() + ")";
         }
     }
