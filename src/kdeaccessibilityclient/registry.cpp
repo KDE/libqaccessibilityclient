@@ -216,17 +216,9 @@ Registry::EventListeners RegistryPrivate::eventListeners() const
 
 AccessibleObject RegistryPrivate::parentAccessible(const AccessibleObject &object) const
 {
-    QDBusMessage message = QDBusMessage::createMethodCall (
-                object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Accessible"), QLatin1String("GetParent"));
+    QVariant parent = getProperty(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Accessible"), QLatin1String("Parent"));
 
-    QDBusReply<QVariant> reply = conn.connection().call(message);
-    if (!reply.isValid()) {
-        qWarning() << "Could not access parent." << reply.error().message();
-        return AccessibleObject(0, QString(), QString());
-    }
-
-    QVariant v = reply.value();
-    const QDBusArgument arg = v.value<QDBusArgument>();
+    const QDBusArgument arg = parent.value<QDBusArgument>();
     QSpiObjectReference ref;
     arg >> ref;
 
@@ -235,15 +227,8 @@ AccessibleObject RegistryPrivate::parentAccessible(const AccessibleObject &objec
 
 int RegistryPrivate::childCount(const AccessibleObject &object) const
 {
-    QDBusMessage message = QDBusMessage::createMethodCall (
-                object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Accessible"), QLatin1String("GetChildCount"));
-
-    QDBusReply<QVariant> reply = conn.connection().call(message);
-    if (!reply.isValid()) {
-        qWarning() << "Could not access childCount." << reply.error().message();
-        return 0;
-    }
-    return reply.value().toInt();
+    QVariant childCount = getProperty(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Accessible"), QLatin1String("ChildCount"));
+    return childCount.toInt();
 }
 
 int RegistryPrivate::indexInParent(const AccessibleObject &object) const
