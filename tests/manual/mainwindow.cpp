@@ -59,10 +59,12 @@ void MainWindow::focusChanged(const KAccessibleClient::AccessibleObject &object)
 {
     ui.label->setText(i18n("Focus changed to: %1 - %2 (%3)", object.name(), object.roleName(), object.role()));
 
-    QModelIndex index = m_model->indexForAccessible(object);
-    if (index.isValid()) {
-        ui.treeView->scrollTo(index);
-        ui.treeView->selectionModel()->setCurrentIndex(index, QItemSelectionModel::ClearAndSelect);
+    if (ui.action_Follow_Focus->isChecked()) {
+        QModelIndex index = m_model->indexForAccessible(object);
+        if (index.isValid()) {
+            ui.treeView->scrollTo(index);
+            ui.treeView->selectionModel()->setCurrentIndex(index, QItemSelectionModel::ClearAndSelect);
+        }
     }
 }
 

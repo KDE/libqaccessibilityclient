@@ -191,7 +191,7 @@ void AccessibleTree::resetModel()
 
 QModelIndex AccessibleTree::indexForAccessible(const AccessibleObject& object)
 {
-    //if (object.isValid()) {
+    if (object.isValid()) {
         if (object.parent().isValid()) {
             QModelIndex parent = indexForAccessible(object.parent());
             QModelIndex in = index(object.indexInParent(), 0, parent);
@@ -212,7 +212,7 @@ QModelIndex AccessibleTree::indexForAccessible(const AccessibleObject& object)
                     return createIndex(i, 0, m_apps.at(i));
             }
         }
-    //}
+    }
     return QModelIndex();
 }
 

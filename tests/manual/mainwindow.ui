@@ -65,12 +65,33 @@
     </property>
     <addaction name="action_Reset_tree"/>
    </widget>
+   <widget class="QMenu" name="menu_Options">
+    <property name="title">
+     <string>&amp;Options</string>
+    </property>
+    <addaction name="action_Follow_Focus"/>
+   </widget>
    <addaction name="menu_Edit"/>
+   <addaction name="menu_Options"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="action_Reset_tree">
    <property name="text">
     <string>&amp;Reset tree</string>
+   </property>
+  </action>
+  <action name="action_Follow_Focus">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Follow Focus</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+F</string>
    </property>
   </action>
  </widget>
