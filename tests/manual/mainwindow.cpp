@@ -20,10 +20,19 @@
 
 #include "mainwindow.h"
 
+#include <qitemselectionmodel.h>
 #include <qplaintextedit.h>
 #include <qstring.h>
+#include <qtreeview.h>
 
 #include "kdeaccessibilityclient/registry.h"
+#include "kdeaccessibilityclient/accessibleobject.h"
+
+#include "accessibletree.h"
+
+#include "tests_auto_modeltest_modeltest.h"
+
+using namespace KAccessibleClient;
 
 MainWindow::MainWindow(QWidget *parent)
     :KMainWindow(parent)
@@ -34,31 +43,42 @@ MainWindow::MainWindow(QWidget *parent)
     reg->subscribeEventListeners(KAccessibleClient::Registry::Focus);
     connect(reg, SIGNAL(focusChanged(KAccessibleClient::AccessibleObject)), this, SLOT(focusChanged(KAccessibleClient::AccessibleObject)));
 
-    listAccessibles();
-}
+    AccessibleTree *model = new AccessibleTree(this);
 
-void MainWindow::listAccessibles()
-{
-    QString accessibles;
+    ui.treeView->setModel(model);
+    model->setRegistry(reg);
 
-    KAccessibleClient::Registry registry;
-    QList<KAccessibleClient::AccessibleObject> apps = registry.applications();
-    accessibles += "Accessible applications:" + QString::number(apps.count()) + '\n';
-    foreach(const KAccessibleClient::AccessibleObject &obj, apps) {
-        accessibles += QString("App: %1  (parent: %2)\n").arg(obj.name(), obj.parent().name());
-        foreach(const KAccessibleClient::AccessibleObject &child, obj.children()) {
-            accessibles += QString(" Window: %1  (parent: %2)\n").arg(child.name(), child.parent().name());
-        }
-        accessibles.append('\n');
-    }
-    ui.plainTextEdit->setReadOnly(true);
-    ui.plainTextEdit->setPlainText(accessibles);
+    // The ultimate model verificaton helper :p
+    new ModelTest(model, this);
+
+    connect(ui.treeView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(selectionChanged(QModelIndex,QModelIndex)));
+    connect(ui.action_Reset_tree, SIGNAL(triggered()), model, SLOT(resetModel()));
+    ui.action_Reset_tree->setShortcut(QKeySequence(QKeySequence::Refresh));
 }
 
 void MainWindow::focusChanged(const KAccessibleClient::AccessibleObject &object)
 {
     ui.label->setText(i18n("Focus changed to: %1 - %2 (%3)", object.name(), object.roleName(), object.role()));
 }
+
+void MainWindow::selectionChanged(const QModelIndex& current, const QModelIndex& old)
+{
+    QString text;
+
+    if (current.isValid() && current.internalPointer()) {
+        AccessibleObject acc = static_cast<AccessibleWrapper*>(current.internalPointer())->acc;
+        text += acc.name() + " (" + acc.description() + ")\n";
+        text += " role: " + acc.roleName();
+        text += "\n childCount: " + QString::number(acc.childCount());
+        text += "\n Checked: " + (acc.isChecked() ? QLatin1String("yes") : QLatin1String("no")) + '\n';
+
+        foreach (const AccessibleObject &child, acc.children()) {
+            text += "\nChild: " + child.name() + " (" + child.roleName() + ")";
+        }
+    }
+    ui.plainTextEdit->setPlainText(text);
+}
+
 
 #include <mainwindow.moc>
 
