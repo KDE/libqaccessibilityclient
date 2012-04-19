@@ -28,6 +28,7 @@
 #include <qboxlayout.h>
 #include <qaccessible.h>
 #include <qdebug.h>
+#include <qprocess.h>
 
 #include "kdeaccessibilityclient/registry.h"
 #include "kdeaccessibilityclient/accessibleobject.h"
@@ -40,11 +41,11 @@ typedef QSharedPointer<QAccessibleInterface> QAIPointer;
 using namespace KAccessibleClient;
 
 struct Event {
-    Event(const AccessibleObject &object)
-        : m_object(object)
+    Event(const AccessibleObject &obj)
+        : object(obj)
     {}
 
-    AccessibleObject m_object;
+    AccessibleObject object;
 };
 
 class EventListener : public QObject
@@ -69,6 +70,9 @@ private Q_SLOTS:
     void tst_application();
     void tst_navigation();
     void tst_focus();
+
+private:
+    Registry registry;
 };
 
 void AccessibilityClientTest::initTestCase()
@@ -95,8 +99,6 @@ AccessibleObject getAppObject(const Registry &r, const QString &appName)
 
 void AccessibilityClientTest::tst_application()
 {
-    Registry r;
-
     QString appName = QLatin1String("Lib KAccessibleClient test");
     qApp->setApplicationName(appName);
     QWidget w;
@@ -105,7 +107,7 @@ void AccessibilityClientTest::tst_application()
 
     AccessibleObject accApp;
     QVERIFY(!accApp.isValid());
-    accApp = getAppObject(r, appName);
+    accApp = getAppObject(registry, appName);
     QVERIFY(accApp.isValid());
     QCOMPARE(accApp.name(), appName);
     QCOMPARE(accApp.childCount(), 1);
@@ -113,8 +115,6 @@ void AccessibilityClientTest::tst_application()
 
 void AccessibilityClientTest::tst_navigation()
 {
-    Registry r;
-
     QString appName = QLatin1String("Lib KAccessibleClient test");
     qApp->setApplicationName(appName);
     QWidget w;
@@ -134,7 +134,7 @@ void AccessibilityClientTest::tst_navigation()
     QTest::qWaitForWindowShown(&w);
 
     // App
-    AccessibleObject accApp = getAppObject(r, appName);
+    AccessibleObject accApp = getAppObject(registry, appName);
     QVERIFY(accApp.isValid());
     QCOMPARE(accApp.name(), appName);
     QCOMPARE(accApp.childCount(), 1);
@@ -232,59 +232,52 @@ void AccessibilityClientTest::tst_navigation()
 
 void AccessibilityClientTest::tst_focus()
 {
-//    Registry *r = new Registry();
-//    r->subscribeEventListeners(Registry::Focus);
-//    EventListener *listener = new EventListener;
-//    connect(r, SIGNAL(focusChanged(KAccessibleClient::AccessibleObject)), listener, SLOT(focus(KAccessibleClient::AccessibleObject)));
+    registry.subscribeEventListeners(Registry::Focus);
+    EventListener *listener = new EventListener;
+    connect(&registry, SIGNAL(focusChanged(KAccessibleClient::AccessibleObject)), listener, SLOT(focus(KAccessibleClient::AccessibleObject)));
 
-//    {
-//    QWidget *w = new QWidget();
-//    QVBoxLayout *l = new QVBoxLayout();
-//    w->setLayout(l);
-//    QPushButton *button = new QPushButton();
-//    button->setText("Button 1");
-//    QPushButton *button2 = new QPushButton();
-//    button2->setText("Button 2");
-//    l->addWidget(button);
-//    l->addWidget(button2);
+    QProcess proc;
+    // start peer server
+    #ifdef Q_OS_WIN
+    proc.start("simplewidgetapp");
+    #else
+    proc.start("./simplewidgetapp");
+    #endif
+    QVERIFY(proc.waitForStarted());
 
-//    QAccessibleInterface *iface = QAccessible::queryAccessibleInterface(button);
-//    qDebug() << "Button: " << iface->text(QAccessible::Name, 0);
-//    delete iface;
+    AccessibleObject remoteApp;
+    QString appName = QLatin1String("LibKdeAccessibilityClient Simple Widget App");
+    // startup and init takes some time, give up to two seconds and a few dbus calls
+    int attempts = 0;
+    while (attempts < 20) {
+        ++attempts;
+        QTest::qWait(100);
+        remoteApp = getAppObject(registry, appName);
+        if (remoteApp.isValid())
+            break;
+    }
 
-//    button->setText(QLatin1String("Button 1"));
-//    button2->setText(QLatin1String("Button 2"));
+    // waiting for two events, may take some time
+    for (int i = 0; i < 20; ++i) {
+        QTest::qWait(10);
+        if (listener->focusEvents.size() >= 2)
+            break;
+    }
 
+    QVERIFY(remoteApp.isValid());
+    QCOMPARE(remoteApp.name(), appName);
 
-//    w->show();
-//    QTest::qWaitForWindowShown(w);
+    AccessibleObject window = remoteApp.child(0);
+    AccessibleObject button1 = window.child(0);
+    AccessibleObject button2 = window.child(1);
+    QCOMPARE(listener->focusEvents.size(), 2);
+    QCOMPARE(listener->focusEvents.at(0).object, button2);
+    QCOMPARE(listener->focusEvents.at(1).object, button1);
 
-//    button->setFocus(Qt::TabFocusReason);
-//    QVERIFY(button->hasFocus());
+    // use action interface to select the first button again and check that we get an event
 
-//    Q_ASSERT(w->isActiveWindow());
-
-//    Q_ASSERT(button->isActiveWindow());
-//    Q_ASSERT(w->isActiveWindow());
-
-//    button2->setFocus(Qt::TabFocusReason);
-//    QVERIFY(button2->hasFocus());
-//    button->setFocus(Qt::TabFocusReason);
-//    QVERIFY(button->hasFocus());
-//    button2->setFocus(Qt::TabFocusReason);
-//    QVERIFY(button2->hasFocus());
-//    Q_ASSERT(w->isActiveWindow());
-
-//    Q_ASSERT(button2->isActiveWindow());
-
-//    QTest::qWait(500);
-//    }
-
-
-//    qDebug() << "events: " << listener->focusEvents.size();
-//    QCOMPARE(listener->focusEvents.size(), 1);
-//    delete listener;
-//    delete r;
+    delete listener;
+    proc.terminate();
 }
 
 

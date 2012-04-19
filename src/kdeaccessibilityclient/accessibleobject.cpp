@@ -209,4 +209,15 @@ bool AccessibleObject::supportsAutocompletion() const
     return d->registryPrivate->state(*this) & (quint64(1) << ATSPI_STATE_SUPPORTS_AUTOCOMPLETION);
 }
 
+#ifndef QT_NO_DEBUG_STREAM
+LIBKDEACCESSIBILITYCLIENT_EXPORT QDebug KAccessibleClient::operator<<(QDebug d, const AccessibleObject &object)
+{
+    d.nospace();
+    d << "AccessibleObject("; //d:" << hex << (void *) object.d << dec;
+    d << " service=" << object.d->service;
+    d << " path=" << object.d->path;
+    d << ")";
+    return d.space();
+}
+#endif
 

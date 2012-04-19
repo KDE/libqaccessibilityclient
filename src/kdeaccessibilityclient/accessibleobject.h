@@ -181,8 +181,12 @@ private:
 
     friend class RegistryPrivate;
     friend class AtSpiDBus;
+    friend QDebug KAccessibleClient::operator<<(QDebug, const AccessibleObject &);
 };
 
+#ifndef QT_NO_DEBUG_STREAM
+LIBKDEACCESSIBILITYCLIENT_EXPORT QDebug operator<<(QDebug, const AccessibleObject &);
+#endif
 
 }
 
