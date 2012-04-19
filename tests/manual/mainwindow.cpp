@@ -68,7 +68,7 @@ void MainWindow::focusChanged(const KAccessibleClient::AccessibleObject &object)
     }
 }
 
-void MainWindow::selectionChanged(const QModelIndex& current, const QModelIndex& old)
+void MainWindow::selectionChanged(const QModelIndex& current, const QModelIndex&)
 {
     QString text;
 

@@ -39,7 +39,7 @@ public:
     void listAccessibles();
 
 private Q_SLOTS:
-    void selectionChanged(const QModelIndex &current, const QModelIndex &old);
+    void selectionChanged(const QModelIndex &current, const QModelIndex &);
     void focusChanged(const KAccessibleClient::AccessibleObject &object);
 
 private:
