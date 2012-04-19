@@ -237,6 +237,11 @@ int RegistryPrivate::indexInParent(const AccessibleObject &object) const
 
     QDBusReply<int> reply = conn.connection().call(message);
     if (!reply.isValid()) {
+        QDBusReply<uint> reply2 = conn.connection().call(message);
+        if (reply2.isValid()) {
+            qWarning() << "Found old api returning uint in GetIndexInParent." << reply.error().message();
+            return static_cast<int>(reply.value());
+        }
         qWarning() << "Could not access index in parent." << reply.error().message();
         return -1;
     }

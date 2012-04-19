@@ -35,6 +35,8 @@
 #include "atspi/dbusconnection.h"
 #include "atspi/atspi-constants.h"
 
+typedef QSharedPointer<QAccessibleInterface> QAIPointer;
+
 using namespace KAccessibleClient;
 
 struct Event {
@@ -62,12 +64,59 @@ class AccessibilityClientTest :public QObject
     Q_OBJECT
 
 private Q_SLOTS:
+    void initTestCase();
+
+    void tst_application();
     void tst_navigation();
     void tst_focus();
 };
 
+void AccessibilityClientTest::initTestCase()
+{
+    qDebug() << "Starting test.";
+    if (qgetenv("QT_ACCESSIBILITY") != QByteArray("1"))
+        qWarning() << "QT_ACCESSIBILITY=1 not found, this leads to failing tests with Qt 4";
+}
+
+AccessibleObject getAppObject(const Registry &r, const QString &appName)
+{
+    AccessibleObject accApp;
+
+    QApplication::processEvents();
+    QList<AccessibleObject> apps = r.applications();
+    foreach (const AccessibleObject &app, apps) {
+        if (app.name() == appName) {
+            accApp = app;
+            break;
+        }
+    }
+    return accApp;
+}
+
+void AccessibilityClientTest::tst_application()
+{
+    Registry r;
+
+    QString appName = QLatin1String("Lib KAccessibleClient test");
+    qApp->setApplicationName(appName);
+    QWidget w;
+    w.setAccessibleName("Foobar 99");
+    w.show();
+
+    AccessibleObject accApp;
+    QVERIFY(!accApp.isValid());
+    accApp = getAppObject(r, appName);
+    QVERIFY(accApp.isValid());
+    QCOMPARE(accApp.name(), appName);
+    QCOMPARE(accApp.childCount(), 1);
+}
+
 void AccessibilityClientTest::tst_navigation()
 {
+    Registry r;
+
+    QString appName = QLatin1String("Lib KAccessibleClient test");
+    qApp->setApplicationName(appName);
     QWidget w;
     w.setAccessibleName("Root Widget");
     w.setAccessibleDescription("This is a useless widget");
@@ -84,14 +133,10 @@ void AccessibilityClientTest::tst_navigation()
 
     QTest::qWaitForWindowShown(&w);
 
-    Registry r;
-
     // App
-    QString appname = QLatin1String("Lib KAccessibleClient test");
-    qApp->setApplicationName(appname);
-    AccessibleObject accApp = r.applications().last();
+    AccessibleObject accApp = getAppObject(r, appName);
     QVERIFY(accApp.isValid());
-    QCOMPARE(accApp.name(), appname);
+    QCOMPARE(accApp.name(), appName);
     QCOMPARE(accApp.childCount(), 1);
 
     // What should this return?
@@ -100,6 +145,7 @@ void AccessibilityClientTest::tst_navigation()
     // Root widget
     AccessibleObject accW = accApp.child(0);
     QVERIFY(accW.isValid());
+    qDebug() << "NAME: " << accW.name();
     QCOMPARE(accW.name(), w.accessibleName());
     QCOMPARE(accW.description(), w.accessibleDescription());
     QCOMPARE(accW.role(), ATSPI_ROLE_FILLER);

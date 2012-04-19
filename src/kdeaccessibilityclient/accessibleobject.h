@@ -42,6 +42,11 @@ class LIBKDEACCESSIBILITYCLIENT_EXPORT AccessibleObject
 {
 public:
     /**
+        \brief Construct an invalid AccessibleObject.
+     */
+    AccessibleObject();
+
+    /**
         \brief Copy constructor.
      */
     AccessibleObject(const AccessibleObject &other);

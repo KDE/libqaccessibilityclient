@@ -28,6 +28,11 @@
 
 using namespace KAccessibleClient;
 
+AccessibleObject::AccessibleObject()
+    :d(0)
+{
+}
+
 AccessibleObject::AccessibleObject(RegistryPrivate *registryPrivate, const QString &service, const QString &path)
     :d(new AccessibleObjectPrivate(registryPrivate, service, path))
 {
@@ -44,10 +49,10 @@ AccessibleObject::~AccessibleObject()
 
 bool AccessibleObject::isValid() const
 {
-    return d->registryPrivate
-            && (!d->service.isEmpty())
-            && (!d->path.isEmpty())
-            && (d->path != QLatin1String("/org/a11y/atspi/null"));
+    return d && d->registryPrivate
+             && (!d->service.isEmpty())
+             && (!d->path.isEmpty())
+             && (d->path != QLatin1String("/org/a11y/atspi/null"));
 }
 
 AccessibleObject &AccessibleObject::operator=(const AccessibleObject &other)
