@@ -30,6 +30,9 @@
        <property name="accessibleName">
         <string>Tree of accessibles</string>
        </property>
+       <property name="accessibleDescription">
+        <string>Displays a hierachical tree of accessible objects</string>
+       </property>
       </widget>
       <widget class="QPlainTextEdit" name="plainTextEdit">
        <property name="accessibleName">
@@ -56,7 +59,7 @@
      <x>0</x>
      <y>0</y>
      <width>681</width>
-     <height>21</height>
+     <height>29</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_Edit">
