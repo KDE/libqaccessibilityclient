@@ -1,9 +1,16 @@
+include_directories(
+    ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR}
+    ${CMAKE_SOURCE_DIR}/src
+)
 
 add_definitions(-DQT_NO_CAST_FROM_ASCII -DQT_NO_CAST_TO_ASCII)
+add_definitions(-DLIBKDEACCESSIBILITYCLIENT_LIBRARY)
 
 set(LibKdeAccessibilityClient_SRCS
     kdeaccessibilityclient/accessibleobject.cpp
     kdeaccessibilityclient/registry.cpp
+    kdeaccessibilityclient/registry_p.cpp
 )
 
 set(LibKdeAccessibilityClientPrivate_SRCS
@@ -11,7 +18,7 @@ set(LibKdeAccessibilityClientPrivate_SRCS
     atspi/qt-atspi.cpp
 )
 
-kde4_add_library(kdeaccessibilityclient SHARED ${LibKdeAccessibilityClient_SRCS} ${LibKdeAccessibilityClientPrivate_SRCS})
+add_library(kdeaccessibilityclient SHARED ${LibKdeAccessibilityClient_SRCS} ${LibKdeAccessibilityClientPrivate_SRCS})
 
 target_link_libraries(kdeaccessibilityclient ${QT_QTCORE_LIBRARY} ${QT_QTDBUS_LIBRARY})
 

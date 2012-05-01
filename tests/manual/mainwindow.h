@@ -24,13 +24,13 @@
 
 #include "ui_mainwindow.h"
 
-#include <kmainwindow.h>
+#include <qmainwindow.h>
 #include <qdebug.h>
 
 #include "kdeaccessibilityclient/accessibleobject.h"
 #include "accessibletree.h"
 
-class MainWindow :public KMainWindow
+class MainWindow :public QMainWindow
 {
     Q_OBJECT
 

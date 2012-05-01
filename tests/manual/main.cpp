@@ -18,22 +18,13 @@
     License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <kapplication.h>
-#include <kaboutdata.h>
-#include <kcmdlineargs.h>
+#include <QApplication>
 
 #include "mainwindow.h"
 
 int main(int argc, char** argv)
 {
-    KAboutData about("LibKAccessibilityClient",
-                     "l10n-cat",
-                     ki18n("KAccessibilityClient"),
-                     "0.0.1-example",
-                     ki18n("An accessibility testing app"),
-                     KAboutData::License_LGPL);
-    KCmdLineArgs::init(argc, argv, &about);
-    KApplication app;
+    QApplication app(argc, argv);
 
     MainWindow *window = new MainWindow;
     window->show();

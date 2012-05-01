@@ -35,7 +35,7 @@
 using namespace KAccessibleClient;
 
 MainWindow::MainWindow(QWidget *parent)
-    :KMainWindow(parent), m_model(0)
+    : QMainWindow(parent), m_model(0)
 {
     ui.setupUi(this);
 
@@ -57,7 +57,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 void MainWindow::focusChanged(const KAccessibleClient::AccessibleObject &object)
 {
-    ui.label->setText(i18n("Focus changed to: %1 - %2 (%3)", object.name(), object.roleName(), object.role()));
+    ui.label->setText(tr("Focus changed to: %1 - %2 (%3)").arg(object.name()).arg(object.roleName()).arg(object.role()));
 
     if (ui.action_Follow_Focus->isChecked()) {
         QModelIndex index = m_model->indexForAccessible(object);

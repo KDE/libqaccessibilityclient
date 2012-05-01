@@ -18,7 +18,6 @@
     License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#define QT_GUI_LIB
 #include <qtest.h>
 
 #include <qmainwindow.h>
@@ -30,6 +29,7 @@
 #include <qdebug.h>
 #include <qprocess.h>
 
+#include "kdeaccessibilityclient/libkdeaccessibilityclient_export.h"
 #include "kdeaccessibilityclient/registry.h"
 #include "kdeaccessibilityclient/accessibleobject.h"
 
