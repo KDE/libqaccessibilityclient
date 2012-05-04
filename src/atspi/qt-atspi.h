@@ -51,6 +51,15 @@ struct QSpiObjectReference
 
 typedef QList<QSpiObjectReference> QSpiObjectReferenceList;
 
+struct QSpiAction
+{
+    QString name;
+    QString description;
+    QString keyBinding;
+};
+
+typedef QList <QSpiAction> QSpiActionArray;
+
 /**
     \internal
  */
@@ -61,9 +70,21 @@ QDBusArgument &operator<<(QDBusArgument &argument, const QSpiObjectReference &ad
  */
 const QDBusArgument &operator>>(const QDBusArgument &argument, QSpiObjectReference &address);
 
+/**
+    \internal
+ */
+QDBusArgument &operator<<(QDBusArgument &argument, const QSpiAction &address);
+
+/**
+    \internal
+ */
+const QDBusArgument &operator>>(const QDBusArgument &argument, QSpiAction &address);
+
 }
 
 Q_DECLARE_METATYPE(KAccessibleClient::QSpiObjectReference);
 Q_DECLARE_METATYPE(KAccessibleClient::QSpiObjectReferenceList);
+Q_DECLARE_METATYPE(KAccessibleClient::QSpiAction)
+Q_DECLARE_METATYPE(KAccessibleClient::QSpiActionArray)
 
 #endif

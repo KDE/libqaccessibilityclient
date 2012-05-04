@@ -26,6 +26,7 @@
 #include <qobject.h>
 #include <qdbuscontext.h>
 #include <qdbusargument.h>
+#include <qsignalmapper.h>
 
 #include "atspi/dbusconnection.h"
 #include "kdeaccessibilityclient/registry.h"
@@ -41,10 +42,7 @@ class RegistryPrivate :public QObject, public QDBusContext
 {
     Q_OBJECT
 public:
-    RegistryPrivate(Registry *qq)
-        :q(qq)
-    {
-    }
+    RegistryPrivate(Registry *qq);
 
     void init();
 
@@ -57,6 +55,8 @@ public:
     QString roleName(const AccessibleObject &object) const;
     QString localizedRoleName(const AccessibleObject &object) const;
     quint64 state(const AccessibleObject &object) const;
+
+    QList<QAction*> actions(const AccessibleObject &object);
 
     QList<AccessibleObject> topLevelAccessibles() const;
     AccessibleObject parentAccessible(const AccessibleObject &object) const;
@@ -76,11 +76,13 @@ private Q_SLOTS:
     void slotWindowActivated(const QString &change, int detail1, int detail2, const QDBusVariant &args, const QSpiObjectReference &reference);
     void slotWindowCreated(const QString &change, int detail1, int detail2, const QDBusVariant &args, const QSpiObjectReference &reference);
     AccessibleObject accessibleFromPath(const QString &service, const QString &path) const;
+    void actionTriggered(const QString &action);
 
 private:
     QVariant getProperty ( const QString &service, const QString &path, const QString &interface, const QString &name ) const;
 
     DBusConnection conn;
+    QSignalMapper m_actionMapper;
     Registry *q;
 };
 

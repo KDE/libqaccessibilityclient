@@ -23,6 +23,7 @@
 
 #include <qlist.h>
 #include <qshareddata.h>
+#include <qaction.h>
 
 #include <atspi/atspi-constants.h>
 
@@ -128,6 +129,13 @@ public:
         This name is localized and can be presented to the user.
      */
     QString localizedRoleName() const;
+
+    /**
+        \brief Returns a list of actions supported by this accessible.
+
+        Just trigger() the action to execute the underlying method at the accessible.
+     */
+    QList<QAction*> actions() const;
 
     // states
     bool isActive() const;

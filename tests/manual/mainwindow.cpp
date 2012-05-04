@@ -45,6 +45,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     m_model = new AccessibleTree(this);
     ui.treeView->setModel(m_model);
+    ui.treeView->setContextMenuPolicy(Qt::ActionsContextMenu);
     m_model->setRegistry(m_registry);
 
     // The ultimate model verificaton helper :p
@@ -72,17 +73,26 @@ void MainWindow::selectionChanged(const QModelIndex& current, const QModelIndex&
 {
     QString text;
 
+    while(!actions().isEmpty()) {
+        ui.treeView->removeAction(actions().first());
+    }
+
     if (current.isValid() && current.internalPointer()) {
         KAccessibleClient::AccessibleObject acc = static_cast<AccessibleWrapper*>(current.internalPointer())->acc;
         text += acc.name() + " (" + acc.description() + ")\n";
-        text += " role: " + acc.roleName();
-        text += "\n childCount: " + QString::number(acc.childCount());
-        text += "\n Checked: " + (acc.isChecked() ? QLatin1String("yes") : QLatin1String("no")) + '\n';
+        text += "role: " + acc.roleName() + "\n";
+        text += "checked: " + (acc.isChecked() ? QLatin1String("yes") : QLatin1String("no")) + '\n';
 
+        text += "\nchildCount: " + QString::number(acc.childCount()) + "\n";
         foreach (const KAccessibleClient::AccessibleObject &child, acc.children()) {
-            text += "\nChild: " + child.name() + " (" + child.roleName() + ")";
+            text += "child: " + child.name() + " (" + child.roleName() + ")\n";
+        }
+
+        Q_FOREACH(QAction *a, acc.actions()) {
+            ui.treeView->insertAction(0, a);
         }
     }
+
     ui.plainTextEdit->setPlainText(text);
 }
 

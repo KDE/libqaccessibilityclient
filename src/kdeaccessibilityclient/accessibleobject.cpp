@@ -116,6 +116,11 @@ QString AccessibleObject::localizedRoleName() const
     return d->registryPrivate->localizedRoleName(*this);
 }
 
+QList<QAction*> AccessibleObject::actions() const
+{
+    return d->registryPrivate->actions(*this);
+}
+
 bool AccessibleObject::hasSelectableText() const
 {
     return d->registryPrivate->state(*this) & (quint64(1) << ATSPI_STATE_SELECTABLE_TEXT);

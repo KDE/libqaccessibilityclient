@@ -38,6 +38,12 @@
        <property name="accessibleName">
         <string>Text area</string>
        </property>
+       <property name="lineWrapMode">
+        <enum>QPlainTextEdit::NoWrap</enum>
+       </property>
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
       </widget>
      </widget>
     </item>

@@ -34,6 +34,12 @@ void registerDBusTypes()
 
   qRegisterMetaType<QSpiObjectReferenceList>();
   qDBusRegisterMetaType<QSpiObjectReferenceList>();
+
+  qRegisterMetaType<QSpiAction>();
+  qDBusRegisterMetaType<QSpiAction>();
+
+  qRegisterMetaType<QSpiActionArray>();
+  qDBusRegisterMetaType<QSpiActionArray>();
 }
 
 /* QSpiObjectReference */
@@ -53,6 +59,26 @@ const QDBusArgument &operator>>(const QDBusArgument &argument, KAccessibleClient
     argument.beginStructure();
     argument >> address.service;
     argument >> address.path;
+    argument.endStructure();
+    return argument;
+}
+
+QDBusArgument &operator<<(QDBusArgument &argument, const KAccessibleClient::QSpiAction &action)
+{
+    argument.beginStructure();
+    argument << action.name;
+    argument << action.description;
+    argument << action.keyBinding;
+    argument.endStructure();
+    return argument;
+}
+
+const QDBusArgument &operator>>(const QDBusArgument &argument, KAccessibleClient::QSpiAction &action)
+{
+    argument.beginStructure();
+    argument >> action.name;
+    argument >> action.description;
+    argument >> action.keyBinding;
     argument.endStructure();
     return argument;
 }

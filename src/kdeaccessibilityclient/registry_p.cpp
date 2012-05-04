@@ -79,6 +79,12 @@
 
 using namespace KAccessibleClient;
 
+RegistryPrivate::RegistryPrivate(Registry *qq)
+    :q(qq)
+{
+    connect(&m_actionMapper, SIGNAL(mapped(QString)), this, SLOT(actionTriggered(QString)));
+}
+
 void RegistryPrivate::init()
 {
 }
@@ -331,6 +337,62 @@ quint64 RegistryPrivate::state(const AccessibleObject &object) const
     int high = reply.value().at(1);
     quint64 state = low + ((quint64)high << 32);
     return state;
+}
+
+QList<QAction*> RegistryPrivate::actions(const AccessibleObject &object)
+{
+    QDBusMessage message = QDBusMessage::createMethodCall (
+                object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Action"), QLatin1String("GetActions"));
+
+    QDBusReply<QSpiActionArray> reply = conn.connection().call(message);
+    if (!reply.isValid()) {
+        qWarning() << "Could not access actions." << reply.error().message();
+        return QList<QAction*>();
+    }
+
+    QSpiActionArray actionArray = reply.value();
+    QList<QAction*> list;
+    for(int i = 0; i < actionArray.count(); ++i) {
+        const QSpiAction &a = actionArray[i];
+        QAction *action = new QAction(this);
+        //action->setText(QString(QLatin1String("%1 (%2)")).arg(a.name).arg(a.description));
+        action->setText(a.name);
+        action->setWhatsThis(a.description);
+        QKeySequence shortcut(a.keyBinding);
+        action->setShortcut(shortcut);
+        m_actionMapper.setMapping(action, QString(QLatin1String("%1;%2;%3")).arg(object.d->service).arg(object.d->path).arg(i));
+        connect(action, SIGNAL(triggered()), &m_actionMapper, SLOT(map()));
+        list.append(action);
+    }
+    return list;
+}
+
+void RegistryPrivate::actionTriggered(const QString &action)
+{
+    QStringList actionParts = action.split(QLatin1Char(';'));
+    Q_ASSERT(actionParts.count() == 3);
+    QString service = actionParts[0];
+    QString path = actionParts[1];
+    int index = actionParts[2].toInt();
+
+    QDBusMessage message = QDBusMessage::createMethodCall (
+                service, path, QLatin1String("org.a11y.atspi.Action"), QLatin1String("DoAction"));
+
+    QVariantList args;
+    args << index;
+    message.setArguments(args);
+
+    QDBusReply<bool> reply = conn.connection().call(message);
+    if (!reply.isValid()) {
+        qWarning() << "Could not execute action=" << action << reply.error().message();
+        return;
+    }
+
+    if (reply.value()) {
+        qDebug() << "Successful executed action=" << action;
+    } else {
+        qWarning() << "Failed to execute action=" << action;
+    }
 }
 
 QVariant RegistryPrivate::getProperty(const QString &service, const QString &path, const QString &interface, const QString &name) const
