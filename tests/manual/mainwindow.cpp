@@ -95,7 +95,3 @@ void MainWindow::selectionChanged(const QModelIndex& current, const QModelIndex&
 
     ui.plainTextEdit->setPlainText(text);
 }
-
-
-#include <mainwindow.moc>
-
