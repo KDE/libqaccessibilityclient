@@ -55,7 +55,7 @@ public:
     QString roleName(const AccessibleObject &object) const;
     QString localizedRoleName(const AccessibleObject &object) const;
     quint64 state(const AccessibleObject &object) const;
-
+    QRect boundingRect(const AccessibleObject &object) const;
     QList<QAction*> actions(const AccessibleObject &object);
 
     QList<AccessibleObject> topLevelAccessibles() const;

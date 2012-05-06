@@ -131,6 +131,13 @@ public:
     QString localizedRoleName() const;
 
     /**
+        \brief Returns a bounding rectangle for the accessible.
+
+        It returns a QRect that bounds the accessible. This can be used to get the focus coordinates.
+    */
+    QRect boundingRect() const;
+
+    /**
         \brief Returns a list of actions supported by this accessible.
 
         Just trigger() the action to execute the underlying method at the accessible.

@@ -116,6 +116,11 @@ QString AccessibleObject::localizedRoleName() const
     return d->registryPrivate->localizedRoleName(*this);
 }
 
+QRect AccessibleObject::boundingRect() const
+{
+    return d->registryPrivate->boundingRect(*this);
+}
+
 QList<QAction*> AccessibleObject::actions() const
 {
     return d->registryPrivate->actions(*this);
