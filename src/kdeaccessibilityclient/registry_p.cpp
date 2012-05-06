@@ -350,12 +350,34 @@ QRect RegistryPrivate::boundingRect(const AccessibleObject &object) const
 
     QDBusReply< QList<quint32> > reply = conn.connection().call(message);
     if(!reply.isValid()){
-        qWarning() << "Could not get extents" << reply.error().message();
+        qWarning() << "Could not get extents." << reply.error().message();
         return QRect();
     }
 
     return QRect( reply.value().value(0), reply.value().value(1), reply.value().value(2), reply.value().value(3) );
 }
+
+QRect RegistryPrivate::characterRect(const AccessibleObject &object) const
+{
+    QDBusMessage message = QDBusMessage::createMethodCall(
+            object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Text"),
+                QLatin1String("GetCharacterExtents"));
+
+    QVariantList args;
+    quint32 coords = ATSPI_COORD_TYPE_SCREEN;
+    args << 0;
+    args << coords;
+    message.setArguments(args);
+
+    QDBusReply< QList<quint32> > reply = conn.connection().call(message);
+    if(reply.isValid()){
+        qWarning() << "Could not get Character Extents. " << reply.error().message();
+        return QRect();
+    }
+
+    return QRect( reply.value().value(0), reply.value().value(1), reply.value().value(2), reply.value().value(3) );
+}
+
 
 QList<QAction*> RegistryPrivate::actions(const AccessibleObject &object)
 {

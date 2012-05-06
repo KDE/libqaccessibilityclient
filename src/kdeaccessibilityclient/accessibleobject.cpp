@@ -121,6 +121,11 @@ QRect AccessibleObject::boundingRect() const
     return d->registryPrivate->boundingRect(*this);
 }
 
+QRect AccessibleObject::characterRect() const
+{
+    return d->registryPrivate->characterRect(*this);
+}
+
 QList<QAction*> AccessibleObject::actions() const
 {
     return d->registryPrivate->actions(*this);

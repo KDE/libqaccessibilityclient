@@ -134,8 +134,20 @@ public:
         \brief Returns a bounding rectangle for the accessible.
 
         It returns a QRect that bounds the accessible. This can be used to get the focus coordinates.
+
+        \return QRect that bounds the accessible.
     */
     QRect boundingRect() const;
+
+    /**
+        \brief Returns a bounding rectangle for the characters present in the accessible.
+
+        boundingRect might give a large rectangle for a large text area that has little text.
+        This function returns a bounding QRect for the characters present in the text area.
+
+        \return QRect that bounds the text in an accessible.
+    */
+    QRect characterRect() const;
 
     /**
         \brief Returns a list of actions supported by this accessible.

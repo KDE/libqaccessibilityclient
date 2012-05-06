@@ -90,8 +90,12 @@ void MainWindow::selectionChanged(const QModelIndex& current, const QModelIndex&
         }
 
         QRect rect = acc.boundingRect();
-        text += "\nCurrent Focus Coords: ( " + QString::number(rect.x()+rect.width()/2,'g',1);
-        text += " , " + QString::number(rect.y()+rect.height()/2,'g',1) + " )\n";
+        text += "\nCurrent Focus Coords: ( " + QString::number(rect.x()+rect.width()/2);
+        text += " , " + QString::number(rect.y()+rect.height()/2) + " )\n";
+
+        rect = acc.characterRect();
+        text += "\nCurrent Text Focus: ( " + QString::number(rect.x()+rect.width()/2);
+        text += " , " + QString::number(rect.y()+rect.height()/2) + " )\n";
     }
 
     ui.plainTextEdit->setPlainText(text);
