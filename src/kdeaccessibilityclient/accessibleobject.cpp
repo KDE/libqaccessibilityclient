@@ -126,6 +126,11 @@ QRect AccessibleObject::characterRect() const
     return d->registryPrivate->characterRect(*this);
 }
 
+QStringList AccessibleObject::supportedInterfaces() const
+{
+    return d->registryPrivate->supportedInterfaces(*this);
+}
+
 QList<QAction*> AccessibleObject::actions() const
 {
     return d->registryPrivate->actions(*this);

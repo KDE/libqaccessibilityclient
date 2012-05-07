@@ -361,7 +361,7 @@ QRect RegistryPrivate::characterRect(const AccessibleObject &object) const
 {
     QDBusMessage message = QDBusMessage::createMethodCall(
             object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Text"),
-                QLatin1String("GetCharacterExtents"));
+                    QLatin1String("GetCharacterExtents"));
 
     QVariantList args;
     quint32 coords = ATSPI_COORD_TYPE_SCREEN;
@@ -370,12 +370,27 @@ QRect RegistryPrivate::characterRect(const AccessibleObject &object) const
     message.setArguments(args);
 
     QDBusReply< QList<quint32> > reply = conn.connection().call(message);
-    if(reply.isValid()){
+    if(!reply.isValid()){
         qWarning() << "Could not get Character Extents. " << reply.error().message();
         return QRect();
     }
 
     return QRect( reply.value().value(0), reply.value().value(1), reply.value().value(2), reply.value().value(3) );
+}
+
+QStringList RegistryPrivate::supportedInterfaces(const AccessibleObject &object) const
+{
+    QDBusMessage message = QDBusMessage::createMethodCall(
+            object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Accessible"),
+                    QLatin1String("GetInterfaces"));
+
+    QDBusReply<QStringList > reply = conn.connection().call(message);
+    if(!reply.isValid()){
+        qWarning() << "Could not get Interfaces. " << reply.error().message();
+        return QStringList();
+    }
+
+    return reply.value();
 }
 
 

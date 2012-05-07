@@ -150,6 +150,17 @@ public:
     QRect characterRect() const;
 
     /**
+        \brief Returns List of interfaces supported by the accessible.
+
+        This function provides a list of accessibile interfaces that are implemented
+        by an accessible object. This can be used to avoid calling functions that
+        are not supported by the accessible.
+
+        \return QStringList that contains list of supported interfaces
+    */
+    QStringList supportedInterfaces() const;
+
+    /**
         \brief Returns a list of actions supported by this accessible.
 
         Just trigger() the action to execute the underlying method at the accessible.

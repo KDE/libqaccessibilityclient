@@ -96,6 +96,18 @@ void MainWindow::selectionChanged(const QModelIndex& current, const QModelIndex&
         rect = acc.characterRect();
         text += "\nCurrent Text Focus: ( " + QString::number(rect.x()+rect.width()/2);
         text += " , " + QString::number(rect.y()+rect.height()/2) + " )\n";
+
+        QStringList interfaces = acc.supportedInterfaces();
+        text += "\nImplements Component Interface: ";
+        text += QString(interfaces.contains("Component") ? "True" : "False") + "\n";
+        text += "\nImplements Text Interface: ";
+        text += QString(interfaces.contains("Text") ? "True" : "False") + "\n";
+        text += "\nImplements Action Interface: ";
+        text += QString(interfaces.contains("Action") ? "True" : "False") + "\n";
+
+        text += "\nList of Interfaces:-";
+        for (int i=0 ; i<interfaces.size() ; ++i)
+            text += "\n\t" + interfaces.at(i);
     }
 
     ui.plainTextEdit->setPlainText(text);
