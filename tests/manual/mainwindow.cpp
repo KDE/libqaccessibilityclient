@@ -99,11 +99,11 @@ void MainWindow::selectionChanged(const QModelIndex& current, const QModelIndex&
 
         QStringList interfaces = acc.supportedInterfaces();
         text += "\nImplements Component Interface: ";
-        text += QString(interfaces.contains("Component") ? "True" : "False") + "\n";
+        text += QString(interfaces.contains("org.a11y.atspi.Component") ? "True" : "False") + "\n";
         text += "\nImplements Text Interface: ";
-        text += QString(interfaces.contains("Text") ? "True" : "False") + "\n";
+        text += QString(interfaces.contains("org.a11y.atspi.Text") ? "True" : "False") + "\n";
         text += "\nImplements Action Interface: ";
-        text += QString(interfaces.contains("Action") ? "True" : "False") + "\n";
+        text += QString(interfaces.contains("org.a11y.atspi.Action") ? "True" : "False") + "\n";
 
         text += "\nList of Interfaces:-";
         for (int i=0 ; i<interfaces.size() ; ++i)
