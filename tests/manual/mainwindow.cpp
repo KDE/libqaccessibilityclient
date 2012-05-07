@@ -85,10 +85,6 @@ void MainWindow::selectionChanged(const QModelIndex& current, const QModelIndex&
             text += "child: " + child.name() + " (" + child.roleName() + ")\n";
         }
 
-        Q_FOREACH(QAction *a, acc.actions()) {
-            ui.treeView->insertAction(0, a);
-        }
-
         QRect rect = acc.boundingRect();
         text += "\nCurrent Focus Coords: ( " + QString::number(rect.x()+rect.width()/2);
         text += " , " + QString::number(rect.y()+rect.height()/2) + " )\n";
