@@ -45,7 +45,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     m_model = new AccessibleTree(this);
     ui.treeView->setModel(m_model);
-    ui.treeView->setContextMenuPolicy(Qt::ActionsContextMenu);
+    ui.treeView->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(ui.treeView, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(treeCustomContextMenuRequested(QPoint)));
     m_model->setRegistry(m_registry);
 
     // The ultimate model verificaton helper :p
@@ -73,10 +74,6 @@ void MainWindow::selectionChanged(const QModelIndex& current, const QModelIndex&
 {
     QString text;
 
-    while(!actions().isEmpty()) {
-        ui.treeView->removeAction(actions().first());
-    }
-
     if (current.isValid() && current.internalPointer()) {
         KAccessibleClient::AccessibleObject acc = static_cast<AccessibleWrapper*>(current.internalPointer())->acc;
         text += acc.name() + " (" + acc.description() + ")\n";
@@ -87,11 +84,21 @@ void MainWindow::selectionChanged(const QModelIndex& current, const QModelIndex&
         foreach (const KAccessibleClient::AccessibleObject &child, acc.children()) {
             text += "child: " + child.name() + " (" + child.roleName() + ")\n";
         }
-
-        Q_FOREACH(QAction *a, acc.actions()) {
-            ui.treeView->insertAction(0, a);
-        }
     }
 
     ui.plainTextEdit->setPlainText(text);
+}
+
+void MainWindow::treeCustomContextMenuRequested(const QPoint &pos)
+{
+    QModelIndex current = ui.treeView->currentIndex();
+    if (!current.isValid())
+        return;
+    KAccessibleClient::AccessibleObject acc = static_cast<AccessibleWrapper*>(current.internalPointer())->acc;
+    QMenu *menu = new QMenu(this);
+    connect(menu, SIGNAL(aboutToHide()), menu, SLOT(deleteLater()));
+    Q_FOREACH(QAction *a, acc.actions()) {
+        menu->addAction(a);
+    }
+    menu->popup(ui.treeView->mapToGlobal(pos));
 }
