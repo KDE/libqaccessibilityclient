@@ -369,13 +369,13 @@ QRect RegistryPrivate::characterRect(const AccessibleObject &object) const
     args << coords;
     message.setArguments(args);
 
-    QDBusReply< QList<quint32> > reply = conn.connection().call(message);
+    QDBusReply< QRect > reply = conn.connection().call(message);
     if(!reply.isValid()){
         qWarning() << "Could not get Character Extents. " << reply.error().message();
         return QRect();
     }
 
-    return QRect( reply.value().value(0), reply.value().value(1), reply.value().value(2), reply.value().value(3) );
+    return reply.value();
 }
 
 QStringList RegistryPrivate::supportedInterfaces(const AccessibleObject &object) const

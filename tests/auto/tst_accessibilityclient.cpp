@@ -70,6 +70,7 @@ private Q_SLOTS:
     void tst_application();
     void tst_navigation();
     void tst_focus();
+    void tst_extents();
 
 private:
     Registry registry;
@@ -277,6 +278,38 @@ void AccessibilityClientTest::tst_focus()
     // use action interface to select the first button again and check that we get an event
 
     delete listener;
+    proc.terminate();
+}
+
+void AccessibilityClientTest::tst_extents()
+{
+    QProcess proc;
+    #ifdef Q_OS_WIN
+    proc.start("simplewidgetapp");
+    #else
+    proc.start("./simplewidgetapp");
+    #endif
+
+    QVERIFY(proc.waitForStarted());
+
+    AccessibleObject remoteApp;
+    QString appName = QLatin1String("LibKdeAccessibilityClient Simple Widget App");
+
+    int attempts = 0;
+    while(attempts < 20) {
+        ++attempts;
+        QTest::qWait(100);
+        remoteApp = getAppObject(registry,appName);
+        if(remoteApp.isValid())
+            break;
+    }
+
+    QVERIFY(remoteApp.isValid());
+    QCOMPARE(remoteApp.name(), appName);
+
+    AccessibleObject window = remoteApp.child(0);
+    QVERIFY(window.supportedInterfaces().contains("org.a11y.atspi.Component"));
+    QCOMPARE(window.boundingRect(),QRect(0,0,200,100));
     proc.terminate();
 }
 

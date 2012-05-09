@@ -37,6 +37,8 @@ public:
         button2->setText("Button 2");
         l->addWidget(button);
         l->addWidget(button2);
+
+        this->setGeometry(0,0,200,100);
         button->setText(QLatin1String("Button 1"));
         button2->setText(QLatin1String("Button 2"));
         button->setFocus();
