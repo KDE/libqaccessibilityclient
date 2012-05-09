@@ -348,13 +348,13 @@ QRect RegistryPrivate::boundingRect(const AccessibleObject &object) const
     args << coords;
     message.setArguments(args);
 
-    QDBusReply< QList<quint32> > reply = conn.connection().call(message);
+    QDBusReply< QRect > reply = conn.connection().call(message);
     if(!reply.isValid()){
         qWarning() << "Could not get extents." << reply.error().message();
         return QRect();
     }
 
-    return QRect( reply.value().value(0), reply.value().value(1), reply.value().value(2), reply.value().value(3) );
+    return QRect( reply.value() );
 }
 
 QRect RegistryPrivate::characterRect(const AccessibleObject &object) const
