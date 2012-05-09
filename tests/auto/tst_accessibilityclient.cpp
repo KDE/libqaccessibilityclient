@@ -22,6 +22,7 @@
 
 #include <qmainwindow.h>
 #include <qpushbutton.h>
+#include <qtextedit.h>
 #include <qlabel.h>
 #include <qlineedit.h>
 #include <qboxlayout.h>
@@ -70,7 +71,10 @@ private Q_SLOTS:
     void tst_application();
     void tst_navigation();
     void tst_focus();
+
     void tst_extents();
+
+    void tst_characterExtents();
 
 private:
     Registry registry;
@@ -309,8 +313,40 @@ void AccessibilityClientTest::tst_extents()
 
     AccessibleObject window = remoteApp.child(0);
     QVERIFY(window.supportedInterfaces().contains("org.a11y.atspi.Component"));
-    QCOMPARE(window.boundingRect(),QRect(0,0,200,100));
+    QCOMPARE(window.boundingRect(),QRect(2,23,200,100));
+
+    AccessibleObject button1 = window.child(0);
+    QVERIFY(button1.name()=="Button 1");
+    QCOMPARE(button1.boundingRect(),QRect(12,33,100,20));
     proc.terminate();
+}
+
+void AccessibilityClientTest::tst_characterExtents()
+{
+    QString appName = QLatin1String("Lib KAccessibleClient test");
+
+    QWidget w;
+    w.setAccessibleName("Root Widget");
+    QTextEdit *textEdit = new QTextEdit(&w);
+    textEdit->setGeometry(10,10,600,400);
+    w.show();
+    QTest::qWaitForWindowShown(&w);
+
+    AccessibleObject app = getAppObject(registry, appName);
+
+    //Check if the widget is correct
+    QVERIFY(app.isValid());
+    QCOMPARE(app.name(), appName);
+    QCOMPARE(app.childCount(),1);
+
+    AccessibleObject textArea = app.child(0).child(0);
+    QVERIFY(textArea.supportedInterfaces().contains("org.a11y.atspi.Text"));
+
+    QCOMPARE(textArea.characterRect(), QRect(18,39,0,14));
+
+    textEdit->setText("This is useless text that is being used to test this text area.\n I \n hope \n this will get correct\n\t\t\tCharacterExtents !");
+
+    QCOMPARE(textArea.characterRect(), QRect(18,39,7,14));
 }
 
 

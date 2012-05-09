@@ -29,18 +29,18 @@ class SimpleWidgetApp : public QWidget
 public:
     SimpleWidgetApp()
     {
-        QVBoxLayout *l = new QVBoxLayout();
-        setLayout(l);
-        QPushButton *button = new QPushButton();
+        QPushButton *button = new QPushButton(this);
         button->setText("Button 1");
-        QPushButton *button2 = new QPushButton();
+        QPushButton *button2 = new QPushButton(this);
         button2->setText("Button 2");
-        l->addWidget(button);
-        l->addWidget(button2);
 
         this->setGeometry(0,0,200,100);
+
         button->setText(QLatin1String("Button 1"));
+        button->setGeometry(10,10,100,20);
         button2->setText(QLatin1String("Button 2"));
+        button2->setGeometry(10,40,100,20);
+
         button->setFocus();
         QTimer timer;
         timer.singleShot(20, button2, SLOT(setFocus()));
