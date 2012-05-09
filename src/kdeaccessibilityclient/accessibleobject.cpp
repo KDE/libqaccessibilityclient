@@ -131,6 +131,11 @@ QStringList AccessibleObject::supportedInterfaces() const
     return d->registryPrivate->supportedInterfaces(*this);
 }
 
+int AccessibleObject::caretOffset() const
+{
+    return d->registryPrivate->caretOffset(*this);
+}
+
 QList<QAction*> AccessibleObject::actions() const
 {
     return d->registryPrivate->actions(*this);

@@ -58,6 +58,7 @@ public:
     QRect boundingRect(const AccessibleObject &object) const;
     QRect characterRect(const AccessibleObject &object) const;
     QStringList supportedInterfaces(const AccessibleObject &object) const;
+    int caretOffset(const AccessibleObject &object) const;
 
     QList<QAction*> actions(const AccessibleObject &object);
 

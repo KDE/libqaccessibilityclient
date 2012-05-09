@@ -393,6 +393,11 @@ QStringList RegistryPrivate::supportedInterfaces(const AccessibleObject &object)
     return reply.value();
 }
 
+int RegistryPrivate::caretOffset(const AccessibleObject &object) const
+{
+    QVariant offset= getProperty(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Text"), QLatin1String("CaretOffset"));
+    return offset.toInt();
+}
 
 QList<QAction*> RegistryPrivate::actions(const AccessibleObject &object)
 {

@@ -161,6 +161,16 @@ public:
     QStringList supportedInterfaces() const;
 
     /**
+        \brief Returns the offset of the caret from the beginning of the text.
+
+        This function provides the current offset of the caret from the beginning of
+        the text in an accessible that implements org.a11y.atspi.Text.
+
+        \return Caret Offset as an integer
+    */
+    int caretOffset() const;
+
+    /**
         \brief Returns a list of actions supported by this accessible.
 
         Just trigger() the action to execute the underlying method at the accessible.
