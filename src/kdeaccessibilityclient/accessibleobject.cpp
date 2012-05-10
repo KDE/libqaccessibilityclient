@@ -118,12 +118,22 @@ QString AccessibleObject::localizedRoleName() const
 
 QRect AccessibleObject::boundingRect() const
 {
-    return d->registryPrivate->boundingRect(*this);
+    if( supportedInterfaces() & AccessibleObject::Component ){
+        return d->registryPrivate->boundingRect(*this);
+    } else {
+        qWarning() << "boundingRect called on accessible that does not implement component";
+        return QRect();
+    }
 }
 
 QRect AccessibleObject::characterRect() const
 {
-    return d->registryPrivate->characterRect(*this);
+    if( supportedInterfaces() & AccessibleObject::Text ){
+        return d->registryPrivate->characterRect(*this);
+    } else {
+        qWarning() << "characterRect called on accessible that does not implement text";
+        return QRect();
+    }
 }
 
 AccessibleObject::Interfaces AccessibleObject::supportedInterfaces() const
@@ -133,7 +143,12 @@ AccessibleObject::Interfaces AccessibleObject::supportedInterfaces() const
 
 int AccessibleObject::caretOffset() const
 {
-    return d->registryPrivate->caretOffset(*this);
+    if( supportedInterfaces() & AccessibleObject::Text ){
+        return d->registryPrivate->caretOffset(*this);
+    } else {
+        qWarning() << "caretOffset called on accessible that does not implement text";
+        return 0;
+    }
 }
 
 QList<QAction*> AccessibleObject::actions() const
