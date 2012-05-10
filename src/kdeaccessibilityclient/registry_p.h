@@ -57,7 +57,7 @@ public:
     quint64 state(const AccessibleObject &object) const;
     QRect boundingRect(const AccessibleObject &object) const;
     QRect characterRect(const AccessibleObject &object) const;
-    QStringList supportedInterfaces(const AccessibleObject &object) const;
+    AccessibleObject::Interfaces supportedInterfaces(const AccessibleObject &object) const;
     int caretOffset(const AccessibleObject &object) const;
 
     QList<QAction*> actions(const AccessibleObject &object);
@@ -88,6 +88,7 @@ private:
     DBusConnection conn;
     QSignalMapper m_actionMapper;
     Registry *q;
+    QHash<QString, AccessibleObject::Interface> interfaceHash;
 };
 
 }

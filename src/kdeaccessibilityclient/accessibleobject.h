@@ -42,6 +42,34 @@ class RegistryPrivate;
 class LIBKDEACCESSIBILITYCLIENT_EXPORT AccessibleObject
 {
 public:
+
+    enum Interface {
+        NoInterface = 0x0,
+        Cache = 0x1,
+        Accessible = 0x2,
+        Action = 0x4,
+        Application = 0x8,
+        Collection = 0x10,
+        Component = 0x20,
+        Document = 0x40,
+        EditableText = 0x80,
+        EventKeyboard = 0x100,
+        EventMouse = 0x200,
+        EventObject = 0x400,
+        Hyperlink = 0x800,
+        Hypertext = 0x1000,
+        Image = 0x2000,
+        Selection = 0x4000,
+        Table = 0x8000,
+        Text = 0x10000,
+        Value = 0x20000,
+        Socket = 0x40000,
+        EventWindow = 0x80000,
+        EventFocus = 0x100000
+    };
+
+    Q_DECLARE_FLAGS(Interfaces,Interface)
+
     /**
         \brief Construct an invalid AccessibleObject.
      */
@@ -158,7 +186,7 @@ public:
 
         \return QStringList that contains list of supported interfaces
     */
-    QStringList supportedInterfaces() const;
+    Interfaces supportedInterfaces() const;
 
     /**
         \brief Returns the offset of the caret from the beginning of the text.

@@ -33,6 +33,9 @@
 #include "atspi/qt-atspi.h"
 #include "atspi/dbusconnection.h"
 
+#include <qstring.h>
+#include <qhash.h>
+
 #include "accessibleobject_p.h"
 
 // interface names from at-spi2-core/atspi/atspi-misc-private.h
@@ -83,10 +86,32 @@ RegistryPrivate::RegistryPrivate(Registry *qq)
     :q(qq)
 {
     connect(&m_actionMapper, SIGNAL(mapped(QString)), this, SLOT(actionTriggered(QString)));
+    init();
 }
 
 void RegistryPrivate::init()
 {
+    interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_CACHE)] = AccessibleObject::Cache;
+    interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_ACCESSIBLE)] = AccessibleObject::Accessible;
+    interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_ACTION)] = AccessibleObject::Action;
+    interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_APPLICATION)] = AccessibleObject::Application;
+    interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_COLLECTION)] = AccessibleObject::Collection;
+    interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_COMPONENT)] = AccessibleObject::Component;
+    interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_DOCUMENT)] = AccessibleObject::Document;
+    interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_EDITABLE_TEXT)] = AccessibleObject::Text;
+    interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_EVENT_KEYBOARD)] = AccessibleObject::EventKeyboard;
+    interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_EVENT_MOUSE)] = AccessibleObject::EventMouse;
+    interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_EVENT_OBJECT)] = AccessibleObject::EventObject;
+    interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_HYPERLINK)] = AccessibleObject::Hyperlink;
+    interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_HYPERTEXT)] = AccessibleObject::Hypertext;
+    interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_IMAGE)] = AccessibleObject::Image;
+    interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_SELECTION)] = AccessibleObject::Selection;
+    interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_TABLE)] = AccessibleObject::Table;
+    interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_TEXT)] = AccessibleObject::Text;
+    interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_VALUE)] = AccessibleObject::Value;
+    interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_SOCKET)] = AccessibleObject::Socket;
+    interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_EVENT_WINDOW)] = AccessibleObject::EventWindow;
+    interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_EVENT_FOCUS)] = AccessibleObject::EventFocus;
 }
 
 void RegistryPrivate::subscribeEventListeners(const Registry::EventListeners &listeners)
@@ -378,7 +403,7 @@ QRect RegistryPrivate::characterRect(const AccessibleObject &object) const
     return reply.value();
 }
 
-QStringList RegistryPrivate::supportedInterfaces(const AccessibleObject &object) const
+AccessibleObject::Interfaces RegistryPrivate::supportedInterfaces(const AccessibleObject &object) const
 {
     QDBusMessage message = QDBusMessage::createMethodCall(
             object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Accessible"),
@@ -387,10 +412,15 @@ QStringList RegistryPrivate::supportedInterfaces(const AccessibleObject &object)
     QDBusReply<QStringList > reply = conn.connection().call(message);
     if(!reply.isValid()){
         qWarning() << "Could not get Interfaces. " << reply.error().message();
-        return QStringList();
+        return AccessibleObject::NoInterface;
     }
 
-    return reply.value();
+    AccessibleObject::Interfaces interfaces = AccessibleObject::NoInterface;
+    Q_FOREACH(const QString &interface, reply.value()){
+        interfaces |= interfaceHash[interface];
+    }
+
+    return interfaces;
 }
 
 int RegistryPrivate::caretOffset(const AccessibleObject &object) const

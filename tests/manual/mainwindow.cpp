@@ -93,17 +93,19 @@ void MainWindow::selectionChanged(const QModelIndex& current, const QModelIndex&
         text += "\nCurrent Text Focus: ( " + QString::number(rect.x()+rect.width()/2);
         text += " , " + QString::number(rect.y()+rect.height()/2) + " )\n";
 
-        QStringList interfaces = acc.supportedInterfaces();
+        KAccessibleClient::AccessibleObject::Interfaces interfaces = acc.supportedInterfaces();
         text += "\nImplements Component Interface: ";
-        text += QString(interfaces.contains("org.a11y.atspi.Component") ? "True" : "False") + "\n";
+        text += QString(interfaces & KAccessibleClient::AccessibleObject::Component ? "True" : "False") + "\n";
         text += "\nImplements Text Interface: ";
-        text += QString(interfaces.contains("org.a11y.atspi.Text") ? "True" : "False") + "\n";
+        text += QString(interfaces & KAccessibleClient::AccessibleObject::Text ? "True" : "False") + "\n";
         text += "\nImplements Action Interface: ";
-        text += QString(interfaces.contains("org.a11y.atspi.Action") ? "True" : "False") + "\n";
+        text += QString(interfaces & KAccessibleClient::AccessibleObject::Action ? "True" : "False") + "\n";
 
+        /*
         text += "\nList of Interfaces:-";
         for (int i=0 ; i<interfaces.size() ; ++i)
             text += "\n\t" + interfaces.at(i);
+        */
     }
 
     ui.plainTextEdit->setPlainText(text);

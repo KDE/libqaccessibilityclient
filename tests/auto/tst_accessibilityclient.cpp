@@ -312,7 +312,7 @@ void AccessibilityClientTest::tst_extents()
     QCOMPARE(remoteApp.name(), appName);
 
     AccessibleObject window = remoteApp.child(0);
-    QVERIFY(window.supportedInterfaces().contains("org.a11y.atspi.Component"));
+    QVERIFY(window.supportedInterfaces() & KAccessibleClient::AccessibleObject::Component);
     QCOMPARE(window.boundingRect(),QRect(2,23,200,100));
 
     AccessibleObject button1 = window.child(0);
@@ -340,7 +340,7 @@ void AccessibilityClientTest::tst_characterExtents()
     QCOMPARE(app.childCount(),1);
 
     AccessibleObject textArea = app.child(0).child(0);
-    QVERIFY(textArea.supportedInterfaces().contains("org.a11y.atspi.Text"));
+    QVERIFY(textArea.supportedInterfaces() & KAccessibleClient::AccessibleObject::Text);
 
     QCOMPARE(textArea.characterRect(), QRect(18,39,0,14));
 
