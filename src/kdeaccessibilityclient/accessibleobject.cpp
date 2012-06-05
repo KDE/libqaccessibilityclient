@@ -151,6 +151,17 @@ int AccessibleObject::caretOffset() const
     }
 }
 
+QPoint AccessibleObject::focusPoint() const
+{
+    Interfaces ifaces = this.supportedInterfaces();
+
+    if(ifaces & Text) {
+        return characterRect().center();
+    } else if(ifaces & Component){
+        return boundingRect().center();
+    }
+}
+
 QList<QAction*> AccessibleObject::actions() const
 {
     return d->registryPrivate->actions(*this);

@@ -199,6 +199,13 @@ public:
     int caretOffset() const;
 
     /**
+        \brief Returns focus-point of the object
+
+        \return The Focus Point of the object
+    */
+    QPoint focusPoint() const;
+
+    /**
         \brief Returns a list of actions supported by this accessible.
 
         Just trigger() the action to execute the underlying method at the accessible.
