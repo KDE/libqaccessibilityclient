@@ -515,7 +515,7 @@ void RegistryPrivate::slotStateChanged(const QString &state, int detail1, int /*
         if(ifaces & KAccessibleClient::AccessibleObject::Text){
             QRect bound = accessible.characterRect();
             emit focusChanged(bound.center().x(), bound.center().y());
-        } else if (ifaces & KAccessibleClient::AcccessibleObject::Component) {
+        } else if (ifaces & KAccessibleClient::AccessibleObject::Component) {
             QRect bound = accessible.boundingRect();
             emit focusChanged(bound.center().x(), bound.center().y());
         }

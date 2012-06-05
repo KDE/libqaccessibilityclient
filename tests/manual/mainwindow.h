@@ -42,6 +42,7 @@ private Q_SLOTS:
     void selectionChanged(const QModelIndex &current, const QModelIndex &);
     void focusChanged(const KAccessibleClient::AccessibleObject &object);
     void treeCustomContextMenuRequested(const QPoint &pos);
+    void focusChanged(int,int);
 
 private:
     Ui::MainWindow ui;
