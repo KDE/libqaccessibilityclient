@@ -40,6 +40,9 @@ void Registry::subscribeEventListeners(const EventListeners &listeners) const
     d->subscribeEventListeners(listeners);
     bool s = connect(d, SIGNAL(focusChanged(KAccessibleClient::AccessibleObject)), this, SIGNAL(focusChanged(KAccessibleClient::AccessibleObject)));
     Q_ASSERT(s);
+
+    s = connect(d, SIGNAL(focusChanged(int,int)), this, SIGNAL(focusChanged(int,int)));
+    Q_ASSERT(s);
 }
 
 Registry::EventListeners Registry::subscribedEventListeners() const

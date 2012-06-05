@@ -509,6 +509,16 @@ void RegistryPrivate::slotStateChanged(const QString &state, int detail1, int /*
     if ((state == QLatin1String("focused")) && (detail1 == 1)) {
         KAccessibleClient::AccessibleObject accessible = accessibleFromPath(reference.service, QDBusContext::message().path());
         emit focusChanged(accessible);
+
+        KAccessibleClient::AccessibleObject::Interfaces ifaces = accessible.supportedInterfaces();
+
+        if(ifaces & KAccessibleClient::AccessibleObject::Text){
+            QRect bound = accessible.characterRect();
+            emit focusChanged(bound.center().x(), bound.center().y());
+        } else if (ifaces & KAccessibleClient::AcccessibleObject::Component) {
+            QRect bound = accessible.boundingRect();
+            emit focusChanged(bound.center().x(), bound.center().y());
+        }
     }
 }
 

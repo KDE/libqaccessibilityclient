@@ -72,6 +72,7 @@ public:
 
 Q_SIGNALS:
     void focusChanged(const KAccessibleClient::AccessibleObject &object);
+    void focusChanged(int x, int y);
 
 private Q_SLOTS:
     void slotChildrenChanged(const QString &state, int detail1, int detail2, const QDBusVariant &args, const QSpiObjectReference &reference);
