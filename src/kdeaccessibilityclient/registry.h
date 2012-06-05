@@ -77,11 +77,6 @@ Q_SIGNALS:
     */
     void focusChanged(const KAccessibleClient::AccessibleObject &);
 
-    /**
-        \brief Emitted when subscribed to Focus EventListener and if possible to get coordinates
-    */
-    void focusChanged(int x, int y);
-
 private:
     Q_DISABLE_COPY(Registry)
     RegistryPrivate *d;
