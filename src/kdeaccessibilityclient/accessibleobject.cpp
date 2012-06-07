@@ -153,12 +153,14 @@ int AccessibleObject::caretOffset() const
 
 QPoint AccessibleObject::focusPoint() const
 {
-    Interfaces ifaces = this.supportedInterfaces();
+    Interfaces ifaces = supportedInterfaces();
 
     if(ifaces & Text) {
         return characterRect().center();
     } else if(ifaces & Component){
         return boundingRect().center();
+    } else {
+        return QPoint();
     }
 }
 

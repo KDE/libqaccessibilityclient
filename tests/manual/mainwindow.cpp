@@ -56,7 +56,6 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui.action_Reset_tree, SIGNAL(triggered()), m_model, SLOT(resetModel()));
     ui.action_Reset_tree->setShortcut(QKeySequence(QKeySequence::Refresh));
 
-    connect(m_registry, SIGNAL(focusChanged(int,int)), this, SLOT(focusChanged(int,int)));
 }
 
 void MainWindow::focusChanged(const KAccessibleClient::AccessibleObject &object)
@@ -70,11 +69,8 @@ void MainWindow::focusChanged(const KAccessibleClient::AccessibleObject &object)
             ui.treeView->selectionModel()->setCurrentIndex(index, QItemSelectionModel::ClearAndSelect);
         }
     }
-}
-
-void MainWindow::focusChanged(int x, int y)
-{
-    ui.statusbar->showMessage(tr("Current Focus : ( %1 , %2 )").arg(x).arg(y));
+    QPoint fpoint = object.focusPoint();
+    ui.statusbar->showMessage(tr("Current Focus : ( %1 , %2 )").arg(fpoint.x()).arg(fpoint.y()));
 }
 
 void MainWindow::selectionChanged(const QModelIndex& current, const QModelIndex&)
