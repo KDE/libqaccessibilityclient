@@ -26,20 +26,17 @@ namespace KAccessibleClient {
 
 void registerDBusTypes()
 {
-  qRegisterMetaType<QSpiUIntList>();
-  qDBusRegisterMetaType<QSpiUIntList>();
+    qRegisterMetaType<KAccessibleClient::QSpiObjectReference>();
+    qDBusRegisterMetaType<KAccessibleClient::QSpiObjectReference>();
 
-  qRegisterMetaType<QSpiObjectReference>();
-  qDBusRegisterMetaType<QSpiObjectReference>();
+    qRegisterMetaType<KAccessibleClient::QSpiObjectReferenceList>();
+    qDBusRegisterMetaType<KAccessibleClient::QSpiObjectReferenceList>();
 
-  qRegisterMetaType<QSpiObjectReferenceList>();
-  qDBusRegisterMetaType<QSpiObjectReferenceList>();
+    qRegisterMetaType<KAccessibleClient::QSpiAction>();
+    qDBusRegisterMetaType<KAccessibleClient::QSpiAction>();
 
-  qRegisterMetaType<QSpiAction>();
-  qDBusRegisterMetaType<QSpiAction>();
-
-  qRegisterMetaType<QSpiActionArray>();
-  qDBusRegisterMetaType<QSpiActionArray>();
+    qRegisterMetaType<KAccessibleClient::QSpiActionArray>();
+    qDBusRegisterMetaType<KAccessibleClient::QSpiActionArray>();
 }
 
 /* QSpiObjectReference */

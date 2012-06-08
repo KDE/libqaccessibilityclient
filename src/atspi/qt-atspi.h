@@ -49,7 +49,7 @@ struct QSpiObjectReference
     QDBusObjectPath path;
 };
 
-typedef QList<QSpiObjectReference> QSpiObjectReferenceList;
+typedef QList<KAccessibleClient::QSpiObjectReference> QSpiObjectReferenceList;
 
 struct QSpiAction
 {
