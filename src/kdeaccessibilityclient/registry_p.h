@@ -74,11 +74,11 @@ Q_SIGNALS:
     void focusChanged(const KAccessibleClient::AccessibleObject &object);
 
 private Q_SLOTS:
-    void slotChildrenChanged(const QString &state, int detail1, int detail2, const QDBusVariant &args, const QSpiObjectReference &reference);
-    void slotPropertyChange(const QString &state, int detail1, int detail2, const QDBusVariant &args, const QSpiObjectReference &reference);
-    void slotStateChanged(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const QSpiObjectReference &reference);
-    void slotWindowActivated(const QString &change, int detail1, int detail2, const QDBusVariant &args, const QSpiObjectReference &reference);
-    void slotWindowCreated(const QString &change, int detail1, int detail2, const QDBusVariant &args, const QSpiObjectReference &reference);
+    void slotChildrenChanged(const QString &state, int detail1, int detail2, const QDBusVariant &args, const KAccessibleClient::QSpiObjectReference &reference);
+    void slotPropertyChange(const QString &state, int detail1, int detail2, const QDBusVariant &args, const KAccessibleClient::QSpiObjectReference &reference);
+    void slotStateChanged(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const KAccessibleClient::QSpiObjectReference &reference);
+    void slotWindowActivated(const QString &change, int detail1, int detail2, const QDBusVariant &args, const KAccessibleClient::QSpiObjectReference &reference);
+    void slotWindowCreated(const QString &change, int detail1, int detail2, const QDBusVariant &args, const KAccessibleClient::QSpiObjectReference &reference);
     AccessibleObject accessibleFromPath(const QString &service, const QString &path) const;
     void actionTriggered(const QString &action);
 

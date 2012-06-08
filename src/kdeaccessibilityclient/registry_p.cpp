@@ -123,7 +123,7 @@ void RegistryPrivate::subscribeEventListeners(const Registry::EventListeners &li
         subscriptions << QLatin1String("object:state-changed");
         bool success = conn.connection().connect(
                     QString(), QLatin1String(""), QLatin1String("org.a11y.atspi.Event.Object"), QLatin1String("StateChanged"),
-                    this, SLOT(slotStateChanged(QString,int,int,QDBusVariant,QSpiObjectReference)));
+                    this, SLOT(slotStateChanged(QString,int,int,QDBusVariant,KAccessibleClient::QSpiObjectReference)));
         if (!success) {
             qWarning() << "Could not subscribe to accessibility focus events.";
         }
