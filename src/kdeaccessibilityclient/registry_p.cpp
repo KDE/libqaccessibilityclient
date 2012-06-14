@@ -390,7 +390,7 @@ QRect RegistryPrivate::characterRect(const AccessibleObject &object) const
 
     QVariantList args;
     quint32 coords = ATSPI_COORD_TYPE_SCREEN;
-    args << 0;
+    args << caretOffset(object);
     args << coords;
     message.setArguments(args);
 
@@ -426,6 +426,7 @@ AccessibleObject::Interfaces RegistryPrivate::supportedInterfaces(const Accessib
 int RegistryPrivate::caretOffset(const AccessibleObject &object) const
 {
     QVariant offset= getProperty(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Text"), QLatin1String("CaretOffset"));
+    if (offset.isNull()) qWarning() << "Could not get caret offset";
     return offset.toInt();
 }
 
