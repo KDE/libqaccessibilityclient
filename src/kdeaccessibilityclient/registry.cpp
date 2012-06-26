@@ -27,7 +27,6 @@ Registry::Registry(QObject *parent)
     : QObject(parent), d(new RegistryPrivate(this))
 {
     registerDBusTypes();
-    d->init();
 }
 
 Registry::~Registry()
