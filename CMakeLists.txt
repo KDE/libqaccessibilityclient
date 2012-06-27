@@ -75,7 +75,7 @@ make_install_path_absolute(LIBKDEACCESSIBILITYCLIENT_LIB_DIR     ${LIB_INSTALL_D
 configure_file( "${LibKdeAccessibilityClient_SOURCE_DIR}/LibKdeAccessibilityClientConfig.cmake.in" "${LibKdeAccessibilityClient_BINARY_DIR}/LibKdeAccessibilityClientConfig.cmake" @ONLY )
 
 if(${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}.${CMAKE_PATCH_VERSION} VERSION_GREATER 2.6.2)
-    set(_LibKdeAccessibilityClient_CONFIG_DEST "${LIB_INSTALL_DIR}/cmake/")
+    set(_LibKdeAccessibilityClient_CONFIG_DEST "${LIB_INSTALL_DIR}/cmake/${PROJECT_NAME}")
 else(${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}.${CMAKE_PATCH_VERSION} VERSION_GREATER 2.6.2)
     set(_LibKdeAccessibilityClient_CONFIG_DEST "${LIB_INSTALL_DIR}/libkdeaccessibilityclient")
 endif(${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}.${CMAKE_PATCH_VERSION} VERSION_GREATER 2.6.2)

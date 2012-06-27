@@ -43,9 +43,7 @@ public:
 
         button->setFocus();
         QTimer timer;
-        timer.singleShot(20, button2, SLOT(setFocus()));
-        QTimer timer2;
-        timer2.singleShot(30, button, SLOT(setFocus()));
+        timer.singleShot(100, button2, SLOT(setFocus()));
     }
 };
 

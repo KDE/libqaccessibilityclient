@@ -276,8 +276,8 @@ void AccessibilityClientTest::tst_focus()
     AccessibleObject button1 = window.child(0);
     AccessibleObject button2 = window.child(1);
     QCOMPARE(listener->focusEvents.size(), 2);
-    QCOMPARE(listener->focusEvents.at(0).object, button2);
-    QCOMPARE(listener->focusEvents.at(1).object, button1);
+    QCOMPARE(listener->focusEvents.at(0).object, button1);
+    QCOMPARE(listener->focusEvents.at(1).object, button2);
 
     // use action interface to select the first button again and check that we get an event
 
@@ -313,11 +313,11 @@ void AccessibilityClientTest::tst_extents()
 
     AccessibleObject window = remoteApp.child(0);
     QVERIFY(window.supportedInterfaces() & KAccessibleClient::AccessibleObject::Component);
-    QCOMPARE(window.boundingRect(),QRect(2,23,200,100));
+    QCOMPARE(window.boundingRect(),QRect(3,23,200,100));
 
     AccessibleObject button1 = window.child(0);
     QVERIFY(button1.name()=="Button 1");
-    QCOMPARE(button1.boundingRect(),QRect(12,33,100,20));
+    QCOMPARE(button1.boundingRect(),QRect(13,33,100,20));
     proc.terminate();
 }
 
@@ -342,11 +342,11 @@ void AccessibilityClientTest::tst_characterExtents()
     AccessibleObject textArea = app.child(0).child(0);
     QVERIFY(textArea.supportedInterfaces() & KAccessibleClient::AccessibleObject::Text);
 
-    QCOMPARE(textArea.characterRect(), QRect(18,39,0,14));
+    QCOMPARE(textArea.characterRect(), QRect(20,40,0,14));
 
     textEdit->setText("This is useless text that is being used to test this text area.\n I \n hope \n this will get correct\n\t\t\tCharacterExtents !");
 
-    QCOMPARE(textArea.characterRect(), QRect(18,39,7,14));
+    QCOMPARE(textArea.characterRect(), QRect(20,40,7,14));
 }
 
 
