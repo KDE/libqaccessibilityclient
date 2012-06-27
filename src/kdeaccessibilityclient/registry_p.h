@@ -89,6 +89,7 @@ private:
     QSignalMapper m_actionMapper;
     Registry *q;
     QHash<QString, AccessibleObject::Interface> interfaceHash;
+    QHash<QString, Registry::EventListener> eventHash;
 };
 
 }

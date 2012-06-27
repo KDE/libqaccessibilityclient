@@ -37,6 +37,12 @@ void registerDBusTypes()
 
     qRegisterMetaType<KAccessibleClient::QSpiActionArray>();
     qDBusRegisterMetaType<KAccessibleClient::QSpiActionArray>();
+
+    qRegisterMetaType<KAccessibleClient::QSpiEvent>();
+    qDBusRegisterMetaType<KAccessibleClient::QSpiEvent>();
+
+    qRegisterMetaType<KAccessibleClient::QSpiEventArray>();
+    qDBusRegisterMetaType<KAccessibleClient::QSpiEventArray>();
 }
 
 /* QSpiObjectReference */
@@ -60,6 +66,8 @@ const QDBusArgument &operator>>(const QDBusArgument &argument, KAccessibleClient
     return argument;
 }
 
+/* QSpiAction */
+/*---------------------------------------------------------------------------*/
 QDBusArgument &operator<<(QDBusArgument &argument, const KAccessibleClient::QSpiAction &action)
 {
     argument.beginStructure();
@@ -76,6 +84,26 @@ const QDBusArgument &operator>>(const QDBusArgument &argument, KAccessibleClient
     argument >> action.name;
     argument >> action.description;
     argument >> action.keyBinding;
+    argument.endStructure();
+    return argument;
+}
+
+/* QSpiEvent */
+/*---------------------------------------------------------------------------*/
+QDBusArgument &operator<<(QDBusArgument &argument, const KAccessibleClient::QSpiEvent &event)
+{
+    argument.beginStructure();
+    argument << event.service;
+    argument << event.name;
+    argument.endStructure();
+    return argument;
+}
+
+const QDBusArgument &operator>>(const QDBusArgument &argument, KAccessibleClient::QSpiEvent &event)
+{
+    argument.beginStructure();
+    argument >> event.service;
+    argument >> event.name;
     argument.endStructure();
     return argument;
 }

@@ -112,6 +112,10 @@ void RegistryPrivate::init()
     interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_SOCKET)] = AccessibleObject::Socket;
     interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_EVENT_WINDOW)] = AccessibleObject::EventWindow;
     interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_EVENT_FOCUS)] = AccessibleObject::EventFocus;
+
+    eventHash[QLatin1String("Focus::")] = Registry::Focus;
+    eventHash[QLatin1String("Object::")] = Registry::Object;
+    eventHash[QLatin1String("Window::")] = Registry::Window;
 }
 
 void RegistryPrivate::subscribeEventListeners(const Registry::EventListeners &listeners)
@@ -208,8 +212,24 @@ void RegistryPrivate::subscribeEventListeners(const Registry::EventListeners &li
 
 Registry::EventListeners RegistryPrivate::eventListeners() const
 {
-    qWarning() << "IMPLEMENT: RegistryPrivate::subscribedEventListeners";
-    return Registry::EventListeners();
+    QDBusMessage m = QDBusMessage::createMethodCall(
+        QLatin1String("org.a11y.atspi.Registry"),
+        QLatin1String("/org/a11y/atspi/registry"),
+        QLatin1String("org.a11y.atspi.Registry"),
+        QLatin1String("GetRegisteredEvents"));
+
+    QDBusReply< QSpiEventArray > reply = conn.connection().call(m);
+
+    if(!reply.isValid())
+        qWarning() << reply.error().message();
+
+    Registry::EventListeners listeners = Registry::NoEventListeners;
+
+    Q_FOREACH(const QSpiEvent &event, reply.value()){
+       listeners |= eventHash[event.name];
+    }
+
+    return listeners;
 }
 
 AccessibleObject RegistryPrivate::parentAccessible(const AccessibleObject &object) const
