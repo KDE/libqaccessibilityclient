@@ -88,6 +88,7 @@ private:
     DBusConnection conn;
     QSignalMapper m_actionMapper;
     Registry *q;
+    Registry::EventListeners m_subscriptions;
     QHash<QString, AccessibleObject::Interface> interfaceHash;
 };
 

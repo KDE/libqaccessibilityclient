@@ -83,7 +83,7 @@
 using namespace KAccessibleClient;
 
 RegistryPrivate::RegistryPrivate(Registry *qq)
-    :q(qq)
+    :q(qq), m_subscriptions(Registry::NoEventListeners)
 {
     connect(&m_actionMapper, SIGNAL(mapped(QString)), this, SLOT(actionTriggered(QString)));
     init();
@@ -117,6 +117,8 @@ void RegistryPrivate::init()
 void RegistryPrivate::subscribeEventListeners(const Registry::EventListeners &listeners)
 {
     QStringList subscriptions;
+
+    m_subscriptions |= listeners;
 
     if (listeners & Registry::Focus) {
         subscriptions << QLatin1String("focus:");
@@ -208,8 +210,7 @@ void RegistryPrivate::subscribeEventListeners(const Registry::EventListeners &li
 
 Registry::EventListeners RegistryPrivate::eventListeners() const
 {
-    qWarning() << "IMPLEMENT: RegistryPrivate::subscribedEventListeners";
-    return Registry::EventListeners();
+    return m_subscriptions;
 }
 
 AccessibleObject RegistryPrivate::parentAccessible(const AccessibleObject &object) const
