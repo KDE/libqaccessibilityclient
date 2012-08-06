@@ -32,13 +32,20 @@ class AccessibleObjectPrivate :public QSharedData
 {
 public:
     AccessibleObjectPrivate(RegistryPrivate *reg, const QString &service_, const QString &path_)
-        : registryPrivate(reg), service(service_), path(path_)
+        : registryPrivate(reg), service(service_), path(path_), actionsFetched(false)
     {
+    }
+    ~AccessibleObjectPrivate()
+    {
+        qDeleteAll(actions);
     }
 
     RegistryPrivate *registryPrivate;
     QString service;
     QString path;
+
+    mutable QList<QAction*> actions;
+    mutable bool actionsFetched;
 
     bool operator==(const AccessibleObjectPrivate &other) const
     {

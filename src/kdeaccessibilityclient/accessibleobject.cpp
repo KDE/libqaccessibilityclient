@@ -166,7 +166,14 @@ QPoint AccessibleObject::focusPoint() const
 
 QList<QAction*> AccessibleObject::actions() const
 {
-    return d->registryPrivate->actions(*this);
+    // Actions in atspi are supposed to be static what means they cannot change in
+    // between (e.g. actions removed or added or edited) so we can safely just
+    // fetch them only once and store the result for the life-time of the object,
+    if (!d->actionsFetched) {
+        d->actionsFetched = true;
+        d->actions = d->registryPrivate->actions(*this);
+    }
+    return d->actions;
 }
 
 bool AccessibleObject::hasSelectableText() const
