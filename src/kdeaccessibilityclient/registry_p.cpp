@@ -447,12 +447,13 @@ QList<QAction*> RegistryPrivate::actions(const AccessibleObject &object)
     for(int i = 0; i < actionArray.count(); ++i) {
         const QSpiAction &a = actionArray[i];
         QAction *action = new QAction(this);
-        //action->setText(QString(QLatin1String("%1 (%2)")).arg(a.name).arg(a.description));
+        QString id = QString(QLatin1String("%1;%2;%3")).arg(object.d->service).arg(object.d->path).arg(i);
+        action->setObjectName(id);
         action->setText(a.name);
         action->setWhatsThis(a.description);
         QKeySequence shortcut(a.keyBinding);
         action->setShortcut(shortcut);
-        m_actionMapper.setMapping(action, QString(QLatin1String("%1;%2;%3")).arg(object.d->service).arg(object.d->path).arg(i));
+        m_actionMapper.setMapping(action, id);
         connect(action, SIGNAL(triggered()), &m_actionMapper, SLOT(map()));
         list.append(action);
     }
