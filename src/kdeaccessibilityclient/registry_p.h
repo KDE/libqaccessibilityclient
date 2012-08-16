@@ -33,6 +33,8 @@
 #include "kdeaccessibilityclient/accessibleobject.h"
 #include "atspi/qt-atspi.h"
 
+class QDBusPendingCallWatcher;
+
 namespace KAccessibleClient {
 
 class DBusConnection;
@@ -74,6 +76,7 @@ Q_SIGNALS:
     void focusChanged(const KAccessibleClient::AccessibleObject &object);
 
 private Q_SLOTS:
+    void slotSubscribeEventListenerFinished(QDBusPendingCallWatcher *call);
     void slotChildrenChanged(const QString &state, int detail1, int detail2, const QDBusVariant &args, const KAccessibleClient::QSpiObjectReference &reference);
     void slotPropertyChange(const QString &state, int detail1, int detail2, const QDBusVariant &args, const KAccessibleClient::QSpiObjectReference &reference);
     void slotStateChanged(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const KAccessibleClient::QSpiObjectReference &reference);

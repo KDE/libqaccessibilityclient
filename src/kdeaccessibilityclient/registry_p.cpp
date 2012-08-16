@@ -24,6 +24,7 @@
 #include <qdbusmessage.h>
 #include <qdbusargument.h>
 #include <qdbusreply.h>
+#include <qdbuspendingcall.h>
 
 #include <qdebug.h>
 #include <qdbusmessage.h>
@@ -137,10 +138,9 @@ void RegistryPrivate::subscribeEventListeners(const Registry::EventListeners &li
                                                         QLatin1String("org.a11y.atspi.Registry"), QLatin1String("RegisterEvent"));
         m.setArguments(QVariantList() << subscription);
 
-        QDBusMessage reply = conn.connection().call(m);
-        if (reply.type() == QDBusMessage::ErrorMessage) {
-            qWarning() << "Could not subscribe to accessibility event: " << reply.errorMessage();
-        }
+        QDBusPendingCall async = conn.connection().asyncCall(m);
+        QDBusPendingCallWatcher *watcher = new QDBusPendingCallWatcher(async, this);
+        QObject::connect(watcher, SIGNAL(finished(QDBusPendingCallWatcher*)), this, SLOT(slotSubscribeEventListenerFinished(QDBusPendingCallWatcher*)));
     }
 
 //    subscriptions << QLatin1String("object:children-changed")
@@ -211,6 +211,14 @@ void RegistryPrivate::subscribeEventListeners(const Registry::EventListeners &li
 Registry::EventListeners RegistryPrivate::eventListeners() const
 {
     return m_subscriptions;
+}
+
+void RegistryPrivate::slotSubscribeEventListenerFinished(QDBusPendingCallWatcher *call)
+{
+    if (call->isError()) {
+        qWarning() << "Could not subscribe to accessibility event: " << call->error().type() << call->error().message();
+    }
+    call->deleteLater();
 }
 
 AccessibleObject RegistryPrivate::parentAccessible(const AccessibleObject &object) const
