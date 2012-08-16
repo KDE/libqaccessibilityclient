@@ -265,7 +265,7 @@ public:
 
 private:
     AccessibleObject(RegistryPrivate *reg, const QString &service, const QString &path);
-    QSharedDataPointer<AccessibleObjectPrivate> d;
+    QExplicitlySharedDataPointer<AccessibleObjectPrivate> d;
 
     friend class RegistryPrivate;
     friend class AtSpiDBus;
