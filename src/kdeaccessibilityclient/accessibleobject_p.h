@@ -32,7 +32,19 @@ class AccessibleObjectPrivate :public QSharedData
 {
 public:
     AccessibleObjectPrivate(RegistryPrivate *reg, const QString &service_, const QString &path_)
-        : registryPrivate(reg), service(service_), path(path_), actionsFetched(false)
+        : QSharedData()
+        , registryPrivate(reg)
+        , service(service_)
+        , path(path_)
+        , actionsFetched(false)
+    {
+    }
+    AccessibleObjectPrivate(const AccessibleObjectPrivate &other)
+        : QSharedData(other)
+        , registryPrivate(other.registryPrivate)
+        , service(other.service)
+        , path(other.path)
+        , actionsFetched(false)
     {
     }
     ~AccessibleObjectPrivate()
