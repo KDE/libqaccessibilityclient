@@ -67,7 +67,7 @@ public:
 
     /**
         List of all currently running applications that
-        expose and accessibility interface.
+        expose an accessibility interface.
     */
     QList<AccessibleObject> applications() const;
 

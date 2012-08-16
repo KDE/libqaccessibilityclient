@@ -37,6 +37,11 @@ class RegistryPrivate;
 /**
     This class represents an accessible object.
 
+    An accessible object equals usually a visible widget or some kind
+    of other element the user can interact with but can also present
+    a not visible object that offers certain functionality like for
+    example actions which can be triggered.
+
     It is implicitly shared and only created by the library.
 */
 class LIBKDEACCESSIBILITYCLIENT_EXPORT AccessibleObject
