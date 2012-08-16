@@ -25,10 +25,10 @@ include_directories(
     ${QT4_INCLUDES} ${QT_INCLUDE_DIR} ${QT_QT_INCLUDE_DIR} ${QT_QTDBUS_INCLUDE_DIR}
 )
 
-# Require libatspi2-core headers for building:
-include(FindPkgConfig)
-pkg_check_modules(ATSPI2 REQUIRED atspi-2)
-include_directories(${ATSPI2_INCLUDE_DIRS})
+# # Require libatspi2-core headers for building:
+# include(FindPkgConfig)
+# pkg_check_modules(ATSPI2 REQUIRED atspi-2)
+# include_directories(${ATSPI2_INCLUDE_DIRS})
 
 set(CMAKE_INSTALL_NAME_DIR ${LIB_INSTALL_DIR})
 
