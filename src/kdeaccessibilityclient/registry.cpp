@@ -27,6 +27,10 @@ Registry::Registry(QObject *parent)
     : QObject(parent), d(new RegistryPrivate(this))
 {
     registerDBusTypes();
+
+    connect(d, SIGNAL(focusChanged(KAccessibleClient::AccessibleObject)), this, SIGNAL(focusChanged(KAccessibleClient::AccessibleObject)));
+    connect(d, SIGNAL(textCaretMoved(KAccessibleClient::AccessibleObject,int)), this, SIGNAL(textCaretMoved(KAccessibleClient::AccessibleObject,int)));
+    connect(d, SIGNAL(textSelectionChanged(KAccessibleClient::AccessibleObject)), this, SIGNAL(textSelectionChanged(KAccessibleClient::AccessibleObject)));
 }
 
 Registry::~Registry()
@@ -37,8 +41,6 @@ Registry::~Registry()
 void Registry::subscribeEventListeners(const EventListeners &listeners) const
 {
     d->subscribeEventListeners(listeners);
-    bool s = connect(d, SIGNAL(focusChanged(KAccessibleClient::AccessibleObject)), this, SIGNAL(focusChanged(KAccessibleClient::AccessibleObject)));
-    Q_ASSERT(s);
 }
 
 Registry::EventListeners Registry::subscribedEventListeners() const

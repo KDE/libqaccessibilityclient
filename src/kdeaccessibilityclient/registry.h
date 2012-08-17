@@ -43,17 +43,20 @@ class LIBKDEACCESSIBILITYCLIENT_EXPORT Registry :public QObject
     Q_OBJECT
 
 public:
+
     enum EventListener {
         NoEventListeners = 0x0,           /*!< No event listeners registered or wanted */
         Focus = 0x1,                      /*!< Focus listener reacts to focus changes - see signal \sa focusChanged */
         Object = 0x2,                     /*!< Object changes, such as checked state etc. */
-        // FIXME many more detailed event listeners are possible
         Window = 0x4,                     /*!< Window changes, such as new applications being started */
 
+        TextCaretMoved = 0x8,             /*!< The text caret moved its position - see signal \sa textCaretMoved */
+        TextSelectionChanged = 0x10,      /*!< The text selection changed - see signal \sa textSelectionChanged */
+
+        // FIXME many more detailed event listeners are possible
         AllEventListeners = 0xffff        /*!< All possible event listeners */
     };
     Q_DECLARE_FLAGS(EventListeners, EventListener)
-
 
     Registry(QObject *parent = 0);
     ~Registry();
@@ -72,11 +75,34 @@ public:
     QList<AccessibleObject> applications() const;
 
 Q_SIGNALS:
+
     /**
-        \brief Emitted when subscribed to Focus EventListener.
+        \brief Emitted when the focus changed.
+
+        When subscribed to the Focus EventListener then this signal is emitted
+        every time the focus changes.
     */
     void focusChanged(const KAccessibleClient::AccessibleObject &);
 
+    /**
+        \brief Emitted when the text cared moved.
+
+        When subscribed to the TextCaretMoved EventListener then this signal
+        is emitted every time the caret in an accessible object that implements
+        a text-interface (like QLineEdit, QTextArea and QComboBox) moved to
+        another position.
+    */
+    void textCaretMoved(const KAccessibleClient::AccessibleObject &object, int pos);
+
+    /**
+        \brief Emitted when the text selection changed.
+
+        When subscribed to the TextSelectionChanged EventListener then this signal
+        is emitted every time the selection in an accessible object that implements
+        a text-interface (like QLineEdit, QTextArea and QComboBox) changed.
+    */
+    void textSelectionChanged(const KAccessibleClient::AccessibleObject &object);
+    
 private:
     Q_DISABLE_COPY(Registry)
     RegistryPrivate *d;

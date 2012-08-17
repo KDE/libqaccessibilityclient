@@ -81,6 +81,8 @@
 
 #define QSPI_REGISTRY_NAME "org.a11y.atspi.Registry"
 
+#define ATSPI_DEBUG
+
 using namespace KAccessibleClient;
 
 RegistryPrivate::RegistryPrivate(Registry *qq)
@@ -121,14 +123,34 @@ void RegistryPrivate::subscribeEventListeners(const Registry::EventListeners &li
 
     m_subscriptions |= listeners;
 
-    if (listeners & Registry::Focus) {
+    if (listeners.testFlag(Registry::Focus)) {
         subscriptions << QLatin1String("focus:");
         subscriptions << QLatin1String("object:state-changed");
         bool success = conn.connection().connect(
                     QString(), QLatin1String(""), QLatin1String("org.a11y.atspi.Event.Object"), QLatin1String("StateChanged"),
                     this, SLOT(slotStateChanged(QString,int,int,QDBusVariant,KAccessibleClient::QSpiObjectReference)));
         if (!success) {
-            qWarning() << "Could not subscribe to accessibility focus events.";
+            qWarning() << "Could not subscribe to accessibility Focus events.";
+        }
+    }
+
+    if (listeners.testFlag(Registry::TextCaretMoved) || listeners.testFlag(Registry::Focus)) {
+        subscriptions << QLatin1String("object:text-caret-moved");
+        bool success = conn.connection().connect(
+                    QString(), QLatin1String(""), QLatin1String("org.a11y.atspi.Event.Object"), QLatin1String("TextCaretMoved"),
+                    this, SLOT(slotTextCaretMoved(QString,int,int,QDBusVariant,KAccessibleClient::QSpiObjectReference)));
+        if (!success) {
+            qWarning() << "Could not subscribe to accessibility TextCaretMoved events.";
+        }
+    }
+
+    if (listeners.testFlag(Registry::TextSelectionChanged) || listeners.testFlag(Registry::Focus)) {
+        subscriptions << QLatin1String("object:text-selection-changed");
+        bool success = conn.connection().connect(
+                    QString(), QLatin1String(""), QLatin1String("org.a11y.atspi.Event.Object"), QLatin1String("TextSelectionChanged"),
+                    this, SLOT(slotTextSelectionChanged(QString,int,int,QDBusVariant,KAccessibleClient::QSpiObjectReference)));
+        if (!success) {
+            qWarning() << "Could not subscribe to accessibility TextSelectionChanged events.";
         }
     }
 
@@ -514,52 +536,75 @@ QVariant RegistryPrivate::getProperty(const QString &service, const QString &pat
     return v.variant();
 }
 
+AccessibleObject RegistryPrivate::accessibleFromPath(const QString &service, const QString &path) const
+{
+    return AccessibleObject(const_cast<RegistryPrivate*>(this), service, path);
+}
+
+AccessibleObject RegistryPrivate::accessibleFromContext(const QSpiObjectReference &reference) const
+{
+    return AccessibleObject(const_cast<RegistryPrivate*>(this), reference.service, QDBusContext::message().path());
+}
+
 void RegistryPrivate::slotStateChanged(const QString &state, int detail1, int /*detail2*/, const QDBusVariant &/*args*/, const QSpiObjectReference &reference)
 {
-    //qDebug() << "State changes: " << state;
+#ifdef ATSPI_DEBUG
+    //qDebug() << Q_FUNC_INFO << state << detail1 << detail2 << args.variant() << reference.path.path();
+#endif
     if ((state == QLatin1String("focused")) && (detail1 == 1)) {
-        KAccessibleClient::AccessibleObject accessible = accessibleFromPath(reference.service, QDBusContext::message().path());
+        KAccessibleClient::AccessibleObject accessible = accessibleFromContext(reference);
         emit focusChanged(accessible);
     }
 }
 
-#define ATSPI_DEBUG
+void RegistryPrivate::slotTextCaretMoved(const QString &/*state*/, int detail1, int /*detail2*/, const QDBusVariant &/*args*/, const QSpiObjectReference &reference)
+{
+#ifdef ATSPI_DEBUG
+    qDebug() << Q_FUNC_INFO << detail1;
+#endif
+    KAccessibleClient::AccessibleObject accessible = accessibleFromContext(reference);
+    emit textCaretMoved(accessible, detail1);
+}
+
+void RegistryPrivate::slotTextSelectionChanged(const QString &/*state*/, int /*detail1*/, int /*detail2*/, const QDBusVariant &/*args*/, const QSpiObjectReference &reference)
+{
+#ifdef ATSPI_DEBUG
+    qDebug() << Q_FUNC_INFO;
+#endif
+    KAccessibleClient::AccessibleObject accessible = accessibleFromContext(reference);
+    emit textSelectionChanged(accessible);
+}
 
 void RegistryPrivate::slotWindowCreated(const QString &change, int detail1, int detail2, const QDBusVariant &args, const QSpiObjectReference &reference)
 {
 #ifdef ATSPI_DEBUG
-    qDebug() << "New window: " << change << detail1 << detail2 << args.variant() << reference.path.path();
+    qDebug() << Q_FUNC_INFO << change << detail1 << detail2 << args.variant() << reference.path.path();
 #endif
-//    AccessibleObject accessible = accessibleFromPath(reference.service, QDBusContext::message().path());
+//    AccessibleObject accessible = accessibleFromContext(reference);
     //emit signalWindowCreated(QSharedPointer<AccessibleObject>(accessible));
 }
 
 void RegistryPrivate::slotWindowActivated(const QString &change, int detail1, int detail2, const QDBusVariant &args, const QSpiObjectReference &reference)
 {
 #ifdef ATSPI_DEBUG
-    qDebug() << "Window activated: " << change << detail1 << detail2 << args.variant() << reference.path.path();
+    qDebug() << Q_FUNC_INFO << change << detail1 << detail2 << args.variant() << reference.path.path();
 #endif
-//    AccessibleObject accessible = accessibleFromPath(reference.service, QDBusContext::message().path());
+//    AccessibleObject accessible = accessibleFromContext(reference);
 //    emit signalWindowActivated(QSharedPointer<AccessibleObject>(accessible));
 }
 
 void RegistryPrivate::slotChildrenChanged(const QString &state, int detail1, int detail2, const QDBusVariant &args, const QSpiObjectReference &reference)
 {
 #ifdef ATSPI_DEBUG
-    qDebug() << "Children changed: " << state << detail1 << detail2 << args.variant() << reference.path.path();
+    qDebug() << Q_FUNC_INFO << state << detail1 << detail2 << args.variant() << reference.path.path();
 #endif
 }
 
 void RegistryPrivate::slotPropertyChange(const QString &state, int detail1, int detail2, const QDBusVariant &args, const QSpiObjectReference &reference)
 {
 #ifdef ATSPI_DEBUG
-    qDebug() << "Children changed: " << state << detail1 << detail2 << args.variant() << reference.path.path();
+    qDebug() << Q_FUNC_INFO << state << detail1 << detail2 << args.variant() << reference.path.path();
 #endif
-}
-
-AccessibleObject RegistryPrivate::accessibleFromPath(const QString &service, const QString &path) const
-{
-     return AccessibleObject(const_cast<RegistryPrivate*>(this), service, path);
 }
 
 #include "registry_p.moc"
