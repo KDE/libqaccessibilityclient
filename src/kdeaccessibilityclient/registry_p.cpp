@@ -246,7 +246,7 @@ void RegistryPrivate::subscribeEventListeners(const Registry::EventListeners &li
 
 Registry::EventListeners RegistryPrivate::eventListeners() const
 {
-    return m_subscriptions;
+    return m_subscriptions | m_pendingSubscriptions;
 }
 
 void RegistryPrivate::slotSubscribeEventListenerFinished(QDBusPendingCallWatcher *call)
