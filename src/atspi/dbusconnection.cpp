@@ -22,61 +22,68 @@
 #include "dbusconnection.h"
 
 #include <QtDBus/QDBusMessage>
+#include <QtDBus/QDBusPendingReply>
 #include <QtCore/QDebug>
 
 using namespace KAccessibleClient;
 
 DBusConnection::DBusConnection()
-    : dbusConnection(connectDBus())
-{}
-
-QDBusConnection DBusConnection::connectDBus()
+    : QObject()
+    , m_connection(QDBusConnection::sessionBus())
+    , m_initWatcher(0)
 {
-    QString address = getAccessibilityBusAddress();
+    init();
+}
 
-    if (!address.isEmpty()) {
-        QDBusConnection c = QDBusConnection::connectToBus(address, QLatin1String("a11y"));
-        if (c.isConnected()) {
-            qDebug() << "Connected to accessibility bus at: " << address;
-            return c;
-        }
-        qWarning("Found Accessibility DBus address but cannot connect. Falling back to session bus.");
-    } else {
-        qWarning("Accessibility DBus not found. Falling back to session bus.");
-    }
-
+void DBusConnection::init()
+{
     QDBusConnection c = QDBusConnection::sessionBus();
     if (!c.isConnected()) {
-        qWarning("Could not connect to DBus.");
+        qWarning("Could not connect to DBus session bus.");
+        return;
     }
-    return QDBusConnection::sessionBus();
-}
-
-QString DBusConnection::getAccessibilityBusAddress() const
-{
-    QString address = getAccessibilityBusAddressDBus();
-    return address;
-}
-
-QString DBusConnection::getAccessibilityBusAddressDBus() const
-{
-    QDBusConnection c = QDBusConnection::sessionBus();
 
     QDBusMessage m = QDBusMessage::createMethodCall(QLatin1String("org.a11y.Bus"),
                                                     QLatin1String("/org/a11y/bus"),
                                                     QLatin1String("org.a11y.Bus"), QLatin1String("GetAddress"));
-    QDBusMessage reply = c.call(m);
-    if (reply.type() == QDBusMessage::ErrorMessage) {
-        qWarning() << "Qt at-spi: error getting the accessibility dbus address: " << reply.errorMessage();
-        return QString();
-    }
 
-    QString busAddress = reply.arguments().at(0).toString();
-    qDebug() << "Got bus address: " << busAddress;
-    return busAddress;
+    QDBusPendingCall async = c.asyncCall(m);
+    m_initWatcher = new QDBusPendingCallWatcher(async, this);
+    connect(m_initWatcher, SIGNAL(finished(QDBusPendingCallWatcher*)), this, SLOT(initFinished()));
+}
+
+void DBusConnection::initFinished()
+{
+    Q_ASSERT(m_initWatcher);
+    QDBusPendingReply<QString> reply = *m_initWatcher;
+    if (reply.isError() || reply.value().isEmpty()) {
+        qWarning() << "Accessibility DBus not found. Falling back to session bus.";
+    } else {
+        QString busAddress = reply.value();
+        qDebug() << "Got Accessibility DBus address:" << busAddress;
+        QDBusConnection c = QDBusConnection::connectToBus(busAddress, QLatin1String("a11y"));
+        if (c.isConnected()) {
+            qDebug() << "Connected to Accessibility DBus at address=" << busAddress;
+            m_connection = c;
+        } else {
+            qWarning() << "Found Accessibility DBus address=" << busAddress << "but cannot connect. Falling back to session bus.";
+        }
+    }
+    m_initWatcher->deleteLater();
+    m_initWatcher = 0;
+    emit connectionFetched();
+}
+
+bool DBusConnection::isFetchingConnection() const
+{
+    return m_initWatcher;
 }
 
 QDBusConnection DBusConnection::connection() const
 {
-    return dbusConnection;
+    if (m_initWatcher) {
+        m_initWatcher->waitForFinished();
+        const_cast<DBusConnection*>(this)->initFinished();
+    }
+    return m_connection;
 }

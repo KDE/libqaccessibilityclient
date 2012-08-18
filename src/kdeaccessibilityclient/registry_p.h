@@ -72,11 +72,6 @@ public:
     AccessibleObject child(const AccessibleObject &object, int index) const;
     QList<AccessibleObject> children(const AccessibleObject &object) const;
 
-Q_SIGNALS:
-    void focusChanged(const KAccessibleClient::AccessibleObject &object);
-    void textCaretMoved(const KAccessibleClient::AccessibleObject &object, int pos);
-    void textSelectionChanged(const KAccessibleClient::AccessibleObject &object);
-
 private Q_SLOTS:
     void slotSubscribeEventListenerFinished(QDBusPendingCallWatcher *call);
     void slotChildrenChanged(const QString &state, int detail1, int detail2, const QDBusVariant &args, const KAccessibleClient::QSpiObjectReference &reference);

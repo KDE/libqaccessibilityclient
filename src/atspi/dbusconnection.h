@@ -22,7 +22,9 @@
 #define DBUSCONNECTION_H
 
 #include <QtCore/QString>
+#include <QtCore/QObject>
 #include <QtDBus/QDBusConnection>
+#include <QtDBus/QDBusPendingCallWatcher>
 
 namespace KAccessibleClient {
 
@@ -31,19 +33,63 @@ namespace KAccessibleClient {
     Connection to the a11y dbus bus.
     \internal
  */
-class DBusConnection
+class DBusConnection : public QObject
 {
+    Q_OBJECT
 public:
+    /**
+        \brief Constructor.
+
+        When called, means the instance is created, we try instantly
+        to fetch the \a connection . When done the \a connectionFetched
+        will be emitted. If \a connection is called before it will
+        block till the connection was fetched and is ready for use.
+     */
     DBusConnection();
+
+    /**
+        \brief Returns true if the \a connection is not ready yet.
+
+        The initial fetch of the comnnection happens over dbus and
+        as such can block for a longer time means may need longer.
+        To make it possible that users of this class do not block
+        while that happens it is possible to use this method to
+        determinate if fetching the connection is currently work
+        in progress and if so connect with the \a connectionFetched
+        signal to be called back when the connection is ready.
+     */
+    bool isFetchingConnection() const;
+
+    /**
+        \brief Returns the accessibility dbus connection.
+
+        This may either be the session bus or a referenced
+        accessibility bus. If the connection was not fetched
+        yet, means \a isFetchingConnection returns true, then
+        calling this method will block till the connection was
+        fetched.
+     */
     QDBusConnection connection() const;
 
-private:
-    QString getAccessibilityBusAddress() const;
-    QString getAccessibilityBusAddressDBus() const;
-    QString getAccessibilityBusAddressXAtom() const;
-    QDBusConnection connectDBus();
+signals:
 
-    QDBusConnection dbusConnection;
+    /**
+        \brief Emitted when the \a connection was fetched.
+
+        This will happen exactly one time during the lifetime
+        of a DBusConnection instance at the very beginning when
+        the instance is created.
+     */
+    void connectionFetched();
+
+private slots:
+    void initFinished();
+
+private:
+    void init();
+
+    QDBusConnection m_connection;
+    QDBusPendingCallWatcher *m_initWatcher;
 };
 }
 

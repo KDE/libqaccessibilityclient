@@ -553,7 +553,7 @@ void RegistryPrivate::slotStateChanged(const QString &state, int detail1, int /*
 #endif
     if ((state == QLatin1String("focused")) && (detail1 == 1)) {
         KAccessibleClient::AccessibleObject accessible = accessibleFromContext(reference);
-        emit focusChanged(accessible);
+        emit q->focusChanged(accessible);
     }
 }
 
@@ -563,7 +563,7 @@ void RegistryPrivate::slotTextCaretMoved(const QString &/*state*/, int detail1, 
     qDebug() << Q_FUNC_INFO << detail1;
 #endif
     KAccessibleClient::AccessibleObject accessible = accessibleFromContext(reference);
-    emit textCaretMoved(accessible, detail1);
+    emit q->textCaretMoved(accessible, detail1);
 }
 
 void RegistryPrivate::slotTextSelectionChanged(const QString &/*state*/, int /*detail1*/, int /*detail2*/, const QDBusVariant &/*args*/, const QSpiObjectReference &reference)
@@ -572,7 +572,7 @@ void RegistryPrivate::slotTextSelectionChanged(const QString &/*state*/, int /*d
     qDebug() << Q_FUNC_INFO;
 #endif
     KAccessibleClient::AccessibleObject accessible = accessibleFromContext(reference);
-    emit textSelectionChanged(accessible);
+    emit q->textSelectionChanged(accessible);
 }
 
 void RegistryPrivate::slotWindowCreated(const QString &change, int detail1, int detail2, const QDBusVariant &args, const QSpiObjectReference &reference)
