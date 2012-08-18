@@ -88,6 +88,7 @@ using namespace KAccessibleClient;
 RegistryPrivate::RegistryPrivate(Registry *qq)
     :q(qq), m_subscriptions(Registry::NoEventListeners)
 {
+    connect(&conn, SIGNAL(connectionFetched()), this, SLOT(handlePendingSubscriptions()));
     connect(&m_actionMapper, SIGNAL(mapped(QString)), this, SLOT(actionTriggered(QString)));
     init();
 }
@@ -117,8 +118,21 @@ void RegistryPrivate::init()
     interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_EVENT_FOCUS)] = AccessibleObject::EventFocus;
 }
 
+void RegistryPrivate::handlePendingSubscriptions()
+{
+    if (m_pendingSubscriptions > 0) {
+        subscribeEventListeners(m_pendingSubscriptions);
+        m_pendingSubscriptions = 0;
+    }
+}
+
 void RegistryPrivate::subscribeEventListeners(const Registry::EventListeners &listeners)
 {
+    if (conn.isFetchingConnection()) {
+        m_pendingSubscriptions |= listeners;
+        return;
+    }
+
     QStringList subscriptions;
 
     m_subscriptions |= listeners;

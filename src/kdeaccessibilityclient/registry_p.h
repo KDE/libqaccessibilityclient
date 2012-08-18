@@ -73,6 +73,7 @@ public:
     QList<AccessibleObject> children(const AccessibleObject &object) const;
 
 private Q_SLOTS:
+    void handlePendingSubscriptions();
     void slotSubscribeEventListenerFinished(QDBusPendingCallWatcher *call);
     void slotChildrenChanged(const QString &state, int detail1, int detail2, const QDBusVariant &args, const KAccessibleClient::QSpiObjectReference &reference);
     void slotPropertyChange(const QString &state, int detail1, int detail2, const QDBusVariant &args, const KAccessibleClient::QSpiObjectReference &reference);
@@ -92,6 +93,7 @@ private:
     QSignalMapper m_actionMapper;
     Registry *q;
     Registry::EventListeners m_subscriptions;
+    Registry::EventListeners m_pendingSubscriptions;
     QHash<QString, AccessibleObject::Interface> interfaceHash;
 };
 
