@@ -60,7 +60,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 void MainWindow::focusChanged(const KAccessibleClient::AccessibleObject &object)
 {
-    ui.label->setText(tr("Focus changed to: %1 - %2 (%3)").arg(object.name()).arg(object.roleName()).arg(object.role()));
+    ui.label->setText(QString("Focus changed to: %1 - %2 (%3)").arg(object.name()).arg(object.roleName()).arg(object.role()));
 
     if (ui.action_Follow_Focus->isChecked()) {
         QModelIndex index = m_model->indexForAccessible(object);
@@ -70,7 +70,7 @@ void MainWindow::focusChanged(const KAccessibleClient::AccessibleObject &object)
         }
     }
     QPoint fpoint = object.focusPoint();
-    ui.statusbar->showMessage(tr("Current Focus : ( %1 , %2 )").arg(fpoint.x()).arg(fpoint.y()));
+    ui.statusbar->showMessage(QString("Current Focus : ( %1 , %2 )").arg(fpoint.x()).arg(fpoint.y()));
 }
 
 void MainWindow::selectionChanged(const QModelIndex& current, const QModelIndex&)
