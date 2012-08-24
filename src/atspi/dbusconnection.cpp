@@ -83,7 +83,8 @@ QDBusConnection DBusConnection::connection() const
 {
     if (m_initWatcher) {
         m_initWatcher->waitForFinished();
-        const_cast<DBusConnection*>(this)->initFinished();
+        if (m_initWatcher)
+            const_cast<DBusConnection*>(this)->initFinished();
     }
     return m_connection;
 }
