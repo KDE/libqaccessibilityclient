@@ -30,6 +30,7 @@ set_target_properties(kdeaccessibilityclient
 
 
 install(TARGETS kdeaccessibilityclient EXPORT LibKdeAccessibilityClient ${INSTALL_TARGETS_DEFAULT_ARGS})
+install(EXPORT LibKdeAccessibilityClient DESTINATION ${_LibKdeAccessibilityClient_CONFIG_DEST})
 
 ########### install files ###############
 

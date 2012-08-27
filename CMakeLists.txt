@@ -25,11 +25,6 @@ include_directories(
     ${QT4_INCLUDES} ${QT_INCLUDE_DIR} ${QT_QT_INCLUDE_DIR} ${QT_QTDBUS_INCLUDE_DIR}
 )
 
-# # Require libatspi2-core headers for building:
-# include(FindPkgConfig)
-# pkg_check_modules(ATSPI2 REQUIRED atspi-2)
-# include_directories(${ATSPI2_INCLUDE_DIRS})
-
 set(CMAKE_INSTALL_NAME_DIR ${LIB_INSTALL_DIR})
 
 if (WIN32)
@@ -46,6 +41,8 @@ else (WIN32)
    set(LIB_INSTALL_DIR "${EXEC_INSTALL_PREFIX}/lib${LIB_SUFFIX}")
    set(INCLUDE_INSTALL_DIR  "${CMAKE_INSTALL_PREFIX}/include")
 endif (WIN32)
+
+set(_LibKdeAccessibilityClient_CONFIG_DEST "${LIB_INSTALL_DIR}/cmake/${PROJECT_NAME}")
 
 set(INSTALL_TARGETS_DEFAULT_ARGS  RUNTIME DESTINATION "${BIN_INSTALL_DIR}"
                                   LIBRARY DESTINATION "${LIB_INSTALL_DIR}"
@@ -73,13 +70,6 @@ make_install_path_absolute(LIBKDEACCESSIBILITYCLIENT_INCLUDE_DIR ${INCLUDE_INSTA
 make_install_path_absolute(LIBKDEACCESSIBILITYCLIENT_LIB_DIR     ${LIB_INSTALL_DIR})
 
 configure_file( "${LibKdeAccessibilityClient_SOURCE_DIR}/LibKdeAccessibilityClientConfig.cmake.in" "${LibKdeAccessibilityClient_BINARY_DIR}/LibKdeAccessibilityClientConfig.cmake" @ONLY )
-
-if(${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}.${CMAKE_PATCH_VERSION} VERSION_GREATER 2.6.2)
-    set(_LibKdeAccessibilityClient_CONFIG_DEST "${LIB_INSTALL_DIR}/cmake/${PROJECT_NAME}")
-else(${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}.${CMAKE_PATCH_VERSION} VERSION_GREATER 2.6.2)
-    set(_LibKdeAccessibilityClient_CONFIG_DEST "${LIB_INSTALL_DIR}/libkdeaccessibilityclient")
-endif(${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}.${CMAKE_PATCH_VERSION} VERSION_GREATER 2.6.2)
-
 install( FILES
          "${LibKdeAccessibilityClient_BINARY_DIR}/LibKdeAccessibilityClientConfig.cmake"
          DESTINATION "${_LibKdeAccessibilityClient_CONFIG_DEST}" )
