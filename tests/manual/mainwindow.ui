@@ -34,27 +34,32 @@
         <string>Displays a hierachical tree of accessible objects</string>
        </property>
       </widget>
-      <widget class="QPlainTextEdit" name="plainTextEdit">
+      <widget class="QTreeView" name="propertyView">
        <property name="accessibleName">
-        <string>Text area</string>
+        <string>List of properties</string>
        </property>
-       <property name="lineWrapMode">
-        <enum>QPlainTextEdit::NoWrap</enum>
+       <property name="accessibleDescription">
+        <string>Displays a the properties of the selected accessible object</string>
        </property>
-       <property name="readOnly">
-        <bool>true</bool>
+       <property name="editTriggers">
+        <set>QAbstractItemView::NoEditTriggers</set>
+       </property>
+       <property name="showDropIndicator" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="rootIsDecorated">
+        <bool>false</bool>
+       </property>
+       <property name="itemsExpandable">
+        <bool>false</bool>
+       </property>
+       <property name="headerHidden">
+        <bool>false</bool>
+       </property>
+       <property name="expandsOnDoubleClick">
+        <bool>false</bool>
        </property>
       </widget>
-     </widget>
-    </item>
-    <item>
-     <widget class="QLabel" name="label">
-      <property name="accessibleName">
-       <string>Info label</string>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
      </widget>
     </item>
    </layout>
@@ -65,7 +70,7 @@
      <x>0</x>
      <y>0</y>
      <width>681</width>
-     <height>29</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_Edit">
@@ -83,7 +88,6 @@
    <addaction name="menu_Edit"/>
    <addaction name="menu_Options"/>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
   <action name="action_Reset_tree">
    <property name="text">
     <string>&amp;Reset tree</string>
