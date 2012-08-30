@@ -23,14 +23,8 @@ set(accessibleapps_SRCS
     accessibletree.cpp
     tests_auto_modeltest_modeltest.cpp
 )
-set(accessibleapps_UIS
-    mainwindow.ui
-)
-
-qt4_wrap_ui(accessibleapps_UIS_H ${accessibleapps_UIS} )
-#qt4_wrap_cpp(accessibleapps_MOC ${accessibleapps_UIS_H})
 
 qt4_generate_moc(mainwindow.cpp ${CMAKE_CURRENT_BINARY_DIR}/mainwindow.moc)
 
-add_executable(accessibleapps ${accessibleapps_SRCS} ${accessibleapps_MOC} ${accessibleapps_UIS_H})
+add_executable(accessibleapps ${accessibleapps_SRCS} ${accessibleapps_MOC})
 target_link_libraries(accessibleapps ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} ${QT_QTTEST_LIBRARY} ${KDE4_KDEUI_LIBRARY} kdeaccessibilityclient)

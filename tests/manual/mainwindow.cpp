@@ -21,11 +21,16 @@
 #include "mainwindow.h"
 
 #include <qitemselectionmodel.h>
-#include <qplaintextedit.h>
 #include <qstring.h>
 #include <qtreeview.h>
 #include <qheaderview.h>
 #include <qstandarditemmodel.h>
+#include <qdockwidget.h>
+#include <qmenubar.h>
+#include <qtextdocument.h>
+#include <qtextcursor.h>
+#include <QTextBlock>
+#include <qscrollbar.h>
 
 #include "kdeaccessibilityclient/registry.h"
 #include "kdeaccessibilityclient/accessibleobject.h"
@@ -227,42 +232,113 @@ using namespace KAccessibleClient;
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
-    ui.setupUi(this);
-
     m_registry = new KAccessibleClient::Registry(this);
+
+    initUi();
+    initActions();
+    initMenu();
+
     connect(m_registry, SIGNAL(focusChanged(KAccessibleClient::AccessibleObject)), this, SLOT(focusChanged(KAccessibleClient::AccessibleObject)));
-    m_registry->subscribeEventListeners(KAccessibleClient::Registry::Focus);
+    connect(m_registry, SIGNAL(textCaretMoved(KAccessibleClient::AccessibleObject,int)), this, SLOT(textCaretMoved(KAccessibleClient::AccessibleObject,int)));
+    connect(m_registry, SIGNAL(textSelectionChanged(KAccessibleClient::AccessibleObject)), this, SLOT(textSelectionChanged(KAccessibleClient::AccessibleObject)));
+
+    //m_registry->subscribeEventListeners(KAccessibleClient::Registry::Focus);
+    m_registry->subscribeEventListeners(KAccessibleClient::Registry::AllEventListeners);
+}
+
+void MainWindow::initActions()
+{
+    m_resetTreeAction = new QAction(this);
+    m_resetTreeAction->setText(QString("Reset Tree"));
+    m_resetTreeAction->setShortcut(QKeySequence(QKeySequence::Refresh));
+    connect(m_resetTreeAction, SIGNAL(triggered()), m_treeModel, SLOT(resetModel()));
+
+    m_followFocusAction = new QAction(this);
+    m_followFocusAction->setText(QString("Follow Focus"));
+    m_followFocusAction->setCheckable(true);
+    m_followFocusAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_F));
+
+    m_quitAction = new QAction(tr("&Quit"), this);
+    m_quitAction->setShortcuts(QKeySequence::Quit);
+    connect(m_quitAction, SIGNAL(triggered()), this, SLOT(close()));
+}
+
+void MainWindow::initMenu()
+{
+    QMenu *fileMenu = menuBar()->addMenu(QString("File"));
+    fileMenu->addAction(m_resetTreeAction);
+    fileMenu->addSeparator();
+    fileMenu->addAction(m_quitAction);
+
+    QMenu *settingsMenu = menuBar()->addMenu(QString("Settings"));
+    QMenu *dockerMenu = settingsMenu->addMenu(QString("Docker"));
+    Q_FOREACH(const QDockWidget *docker, findChildren<QDockWidget*>()) {
+        QAction *dockerAction = new QAction(this);
+        dockerAction->setText(docker->windowTitle());
+        dockerAction->setCheckable(true);
+        dockerAction->setChecked(true);
+        connect(dockerAction, SIGNAL(toggled(bool)), docker, SLOT(setVisible(bool)));
+        connect(docker, SIGNAL(visibilityChanged(bool)), dockerAction, SLOT(setChecked(bool)));
+        dockerMenu->addAction(dockerAction);
+    }
+    settingsMenu->addAction(m_followFocusAction);
+}
+
+void MainWindow::initUi()
+{
+    QDockWidget *treeDocker = new QDockWidget(QString("Tree"), this);
+    treeDocker->setFeatures(QDockWidget::AllDockWidgetFeatures);
+    m_treeView = new QTreeView(treeDocker);
+    treeDocker->setWidget(m_treeView);
+    m_treeView->setAccessibleName(QString("Tree of accessibles"));
+    m_treeView->setAccessibleDescription(QString("Displays a hierachical tree of accessible objects"));
+    addDockWidget(Qt::LeftDockWidgetArea, treeDocker);
 
     m_treeModel = new AccessibleTree(this);
-    ui.treeView->setModel(m_treeModel);
-    ui.treeView->setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(ui.treeView, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(treeCustomContextMenuRequested(QPoint)));
     m_treeModel->setRegistry(m_registry);
+    m_treeView->setModel(m_treeModel);
+    m_treeView->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(m_treeView, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(treeCustomContextMenuRequested(QPoint)));
 
     // The ultimate model verificaton helper :p
     new ModelTest(m_treeModel, this);
 
-    m_propertyModel = new ObjectProperties(this);
-    ui.propertyView->setModel(m_propertyModel);
+    QDockWidget *propertyDocker = new QDockWidget(QString("Properties"), this);
+    propertyDocker->setFeatures(QDockWidget::AllDockWidgetFeatures);
+    m_propertyView = new QTreeView(propertyDocker);
+    propertyDocker->setWidget(m_propertyView);
+    m_propertyView->setAccessibleName(QString("List of properties"));
+    m_propertyView->setAccessibleDescription(QString("Displays a the properties of the selected accessible object"));
+    m_propertyView->setRootIsDecorated(false);
+    m_propertyView->setItemsExpandable(false);
+    m_propertyView->setExpandsOnDoubleClick(false);
 
-    connect(ui.treeView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(selectionChanged(QModelIndex,QModelIndex)));
-    connect(ui.action_Reset_tree, SIGNAL(triggered()), m_treeModel, SLOT(resetModel()));
-    ui.action_Reset_tree->setShortcut(QKeySequence(QKeySequence::Refresh));
+    m_propertyModel = new ObjectProperties(this);
+    m_propertyView->setModel(m_propertyModel);
+    connect(m_treeView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(selectionChanged(QModelIndex,QModelIndex)));
+    addDockWidget(Qt::RightDockWidgetArea, propertyDocker);
+
+    QDockWidget *eventsDocker = new QDockWidget(QString("Events"), this);
+    eventsDocker->setFeatures(QDockWidget::AllDockWidgetFeatures);
+    m_eventsEdit = new QTextBrowser(eventsDocker);
+    eventsDocker->setWidget(m_eventsEdit);
+    addDockWidget(Qt::RightDockWidgetArea, eventsDocker);
+
+    resize(QSize(760,520));
 }
 
-void MainWindow::focusChanged(const KAccessibleClient::AccessibleObject &object)
+void MainWindow::addLog(const KAccessibleClient::AccessibleObject &object, const QString &eventName)
 {
-    //ui.label->setText(QString("Focus changed to: %1 - %2 (%3)").arg(object.name()).arg(object.roleName()).arg(object.role()));
-
-    if (ui.action_Follow_Focus->isChecked()) {
-        QModelIndex index = m_treeModel->indexForAccessible(object);
-        if (index.isValid()) {
-            ui.treeView->scrollTo(index);
-            ui.treeView->selectionModel()->setCurrentIndex(index, QItemSelectionModel::ClearAndSelect);
-        }
-    }
-    QPoint fpoint = object.focusPoint();
-    //ui.statusbar->showMessage(QString("Current Focus : ( %1 , %2 )").arg(fpoint.x()).arg(fpoint.y()));
+    QTextDocument *doc = m_eventsEdit->document();
+    doc->blockSignals(true); // to prevent infinte TextCaretMoved events
+    QTextCursor cursor(doc->lastBlock());
+    cursor.movePosition(QTextCursor::EndOfBlock, QTextCursor::KeepAnchor);
+    QString s = QString("%1: %2 (%3)").arg(eventName).arg(object.name()).arg(object.roleName());
+    cursor.insertText(s);
+    cursor.insertBlock();
+    doc->blockSignals(false);
+//     m_eventsEdit->ensureCursorVisible();
+    m_eventsEdit->verticalScrollBar()->setValue(m_eventsEdit->verticalScrollBar()->maximum());
 }
 
 void MainWindow::selectionChanged(const QModelIndex& current, const QModelIndex&)
@@ -272,13 +348,13 @@ void MainWindow::selectionChanged(const QModelIndex& current, const QModelIndex&
         acc = static_cast<AccessibleWrapper*>(current.internalPointer())->acc;
     }
     m_propertyModel->setAccessibleObject(acc);
-    ui.propertyView->expandAll();
-    ui.propertyView->resizeColumnToContents(0);
+    m_propertyView->expandAll();
+    m_propertyView->resizeColumnToContents(0);
 }
 
 void MainWindow::treeCustomContextMenuRequested(const QPoint &pos)
 {
-    QModelIndex current = ui.treeView->currentIndex();
+    QModelIndex current = m_treeView->currentIndex();
     if (!current.isValid())
         return;
     KAccessibleClient::AccessibleObject acc = static_cast<AccessibleWrapper*>(current.internalPointer())->acc;
@@ -287,5 +363,31 @@ void MainWindow::treeCustomContextMenuRequested(const QPoint &pos)
     Q_FOREACH(QAction *a, acc.actions()) {
         menu->addAction(a);
     }
-    menu->popup(ui.treeView->mapToGlobal(pos));
+    menu->popup(m_treeView->mapToGlobal(pos));
+}
+
+void MainWindow::focusChanged(const KAccessibleClient::AccessibleObject &object)
+{
+    if (m_followFocusAction->isChecked()) {
+        QModelIndex index = m_treeModel->indexForAccessible(object);
+        if (index.isValid()) {
+            m_treeView->scrollTo(index);
+            m_treeView->selectionModel()->setCurrentIndex(index, QItemSelectionModel::ClearAndSelect);
+        } else {
+            qWarning() << "No such indexForAccessible=" << object;
+        }
+    }
+    //QPoint fpoint = object.focusPoint();
+    //ui.statusbar->showMessage(QString("Current Focus : ( %1 , %2 )").arg(fpoint.x()).arg(fpoint.y()));
+    addLog(object, QString("Focus"));
+}
+
+void MainWindow::textCaretMoved(const KAccessibleClient::AccessibleObject &object, int pos)
+{
+    addLog(object, QString("TextCaretMoved"));
+}
+
+void MainWindow::textSelectionChanged(const KAccessibleClient::AccessibleObject &object)
+{
+    addLog(object, QString("TextSelectionChanged"));
 }

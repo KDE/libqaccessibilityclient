@@ -22,9 +22,10 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "ui_mainwindow.h"
-
 #include <qmainwindow.h>
+#include <qtreeview.h>
+#include <qtextbrowser.h>
+#include <qaction.h>
 #include <qdebug.h>
 
 #include "kdeaccessibilityclient/accessibleobject.h"
@@ -43,14 +44,32 @@ public:
 
 private Q_SLOTS:
     void selectionChanged(const QModelIndex &current, const QModelIndex &);
-    void focusChanged(const KAccessibleClient::AccessibleObject &object);
     void treeCustomContextMenuRequested(const QPoint &pos);
 
+    void focusChanged(const KAccessibleClient::AccessibleObject &object);
+    void textCaretMoved(const KAccessibleClient::AccessibleObject &object, int pos);
+    void textSelectionChanged(const KAccessibleClient::AccessibleObject &object);
+
 private:
-    Ui::MainWindow ui;
-    AccessibleTree *m_treeModel;
-    ObjectProperties *m_propertyModel;
     KAccessibleClient::Registry *m_registry;
+
+    QTreeView *m_treeView;
+    AccessibleTree *m_treeModel;
+
+    QTreeView *m_propertyView;
+    ObjectProperties *m_propertyModel;
+
+    QTextBrowser *m_eventsEdit;
+
+    QAction *m_resetTreeAction;
+    QAction *m_followFocusAction;
+    QAction *m_quitAction;
+
+    void initActions();
+    void initMenu();
+    void initUi();
+
+    void addLog(const KAccessibleClient::AccessibleObject &object, const QString &eventName);
 };
 
 #endif
