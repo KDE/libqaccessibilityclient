@@ -238,6 +238,9 @@ MainWindow::MainWindow(QWidget *parent)
     initActions();
     initMenu();
 
+    // The ultimate model verificaton helper :p
+    new ModelTest(m_treeModel, this);
+
     connect(m_registry, SIGNAL(focusChanged(KAccessibleClient::AccessibleObject)), this, SLOT(focusChanged(KAccessibleClient::AccessibleObject)));
     connect(m_registry, SIGNAL(textCaretMoved(KAccessibleClient::AccessibleObject,int)), this, SLOT(textCaretMoved(KAccessibleClient::AccessibleObject,int)));
     connect(m_registry, SIGNAL(textSelectionChanged(KAccessibleClient::AccessibleObject)), this, SLOT(textSelectionChanged(KAccessibleClient::AccessibleObject)));
@@ -299,9 +302,6 @@ void MainWindow::initUi()
     m_treeView->setModel(m_treeModel);
     m_treeView->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(m_treeView, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(treeCustomContextMenuRequested(QPoint)));
-
-    // The ultimate model verificaton helper :p
-    new ModelTest(m_treeModel, this);
 
     QDockWidget *propertyDocker = new QDockWidget(QString("Properties"), this);
     propertyDocker->setFeatures(QDockWidget::AllDockWidgetFeatures);
