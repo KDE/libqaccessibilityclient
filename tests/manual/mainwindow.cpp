@@ -289,15 +289,17 @@ void MainWindow::initUi()
     QDockWidget *treeDocker = new QDockWidget(QString("Tree"), this);
     treeDocker->setFeatures(QDockWidget::AllDockWidgetFeatures);
     m_treeView = new QTreeView(treeDocker);
-    treeDocker->setWidget(m_treeView);
     m_treeView->setAccessibleName(QString("Tree of accessibles"));
     m_treeView->setAccessibleDescription(QString("Displays a hierachical tree of accessible objects"));
+    m_treeView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    treeDocker->setWidget(m_treeView);
     addDockWidget(Qt::LeftDockWidgetArea, treeDocker);
 
     m_treeModel = new AccessibleTree(this);
     m_treeModel->setRegistry(m_registry);
     m_treeView->setModel(m_treeModel);
     m_treeView->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(m_treeView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(selectionChanged(QModelIndex,QModelIndex)));
     connect(m_treeView, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(treeCustomContextMenuRequested(QPoint)));
 
     QDockWidget *propertyDocker = new QDockWidget(QString("Properties"), this);
@@ -309,10 +311,10 @@ void MainWindow::initUi()
     m_propertyView->setRootIsDecorated(false);
     m_propertyView->setItemsExpandable(false);
     m_propertyView->setExpandsOnDoubleClick(false);
+    m_propertyView->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
     m_propertyModel = new ObjectProperties(this);
     m_propertyView->setModel(m_propertyModel);
-    connect(m_treeView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(selectionChanged(QModelIndex,QModelIndex)));
     addDockWidget(Qt::RightDockWidgetArea, propertyDocker);
 
     QDockWidget *eventsDocker = new QDockWidget(QString("Events"), this);
