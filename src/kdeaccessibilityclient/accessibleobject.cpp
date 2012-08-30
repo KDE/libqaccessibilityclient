@@ -199,9 +199,9 @@ int AccessibleObject::appId() const
     return d->registryPrivate->appId(*this);
 }
 
-QString AccessibleObject::appLocale() const
+QString AccessibleObject::appLocale(LocaleType lctype) const
 {
-    return d->registryPrivate->appLocale(*this);
+    return d->registryPrivate->appLocale(*this, lctype);
 }
 
 QString AccessibleObject::appBusAddress() const

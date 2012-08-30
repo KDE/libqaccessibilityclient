@@ -69,7 +69,7 @@ public:
     QString appToolkitName(const AccessibleObject &object) const;
     QString appVersion(const AccessibleObject &object) const;
     int appId(const AccessibleObject &object) const;
-    QString appLocale(const AccessibleObject &object) const;
+    QString appLocale(const AccessibleObject &object, uint lctype) const;
     QString appBusAddress(const AccessibleObject &object) const;
 
     QList<QAction*> actions(const AccessibleObject &object);

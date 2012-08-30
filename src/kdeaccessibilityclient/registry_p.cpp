@@ -542,9 +542,14 @@ int RegistryPrivate::appId(const AccessibleObject &object) const
     return v.toInt();
 }
 
-QString RegistryPrivate::appLocale(const AccessibleObject &object) const
+QString RegistryPrivate::appLocale(const AccessibleObject &object, uint lctype) const
 {
     QDBusMessage message = QDBusMessage::createMethodCall(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Application"), QLatin1String("GetLocale"));
+
+    QVariantList args;
+    args.append(lctype);
+    message.setArguments(args);
+
     QDBusReply<QString> reply = conn.connection().call(message);
     if (!reply.isValid()) {
         qWarning() << "Could not access appLocale." << reply.error().message();
@@ -555,8 +560,13 @@ QString RegistryPrivate::appLocale(const AccessibleObject &object) const
 
 QString RegistryPrivate::appBusAddress(const AccessibleObject &object) const
 {
-    qDebug() << "TODO implement appBusAddress";
-    return QString();
+    QDBusMessage message = QDBusMessage::createMethodCall(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Application"), QLatin1String("GetApplicationBusAddress"));
+    QDBusReply<QString> reply = conn.connection().call(message);
+    if (!reply.isValid()) {
+        qWarning() << "Could not access appBusAddress." << reply.error().message();
+        return QString();
+    }
+    return reply.value();
 }
 
 QList<QAction*> RegistryPrivate::actions(const AccessibleObject &object)

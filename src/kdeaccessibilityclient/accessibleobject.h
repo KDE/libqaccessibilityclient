@@ -218,7 +218,18 @@ public:
     QString appToolkitName() const;
     QString appVersion() const;
     int appId() const;
-    QString appLocale() const;
+
+    enum LocaleType {
+        LocaleTypeMessages,
+        LocaleTypeCollate,
+        LocaleTypeCType,
+        LocaleTypeMonetary,
+        LocaleTypeNumeric,
+        LocaleTypeTime
+    };
+
+    QString appLocale(LocaleType lctype = LocaleTypeMessages) const;
+
     QString appBusAddress() const;
 
     /**
