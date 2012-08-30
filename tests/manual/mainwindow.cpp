@@ -72,16 +72,14 @@ public:
             append(QString("Default"), acc.isDefault(), item);
             append(QString("State"), stateString(acc), item);
             //GetAttributes
+            //GetApplication
         }
         if (interfaces.testFlag(KAccessibleClient::AccessibleObject::Component)) {
             QStandardItem *item = append(QString("Component"));
             append(QString("BoundingRect"), acc.boundingRect(), item);
-            // GetPosition
-            // GetSize
-            // GetLayer
-            // GetMDIZOrder
-            // GrabFocus
-            // GetAlpha
+            append(QString("Layer"), acc.layer(), item);
+            append(QString("MDIZOrder"), acc.mdiZOrder(), item);
+            append(QString("Alpha"), acc.alpha(), item);
         }
         if (interfaces.testFlag(KAccessibleClient::AccessibleObject::Collection)) {
             QStandardItem *item = append(QString("Collection"));
@@ -89,12 +87,11 @@ public:
         }
         if (interfaces.testFlag(KAccessibleClient::AccessibleObject::Application)) {
             QStandardItem *item = append(QString("Application"));
-            Q_UNUSED(item);
-            // ToolkitName
-            // Version
-            // Id
-            // GetLocale
-            // GetApplicationBusAddress
+            append(QString("ToolkitName"), acc.appToolkitName(), item);
+            append(QString("Version"), acc.appVersion(), item);
+            append(QString("Id"), acc.appId(), item);
+            append(QString("Locale"), acc.appLocale(), item);
+            append(QString("BusAddress"), acc.appBusAddress(), item);
         }
         if (interfaces.testFlag(KAccessibleClient::AccessibleObject::Document)) {
             QStandardItem *item = append(QString("Document"));

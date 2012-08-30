@@ -57,10 +57,20 @@ public:
     QString roleName(const AccessibleObject &object) const;
     QString localizedRoleName(const AccessibleObject &object) const;
     quint64 state(const AccessibleObject &object) const;
+    int layer(const AccessibleObject &object) const;
+    int mdiZOrder(const AccessibleObject &object) const;
+    double alpha(const AccessibleObject &object) const;
     QRect boundingRect(const AccessibleObject &object) const;
     QRect characterRect(const AccessibleObject &object) const;
     AccessibleObject::Interfaces supportedInterfaces(const AccessibleObject &object) const;
     int caretOffset(const AccessibleObject &object) const;
+
+    AccessibleObject application(const AccessibleObject &object) const;
+    QString appToolkitName(const AccessibleObject &object) const;
+    QString appVersion(const AccessibleObject &object) const;
+    int appId(const AccessibleObject &object) const;
+    QString appLocale(const AccessibleObject &object) const;
+    QString appBusAddress(const AccessibleObject &object) const;
 
     QList<QAction*> actions(const AccessibleObject &object);
 

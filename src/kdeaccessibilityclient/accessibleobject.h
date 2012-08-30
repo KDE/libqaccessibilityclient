@@ -163,6 +163,10 @@ public:
      */
     QString localizedRoleName() const;
 
+    int layer() const;
+    int mdiZOrder() const;
+    double alpha() const;
+
     /**
         \brief Returns a bounding rectangle for the accessible.
 
@@ -209,6 +213,13 @@ public:
         \return The Focus Point of the object
     */
     QPoint focusPoint() const;
+
+    AccessibleObject application() const;
+    QString appToolkitName() const;
+    QString appVersion() const;
+    int appId() const;
+    QString appLocale() const;
+    QString appBusAddress() const;
 
     /**
         \brief Returns a list of actions supported by this accessible.

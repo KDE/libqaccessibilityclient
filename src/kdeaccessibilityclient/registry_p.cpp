@@ -409,6 +409,42 @@ quint64 RegistryPrivate::state(const AccessibleObject &object) const
     return state;
 }
 
+int RegistryPrivate::layer(const AccessibleObject &object) const
+{
+    QDBusMessage message = QDBusMessage::createMethodCall (
+                object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Component"), QLatin1String("GetLayer"));
+    QDBusReply<uint> reply = conn.connection().call(message);
+    if (!reply.isValid()) {
+        qWarning() << "Could not access layer." << reply.error().message();
+        return 1;
+    }
+    return reply.value();
+}
+
+int RegistryPrivate::mdiZOrder(const AccessibleObject &object) const
+{
+    QDBusMessage message = QDBusMessage::createMethodCall (
+                object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Component"), QLatin1String("GetMDIZOrder"));
+    QDBusReply<short> reply = conn.connection().call(message);
+    if (!reply.isValid()) {
+        qWarning() << "Could not access mdiZOrder." << reply.error().message();
+        return 0;
+    }
+    return reply.value();
+}
+
+double RegistryPrivate::alpha(const AccessibleObject &object) const
+{
+    QDBusMessage message = QDBusMessage::createMethodCall (
+                object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Component"), QLatin1String("GetAlpha"));
+    QDBusReply<double> reply = conn.connection().call(message);
+    if (!reply.isValid()) {
+        qWarning() << "Could not access alpha." << reply.error().message();
+        return 1.0;
+    }
+    return reply.value();
+}
+
 QRect RegistryPrivate::boundingRect(const AccessibleObject &object) const
 {
     QDBusMessage message = QDBusMessage::createMethodCall(
@@ -473,6 +509,54 @@ int RegistryPrivate::caretOffset(const AccessibleObject &object) const
     QVariant offset= getProperty(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Text"), QLatin1String("CaretOffset"));
     if (offset.isNull()) qWarning() << "Could not get caret offset";
     return offset.toInt();
+}
+
+AccessibleObject RegistryPrivate::application(const AccessibleObject &object) const
+{
+    QDBusMessage message = QDBusMessage::createMethodCall(
+            object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Accessible"), QLatin1String("GetApplication"));
+    QDBusReply<QSpiObjectReference> reply = conn.connection().call(message);
+    if (!reply.isValid()) {
+        qWarning() << "Could not access application." << reply.error().message();
+        return AccessibleObject(0, QString(), QString());
+    }
+    const QSpiObjectReference child = reply.value();
+    return AccessibleObject(const_cast<RegistryPrivate*>(this), child.service, child.path.path());
+}
+
+QString RegistryPrivate::appToolkitName(const AccessibleObject &object) const
+{
+    QVariant v = getProperty(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Application"), QLatin1String("ToolkitName"));
+    return v.toString();
+}
+
+QString RegistryPrivate::appVersion(const AccessibleObject &object) const
+{
+    QVariant v = getProperty(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Application"), QLatin1String("Version"));
+    return v.toString();
+}
+
+int RegistryPrivate::appId(const AccessibleObject &object) const
+{
+    QVariant v = getProperty(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Application"), QLatin1String("Id"));
+    return v.toInt();
+}
+
+QString RegistryPrivate::appLocale(const AccessibleObject &object) const
+{
+    QDBusMessage message = QDBusMessage::createMethodCall(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Application"), QLatin1String("GetLocale"));
+    QDBusReply<QString> reply = conn.connection().call(message);
+    if (!reply.isValid()) {
+        qWarning() << "Could not access appLocale." << reply.error().message();
+        return QString();
+    }
+    return reply.value();
+}
+
+QString RegistryPrivate::appBusAddress(const AccessibleObject &object) const
+{
+    qDebug() << "TODO implement appBusAddress";
+    return QString();
 }
 
 QList<QAction*> RegistryPrivate::actions(const AccessibleObject &object)

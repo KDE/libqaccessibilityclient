@@ -116,6 +116,21 @@ QString AccessibleObject::localizedRoleName() const
     return d->registryPrivate->localizedRoleName(*this);
 }
 
+int AccessibleObject::layer() const
+{
+    return d->registryPrivate->layer(*this);
+}
+
+int AccessibleObject::mdiZOrder() const
+{
+    return d->registryPrivate->mdiZOrder(*this);
+}
+
+double AccessibleObject::alpha() const
+{
+    return d->registryPrivate->alpha(*this);
+}
+
 QRect AccessibleObject::boundingRect() const
 {
     if( supportedInterfaces() & AccessibleObject::Component ){
@@ -162,6 +177,36 @@ QPoint AccessibleObject::focusPoint() const
     } else {
         return QPoint();
     }
+}
+
+AccessibleObject AccessibleObject::application() const
+{
+    return d->registryPrivate->application(*this);
+}
+
+QString AccessibleObject::appToolkitName() const
+{
+    return d->registryPrivate->appToolkitName(*this);
+}
+
+QString AccessibleObject::appVersion() const
+{
+    return d->registryPrivate->appVersion(*this);
+}
+
+int AccessibleObject::appId() const
+{
+    return d->registryPrivate->appId(*this);
+}
+
+QString AccessibleObject::appLocale() const
+{
+    return d->registryPrivate->appLocale(*this);
+}
+
+QString AccessibleObject::appBusAddress() const
+{
+    return d->registryPrivate->appBusAddress(*this);
 }
 
 QList<QAction*> AccessibleObject::actions() const
