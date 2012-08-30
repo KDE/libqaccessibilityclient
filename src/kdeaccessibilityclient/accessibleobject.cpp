@@ -63,7 +63,7 @@ AccessibleObject &AccessibleObject::operator=(const AccessibleObject &other)
 
 bool AccessibleObject::operator==(const AccessibleObject &other) const
 {
-    return (d == other.d) || *d == *other.d;
+    return (d == other.d) || (d && other.d && *d == *other.d);
 }
 
 AccessibleObject AccessibleObject::parent() const
@@ -274,7 +274,7 @@ LIBKDEACCESSIBILITYCLIENT_EXPORT QDebug KAccessibleClient::operator<<(QDebug d, 
 {
     d.nospace();
     d << "AccessibleObject("; //d:" << hex << (void *) object.d << dec;
-    d << " service=" << object.d->service;
+    d << "service=" << object.d->service;
     d << " path=" << object.d->path;
     d << ")";
     return d.space();
