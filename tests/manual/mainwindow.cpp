@@ -50,14 +50,14 @@ public:
 
     void setAccessibleObject(const KAccessibleClient::AccessibleObject &acc)
     {
-        //beginResetModel();
+        beginResetModel();
 
         clear();
         setColumnCount(2);
         setHorizontalHeaderLabels( QStringList() << QString("Property") << QString("Value") );
 
         if (!acc.isValid()) {
-            //endResetModel();
+            endResetModel();
             return;
         }
 
@@ -96,6 +96,9 @@ public:
         if (interfaces.testFlag(KAccessibleClient::AccessibleObject::Document)) {
             QStandardItem *item = append(QString("Document"));
             Q_UNUSED(item);
+            //GetLocale
+            //GetAttributeValue
+            //GetAttributes
         }
 
         if (interfaces.testFlag(KAccessibleClient::AccessibleObject::EditableText)) {
@@ -105,22 +108,85 @@ public:
         if (interfaces.testFlag(KAccessibleClient::AccessibleObject::Hyperlink)) {
             QStandardItem *item = append(QString("Hyperlink"));
             Q_UNUSED(item);
+            /*
+            <property name="NAnchors" type="n" access="read"/>
+            <property name="StartIndex" type="i" access="read"/>
+            <property name="EndIndex" type="i" access="read"/>
+            <method name="GetObject">
+                <arg direction="in" name="i" type="i"/>
+                <arg direction="out" type="(so)"/>
+                <annotation name="com.trolltech.QtDBus.QtTypeName.Out0" value="QSpiObjectReference"/>
+            </method>
+            0<method name="GetURI">
+                <arg direction="in" name="i" type="i"/>
+                <arg direction="out" type="s"/>
+            </method>
+            <method name="IsValid">
+                <arg direction="out" type="b"/>
+            </method>
+            */
         }
         if (interfaces.testFlag(KAccessibleClient::AccessibleObject::Hypertext)) {
             QStandardItem *item = append(QString("Hypertext"));
             Q_UNUSED(item);
+            /*
+            <method name="GetNLinks">
+                <arg direction="out" type="i"/>
+            </method>
+            <method name="GetLink">
+                <arg direction="in" name="linkIndex" type="i"/>
+                <arg direction="out" type="(so)"/>
+                <annotation name="com.trolltech.QtDBus.QtTypeName.Out0" value="QSpiObjectReference"/>
+            </method>
+            <method name="GetLinkIndex">
+                <arg direction="in" name="characterIndex" type="i"/>
+                <arg direction="out" type="i"/>
+            </method>
+            */
         }
         if (interfaces.testFlag(KAccessibleClient::AccessibleObject::Image)) {
             QStandardItem *item = append(QString("Image"));
-            Q_UNUSED(item);
+            append(QString("Description"), acc.imageDescription(), item);
+            append(QString("Locale"), acc.imageLocale(), item);
+            append(QString("Rect"), acc.imageRect(), item);
         }
         if (interfaces.testFlag(KAccessibleClient::AccessibleObject::Selection)) {
             QStandardItem *item = append(QString("Selection"));
-            Q_UNUSED(item);
+            Q_FOREACH(const KAccessibleClient::AccessibleObject &s, acc.selection()) {
+                append(s.name(), s.role(), item);
+            }
         }
         if (interfaces.testFlag(KAccessibleClient::AccessibleObject::Table)) {
             QStandardItem *item = append(QString("Table"));
             Q_UNUSED(item);
+            /*
+            <property name="NRows" type="i" access="read"/>
+            <property name="NColumns" type="i" access="read"/>
+            <property name="Caption" type="(so)" access="read">
+                <annotation name="com.trolltech.QtDBus.QtTypeName" value="QSpiObjectReference"/>
+            </property>
+            <property name="Summary" type="(so)" access="read">
+                <annotation name="com.trolltech.QtDBus.QtTypeName" value="QSpiObjectReference"/>
+            </property>
+            <property name="NSelectedRows" type="i" access="read"/>
+            <property name="NSelectedColumns" type="i" access="read"/>
+            <method name="GetRowDescription">
+                <arg direction="in" name="row" type="i"/>
+                <arg direction="out" type="s"/>
+            </method>
+            <method name="GetColumnDescription">
+                <arg direction="in" name="column" type="i"/>
+                <arg direction="out" type="s"/>
+            </method>
+            <method name="GetSelectedRows">
+                <arg direction="out" type="ai"/>
+                <annotation name="com.trolltech.QtDBus.QtTypeName.Out0" value="QSpiIntList"/>
+            </method>
+            <method name="GetSelectedColumns">
+                <arg direction="out" type="ai"/>
+                <annotation name="com.trolltech.QtDBus.QtTypeName.Out0" value="QSpiIntList"/>
+            </method>
+            */
         }
         if (interfaces.testFlag(KAccessibleClient::AccessibleObject::Text)) {
             QStandardItem *item = append(QString("Text"));
@@ -129,7 +195,10 @@ public:
         }
         if (interfaces.testFlag(KAccessibleClient::AccessibleObject::Value)) {
             QStandardItem *item = append(QString("Value"));
-            Q_UNUSED(item);
+            append(QString("Current"), acc.currentValue(), item);
+            append(QString("Minimum"), acc.minimumValue(), item);
+            append(QString("Maximum"), acc.maximumValue(), item);
+            append(QString("Increment"), acc.minimumValueIncrement(), item);
         }
         if (interfaces.testFlag(KAccessibleClient::AccessibleObject::Socket)) {
             QStandardItem *item = append(QString("Socket"));
@@ -162,12 +231,11 @@ public:
             Q_FOREACH(QAction *a, acc.actions()) {
                 QStandardItem *nameItem = new QStandardItem(a->text());
                 QStandardItem *valueItem = new QStandardItem(a->whatsThis());
-                //QStandardItem *valueItem = new QStandardItem(a->objectName());
                 item->appendRow(QList<QStandardItem*>() << nameItem << valueItem);
             }
         }
 
-        //endResetModel();
+        endResetModel();
     }
 
 private:

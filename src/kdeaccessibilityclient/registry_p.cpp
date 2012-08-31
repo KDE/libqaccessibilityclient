@@ -569,6 +569,84 @@ QString RegistryPrivate::appBusAddress(const AccessibleObject &object) const
     return reply.value();
 }
 
+double RegistryPrivate::minimumValue(const AccessibleObject &object) const
+{
+    QVariant v = getProperty(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Value"), QLatin1String("MinimumValue"));
+    return v.toDouble();
+}
+
+double RegistryPrivate::maximumValue(const AccessibleObject &object) const
+{
+    QVariant v = getProperty(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Value"), QLatin1String("MaximumValue"));
+    return v.toDouble();
+}
+
+double RegistryPrivate::minimumValueIncrement(const AccessibleObject &object) const
+{
+    QVariant v = getProperty(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Value"), QLatin1String("MinimumIncrement"));
+    return v.toDouble();
+}
+
+double RegistryPrivate::currentValue(const AccessibleObject &object) const
+{
+    QVariant v = getProperty(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Value"), QLatin1String("CurrentValue"));
+    return v.toDouble();
+}
+
+QList<AccessibleObject> RegistryPrivate::selection(const AccessibleObject &object) const
+{
+    QList<AccessibleObject> result;
+    int count = getProperty(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Selection"), QLatin1String("CurrentValue")).toInt();
+    for(int i = 0; i < count; ++i) {
+        QDBusMessage message = QDBusMessage::createMethodCall(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Selection"), QLatin1String("GetSelectedChild"));
+        QDBusReply<QSpiObjectReference> reply = conn.connection().call(message);
+        if (!reply.isValid()) {
+            qWarning() << "Could not access selection." << reply.error().message();
+            return QList<AccessibleObject>();
+        }
+        const QSpiObjectReference ref = reply.value();
+        result.append(AccessibleObject(const_cast<RegistryPrivate*>(this), ref.service, ref.path.path()));
+    }
+    return result;
+}
+
+QString RegistryPrivate::imageDescription(const AccessibleObject &object) const
+{
+    QDBusMessage message = QDBusMessage::createMethodCall(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Image"), QLatin1String("ImageDescription"));
+    QDBusReply<QString> reply = conn.connection().call(message);
+    if (!reply.isValid()) {
+        qWarning() << "Could not access imageDescription." << reply.error().message();
+        return QString();
+    }
+    return reply.value();
+}
+
+QString RegistryPrivate::imageLocale(const AccessibleObject &object) const
+{
+    QDBusMessage message = QDBusMessage::createMethodCall(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Image"), QLatin1String("ImageLocale"));
+    QDBusReply<QString> reply = conn.connection().call(message);
+    if (!reply.isValid()) {
+        qWarning() << "Could not access imageLocale." << reply.error().message();
+        return QString();
+    }
+    return reply.value();
+}
+
+QRect RegistryPrivate::imageRect(const AccessibleObject &object) const
+{
+    QDBusMessage message = QDBusMessage::createMethodCall(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Image"), QLatin1String("GetImageExtents"));
+    QVariantList args;
+    quint32 coords = ATSPI_COORD_TYPE_SCREEN;
+    args << coords;
+    message.setArguments(args);
+    QDBusReply<QRect> reply = conn.connection().call(message);
+    if (!reply.isValid()) {
+        qWarning() << "Could not access imageRect." << reply.error().message();
+        return QRect();
+    }
+    return QRect( reply.value() );
+}
+
 QList<QAction*> RegistryPrivate::actions(const AccessibleObject &object)
 {
     QDBusMessage message = QDBusMessage::createMethodCall (

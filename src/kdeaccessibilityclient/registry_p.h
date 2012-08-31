@@ -72,6 +72,17 @@ public:
     QString appLocale(const AccessibleObject &object, uint lctype) const;
     QString appBusAddress(const AccessibleObject &object) const;
 
+    double minimumValue(const AccessibleObject &object) const;
+    double maximumValue(const AccessibleObject &object) const;
+    double minimumValueIncrement(const AccessibleObject &object) const;
+    double currentValue(const AccessibleObject &object) const;
+
+    QList<AccessibleObject> selection(const AccessibleObject &object) const;
+
+    QString imageDescription(const AccessibleObject &object) const;
+    QString imageLocale(const AccessibleObject &object) const;
+    QRect imageRect(const AccessibleObject &object) const;
+
     QList<QAction*> actions(const AccessibleObject &object);
 
     QList<AccessibleObject> topLevelAccessibles() const;

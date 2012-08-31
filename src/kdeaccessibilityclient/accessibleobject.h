@@ -232,6 +232,17 @@ public:
 
     QString appBusAddress() const;
 
+    double minimumValue() const;
+    double maximumValue() const;
+    double minimumValueIncrement() const;
+    double currentValue() const;
+
+    QList<AccessibleObject> selection() const;
+
+    QString imageDescription() const;
+    QString imageLocale() const;
+    QRect imageRect() const;
+
     /**
         \brief Returns a list of actions supported by this accessible.
 

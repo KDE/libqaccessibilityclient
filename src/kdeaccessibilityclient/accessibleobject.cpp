@@ -209,6 +209,46 @@ QString AccessibleObject::appBusAddress() const
     return d->registryPrivate->appBusAddress(*this);
 }
 
+double AccessibleObject::minimumValue() const
+{
+    return d->registryPrivate->minimumValue(*this);
+}
+
+double AccessibleObject::maximumValue() const
+{
+    return d->registryPrivate->maximumValue(*this);
+}
+
+double AccessibleObject::minimumValueIncrement() const
+{
+    return d->registryPrivate->minimumValueIncrement(*this);
+}
+
+double AccessibleObject::currentValue() const
+{
+    return d->registryPrivate->currentValue(*this);
+}
+
+QList<AccessibleObject> AccessibleObject::selection() const
+{
+    return d->registryPrivate->selection(*this);
+}
+
+QString AccessibleObject::imageDescription() const
+{
+    return d->registryPrivate->imageDescription(*this);
+}
+
+QString AccessibleObject::imageLocale() const
+{
+    return d->registryPrivate->imageLocale(*this);
+}
+
+QRect AccessibleObject::imageRect() const
+{
+    return d->registryPrivate->imageRect(*this);
+}
+
 QList<QAction*> AccessibleObject::actions() const
 {
     // Actions in atspi are supposed to be static what means they cannot change in
