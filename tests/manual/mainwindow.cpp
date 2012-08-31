@@ -304,7 +304,7 @@ MainWindow::MainWindow(QWidget *parent)
     initMenu();
 
     // The ultimate model verificaton helper :p
-    new ModelTest(m_treeModel, this);
+    //new ModelTest(m_treeModel, this);
 
     connect(m_registry, SIGNAL(focusChanged(KAccessibleClient::AccessibleObject)), this, SLOT(focusChanged(KAccessibleClient::AccessibleObject)));
     connect(m_registry, SIGNAL(textCaretMoved(KAccessibleClient::AccessibleObject,int)), this, SLOT(textCaretMoved(KAccessibleClient::AccessibleObject,int)));
