@@ -341,19 +341,15 @@ void MainWindow::initMenu()
     QMenu *settingsMenu = menuBar()->addMenu(QString("Settings"));
     QMenu *dockerMenu = settingsMenu->addMenu(QString("Docker"));
     Q_FOREACH(const QDockWidget *docker, findChildren<QDockWidget*>()) {
-        QAction *dockerAction = new QAction(this);
-        dockerAction->setText(docker->windowTitle());
-        dockerAction->setCheckable(true);
-        dockerAction->setChecked(true);
-        connect(dockerAction, SIGNAL(toggled(bool)), docker, SLOT(setVisible(bool)));
-        connect(docker, SIGNAL(visibilityChanged(bool)), dockerAction, SLOT(setChecked(bool)));
-        dockerMenu->addAction(dockerAction);
+        dockerMenu->addAction(docker->toggleViewAction());
     }
     settingsMenu->addAction(m_followFocusAction);
 }
 
 void MainWindow::initUi()
 {
+    setDockOptions(QMainWindow::AnimatedDocks | QMainWindow::AllowNestedDocks | QMainWindow::AllowTabbedDocks);
+
     QDockWidget *treeDocker = new QDockWidget(QString("Tree"), this);
     treeDocker->setFeatures(QDockWidget::AllDockWidgetFeatures);
     m_treeView = new QTreeView(treeDocker);
