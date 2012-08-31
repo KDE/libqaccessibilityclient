@@ -54,7 +54,8 @@ void DBusConnection::init()
 
 void DBusConnection::initFinished()
 {
-    Q_ASSERT(m_initWatcher);
+    if (!m_initWatcher)
+        return;
     QDBusPendingReply<QString> reply = *m_initWatcher;
     if (reply.isError() || reply.value().isEmpty()) {
         qWarning() << "Accessibility DBus not found. Falling back to session bus.";
@@ -83,8 +84,7 @@ QDBusConnection DBusConnection::connection() const
 {
     if (m_initWatcher) {
         m_initWatcher->waitForFinished();
-        if (m_initWatcher)
-            const_cast<DBusConnection*>(this)->initFinished();
+        const_cast<DBusConnection*>(this)->initFinished();
     }
     return m_connection;
 }

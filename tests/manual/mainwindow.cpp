@@ -31,6 +31,7 @@
 #include <qtextcursor.h>
 #include <QTextBlock>
 #include <qscrollbar.h>
+#include <qsettings.h>
 
 #include "kdeaccessibilityclient/registry.h"
 #include "kdeaccessibilityclient/accessibleobject.h"
@@ -312,6 +313,18 @@ MainWindow::MainWindow(QWidget *parent)
 
     //m_registry->subscribeEventListeners(KAccessibleClient::Registry::Focus);
     m_registry->subscribeEventListeners(KAccessibleClient::Registry::AllEventListeners);
+
+    QSettings settings("kde.org", "kdea11yapp");
+    restoreGeometry(settings.value("geometry").toByteArray());
+    restoreState(settings.value("windowState").toByteArray());
+}
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    QSettings settings("kde.org", "kdea11yapp");
+    settings.setValue("geometry", saveGeometry());
+    settings.setValue("windowState", saveState());
+    QMainWindow::closeEvent(event);
 }
 
 void MainWindow::initActions()
@@ -351,6 +364,7 @@ void MainWindow::initUi()
     setDockOptions(QMainWindow::AnimatedDocks | QMainWindow::AllowNestedDocks | QMainWindow::AllowTabbedDocks);
 
     QDockWidget *treeDocker = new QDockWidget(QString("Tree"), this);
+    treeDocker->setObjectName("tree");
     treeDocker->setFeatures(QDockWidget::AllDockWidgetFeatures);
     m_treeView = new QTreeView(treeDocker);
     m_treeView->setAccessibleName(QString("Tree of accessibles"));
@@ -367,6 +381,7 @@ void MainWindow::initUi()
     connect(m_treeView, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(treeCustomContextMenuRequested(QPoint)));
 
     QDockWidget *propertyDocker = new QDockWidget(QString("Properties"), this);
+    propertyDocker->setObjectName("properties");
     propertyDocker->setFeatures(QDockWidget::AllDockWidgetFeatures);
     m_propertyView = new QTreeView(propertyDocker);
     propertyDocker->setWidget(m_propertyView);
@@ -382,6 +397,7 @@ void MainWindow::initUi()
     addDockWidget(Qt::RightDockWidgetArea, propertyDocker);
 
     QDockWidget *eventsDocker = new QDockWidget(QString("Events"), this);
+    eventsDocker->setObjectName("events");
     eventsDocker->setFeatures(QDockWidget::AllDockWidgetFeatures);
     m_eventsEdit = new QTextBrowser(eventsDocker);
     eventsDocker->setWidget(m_eventsEdit);

@@ -42,6 +42,9 @@ public:
     MainWindow(QWidget *parent = 0);
     void listAccessibles();
 
+protected:
+    void closeEvent(QCloseEvent *event);
+
 private Q_SLOTS:
     void selectionChanged(const QModelIndex &current, const QModelIndex &);
     void treeCustomContextMenuRequested(const QPoint &pos);
