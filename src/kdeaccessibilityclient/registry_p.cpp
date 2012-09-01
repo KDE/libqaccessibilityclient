@@ -138,7 +138,15 @@ void RegistryPrivate::subscribeEventListeners(const Registry::EventListeners &li
     m_subscriptions |= listeners;
 
     if (listeners.testFlag(Registry::Window)) {
-        subscriptions << QLatin1String("window:");
+        subscriptions <<
+            QLatin1String("window:maximize") << QLatin1String("window:minimize") << QLatin1String("window:restore") <<
+            QLatin1String("window:close") << QLatin1String("window:create") << QLatin1String("window:reparent") <<
+            QLatin1String("window:desktop-create") << QLatin1String("window:desktop-destroy") <<
+            QLatin1String("window:activate") << QLatin1String("window:deactivate") <<
+            QLatin1String("window:raise") << QLatin1String("window:lower") <<
+            QLatin1String("window:move") << QLatin1String("window:resize") <<
+            QLatin1String("window:shade") << QLatin1String("window:unshade");
+
         bool created = conn.connection().connect(
                     QString(), QLatin1String(""), QLatin1String("org.a11y.atspi.Event.Window"), QLatin1String("Create"),
                     this, SLOT(slotWindowCreate(QString,int,int,QDBusVariant,KAccessibleClient::QSpiObjectReference)));
@@ -261,26 +269,11 @@ void RegistryPrivate::subscribeEventListeners(const Registry::EventListeners &li
 //                  << QLatin1String("object:visibledata-changed")
 //                  << QLatin1String("object:state-changed")
 //                  << QLatin1String("object:selection-changed")
-//    << QLatin1String("object:")
-//    <<
-//    << QLatin1String("window:");
-
-
-//    bool success = conn.connection().connect(QString(), QString(), QLatin1String("org.a11y.atspi.Event.Window"), QLatin1String("Activate"), this,
-//                           SLOT(slotWindowActivated(QString,int,int,QDBusVariant,QSpiObjectReference)));
-//    Q_ASSERT(success); // for now make sure we connect, else nothing will work
-//    conn.connection().connect(QString(), QString(),
-//                           QLatin1String("org.a11y.atspi.Event.Window"), QLatin1String("Create"), this,
-//                           SLOT(slotWindowCreated(QString,int,int,QDBusVariant,QSpiObjectReference)));
-//    conn.connection().connect(QString(), QString(),
-//                           QLatin1String("org.a11y.atspi.Event.Window"), QLatin1String("Activate"), this,
-//                           SLOT(slotWindowActivated(QString,int,int,QDBusVariant,QSpiObjectReference)));
 
 //    conn.connection().connect(QString(), QLatin1String(""), QLatin1String("org.a11y.atspi.Event.Object"), QLatin1String("ChildrenChanged"), this,
 //                                  SLOT(slotChildrenChanged(QString, int, int, QDBusVariant, QSpiObjectReference)));
 //    conn.connection().connect(QString(), QLatin1String(""), QLatin1String("org.a11y.atspi.Event.Object"), QLatin1String("PropertyChanged"), this,
 //                                  SLOT(slotPropertyChange(QString, int, int, QDBusVariant, QSpiObjectReference)));
-
 
 // accerciser
 //     (u':1.7', u'Object:StateChanged:'),
