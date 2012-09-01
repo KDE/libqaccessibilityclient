@@ -46,16 +46,27 @@ class LIBKDEACCESSIBILITYCLIENT_EXPORT Registry : public QObject
 public:
 
     enum EventListener {
-        NoEventListeners = 0x0,           /*!< No event listeners registered or wanted */
-        Focus = 0x1,                      /*!< Focus listener reacts to focus changes - see signal \sa focusChanged */
-        Object = 0x2,                     /*!< Object changes, such as checked state etc. */
-        Window = 0x4,                     /*!< Window changes, such as new applications being started */
+        NoEventListeners = 0x0,             /*!< No event listeners registered or wanted */
+        Window = 0x1,                       /*!< Window changes, such as new applications being started */
+        Focus = 0x2,                        /*!< Focus listener reacts to focus changes - see signal \sa focusChanged */
+        //FocusPoint = 0x4,
 
-        TextCaretMoved = 0x8,             /*!< The text caret moved its position - see signal \sa textCaretMoved */
-        TextSelectionChanged = 0x10,      /*!< The text selection changed - see signal \sa textSelectionChanged */
+        //BoundsChanged = 0x8,
+        //LinkSelected = 0x10,
+        StateChanged = 0x20,                /*!< State of the accessible changed - see signal \sa stateChanged */
+        ChildrenChanged = 0x40,             /*!< Children changed - see signal \sa childrenChanged */
+        VisibleDataChanged = 0x80,          /*!< Visibility of the accessible changed - see signal \sa visibleDataChanged */
+        SelectionChanged = 0x100,           /*!< Selection changed  - see signal \sa selectionChanged */
+        ModelChanged = 0x200,               /*!< The model changed - see signal \sa modelChanged */
 
-        // FIXME many more detailed event listeners are possible
-        AllEventListeners = 0xffff        /*!< All possible event listeners */
+        TextCaretMoved = 0x400,             /*!< The text caret moved its position - see signal \sa textCaretMoved */
+        TextChanged = 0x800,                /*!< The text changed - see signal \sa textChanged */
+        TextSelectionChanged = 0x1000,      /*!< The text selection changed - see signal \sa textSelectionChanged */
+        //TextBoundsChanged = 0x2000,
+        //TextAttributesChanged = 0x4000,
+        //AttributesChanged = 0x8000,
+
+        AllEventListeners = 0xffffffff      /*!< All possible event listeners */
     };
     Q_DECLARE_FLAGS(EventListeners, EventListener)
 
@@ -95,6 +106,15 @@ Q_SIGNALS:
     void windowShaded(const KAccessibleClient::AccessibleObject &object);
     void windowUnshaded(const KAccessibleClient::AccessibleObject &object);
 
+    //void propertyChanged(const KAccessibleClient::AccessibleObject &object);
+    //void boundsChanged(const KAccessibleClient::AccessibleObject &object);
+    //oid linkSelected(const KAccessibleClient::AccessibleObject &object);
+    void stateChanged(const KAccessibleClient::AccessibleObject &object, const QString &state, int detail1, int detail2, const QVariant &args);
+    void childrenChanged(const KAccessibleClient::AccessibleObject &object);
+    void visibleDataChanged(const KAccessibleClient::AccessibleObject &object);
+    void selectionChanged(const KAccessibleClient::AccessibleObject &object);
+    void modelChanged(const KAccessibleClient::AccessibleObject &object);
+
     /**
         \brief Emitted when the focus changed.
 
@@ -121,6 +141,11 @@ Q_SIGNALS:
         a text-interface (like QLineEdit, QTextArea and QComboBox) changed.
     */
     void textSelectionChanged(const KAccessibleClient::AccessibleObject &object);
+
+    //void textBoundsChanged(const KAccessibleClient::AccessibleObject &object);
+    void textChanged(const KAccessibleClient::AccessibleObject &object);
+    //void textAttributesChanged(const KAccessibleClient::AccessibleObject &object);
+    //void attributesChanged(const KAccessibleClient::AccessibleObject &object);
 
 private:
     Q_DISABLE_COPY(Registry)

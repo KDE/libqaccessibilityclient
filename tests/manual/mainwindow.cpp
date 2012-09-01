@@ -325,9 +325,16 @@ MainWindow::MainWindow(QWidget *parent)
     connect(m_registry, SIGNAL(windowShaded(KAccessibleClient::AccessibleObject)), this, SLOT(windowShaded(KAccessibleClient::AccessibleObject)));
     connect(m_registry, SIGNAL(windowUnshaded(KAccessibleClient::AccessibleObject)), this, SLOT(windowUnshaded(KAccessibleClient::AccessibleObject)));
 
+    connect(m_registry, SIGNAL(stateChanged(KAccessibleClient::AccessibleObject,QString,int,int,QVariant)), this, SLOT(stateChanged(KAccessibleClient::AccessibleObject,QString,int,int,QVariant)));
+    connect(m_registry, SIGNAL(childrenChanged(KAccessibleClient::AccessibleObject)), this, SLOT(childrenChanged(KAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(visibleDataChanged(KAccessibleClient::AccessibleObject)), this, SLOT(visibleDataChanged(KAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(selectionChanged(KAccessibleClient::AccessibleObject)), this, SLOT(selectionChanged(KAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(modelChanged(KAccessibleClient::AccessibleObject)), this, SLOT(modelChanged(KAccessibleClient::AccessibleObject)));
+
     connect(m_registry, SIGNAL(focusChanged(KAccessibleClient::AccessibleObject)), this, SLOT(focusChanged(KAccessibleClient::AccessibleObject)));
     connect(m_registry, SIGNAL(textCaretMoved(KAccessibleClient::AccessibleObject,int)), this, SLOT(textCaretMoved(KAccessibleClient::AccessibleObject,int)));
     connect(m_registry, SIGNAL(textSelectionChanged(KAccessibleClient::AccessibleObject)), this, SLOT(textSelectionChanged(KAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(textChanged(KAccessibleClient::AccessibleObject)), this, SLOT(textChanged(KAccessibleClient::AccessibleObject)));
 
     //m_registry->subscribeEventListeners(KAccessibleClient::Registry::Focus);
     m_registry->subscribeEventListeners(KAccessibleClient::Registry::AllEventListeners);
@@ -424,7 +431,7 @@ void MainWindow::MainWindow::initUi()
     resize(QSize(760,520));
 }
 
-void MainWindow::MainWindow::addLog(const KAccessibleClient::AccessibleObject &object, const QString &eventName)
+void MainWindow::MainWindow::addLog(const KAccessibleClient::AccessibleObject &object, const QString &eventName, const QString &text)
 {
     QTextDocument *doc = m_eventsEdit->document();
     doc->blockSignals(true); // to prevent infinte TextCaretMoved events
@@ -432,10 +439,38 @@ void MainWindow::MainWindow::addLog(const KAccessibleClient::AccessibleObject &o
     cursor.movePosition(QTextCursor::EndOfBlock, QTextCursor::KeepAnchor);
     QString s = QString("%1: %2 (%3)").arg(eventName).arg(object.name()).arg(object.roleName());
     cursor.insertText(s);
+    if (!text.isEmpty())
+        cursor.insertText(" " + text);
     cursor.insertBlock();
     doc->blockSignals(false);
 //     m_eventsEdit->ensureCursorVisible();
     m_eventsEdit->verticalScrollBar()->setValue(m_eventsEdit->verticalScrollBar()->maximum());
+}
+
+void MainWindow::stateChanged(const KAccessibleClient::AccessibleObject &object, const QString &state, int detail1, int detail2, const QVariant &args)
+{
+    QString s = QString("%1").arg(state);
+    addLog(object, QString("StateChanged"), s);
+}
+
+void MainWindow::childrenChanged(const KAccessibleClient::AccessibleObject &object)
+{
+    addLog(object, QString("ChildrenChanged"));
+}
+
+void MainWindow::visibleDataChanged(const KAccessibleClient::AccessibleObject &object)
+{
+    addLog(object, QString("VisibleDataChanged"));
+}
+
+void MainWindow::selectionChanged(const KAccessibleClient::AccessibleObject &object)
+{
+    addLog(object, QString("SelectionChanged"));
+}
+
+void MainWindow::modelChanged(const KAccessibleClient::AccessibleObject &object)
+{
+    addLog(object, QString("ModelChanged"));
 }
 
 void MainWindow::MainWindow::selectionChanged(const QModelIndex& current, const QModelIndex&)
@@ -561,7 +596,7 @@ void MainWindow::focusChanged(const KAccessibleClient::AccessibleObject &object)
     }
     //QPoint fpoint = object.focusPoint();
     //ui.statusbar->showMessage(QString("Current Focus : ( %1 , %2 )").arg(fpoint.x()).arg(fpoint.y()));
-    addLog(object, QString("Focus"));
+    //addLog(object, QString("Focus"));
 }
 
 void MainWindow::MainWindow::textCaretMoved(const KAccessibleClient::AccessibleObject &object, int pos)
@@ -572,4 +607,9 @@ void MainWindow::MainWindow::textCaretMoved(const KAccessibleClient::AccessibleO
 void MainWindow::MainWindow::textSelectionChanged(const KAccessibleClient::AccessibleObject &object)
 {
     addLog(object, QString("TextSelectionChanged"));
+}
+
+void MainWindow::textChanged(const KAccessibleClient::AccessibleObject &object)
+{
+    addLog(object, QString("TextChanged"));
 }

@@ -67,9 +67,16 @@ private Q_SLOTS:
     void windowShaded(const KAccessibleClient::AccessibleObject &object);
     void windowUnshaded(const KAccessibleClient::AccessibleObject &object);
 
+    void stateChanged(const KAccessibleClient::AccessibleObject &object, const QString &state, int detail1, int detail2, const QVariant &args);
+    void childrenChanged(const KAccessibleClient::AccessibleObject &object);
+    void visibleDataChanged(const KAccessibleClient::AccessibleObject &object);
+    void selectionChanged(const KAccessibleClient::AccessibleObject &object);
+    void modelChanged(const KAccessibleClient::AccessibleObject &object);
+
     void focusChanged(const KAccessibleClient::AccessibleObject &object);
     void textCaretMoved(const KAccessibleClient::AccessibleObject &object, int pos);
     void textSelectionChanged(const KAccessibleClient::AccessibleObject &object);
+    void textChanged(const KAccessibleClient::AccessibleObject &object);
 
 private:
     KAccessibleClient::Registry *m_registry;
@@ -90,7 +97,7 @@ private:
     void initMenu();
     void initUi();
 
-    void addLog(const KAccessibleClient::AccessibleObject &object, const QString &eventName);
+    void addLog(const KAccessibleClient::AccessibleObject &object, const QString &eventName, const QString &text = QString());
 };
 
 #endif
