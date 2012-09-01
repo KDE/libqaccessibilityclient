@@ -38,9 +38,10 @@ class RegistryPrivate;
     It provides information about running applications.
     All updates of accessible objects will result in signals emitted by this class.
 */
-class LIBKDEACCESSIBILITYCLIENT_EXPORT Registry :public QObject
+class LIBKDEACCESSIBILITYCLIENT_EXPORT Registry : public QObject
 {
     Q_OBJECT
+    Q_ENUMS(EventListener)
 
 public:
 

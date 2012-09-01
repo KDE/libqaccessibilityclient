@@ -73,7 +73,7 @@ public:
         EventFocus = 0x100000
     };
 
-    Q_DECLARE_FLAGS(Interfaces,Interface)
+    Q_DECLARE_FLAGS(Interfaces, Interface)
 
     /**
         \brief Construct an invalid AccessibleObject.
@@ -163,8 +163,31 @@ public:
      */
     QString localizedRoleName() const;
 
+    /**
+        \brief The ComponentLayer in which this object resides.
+     */
     int layer() const;
+
+    /**
+        \brief Obtain the relative stacking order (i.e. 'Z' order) of an object.
+
+        Larger values indicate that an object is on "top" of the stack, therefore
+        objects with smaller MDIZOrder may be obscured by objects with a larger
+        MDIZOrder, but not vice-versa.
+     */
     int mdiZOrder() const;
+
+    /**
+        \brief  Obtain the alpha value of the component.
+
+        An alpha value of 1.0 or greater indicates that the object is fully opaque,
+        and an alpha value of 0.0 indicates that the object is fully transparent.
+        Negative alpha values have no defined meaning at this time.
+
+        Alpha values are used in conjunction with Z-order calculations to determine
+        whether an object wholly or partially obscures another object's visual
+        intersection, in the event that their bounds intersect.
+     */
     double alpha() const;
 
     /**
@@ -214,9 +237,37 @@ public:
     */
     QPoint focusPoint() const;
 
+    /**
+        \brief Returns the application object.
+
+        \return The top-level application object that expose an
+        org.a11y.atspi.Application accessibility interface.
+    */
     AccessibleObject application() const;
+
+    /**
+        \brief Returns the toolkit name.
+
+        \return The tookit name. This can be for example "Qt"
+        or "gtk".
+    */
     QString appToolkitName() const;
+
+    /**
+        \brief Returns the toolkit version.
+
+        \return The tookit version. This can be for example "4.8.3"
+        for Qt 4.8.3.
+    */
     QString appVersion() const;
+
+    /**
+        \brief Returns the unique application identifier.
+
+        \return The app id. The identifier will not last over session
+        and everytime the app quits and restarts it gets another
+        identifier that persists as long as the application is running.
+    */
     int appId() const;
 
     enum LocaleType {
@@ -228,26 +279,103 @@ public:
         LocaleTypeTime
     };
 
+    /**
+        \brief The application locale.
+
+        \param  lctype The \a LocaleType for which the locale is queried.
+        \return A string compliant with the POSIX standard for locale description.
+    */
     QString appLocale(LocaleType lctype = LocaleTypeMessages) const;
 
+    /**
+        \brief The application dbus address.
+    */
     QString appBusAddress() const;
 
+    /**
+        \brief The minimum value allowed by this valuator.
+
+        If both, the \a minimumValue and \a maximumValue, are zero then
+        there is no minimum or maximum values. The \a currentValue has
+        no range restrictions.
+    */
     double minimumValue() const;
+
+    /**
+        \brief The maximum value allowed by this valuator.
+
+        If both, the \a minimumValue and \a maximumValue, are zero then
+        there is no minimum or maximum values. The \a currentValue has
+        no range restrictions.
+    */
     double maximumValue() const;
+
+    /**
+        \brief The smallest incremental change which this valuator allows.
+
+        This is a helper value to know in what steps the \a currentValue
+        is incremented or decremented.
+
+        If 0, the incremental changes to the valuator are limited only by
+        the precision of a double precision value on the platform.
+    */
     double minimumValueIncrement() const;
+
+    /**
+        \brief The current value of the valuator.
+
+        This is the value the org.a11y.atspi.Value accessibility interface has.
+    */
     double currentValue() const;
 
+    /**
+        \brief Returns the selection of accessible objects.
+    */
     QList<AccessibleObject> selection() const;
 
+    /**
+        \brief A description text of the image.
+
+        It is recommended that imageDescription be the shorter of the available image
+        descriptions, for instance "alt text" in HTML images, and a longer description
+        be provided in Accessible::accessible-description, if available. A short, one
+        or two word label for the image should be provided in Accessible::accessible-name.
+
+        \return A UTF-8 string providing a textual description of what is visually
+        depicted in the image.
+    */
     QString imageDescription() const;
+
+    /**
+        \brief The locale of the image.
+
+        \return A string corresponding to the POSIX LC_MESSAGES locale used by the
+        imageDescription.
+    */
     QString imageLocale() const;
+
+    /**
+        \brief The image boundaries.
+
+        Obtain a bounding box which entirely contains the image contents, as
+        displayed on screen.
+
+        The bounds returned do not account for any viewport clipping or the fact that
+        the image may be partially or wholly obscured by other onscreen content.
+
+        This method returns the bounds of the current onscreen view, and not the
+        nominal size of the source data in the event that the original image has
+        been rescaled.\
+
+        \return A BoundingBox enclosing the image's onscreen representation.
+    */
     QRect imageRect() const;
 
     /**
         \brief Returns a list of actions supported by this accessible.
 
         Just trigger() the action to execute the underlying method at the accessible.
-     */
+    */
     QList<QAction*> actions() const;
 
     // states
