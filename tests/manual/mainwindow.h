@@ -90,6 +90,7 @@ private:
     QTextBrowser *m_eventsEdit;
 
     QAction *m_resetTreeAction;
+    QAction *m_enableA11yAction;
     QAction *m_followFocusAction;
     QAction *m_quitAction;
 

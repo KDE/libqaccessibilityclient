@@ -48,6 +48,9 @@ public:
 
     void init();
 
+    bool isEnabled() const;
+    void setEnabled(bool enable);
+
     void subscribeEventListeners(const Registry::EventListeners & listeners);
     Registry::EventListeners eventListeners() const;
 

@@ -359,6 +359,14 @@ void MainWindow::MainWindow::initActions()
     m_resetTreeAction->setShortcut(QKeySequence(QKeySequence::Refresh));
     connect(m_resetTreeAction, SIGNAL(triggered()), m_treeModel, SLOT(resetModel()));
 
+    m_enableA11yAction = new QAction(this);
+    m_enableA11yAction->setText(QString("Enable Accessibility"));
+    m_enableA11yAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_E));
+    m_enableA11yAction->setCheckable(true);
+    m_enableA11yAction->setChecked(m_registry->isEnabled());
+    connect(m_registry, SIGNAL(enabledChanged(bool)), m_enableA11yAction, SLOT(setChecked(bool)));
+    connect(m_enableA11yAction, SIGNAL(toggled(bool)), m_registry, SLOT(setEnabled(bool)));
+
     m_followFocusAction = new QAction(this);
     m_followFocusAction->setText(QString("Follow Focus"));
     m_followFocusAction->setCheckable(true);
@@ -381,6 +389,7 @@ void MainWindow::MainWindow::initMenu()
     Q_FOREACH(const QDockWidget *docker, findChildren<QDockWidget*>()) {
         dockerMenu->addAction(docker->toggleViewAction());
     }
+    settingsMenu->addAction(m_enableA11yAction);
     settingsMenu->addAction(m_followFocusAction);
 }
 

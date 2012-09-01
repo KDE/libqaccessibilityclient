@@ -34,6 +34,16 @@ Registry::~Registry()
     delete d;
 }
 
+bool Registry::isEnabled() const
+{
+    return d->isEnabled();
+}
+
+void Registry::setEnabled(bool enable)
+{
+    d->setEnabled(enable);
+}
+
 void Registry::subscribeEventListeners(const EventListeners &listeners) const
 {
     d->subscribeEventListeners(listeners);

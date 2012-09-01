@@ -25,6 +25,8 @@
 #include <qdbusargument.h>
 #include <qdbusreply.h>
 #include <qdbuspendingcall.h>
+#include <qdbusinterface.h>
+#include <qdbusargument.h>
 
 #include <qdebug.h>
 #include <qdbusmessage.h>
@@ -116,6 +118,39 @@ void RegistryPrivate::init()
     interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_SOCKET)] = AccessibleObject::Socket;
     interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_EVENT_WINDOW)] = AccessibleObject::EventWindow;
     interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_EVENT_FOCUS)] = AccessibleObject::EventFocus;
+}
+
+bool RegistryPrivate::isEnabled() const
+{
+    QDBusConnection c = QDBusConnection::sessionBus();
+    if (!c.isConnected())
+        return false;
+    QDBusMessage message = QDBusMessage::createMethodCall(
+                QLatin1String("org.a11y.Bus"), QLatin1String("/org/a11y/bus"), QLatin1String("org.freedesktop.DBus.Properties"), QLatin1String("Get"));
+    message.setArguments(QVariantList() << QLatin1String("org.a11y.Status") << QLatin1String("IsEnabled"));
+    QDBusReply<QVariant> reply  = c.call(message);
+    if (!reply.isValid()) {
+        qWarning() << "Could not get org.a11y.Status.isEnabled." << reply.error().message();
+        return false;
+    }
+    bool enabled = qdbus_cast< QVariant >(reply).toBool();
+    return enabled;
+}
+
+void RegistryPrivate::setEnabled(bool enable)
+{
+    QDBusConnection c = QDBusConnection::sessionBus();
+    if (!c.isConnected())
+        return;
+    QDBusMessage message = QDBusMessage::createMethodCall(
+                QLatin1String("org.a11y.Bus"), QLatin1String("/org/a11y/bus"), QLatin1String("org.freedesktop.DBus.Properties"), QLatin1String("Set"));
+    message.setArguments(QVariantList() << QLatin1String("org.a11y.Status") << QLatin1String("IsEnabled") << QVariant::fromValue(QDBusVariant(enable)));
+    QDBusMessage reply = c.call(message);
+    if (reply.type() == QDBusMessage::ErrorMessage) {
+        qWarning() << "Could not set org.a11y.Status.isEnabled." << reply.errorName() << reply.errorMessage();
+    } else {
+        q->enabledChanged(enable);
+    }
 }
 
 void RegistryPrivate::handlePendingSubscriptions()
@@ -925,9 +960,7 @@ void RegistryPrivate::slotWindowUnshade(const QString &state, int detail1, int d
 
 void RegistryPrivate::slotStateChanged(const QString &state, int detail1, int detail2, const QDBusVariant &args, const QSpiObjectReference &reference)
 {
-#ifdef ATSPI_DEBUG
-    qDebug() << Q_FUNC_INFO << state << detail1 << detail2 << args.variant() << reference.path.path();
-#endif
+    //qDebug() << Q_FUNC_INFO << state << detail1 << detail2 << args.variant() << reference.path.path();
     KAccessibleClient::AccessibleObject accessible = accessibleFromContext(reference);
     if (q->subscribedEventListeners().testFlag(Registry::StateChanged)) {
         emit q->stateChanged(accessible, state, detail1, detail2, args.variant());

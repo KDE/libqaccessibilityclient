@@ -73,6 +73,20 @@ public:
     Registry(QObject *parent = 0);
     ~Registry();
 
+public slots:
+
+    /**
+        Returns true if the accessibility stack is enabled.
+
+        This means that an atspi registry daemon is running and available as
+        org.a11y.bus at the session dbus. The org.a11y.bus implments the
+        org.a11y.Status dbus interface that offers the IsEnabled property. The
+        \a isEnabled and \a setEnabled methods do read/write the boolean value
+        of that org.a11y.Status.IsEnabled dbus property..
+    */
+    bool isEnabled() const;
+    void setEnabled(bool enable);
+
     /**
         In order to get notified of changes in accessible applications
         it is neccessary to subscribe to the listeners that are relevant.
@@ -87,6 +101,7 @@ public:
     QList<AccessibleObject> applications() const;
 
 Q_SIGNALS:
+    void enabledChanged(bool);
 
     void windowCreated(const KAccessibleClient::AccessibleObject &object);
     void windowDestroyed(const KAccessibleClient::AccessibleObject &object);
