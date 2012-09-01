@@ -307,6 +307,24 @@ MainWindow::MainWindow(QWidget *parent)
     // The ultimate model verificaton helper :p
     //new ModelTest(m_treeModel, this);
 
+    connect(m_registry, SIGNAL(windowCreate(KAccessibleClient::AccessibleObject)), this, SLOT(windowCreate(KAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(windowDestroy(KAccessibleClient::AccessibleObject)), this, SLOT(windowDestroy(KAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(windowClose(KAccessibleClient::AccessibleObject)), this, SLOT(windowClose(KAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(windowReparent(KAccessibleClient::AccessibleObject)), this, SLOT(windowReparent(KAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(windowMinimize(KAccessibleClient::AccessibleObject)), this, SLOT(windowMinimize(KAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(windowMaximize(KAccessibleClient::AccessibleObject)), this, SLOT(windowMaximize(KAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(windowRestore(KAccessibleClient::AccessibleObject)), this, SLOT(windowRestore(KAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(windowActivate(KAccessibleClient::AccessibleObject)), this, SLOT(windowActivate(KAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(windowDeactivate(KAccessibleClient::AccessibleObject)), this, SLOT(windowDeactivate(KAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(windowDesktopCreate(KAccessibleClient::AccessibleObject)), this, SLOT(windowDesktopCreate(KAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(windowDesktopDestroy(KAccessibleClient::AccessibleObject)), this, SLOT(windowDesktopDestroy(KAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(windowRaise(KAccessibleClient::AccessibleObject)), this, SLOT(windowRaise(KAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(windowLower(KAccessibleClient::AccessibleObject)), this, SLOT(windowLower(KAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(windowMove(KAccessibleClient::AccessibleObject)), this, SLOT(windowMove(KAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(windowResize(KAccessibleClient::AccessibleObject)), this, SLOT(windowResize(KAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(windowShade(KAccessibleClient::AccessibleObject)), this, SLOT(windowShade(KAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(windowUnshade(KAccessibleClient::AccessibleObject)), this, SLOT(windowUnshade(KAccessibleClient::AccessibleObject)));
+
     connect(m_registry, SIGNAL(focusChanged(KAccessibleClient::AccessibleObject)), this, SLOT(focusChanged(KAccessibleClient::AccessibleObject)));
     connect(m_registry, SIGNAL(textCaretMoved(KAccessibleClient::AccessibleObject,int)), this, SLOT(textCaretMoved(KAccessibleClient::AccessibleObject,int)));
     connect(m_registry, SIGNAL(textSelectionChanged(KAccessibleClient::AccessibleObject)), this, SLOT(textSelectionChanged(KAccessibleClient::AccessibleObject)));
@@ -319,7 +337,7 @@ MainWindow::MainWindow(QWidget *parent)
     restoreState(settings.value("windowState").toByteArray());
 }
 
-void MainWindow::closeEvent(QCloseEvent *event)
+void MainWindow::MainWindow::closeEvent(QCloseEvent *event)
 {
     QSettings settings("kde.org", "kdea11yapp");
     settings.setValue("geometry", saveGeometry());
@@ -327,7 +345,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
     QMainWindow::closeEvent(event);
 }
 
-void MainWindow::initActions()
+void MainWindow::MainWindow::initActions()
 {
     m_resetTreeAction = new QAction(this);
     m_resetTreeAction->setText(QString("Reset Tree"));
@@ -344,7 +362,7 @@ void MainWindow::initActions()
     connect(m_quitAction, SIGNAL(triggered()), this, SLOT(close()));
 }
 
-void MainWindow::initMenu()
+void MainWindow::MainWindow::initMenu()
 {
     QMenu *fileMenu = menuBar()->addMenu(QString("File"));
     fileMenu->addAction(m_resetTreeAction);
@@ -359,7 +377,7 @@ void MainWindow::initMenu()
     settingsMenu->addAction(m_followFocusAction);
 }
 
-void MainWindow::initUi()
+void MainWindow::MainWindow::initUi()
 {
     setDockOptions(QMainWindow::AnimatedDocks | QMainWindow::AllowNestedDocks | QMainWindow::AllowTabbedDocks);
 
@@ -406,7 +424,7 @@ void MainWindow::initUi()
     resize(QSize(760,520));
 }
 
-void MainWindow::addLog(const KAccessibleClient::AccessibleObject &object, const QString &eventName)
+void MainWindow::MainWindow::addLog(const KAccessibleClient::AccessibleObject &object, const QString &eventName)
 {
     QTextDocument *doc = m_eventsEdit->document();
     doc->blockSignals(true); // to prevent infinte TextCaretMoved events
@@ -420,7 +438,7 @@ void MainWindow::addLog(const KAccessibleClient::AccessibleObject &object, const
     m_eventsEdit->verticalScrollBar()->setValue(m_eventsEdit->verticalScrollBar()->maximum());
 }
 
-void MainWindow::selectionChanged(const QModelIndex& current, const QModelIndex&)
+void MainWindow::MainWindow::selectionChanged(const QModelIndex& current, const QModelIndex&)
 {
     KAccessibleClient::AccessibleObject acc;
     if (current.isValid() && current.internalPointer()) {
@@ -431,7 +449,7 @@ void MainWindow::selectionChanged(const QModelIndex& current, const QModelIndex&
     m_propertyView->resizeColumnToContents(0);
 }
 
-void MainWindow::treeCustomContextMenuRequested(const QPoint &pos)
+void MainWindow::MainWindow::treeCustomContextMenuRequested(const QPoint &pos)
 {
     QModelIndex current = m_treeView->currentIndex();
     if (!current.isValid())
@@ -443,6 +461,91 @@ void MainWindow::treeCustomContextMenuRequested(const QPoint &pos)
         menu->addAction(a);
     }
     menu->popup(m_treeView->mapToGlobal(pos));
+}
+
+void MainWindow::windowCreate(const KAccessibleClient::AccessibleObject &object)
+{
+    addLog(object, QString("WindowCreate"));
+}
+
+void MainWindow::windowDestroy(const KAccessibleClient::AccessibleObject &object)
+{
+    addLog(object, QString("WindowDestroy"));
+}
+
+void MainWindow::windowClose(const KAccessibleClient::AccessibleObject &object)
+{
+    addLog(object, QString("WindowClose"));
+}
+
+void MainWindow::windowReparent(const KAccessibleClient::AccessibleObject &object)
+{
+    addLog(object, QString("WindowReparent"));
+}
+
+void MainWindow::windowMinimize(const KAccessibleClient::AccessibleObject &object)
+{
+    addLog(object, QString("WindowMinimize"));
+}
+
+void MainWindow::windowMaximize(const KAccessibleClient::AccessibleObject &object)
+{
+    addLog(object, QString("WindowMaximize"));
+}
+
+void MainWindow::windowRestore(const KAccessibleClient::AccessibleObject &object)
+{
+    addLog(object, QString("WindowRestore"));
+}
+
+void MainWindow::windowActivate(const KAccessibleClient::AccessibleObject &object)
+{
+    addLog(object, QString("WindowActivate"));
+}
+
+void MainWindow::windowDeactivate(const KAccessibleClient::AccessibleObject &object)
+{
+    addLog(object, QString("WindowDeactivate"));
+}
+
+void MainWindow::windowDesktopCreate(const KAccessibleClient::AccessibleObject &object)
+{
+    addLog(object, QString("WindowDesktopCreate"));
+}
+
+void MainWindow::windowDesktopDestroy(const KAccessibleClient::AccessibleObject &object)
+{
+    addLog(object, QString("WindowDesktopDestroy"));
+}
+
+void MainWindow::windowRaise(const KAccessibleClient::AccessibleObject &object)
+{
+    addLog(object, QString("WindowRaise"));
+}
+
+void MainWindow::windowLower(const KAccessibleClient::AccessibleObject &object)
+{
+    addLog(object, QString("WindowLower"));
+}
+
+void MainWindow::windowMove(const KAccessibleClient::AccessibleObject &object)
+{
+    addLog(object, QString("WindowMove"));
+}
+
+void MainWindow::windowResize(const KAccessibleClient::AccessibleObject &object)
+{
+    addLog(object, QString("WindowResize"));
+}
+
+void MainWindow::windowShade(const KAccessibleClient::AccessibleObject &object)
+{
+    addLog(object, QString("WindowShade"));
+}
+
+void MainWindow::windowUnshade(const KAccessibleClient::AccessibleObject &object)
+{
+    addLog(object, QString("WindowUnshade"));
 }
 
 void MainWindow::focusChanged(const KAccessibleClient::AccessibleObject &object)
@@ -461,12 +564,12 @@ void MainWindow::focusChanged(const KAccessibleClient::AccessibleObject &object)
     addLog(object, QString("Focus"));
 }
 
-void MainWindow::textCaretMoved(const KAccessibleClient::AccessibleObject &object, int pos)
+void MainWindow::MainWindow::textCaretMoved(const KAccessibleClient::AccessibleObject &object, int pos)
 {
     addLog(object, QString("TextCaretMoved"));
 }
 
-void MainWindow::textSelectionChanged(const KAccessibleClient::AccessibleObject &object)
+void MainWindow::MainWindow::textSelectionChanged(const KAccessibleClient::AccessibleObject &object)
 {
     addLog(object, QString("TextSelectionChanged"));
 }

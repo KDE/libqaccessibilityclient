@@ -77,6 +77,24 @@ public:
 
 Q_SIGNALS:
 
+    void windowCreated(const KAccessibleClient::AccessibleObject &object);
+    void windowDestroyed(const KAccessibleClient::AccessibleObject &object);
+    void windowClosed(const KAccessibleClient::AccessibleObject &object);
+    void windowReparented(const KAccessibleClient::AccessibleObject &object);
+    void windowMinimized(const KAccessibleClient::AccessibleObject &object);
+    void windowMaximized(const KAccessibleClient::AccessibleObject &object);
+    void windowRestored(const KAccessibleClient::AccessibleObject &object);
+    void windowActivated(const KAccessibleClient::AccessibleObject &object);
+    void windowDeactivated(const KAccessibleClient::AccessibleObject &object);
+    void windowDesktopCreated(const KAccessibleClient::AccessibleObject &object);
+    void windowDesktopDestroyed(const KAccessibleClient::AccessibleObject &object);
+    void windowRaised(const KAccessibleClient::AccessibleObject &object);
+    void windowLowered(const KAccessibleClient::AccessibleObject &object);
+    void windowMoved(const KAccessibleClient::AccessibleObject &object);
+    void windowResized(const KAccessibleClient::AccessibleObject &object);
+    void windowShaded(const KAccessibleClient::AccessibleObject &object);
+    void windowUnshaded(const KAccessibleClient::AccessibleObject &object);
+
     /**
         \brief Emitted when the focus changed.
 
@@ -103,7 +121,7 @@ Q_SIGNALS:
         a text-interface (like QLineEdit, QTextArea and QComboBox) changed.
     */
     void textSelectionChanged(const KAccessibleClient::AccessibleObject &object);
-    
+
 private:
     Q_DISABLE_COPY(Registry)
     RegistryPrivate *d;

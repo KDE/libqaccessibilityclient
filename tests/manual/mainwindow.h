@@ -49,6 +49,24 @@ private Q_SLOTS:
     void selectionChanged(const QModelIndex &current, const QModelIndex &);
     void treeCustomContextMenuRequested(const QPoint &pos);
 
+    void windowCreate(const KAccessibleClient::AccessibleObject &object);
+    void windowDestroy(const KAccessibleClient::AccessibleObject &object);
+    void windowClose(const KAccessibleClient::AccessibleObject &object);
+    void windowReparent(const KAccessibleClient::AccessibleObject &object);
+    void windowMinimize(const KAccessibleClient::AccessibleObject &object);
+    void windowMaximize(const KAccessibleClient::AccessibleObject &object);
+    void windowRestore(const KAccessibleClient::AccessibleObject &object);
+    void windowActivate(const KAccessibleClient::AccessibleObject &object);
+    void windowDeactivate(const KAccessibleClient::AccessibleObject &object);
+    void windowDesktopCreate(const KAccessibleClient::AccessibleObject &object);
+    void windowDesktopDestroy(const KAccessibleClient::AccessibleObject &object);
+    void windowRaise(const KAccessibleClient::AccessibleObject &object);
+    void windowLower(const KAccessibleClient::AccessibleObject &object);
+    void windowMove(const KAccessibleClient::AccessibleObject &object);
+    void windowResize(const KAccessibleClient::AccessibleObject &object);
+    void windowShade(const KAccessibleClient::AccessibleObject &object);
+    void windowUnshade(const KAccessibleClient::AccessibleObject &object);
+
     void focusChanged(const KAccessibleClient::AccessibleObject &object);
     void textCaretMoved(const KAccessibleClient::AccessibleObject &object, int pos);
     void textSelectionChanged(const KAccessibleClient::AccessibleObject &object);

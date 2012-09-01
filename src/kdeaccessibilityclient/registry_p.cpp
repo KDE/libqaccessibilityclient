@@ -137,6 +137,81 @@ void RegistryPrivate::subscribeEventListeners(const Registry::EventListeners &li
 
     m_subscriptions |= listeners;
 
+    if (listeners.testFlag(Registry::Window)) {
+        subscriptions << QLatin1String("window:");
+        bool created = conn.connection().connect(
+                    QString(), QLatin1String(""), QLatin1String("org.a11y.atspi.Event.Window"), QLatin1String("Create"),
+                    this, SLOT(slotWindowCreate(QString,int,int,QDBusVariant,KAccessibleClient::QSpiObjectReference)));
+        bool destroyed = conn.connection().connect(
+                    QString(), QLatin1String(""), QLatin1String("org.a11y.atspi.Event.Window"), QLatin1String("Destroy"),
+                    this, SLOT(slotWindowDestroy(QString,int,int,QDBusVariant,KAccessibleClient::QSpiObjectReference)));
+
+        bool closed = conn.connection().connect(
+                    QString(), QLatin1String(""), QLatin1String("org.a11y.atspi.Event.Window"), QLatin1String("Close"),
+                    this, SLOT(slotWindowClose(QString,int,int,QDBusVariant,KAccessibleClient::QSpiObjectReference)));
+        bool reparented = conn.connection().connect(
+                    QString(), QLatin1String(""), QLatin1String("org.a11y.atspi.Event.Window"), QLatin1String("Reparent"),
+                    this, SLOT(slotWindowReparent(QString,int,int,QDBusVariant,KAccessibleClient::QSpiObjectReference)));
+
+        bool minimized = conn.connection().connect(
+                    QString(), QLatin1String(""), QLatin1String("org.a11y.atspi.Event.Window"), QLatin1String("Minimize"),
+                    this, SLOT(slotWindowMinimize(QString,int,int,QDBusVariant,KAccessibleClient::QSpiObjectReference)));
+        bool maximized = conn.connection().connect(
+                    QString(), QLatin1String(""), QLatin1String("org.a11y.atspi.Event.Window"), QLatin1String("Maximize"),
+                    this, SLOT(slotWindowMaximize(QString,int,int,QDBusVariant,KAccessibleClient::QSpiObjectReference)));
+        bool restored = conn.connection().connect(
+                    QString(), QLatin1String(""), QLatin1String("org.a11y.atspi.Event.Window"), QLatin1String("Restore"),
+                    this, SLOT(slotWindowRestore(QString,int,int,QDBusVariant,KAccessibleClient::QSpiObjectReference)));
+
+        bool activated = conn.connection().connect(
+                    QString(), QLatin1String(""), QLatin1String("org.a11y.atspi.Event.Window"), QLatin1String("Activate"),
+                    this, SLOT(slotWindowActivate(QString,int,int,QDBusVariant,KAccessibleClient::QSpiObjectReference)));
+        bool deactivated = conn.connection().connect(
+                    QString(), QLatin1String(""), QLatin1String("org.a11y.atspi.Event.Window"), QLatin1String("Deactivate"),
+                    this, SLOT(slotWindowDeactivate(QString,int,int,QDBusVariant,KAccessibleClient::QSpiObjectReference)));
+
+        bool desktopCreated = conn.connection().connect(
+                    QString(), QLatin1String(""), QLatin1String("org.a11y.atspi.Event.Window"), QLatin1String("DesktopCreate"),
+                    this, SLOT(slotWindowDesktopCreate(QString,int,int,QDBusVariant,KAccessibleClient::QSpiObjectReference)));
+        bool desktopDestroyed = conn.connection().connect(
+                    QString(), QLatin1String(""), QLatin1String("org.a11y.atspi.Event.Window"), QLatin1String("DesktopDestroy"),
+                    this, SLOT(slotWindowDesktopDestroy(QString,int,int,QDBusVariant,KAccessibleClient::QSpiObjectReference)));
+        bool raised = conn.connection().connect(
+                    QString(), QLatin1String(""), QLatin1String("org.a11y.atspi.Event.Window"), QLatin1String("Raise"),
+                    this, SLOT(slotWindowRaise(QString,int,int,QDBusVariant,KAccessibleClient::QSpiObjectReference)));
+        bool lowered = conn.connection().connect(
+                    QString(), QLatin1String(""), QLatin1String("org.a11y.atspi.Event.Window"), QLatin1String("Lower"),
+                    this, SLOT(slotWindowLower(QString,int,int,QDBusVariant,KAccessibleClient::QSpiObjectReference)));
+        bool moved = conn.connection().connect(
+                    QString(), QLatin1String(""), QLatin1String("org.a11y.atspi.Event.Window"), QLatin1String("Move"),
+                    this, SLOT(slotWindowMove(QString,int,int,QDBusVariant,KAccessibleClient::QSpiObjectReference)));
+        bool resized = conn.connection().connect(
+                    QString(), QLatin1String(""), QLatin1String("org.a11y.atspi.Event.Window"), QLatin1String("Resize"),
+                    this, SLOT(slotWindowResize(QString,int,int,QDBusVariant,KAccessibleClient::QSpiObjectReference)));
+        bool shaded = conn.connection().connect(
+                    QString(), QLatin1String(""), QLatin1String("org.a11y.atspi.Event.Window"), QLatin1String("Shade"),
+                    this, SLOT(slotWindowShade(QString,int,int,QDBusVariant,KAccessibleClient::QSpiObjectReference)));
+        bool unshaded = conn.connection().connect(
+                    QString(), QLatin1String(""), QLatin1String("org.a11y.atspi.Event.Window"), QLatin1String("Unshade"),
+                    this, SLOT(slotWindowUnshade(QString,int,int,QDBusVariant,KAccessibleClient::QSpiObjectReference)));
+
+        if (!created || !destroyed || !closed || !reparented || !minimized || !maximized || !restored || 
+            !activated || !deactivated || !desktopCreated || !desktopDestroyed ||
+            !raised || !lowered || !moved || !resized || !shaded || !unshaded
+        ) {
+            qWarning() << "Could not subscribe to Window event(s)."
+                       << "created:" << created << "destroyed:" << destroyed
+                       << "closed:" << closed << "reparented:" << reparented
+                       << "minimized:" << minimized << "maximized:" << maximized << "restored:" << restored
+                       << "activated:" << activated << "deactivated:" << deactivated
+                       << "desktopCreated:" << desktopCreated << "desktopDestroyed:" << desktopDestroyed
+                       << "raised:" << raised << "lowered:" << lowered
+                       << "moved:" << moved << "resized:" << resized
+                       << "shaded:" << shaded << "unshaded:" << unshaded
+                       ;
+        }
+    }
+
     if (listeners.testFlag(Registry::Focus)) {
         subscriptions << QLatin1String("focus:");
         subscriptions << QLatin1String("object:state-changed");
@@ -732,6 +807,91 @@ AccessibleObject RegistryPrivate::accessibleFromContext(const QSpiObjectReferenc
     return AccessibleObject(const_cast<RegistryPrivate*>(this), reference.service, QDBusContext::message().path());
 }
 
+void RegistryPrivate::slotWindowCreate(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const KAccessibleClient::QSpiObjectReference &reference)
+{
+    emit q->windowCreated(accessibleFromContext(reference));
+}
+
+void RegistryPrivate::slotWindowDestroy(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const KAccessibleClient::QSpiObjectReference &reference)
+{
+    emit q->windowDestroyed(accessibleFromContext(reference));
+}
+
+void RegistryPrivate::slotWindowClose(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const KAccessibleClient::QSpiObjectReference &reference)
+{
+    emit q->windowClosed(accessibleFromContext(reference));
+}
+
+void RegistryPrivate::slotWindowReparent(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const KAccessibleClient::QSpiObjectReference &reference)
+{
+    emit q->windowReparented(accessibleFromContext(reference));
+}
+
+void RegistryPrivate::slotWindowMinimize(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const KAccessibleClient::QSpiObjectReference &reference)
+{
+    emit q->windowMinimized(accessibleFromContext(reference));
+}
+
+void RegistryPrivate::slotWindowMaximize(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const KAccessibleClient::QSpiObjectReference &reference)
+{
+    emit q->windowMaximized(accessibleFromContext(reference));
+}
+
+void RegistryPrivate::slotWindowRestore(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const KAccessibleClient::QSpiObjectReference &reference)
+{
+    emit q->windowRestored(accessibleFromContext(reference));
+}
+
+void RegistryPrivate::slotWindowActivate(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const KAccessibleClient::QSpiObjectReference &reference)
+{
+    emit q->windowActivated(accessibleFromContext(reference));
+}
+
+void RegistryPrivate::slotWindowDeactivate(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const KAccessibleClient::QSpiObjectReference &reference)
+{
+    emit q->windowDeactivated(accessibleFromContext(reference));
+}
+
+void RegistryPrivate::slotWindowDesktopCreate(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const KAccessibleClient::QSpiObjectReference &reference)
+{
+    emit q->windowDesktopCreated(accessibleFromContext(reference));
+}
+
+void RegistryPrivate::slotWindowDesktopDestroy(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const KAccessibleClient::QSpiObjectReference &reference)
+{
+    emit q->windowDesktopDestroyed(accessibleFromContext(reference));
+}
+
+void RegistryPrivate::slotWindowRaise(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const KAccessibleClient::QSpiObjectReference &reference)
+{
+    emit q->windowRaised(accessibleFromContext(reference));
+}
+
+void RegistryPrivate::slotWindowLower(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const KAccessibleClient::QSpiObjectReference &reference)
+{
+    emit q->windowLowered(accessibleFromContext(reference));
+}
+
+void RegistryPrivate::slotWindowMove(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const KAccessibleClient::QSpiObjectReference &reference)
+{
+    emit q->windowMoved(accessibleFromContext(reference));
+}
+
+void RegistryPrivate::slotWindowResize(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const KAccessibleClient::QSpiObjectReference &reference)
+{
+    emit q->windowResized(accessibleFromContext(reference));
+}
+
+void RegistryPrivate::slotWindowShade(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const KAccessibleClient::QSpiObjectReference &reference)
+{
+    emit q->windowShaded(accessibleFromContext(reference));
+}
+
+void RegistryPrivate::slotWindowUnshade(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const KAccessibleClient::QSpiObjectReference &reference)
+{
+    emit q->windowUnshaded(accessibleFromContext(reference));
+}
+
 void RegistryPrivate::slotStateChanged(const QString &state, int detail1, int /*detail2*/, const QDBusVariant &/*args*/, const QSpiObjectReference &reference)
 {
 #ifdef ATSPI_DEBUG
@@ -761,36 +921,18 @@ void RegistryPrivate::slotTextSelectionChanged(const QString &/*state*/, int /*d
     emit q->textSelectionChanged(accessible);
 }
 
-void RegistryPrivate::slotWindowCreated(const QString &change, int detail1, int detail2, const QDBusVariant &args, const QSpiObjectReference &reference)
-{
-#ifdef ATSPI_DEBUG
-    qDebug() << Q_FUNC_INFO << change << detail1 << detail2 << args.variant() << reference.path.path();
-#endif
-//    AccessibleObject accessible = accessibleFromContext(reference);
-    //emit signalWindowCreated(QSharedPointer<AccessibleObject>(accessible));
-}
-
-void RegistryPrivate::slotWindowActivated(const QString &change, int detail1, int detail2, const QDBusVariant &args, const QSpiObjectReference &reference)
-{
-#ifdef ATSPI_DEBUG
-    qDebug() << Q_FUNC_INFO << change << detail1 << detail2 << args.variant() << reference.path.path();
-#endif
-//    AccessibleObject accessible = accessibleFromContext(reference);
-//    emit signalWindowActivated(QSharedPointer<AccessibleObject>(accessible));
-}
-
-void RegistryPrivate::slotChildrenChanged(const QString &state, int detail1, int detail2, const QDBusVariant &args, const QSpiObjectReference &reference)
-{
-#ifdef ATSPI_DEBUG
-    qDebug() << Q_FUNC_INFO << state << detail1 << detail2 << args.variant() << reference.path.path();
-#endif
-}
-
-void RegistryPrivate::slotPropertyChange(const QString &state, int detail1, int detail2, const QDBusVariant &args, const QSpiObjectReference &reference)
-{
-#ifdef ATSPI_DEBUG
-    qDebug() << Q_FUNC_INFO << state << detail1 << detail2 << args.variant() << reference.path.path();
-#endif
-}
+// void RegistryPrivate::slotChildrenChanged(const QString &state, int detail1, int detail2, const QDBusVariant &args, const QSpiObjectReference &reference)
+// {
+// #ifdef ATSPI_DEBUG
+//     qDebug() << Q_FUNC_INFO << state << detail1 << detail2 << args.variant() << reference.path.path();
+// #endif
+// }
+//
+// void RegistryPrivate::slotPropertyChange(const QString &state, int detail1, int detail2, const QDBusVariant &args, const QSpiObjectReference &reference)
+// {
+// #ifdef ATSPI_DEBUG
+//     qDebug() << Q_FUNC_INFO << state << detail1 << detail2 << args.variant() << reference.path.path();
+// #endif
+// }
 
 #include "registry_p.moc"
