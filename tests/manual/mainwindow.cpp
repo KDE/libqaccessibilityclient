@@ -307,23 +307,23 @@ MainWindow::MainWindow(QWidget *parent)
     // The ultimate model verificaton helper :p
     //new ModelTest(m_treeModel, this);
 
-    connect(m_registry, SIGNAL(windowCreate(KAccessibleClient::AccessibleObject)), this, SLOT(windowCreate(KAccessibleClient::AccessibleObject)));
-    connect(m_registry, SIGNAL(windowDestroy(KAccessibleClient::AccessibleObject)), this, SLOT(windowDestroy(KAccessibleClient::AccessibleObject)));
-    connect(m_registry, SIGNAL(windowClose(KAccessibleClient::AccessibleObject)), this, SLOT(windowClose(KAccessibleClient::AccessibleObject)));
-    connect(m_registry, SIGNAL(windowReparent(KAccessibleClient::AccessibleObject)), this, SLOT(windowReparent(KAccessibleClient::AccessibleObject)));
-    connect(m_registry, SIGNAL(windowMinimize(KAccessibleClient::AccessibleObject)), this, SLOT(windowMinimize(KAccessibleClient::AccessibleObject)));
-    connect(m_registry, SIGNAL(windowMaximize(KAccessibleClient::AccessibleObject)), this, SLOT(windowMaximize(KAccessibleClient::AccessibleObject)));
-    connect(m_registry, SIGNAL(windowRestore(KAccessibleClient::AccessibleObject)), this, SLOT(windowRestore(KAccessibleClient::AccessibleObject)));
-    connect(m_registry, SIGNAL(windowActivate(KAccessibleClient::AccessibleObject)), this, SLOT(windowActivate(KAccessibleClient::AccessibleObject)));
-    connect(m_registry, SIGNAL(windowDeactivate(KAccessibleClient::AccessibleObject)), this, SLOT(windowDeactivate(KAccessibleClient::AccessibleObject)));
-    connect(m_registry, SIGNAL(windowDesktopCreate(KAccessibleClient::AccessibleObject)), this, SLOT(windowDesktopCreate(KAccessibleClient::AccessibleObject)));
-    connect(m_registry, SIGNAL(windowDesktopDestroy(KAccessibleClient::AccessibleObject)), this, SLOT(windowDesktopDestroy(KAccessibleClient::AccessibleObject)));
-    connect(m_registry, SIGNAL(windowRaise(KAccessibleClient::AccessibleObject)), this, SLOT(windowRaise(KAccessibleClient::AccessibleObject)));
-    connect(m_registry, SIGNAL(windowLower(KAccessibleClient::AccessibleObject)), this, SLOT(windowLower(KAccessibleClient::AccessibleObject)));
-    connect(m_registry, SIGNAL(windowMove(KAccessibleClient::AccessibleObject)), this, SLOT(windowMove(KAccessibleClient::AccessibleObject)));
-    connect(m_registry, SIGNAL(windowResize(KAccessibleClient::AccessibleObject)), this, SLOT(windowResize(KAccessibleClient::AccessibleObject)));
-    connect(m_registry, SIGNAL(windowShade(KAccessibleClient::AccessibleObject)), this, SLOT(windowShade(KAccessibleClient::AccessibleObject)));
-    connect(m_registry, SIGNAL(windowUnshade(KAccessibleClient::AccessibleObject)), this, SLOT(windowUnshade(KAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(windowCreated(KAccessibleClient::AccessibleObject)), this, SLOT(windowCreated(KAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(windowDestroyed(KAccessibleClient::AccessibleObject)), this, SLOT(windowDestroyed(KAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(windowClosed(KAccessibleClient::AccessibleObject)), this, SLOT(windowClosed(KAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(windowReparented(KAccessibleClient::AccessibleObject)), this, SLOT(windowReparented(KAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(windowMinimized(KAccessibleClient::AccessibleObject)), this, SLOT(windowMinimized(KAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(windowMaximized(KAccessibleClient::AccessibleObject)), this, SLOT(windowMaximized(KAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(windowRestored(KAccessibleClient::AccessibleObject)), this, SLOT(windowRestored(KAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(windowActivated(KAccessibleClient::AccessibleObject)), this, SLOT(windowActivated(KAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(windowDeactivated(KAccessibleClient::AccessibleObject)), this, SLOT(windowDeactivated(KAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(windowDesktopCreated(KAccessibleClient::AccessibleObject)), this, SLOT(windowDesktopCreated(KAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(windowDesktopDestroyed(KAccessibleClient::AccessibleObject)), this, SLOT(windowDesktopDestroyed(KAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(windowRaised(KAccessibleClient::AccessibleObject)), this, SLOT(windowRaised(KAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(windowLowered(KAccessibleClient::AccessibleObject)), this, SLOT(windowLowered(KAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(windowMoved(KAccessibleClient::AccessibleObject)), this, SLOT(windowMoved(KAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(windowResized(KAccessibleClient::AccessibleObject)), this, SLOT(windowResized(KAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(windowShaded(KAccessibleClient::AccessibleObject)), this, SLOT(windowShaded(KAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(windowUnshaded(KAccessibleClient::AccessibleObject)), this, SLOT(windowUnshaded(KAccessibleClient::AccessibleObject)));
 
     connect(m_registry, SIGNAL(focusChanged(KAccessibleClient::AccessibleObject)), this, SLOT(focusChanged(KAccessibleClient::AccessibleObject)));
     connect(m_registry, SIGNAL(textCaretMoved(KAccessibleClient::AccessibleObject,int)), this, SLOT(textCaretMoved(KAccessibleClient::AccessibleObject,int)));
@@ -463,87 +463,87 @@ void MainWindow::MainWindow::treeCustomContextMenuRequested(const QPoint &pos)
     menu->popup(m_treeView->mapToGlobal(pos));
 }
 
-void MainWindow::windowCreate(const KAccessibleClient::AccessibleObject &object)
+void MainWindow::windowCreated(const KAccessibleClient::AccessibleObject &object)
 {
     addLog(object, QString("WindowCreate"));
 }
 
-void MainWindow::windowDestroy(const KAccessibleClient::AccessibleObject &object)
+void MainWindow::windowDestroyed(const KAccessibleClient::AccessibleObject &object)
 {
     addLog(object, QString("WindowDestroy"));
 }
 
-void MainWindow::windowClose(const KAccessibleClient::AccessibleObject &object)
+void MainWindow::windowClosed(const KAccessibleClient::AccessibleObject &object)
 {
     addLog(object, QString("WindowClose"));
 }
 
-void MainWindow::windowReparent(const KAccessibleClient::AccessibleObject &object)
+void MainWindow::windowReparented(const KAccessibleClient::AccessibleObject &object)
 {
     addLog(object, QString("WindowReparent"));
 }
 
-void MainWindow::windowMinimize(const KAccessibleClient::AccessibleObject &object)
+void MainWindow::windowMinimized(const KAccessibleClient::AccessibleObject &object)
 {
     addLog(object, QString("WindowMinimize"));
 }
 
-void MainWindow::windowMaximize(const KAccessibleClient::AccessibleObject &object)
+void MainWindow::windowMaximized(const KAccessibleClient::AccessibleObject &object)
 {
     addLog(object, QString("WindowMaximize"));
 }
 
-void MainWindow::windowRestore(const KAccessibleClient::AccessibleObject &object)
+void MainWindow::windowRestored(const KAccessibleClient::AccessibleObject &object)
 {
     addLog(object, QString("WindowRestore"));
 }
 
-void MainWindow::windowActivate(const KAccessibleClient::AccessibleObject &object)
+void MainWindow::windowActivated(const KAccessibleClient::AccessibleObject &object)
 {
     addLog(object, QString("WindowActivate"));
 }
 
-void MainWindow::windowDeactivate(const KAccessibleClient::AccessibleObject &object)
+void MainWindow::windowDeactivated(const KAccessibleClient::AccessibleObject &object)
 {
     addLog(object, QString("WindowDeactivate"));
 }
 
-void MainWindow::windowDesktopCreate(const KAccessibleClient::AccessibleObject &object)
+void MainWindow::windowDesktopCreated(const KAccessibleClient::AccessibleObject &object)
 {
     addLog(object, QString("WindowDesktopCreate"));
 }
 
-void MainWindow::windowDesktopDestroy(const KAccessibleClient::AccessibleObject &object)
+void MainWindow::windowDesktopDestroyed(const KAccessibleClient::AccessibleObject &object)
 {
     addLog(object, QString("WindowDesktopDestroy"));
 }
 
-void MainWindow::windowRaise(const KAccessibleClient::AccessibleObject &object)
+void MainWindow::windowRaised(const KAccessibleClient::AccessibleObject &object)
 {
     addLog(object, QString("WindowRaise"));
 }
 
-void MainWindow::windowLower(const KAccessibleClient::AccessibleObject &object)
+void MainWindow::windowLowered(const KAccessibleClient::AccessibleObject &object)
 {
     addLog(object, QString("WindowLower"));
 }
 
-void MainWindow::windowMove(const KAccessibleClient::AccessibleObject &object)
+void MainWindow::windowMoved(const KAccessibleClient::AccessibleObject &object)
 {
     addLog(object, QString("WindowMove"));
 }
 
-void MainWindow::windowResize(const KAccessibleClient::AccessibleObject &object)
+void MainWindow::windowResized(const KAccessibleClient::AccessibleObject &object)
 {
     addLog(object, QString("WindowResize"));
 }
 
-void MainWindow::windowShade(const KAccessibleClient::AccessibleObject &object)
+void MainWindow::windowShaded(const KAccessibleClient::AccessibleObject &object)
 {
     addLog(object, QString("WindowShade"));
 }
 
-void MainWindow::windowUnshade(const KAccessibleClient::AccessibleObject &object)
+void MainWindow::windowUnshaded(const KAccessibleClient::AccessibleObject &object)
 {
     addLog(object, QString("WindowUnshade"));
 }
