@@ -66,6 +66,11 @@ bool AccessibleObject::operator==(const AccessibleObject &other) const
     return (d == other.d) || (d && other.d && *d == *other.d);
 }
 
+RegistryPrivate* AccessibleObject::registryPrivate() const
+{
+    return d ? d->registryPrivate : 0;
+}
+
 AccessibleObject AccessibleObject::parent() const
 {
     return d->registryPrivate->parentAccessible(*this);

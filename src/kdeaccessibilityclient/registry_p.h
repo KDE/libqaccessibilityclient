@@ -100,8 +100,10 @@ private Q_SLOTS:
     AccessibleObject accessibleFromPath(const QString &service, const QString &path) const;
     AccessibleObject accessibleFromContext(const QSpiObjectReference &reference) const;
 
-    void handlePendingSubscriptions();
+    void connectionFetched();
     void slotSubscribeEventListenerFinished(QDBusPendingCallWatcher *call);
+    void propertiesChanged(const QString &interface,const QVariantMap &changedProperties, const QStringList &invalidatedProperties);
+
     //void slotChildrenChanged(const QString &state, int detail1, int detail2, const QDBusVariant &args, const KAccessibleClient::QSpiObjectReference &reference);
     //void slotPropertyChange(const QString &state, int detail1, int detail2, const QDBusVariant &args, const KAccessibleClient::QSpiObjectReference &reference);
     void slotWindowCreate(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const KAccessibleClient::QSpiObjectReference &reference);

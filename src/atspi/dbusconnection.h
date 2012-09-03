@@ -71,6 +71,26 @@ public:
      */
     QDBusConnection connection() const;
 
+    enum Status {
+        Disconnected,
+        ConnectionError,
+        Connected
+    };
+
+    /**
+        \brief Returns the state the connection is in.
+
+        If Disconnected then we got not asked to connect yet or
+        connection is in progress but not finished yet (see
+        signal \a connectionFetched which will be emitted if the
+        connection is not Disconnected any longer.
+        If connection failed then the state is set to ConnectionError
+        otherwise, in the case everything went fine and we are
+        proper connected with tthe atspi daemon now Connected
+        is returned.
+     */
+    Status status() const;
+
 signals:
 
     /**
@@ -89,6 +109,7 @@ private:
     void init();
 
     QDBusConnection m_connection;
+    mutable Status m_status;
     QDBusPendingCallWatcher *m_initWatcher;
 };
 }

@@ -56,19 +56,18 @@ public:
 
     QModelIndex indexForAccessible(const KAccessibleClient::AccessibleObject &object);
 
-public Q_SLOTS:
-    void resetModel();
-
-Q_SIGNALS:
-    void navigationError(const QModelIndex &) const;
-
-protected:
     virtual int columnCount(const QModelIndex& parent = QModelIndex()) const;
     virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
     virtual QModelIndex index(int row, int column, const QModelIndex& parent = QModelIndex()) const;
     virtual QModelIndex parent(const QModelIndex& child) const;
     virtual int rowCount(const QModelIndex& parent = QModelIndex()) const;
     virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
+
+public Q_SLOTS:
+    void resetModel();
+
+Q_SIGNALS:
+    void navigationError(const QModelIndex &) const;
 
 private:
     KAccessibleClient::Registry *m_registry;

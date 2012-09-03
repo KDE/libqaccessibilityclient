@@ -73,7 +73,6 @@ public:
             append(QString("Default"), acc.isDefault(), item);
             append(QString("State"), stateString(acc), item);
             //GetAttributes
-            //GetApplication
         }
         if (interfaces.testFlag(KAccessibleClient::AccessibleObject::Component)) {
             QStandardItem *item = append(QString("Component"));
@@ -403,6 +402,7 @@ void MainWindow::MainWindow::initUi()
     m_treeView = new QTreeView(treeDocker);
     m_treeView->setAccessibleName(QString("Tree of accessibles"));
     m_treeView->setAccessibleDescription(QString("Displays a hierachical tree of accessible objects"));
+    m_treeView->setSelectionBehavior(QAbstractItemView::SelectRows);
     m_treeView->setEditTriggers(QAbstractItemView::NoEditTriggers);
     treeDocker->setWidget(m_treeView);
     addDockWidget(Qt::LeftDockWidgetArea, treeDocker);
@@ -410,6 +410,7 @@ void MainWindow::MainWindow::initUi()
     m_treeModel = new AccessibleTree(this);
     m_treeModel->setRegistry(m_registry);
     m_treeView->setModel(m_treeModel);
+    m_treeView->setColumnWidth(0, 240);
     m_treeView->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(m_treeView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(selectionChanged(QModelIndex,QModelIndex)));
     connect(m_treeView, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(treeCustomContextMenuRequested(QPoint)));
@@ -437,7 +438,7 @@ void MainWindow::MainWindow::initUi()
     eventsDocker->setWidget(m_eventsEdit);
     addDockWidget(Qt::RightDockWidgetArea, eventsDocker);
 
-    resize(QSize(760,520));
+    resize(minimumSize().expandedTo(QSize(760,520)));
 }
 
 void MainWindow::MainWindow::addLog(const KAccessibleClient::AccessibleObject &object, const QString &eventName, const QString &text)
@@ -597,15 +598,24 @@ void MainWindow::focusChanged(const KAccessibleClient::AccessibleObject &object)
     if (m_followFocusAction->isChecked()) {
         QModelIndex index = m_treeModel->indexForAccessible(object);
         if (index.isValid()) {
+            // We need to block the focus for the treeView while setting the current item
+            // to prevent that setting that item would change focus to the treeView.
+            Qt::FocusPolicy prevFocusPolicy = m_treeView->focusPolicy();
+            m_treeView->setFocusPolicy(Qt::NoFocus);
+
+            QModelIndex other = m_treeModel->index(index.row(), index.column()+1, index.parent());
+            Q_ASSERT(other.isValid());
+            m_treeView->selectionModel()->select(QItemSelection(index, other), QItemSelectionModel::SelectCurrent);
             m_treeView->scrollTo(index);
-            m_treeView->selectionModel()->setCurrentIndex(index, QItemSelectionModel::ClearAndSelect);
+
+            // Unlike calling setCurrentIndex the select call aboves doe not emit the selectionChanged signal. So, do explicit.
+            selectionChanged(index, QModelIndex());
+
+            m_treeView->setFocusPolicy(prevFocusPolicy);
         } else {
             qWarning() << "No such indexForAccessible=" << object;
         }
     }
-    //QPoint fpoint = object.focusPoint();
-    //ui.statusbar->showMessage(QString("Current Focus : ( %1 , %2 )").arg(fpoint.x()).arg(fpoint.y()));
-    //addLog(object, QString("Focus"));
 }
 
 void MainWindow::MainWindow::textCaretMoved(const KAccessibleClient::AccessibleObject &object, int pos)

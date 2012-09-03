@@ -90,7 +90,8 @@ using namespace KAccessibleClient;
 RegistryPrivate::RegistryPrivate(Registry *qq)
     :q(qq), m_subscriptions(Registry::NoEventListeners)
 {
-    connect(&conn, SIGNAL(connectionFetched()), this, SLOT(handlePendingSubscriptions()));
+    connect(&conn, SIGNAL(connectionFetched()), this, SLOT(connectionFetched()));
+    connect(&conn, SIGNAL(enabledChanged(bool)), q, SIGNAL(enabledChanged(bool)));
     connect(&m_actionMapper, SIGNAL(mapped(QString)), this, SLOT(actionTriggered(QString)));
     init();
 }
@@ -122,9 +123,13 @@ void RegistryPrivate::init()
 
 bool RegistryPrivate::isEnabled() const
 {
+    if (conn.status() != DBusConnection::Connected)
+        return false;
+
     QDBusConnection c = QDBusConnection::sessionBus();
     if (!c.isConnected())
         return false;
+
     QDBusMessage message = QDBusMessage::createMethodCall(
                 QLatin1String("org.a11y.Bus"), QLatin1String("/org/a11y/bus"), QLatin1String("org.freedesktop.DBus.Properties"), QLatin1String("Get"));
     message.setArguments(QVariantList() << QLatin1String("org.a11y.Status") << QLatin1String("IsEnabled"));
@@ -133,28 +138,40 @@ bool RegistryPrivate::isEnabled() const
         qWarning() << "Could not get org.a11y.Status.isEnabled." << reply.error().message();
         return false;
     }
+
     bool enabled = qdbus_cast< QVariant >(reply).toBool();
     return enabled;
 }
 
 void RegistryPrivate::setEnabled(bool enable)
 {
+    if (conn.status() != DBusConnection::Connected)
+        return;
+
     QDBusConnection c = QDBusConnection::sessionBus();
     if (!c.isConnected())
         return;
+
     QDBusMessage message = QDBusMessage::createMethodCall(
                 QLatin1String("org.a11y.Bus"), QLatin1String("/org/a11y/bus"), QLatin1String("org.freedesktop.DBus.Properties"), QLatin1String("Set"));
     message.setArguments(QVariantList() << QLatin1String("org.a11y.Status") << QLatin1String("IsEnabled") << QVariant::fromValue(QDBusVariant(enable)));
     QDBusMessage reply = c.call(message);
     if (reply.type() == QDBusMessage::ErrorMessage) {
         qWarning() << "Could not set org.a11y.Status.isEnabled." << reply.errorName() << reply.errorMessage();
-    } else {
-        q->enabledChanged(enable);
     }
 }
 
-void RegistryPrivate::handlePendingSubscriptions()
+void RegistryPrivate::connectionFetched()
 {
+    Q_ASSERT(conn.status() == DBusConnection::Connected);
+
+    QDBusConnection session = QDBusConnection::sessionBus();
+    if (session.isConnected()) {
+        bool connected = session.connect(QLatin1String("org.a11y.Bus"), QLatin1String("/org/a11y/bus"), QLatin1String("org.freedesktop.DBus"), QLatin1String("PropertiesChanged"), this, SLOT(propertiesChanged(QString,QVariantMap,QStringList)));
+        if (!connected)
+            qWarning() << Q_FUNC_INFO << "Failed to connect with signal org.a11y.Status.PropertiesChanged on org.a11y.Bus";
+    }
+
     if (m_pendingSubscriptions > 0) {
         subscribeEventListeners(m_pendingSubscriptions);
         m_pendingSubscriptions = 0;
@@ -263,7 +280,7 @@ void RegistryPrivate::subscribeEventListeners(const Registry::EventListeners &li
         if (!success) qWarning() << "Could not subscribe to accessibility ChildrenChanged events.";
     }
     if (listeners.testFlag(Registry::VisibleDataChanged)) {
-        subscriptions << QLatin1String("object:children-changed");
+        subscriptions << QLatin1String("object:visibledata-changed");
         bool success = conn.connection().connect(
                     QString(), QLatin1String(""), QLatin1String("org.a11y.atspi.Event.Object"), QLatin1String("VisibleDataChanged"),
                     this, SLOT(slotVisibleDataChanged(QString,int,int,QDBusVariant,KAccessibleClient::QSpiObjectReference)));
@@ -328,13 +345,8 @@ void RegistryPrivate::subscribeEventListeners(const Registry::EventListeners &li
         QObject::connect(watcher, SIGNAL(finished(QDBusPendingCallWatcher*)), this, SLOT(slotSubscribeEventListenerFinished(QDBusPendingCallWatcher*)));
     }
 
-//    subscriptions << QLatin1String("object:children-changed")
-//                  << QLatin1String("object:property-change:accessiblename")
-//                  << QLatin1String("object:state-changed")
+//    subscriptions << QLatin1String("object:property-change:accessiblename")
 //                  << QLatin1String("object:bounds-changed")
-//                  << QLatin1String("object:visibledata-changed")
-//                  << QLatin1String("object:state-changed")
-//                  << QLatin1String("object:selection-changed")
 
 //    conn.connection().connect(QString(), QLatin1String(""), QLatin1String("org.a11y.atspi.Event.Object"), QLatin1String("ChildrenChanged"), this,
 //                                  SLOT(slotChildrenChanged(QString, int, int, QDBusVariant, QSpiObjectReference)));
@@ -370,7 +382,7 @@ void RegistryPrivate::subscribeEventListeners(const Registry::EventListeners &li
 //     (u':1.8', u'Object:TextChanged:Insert'),
 //     (u':1.8', u'Object:PropertyChange:AccessibleValue'),
 //     (u':1.8', u'Object:TextSelectionChanged:'),
-//     (u':1.8', u'Object:StateChanged:Showing'),
+// //     (u':1.8', u'Object:StateChanged:Showing'),
 //     (u':1.8', u'Object:TextChanged:Delete'),
 //     (u':1.8', u'Object:StateChanged:Pressed'),
 //     (u':1.8', u'Object:StateChanged:Checked'),
@@ -389,6 +401,25 @@ void RegistryPrivate::slotSubscribeEventListenerFinished(QDBusPendingCallWatcher
         qWarning() << "Could not subscribe to accessibility event: " << call->error().type() << call->error().message();
     }
     call->deleteLater();
+}
+
+void RegistryPrivate::propertiesChanged(const QString &interface,const QVariantMap &changedProperties, const QStringList &invalidatedProperties)
+{
+    qDebug() << Q_FUNC_INFO << "interface=" << interface << "changedProperties=" << changedProperties << "invalidatedProperties=" << invalidatedProperties;
+    if (conn.status() != DBusConnection::Connected)
+        return;
+    if (interface == QLatin1String("org.a11y.Status")) {
+        bool enabled = false;
+        QVariantMap::ConstIterator it = changedProperties.constFind(QLatin1String("IsEnabled"));
+        if (it != changedProperties.constEnd()) {
+            enabled = it.value().toBool();
+        } else if (invalidatedProperties.contains(QLatin1String("IsEnabled"))) {
+            enabled = isEnabled();
+        } else {
+            return;
+        }
+        emit q->enabledChanged(enabled);
+    }
 }
 
 AccessibleObject RegistryPrivate::parentAccessible(const AccessibleObject &object) const

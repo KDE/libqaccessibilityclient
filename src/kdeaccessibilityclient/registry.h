@@ -101,7 +101,14 @@ public slots:
     QList<AccessibleObject> applications() const;
 
 Q_SIGNALS:
-    void enabledChanged(bool);
+
+    /**
+        Emitted if the \a isEnabled state changed.
+
+        If the accessibility daemon got enabled or disabled either by us or
+        ny someone else then this signal is emitted.
+    */
+    void enabledChanged(bool enabled);
 
     void windowCreated(const KAccessibleClient::AccessibleObject &object);
     void windowDestroyed(const KAccessibleClient::AccessibleObject &object);

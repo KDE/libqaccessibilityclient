@@ -31,6 +31,7 @@ DBusConnection::DBusConnection()
     : QObject()
     , m_connection(QDBusConnection::sessionBus())
     , m_initWatcher(0)
+    , m_status(Disconnected)
 {
     init();
 }
@@ -56,6 +57,7 @@ void DBusConnection::initFinished()
 {
     if (!m_initWatcher)
         return;
+    m_status = ConnectionError;
     QDBusPendingReply<QString> reply = *m_initWatcher;
     if (reply.isError() || reply.value().isEmpty()) {
         qWarning() << "Accessibility DBus not found. Falling back to session bus.";
@@ -66,6 +68,7 @@ void DBusConnection::initFinished()
         if (c.isConnected()) {
             qDebug() << "Connected to Accessibility DBus at address=" << busAddress;
             m_connection = c;
+            m_status = Connected;
         } else {
             qWarning() << "Found Accessibility DBus address=" << busAddress << "but cannot connect. Falling back to session bus.";
         }
@@ -87,4 +90,9 @@ QDBusConnection DBusConnection::connection() const
         const_cast<DBusConnection*>(this)->initFinished();
     }
     return m_connection;
+}
+
+DBusConnection::Status DBusConnection::status() const
+{
+    return m_status;
 }
