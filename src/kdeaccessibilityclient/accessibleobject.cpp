@@ -174,14 +174,20 @@ int AccessibleObject::caretOffset() const
 QPoint AccessibleObject::focusPoint() const
 {
     Interfaces ifaces = supportedInterfaces();
-
-    if(ifaces & Text) {
-        return characterRect().center();
-    } else if(ifaces & Component){
-        return boundingRect().center();
-    } else {
-        return QPoint();
+    if (ifaces & Text) {
+        QRect r = characterRect();
+        if (!r.isNull())
+            return r.center();
     }
+    if (ifaces & Component) {
+        QRect r = characterRect();
+        if (!r.isNull())
+            return r.center();
+    }
+    AccessibleObject p = parent();
+    if (p.isValid())
+        return p.focusPoint(); // recursive
+    return QPoint();
 }
 
 AccessibleObject AccessibleObject::application() const
