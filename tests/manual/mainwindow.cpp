@@ -32,6 +32,7 @@
 #include <QTextBlock>
 #include <qscrollbar.h>
 #include <qsettings.h>
+#include <qurl.h>
 
 #include "kdeaccessibilityclient/registry.h"
 #include "kdeaccessibilityclient/accessibleobject.h"
@@ -435,26 +436,63 @@ void MainWindow::MainWindow::initUi()
     eventsDocker->setObjectName("events");
     eventsDocker->setFeatures(QDockWidget::AllDockWidgetFeatures);
     m_eventsEdit = new QTextBrowser(eventsDocker);
+    m_eventsEdit->setAccessibleName(QLatin1String("Events View"));
+    m_eventsEdit->setAccessibleDescription(QString("Displays all received events"));
+    m_eventsEdit->setOpenLinks(false);
+    connect(m_eventsEdit, SIGNAL(anchorClicked(QUrl)), this, SLOT(anchorClicked(QUrl)));
     eventsDocker->setWidget(m_eventsEdit);
     addDockWidget(Qt::RightDockWidgetArea, eventsDocker);
 
     resize(minimumSize().expandedTo(QSize(760,520)));
 }
 
+void MainWindow::anchorClicked(const QUrl &url)
+{
+    KAccessibleClient::AccessibleObject object = m_registry->fromUrl(url);
+    setCurrentObject(object);
+}
+
 void MainWindow::MainWindow::addLog(const KAccessibleClient::AccessibleObject &object, const QString &eventName, const QString &text)
 {
+    if (object.name() == m_eventsEdit->accessibleName() && object.description() == m_eventsEdit->accessibleDescription())
+        return;
+
+    bool wasMax = m_eventsEdit->verticalScrollBar()->value() == m_eventsEdit->verticalScrollBar()->maximum();
+
     QTextDocument *doc = m_eventsEdit->document();
     doc->blockSignals(true); // to prevent infinte TextCaretMoved events
     QTextCursor cursor(doc->lastBlock());
     cursor.movePosition(QTextCursor::EndOfBlock, QTextCursor::KeepAnchor);
-    QString s = QString("%1: %2 (%3)").arg(eventName).arg(object.name()).arg(object.roleName());
-    cursor.insertText(s);
+
+    QString s = QString("%1: %2").arg(eventName).arg(object.name());
+    QUrl url = m_registry->toUrl(object);
+    cursor.insertText(s.trimmed() + QLatin1Char(' '));
+    cursor.insertHtml(QString("(<a href=\"%1\">%2</a>) ").arg(url.toString()).arg(object.roleName()));
     if (!text.isEmpty())
-        cursor.insertText(" " + text);
+        cursor.insertText(QLatin1Char(' ') + text);
+
     cursor.insertBlock();
+
     doc->blockSignals(false);
-//     m_eventsEdit->ensureCursorVisible();
-    m_eventsEdit->verticalScrollBar()->setValue(m_eventsEdit->verticalScrollBar()->maximum());
+
+    if (wasMax) // scroll down if we where before scrolled down too
+        m_eventsEdit->verticalScrollBar()->setValue(m_eventsEdit->verticalScrollBar()->maximum());
+}
+
+void MainWindow::setCurrentObject(const KAccessibleClient::AccessibleObject &object)
+{
+    QModelIndex index = m_treeModel->indexForAccessible(object);
+    if (index.isValid()) {
+        QModelIndex other = m_treeModel->index(index.row(), index.column()+1, index.parent());
+        Q_ASSERT(other.isValid());
+        m_treeView->selectionModel()->select(QItemSelection(index, other), QItemSelectionModel::SelectCurrent);
+        m_treeView->scrollTo(index);
+
+        // Unlike calling setCurrentIndex the select call aboves doe not emit the selectionChanged signal. So, do explicit.
+        selectionChanged(index, QModelIndex());
+    } else {
+        qWarning() << "No such indexForAccessible=" << object;
+    }
 }
 
 void MainWindow::stateChanged(const KAccessibleClient::AccessibleObject &object, const QString &state, int detail1, int detail2, const QVariant &args)
@@ -596,25 +634,14 @@ void MainWindow::windowUnshaded(const KAccessibleClient::AccessibleObject &objec
 void MainWindow::focusChanged(const KAccessibleClient::AccessibleObject &object)
 {
     if (m_followFocusAction->isChecked()) {
-        QModelIndex index = m_treeModel->indexForAccessible(object);
-        if (index.isValid()) {
-            // We need to block the focus for the treeView while setting the current item
-            // to prevent that setting that item would change focus to the treeView.
-            Qt::FocusPolicy prevFocusPolicy = m_treeView->focusPolicy();
-            m_treeView->setFocusPolicy(Qt::NoFocus);
+        // We need to block the focus for the treeView while setting the current item
+        // to prevent that setting that item would change focus to the treeView.
+        Qt::FocusPolicy prevFocusPolicy = m_treeView->focusPolicy();
+        m_treeView->setFocusPolicy(Qt::NoFocus);
 
-            QModelIndex other = m_treeModel->index(index.row(), index.column()+1, index.parent());
-            Q_ASSERT(other.isValid());
-            m_treeView->selectionModel()->select(QItemSelection(index, other), QItemSelectionModel::SelectCurrent);
-            m_treeView->scrollTo(index);
+        setCurrentObject(object);
 
-            // Unlike calling setCurrentIndex the select call aboves doe not emit the selectionChanged signal. So, do explicit.
-            selectionChanged(index, QModelIndex());
-
-            m_treeView->setFocusPolicy(prevFocusPolicy);
-        } else {
-            qWarning() << "No such indexForAccessible=" << object;
-        }
+        m_treeView->setFocusPolicy(prevFocusPolicy);
     }
 }
 

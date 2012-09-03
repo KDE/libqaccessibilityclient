@@ -21,6 +21,8 @@
 #include "registry.h"
 #include "registry_p.h"
 
+#include <qurl.h>
+
 using namespace KAccessibleClient;
 
 Registry::Registry(QObject *parent)
@@ -57,6 +59,16 @@ Registry::EventListeners Registry::subscribedEventListeners() const
 QList<AccessibleObject> Registry::applications() const
 {
     return d->topLevelAccessibles();
+}
+
+QUrl Registry::toUrl(const AccessibleObject &object) const
+{
+    return d->toUrl(object);
+}
+
+AccessibleObject Registry::fromUrl(const QUrl &url) const
+{
+    return d->fromUrl(url);
 }
 
 #include "registry.moc"

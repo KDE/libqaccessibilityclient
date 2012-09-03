@@ -51,6 +51,9 @@ public:
     bool isEnabled() const;
     void setEnabled(bool enable);
 
+    QUrl toUrl(const AccessibleObject &object) const;
+    AccessibleObject fromUrl(const QUrl &url) const;
+
     void subscribeEventListeners(const Registry::EventListeners & listeners);
     Registry::EventListeners eventListeners() const;
 
@@ -145,6 +148,8 @@ private Q_SLOTS:
     void actionTriggered(const QString &action);
 
 private:
+    friend class Registry;
+
     QVariant getProperty ( const QString &service, const QString &path, const QString &interface, const QString &name ) const;
     bool subscribeEvent(const QLatin1String &iface, const QLatin1String &signal);
 

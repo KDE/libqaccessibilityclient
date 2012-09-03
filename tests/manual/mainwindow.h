@@ -48,6 +48,7 @@ protected:
 private Q_SLOTS:
     void selectionChanged(const QModelIndex &current, const QModelIndex &);
     void treeCustomContextMenuRequested(const QPoint &pos);
+    void anchorClicked(const QUrl &url);
 
     void windowCreated(const KAccessibleClient::AccessibleObject &object);
     void windowDestroyed(const KAccessibleClient::AccessibleObject &object);
@@ -99,6 +100,7 @@ private:
     void initUi();
 
     void addLog(const KAccessibleClient::AccessibleObject &object, const QString &eventName, const QString &text = QString());
+    void setCurrentObject(const KAccessibleClient::AccessibleObject &object);
 };
 
 #endif

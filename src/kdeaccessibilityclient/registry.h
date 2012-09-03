@@ -100,6 +100,19 @@ public slots:
     */
     QList<AccessibleObject> applications() const;
 
+    /**
+        Returns a QUrl that references the AccessibleObject.
+
+        This can be used to serialize/unserialize an AccessibleObject
+        to pass it around as string and restore the AccessibleObject
+        later on.
+
+        The returned QUrl returns a scheme of "AccessibleObject", the
+        dbus path as url path and the dbus service as url fragment.
+    */
+    QUrl toUrl(const AccessibleObject &object) const;
+    AccessibleObject fromUrl(const QUrl &url) const;
+
 Q_SIGNALS:
 
     /**

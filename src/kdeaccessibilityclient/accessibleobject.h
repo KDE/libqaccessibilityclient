@@ -448,4 +448,6 @@ LIBKDEACCESSIBILITYCLIENT_EXPORT QDebug operator<<(QDebug, const AccessibleObjec
 
 }
 
+Q_DECLARE_METATYPE(KAccessibleClient::AccessibleObject)
+
 #endif

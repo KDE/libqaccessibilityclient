@@ -31,6 +31,7 @@
 #include <qdebug.h>
 #include <qdbusmessage.h>
 #include <qstringlist.h>
+#include <qurl.h>
 
 #include "atspi/atspi-constants.h"
 #include "atspi/qt-atspi.h"
@@ -159,6 +160,25 @@ void RegistryPrivate::setEnabled(bool enable)
     if (reply.type() == QDBusMessage::ErrorMessage) {
         qWarning() << "Could not set org.a11y.Status.isEnabled." << reply.errorName() << reply.errorMessage();
     }
+}
+
+QUrl RegistryPrivate::toUrl(const AccessibleObject &object) const
+{
+    QUrl u;
+    u.setScheme(QLatin1String("AccessibleObject"));
+    u.setPath(object.d->path);
+    u.setFragment(object.d->service);
+    return u;
+}
+
+AccessibleObject RegistryPrivate::fromUrl(const QUrl &url) const
+{
+    Q_ASSERT(url.scheme() == QLatin1String("AccessibleObject"));
+    if (url.scheme() != QLatin1String("AccessibleObject"))
+        return AccessibleObject();
+    QString path = url.path();
+    QString service = url.fragment();
+    return accessibleFromPath(service, path);
 }
 
 void RegistryPrivate::connectionFetched()
