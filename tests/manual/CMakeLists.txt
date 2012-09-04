@@ -21,6 +21,7 @@ set(accessibleapps_SRCS
     mainwindow.cpp
     mainwindow.moc
     accessibletree.cpp
+    accessibleproperties.cpp
     tests_auto_modeltest_modeltest.cpp
 )
 

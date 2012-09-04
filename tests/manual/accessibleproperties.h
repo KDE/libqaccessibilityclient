@@ -1,5 +1,5 @@
 /*
-    Copyright 2012 Frederik Gladhorn <gladhorn@kde.org>
+    Copyright 2012 Sebastian Sauer <sebastian.sauer@kdab.com>
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -18,36 +18,27 @@
     License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef LIBKDEACCESSIBILITYCLIENT_ACCESSIBLEOBJECT_P_H
-#define LIBKDEACCESSIBILITYCLIENT_ACCESSIBLEOBJECT_P_H
+#ifndef ACCESSIBLEPROPERTIES_H
+#define ACCESSIBLEPROPERTIES_H
 
-#include <qstring.h>
-#include <qlist.h>
-#include <qshareddata.h>
-
-class QAction;
+#include <qobject.h>
+#include <qstandarditemmodel.h>
 
 namespace KAccessibleClient {
+    class AccessibleObject;
+}
 
-class RegistryPrivate;
-
-class AccessibleObjectPrivate :public QSharedData
+class ObjectProperties : public QStandardItemModel
 {
 public:
-    AccessibleObjectPrivate(RegistryPrivate *reg, const QString &service_, const QString &path_);
-    AccessibleObjectPrivate(const AccessibleObjectPrivate &other);
-    ~AccessibleObjectPrivate();
+    explicit ObjectProperties(QObject *parent = 0);
+    virtual ~ObjectProperties();
 
-    RegistryPrivate *registryPrivate;
-    QString service;
-    QString path;
+    void setAccessibleObject(const KAccessibleClient::AccessibleObject &acc);
 
-    mutable QList<QAction*> actions;
-    mutable bool actionsFetched;
-
-    bool operator==(const AccessibleObjectPrivate &other) const;
+private:
+    QStandardItem* append(const QString &name, const QVariant &value = QVariant(), QStandardItem *parentItem = 0);
+    QString stateString(const KAccessibleClient::AccessibleObject &acc);
 };
-
-}
 
 #endif

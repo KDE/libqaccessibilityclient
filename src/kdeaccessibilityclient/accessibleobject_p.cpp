@@ -18,36 +18,38 @@
     License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef LIBKDEACCESSIBILITYCLIENT_ACCESSIBLEOBJECT_P_H
-#define LIBKDEACCESSIBILITYCLIENT_ACCESSIBLEOBJECT_P_H
+#include "accessibleobject_p.h"
 
-#include <qstring.h>
-#include <qlist.h>
-#include <qshareddata.h>
+#include <qaction.h>
 
-class QAction;
+using namespace KAccessibleClient;
 
-namespace KAccessibleClient {
-
-class RegistryPrivate;
-
-class AccessibleObjectPrivate :public QSharedData
+AccessibleObjectPrivate::AccessibleObjectPrivate(RegistryPrivate *reg, const QString &service_, const QString &path_)
+    : QSharedData()
+    , registryPrivate(reg)
+    , service(service_)
+    , path(path_)
+    , actionsFetched(false)
 {
-public:
-    AccessibleObjectPrivate(RegistryPrivate *reg, const QString &service_, const QString &path_);
-    AccessibleObjectPrivate(const AccessibleObjectPrivate &other);
-    ~AccessibleObjectPrivate();
-
-    RegistryPrivate *registryPrivate;
-    QString service;
-    QString path;
-
-    mutable QList<QAction*> actions;
-    mutable bool actionsFetched;
-
-    bool operator==(const AccessibleObjectPrivate &other) const;
-};
-
 }
 
-#endif
+AccessibleObjectPrivate::AccessibleObjectPrivate(const AccessibleObjectPrivate &other)
+    : QSharedData(other)
+    , registryPrivate(other.registryPrivate)
+    , service(other.service)
+    , path(other.path)
+    , actionsFetched(false)
+{
+}
+
+AccessibleObjectPrivate::~AccessibleObjectPrivate()
+{
+    qDeleteAll(actions);
+}
+
+bool AccessibleObjectPrivate::operator==(const AccessibleObjectPrivate &other) const
+{
+    return registryPrivate == other.registryPrivate &&
+            service == other.service &&
+            path == other.path;
+}

@@ -8,6 +8,7 @@ add_definitions(-DQT_NO_CAST_FROM_ASCII -DQT_NO_CAST_TO_ASCII)
 add_definitions(-DLIBKDEACCESSIBILITYCLIENT_LIBRARY)
 
 set(LibKdeAccessibilityClient_SRCS
+    kdeaccessibilityclient/accessibleobject_p.cpp
     kdeaccessibilityclient/accessibleobject.cpp
     kdeaccessibilityclient/registry.cpp
     kdeaccessibilityclient/registry_p.cpp
