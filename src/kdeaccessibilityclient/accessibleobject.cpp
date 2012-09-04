@@ -180,7 +180,7 @@ QPoint AccessibleObject::focusPoint() const
             return r.center();
     }
     if (ifaces & Component) {
-        QRect r = characterRect();
+        QRect r = boundingRect();
         if (!r.isNull())
             return r.center();
     }
