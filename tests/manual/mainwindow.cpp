@@ -20,6 +20,10 @@
 
 #include "mainwindow.h"
 #include "accessibleproperties.h"
+#include "uiview.h"
+#include "kdeaccessibilityclient/registry.h"
+#include "kdeaccessibilityclient/accessibleobject.h"
+#include "accessibletree.h"
 
 #include <qitemselectionmodel.h>
 #include <qstring.h>
@@ -33,11 +37,6 @@
 #include <qscrollbar.h>
 #include <qsettings.h>
 #include <qurl.h>
-
-#include "kdeaccessibilityclient/registry.h"
-#include "kdeaccessibilityclient/accessibleobject.h"
-
-#include "accessibletree.h"
 
 #include "tests_auto_modeltest_modeltest.h"
 
@@ -144,6 +143,7 @@ void MainWindow::MainWindow::initMenu()
 void MainWindow::MainWindow::initUi()
 {
     setDockOptions(QMainWindow::AnimatedDocks | QMainWindow::AllowNestedDocks | QMainWindow::AllowTabbedDocks);
+    //setTabPosition(Qt::AllDockWidgetAreas, QTabWidget::North);
 
     QDockWidget *treeDocker = new QDockWidget(QString("Tree"), this);
     treeDocker->setObjectName("tree");
@@ -154,7 +154,6 @@ void MainWindow::MainWindow::initUi()
     m_treeView->setSelectionBehavior(QAbstractItemView::SelectRows);
     m_treeView->setEditTriggers(QAbstractItemView::NoEditTriggers);
     treeDocker->setWidget(m_treeView);
-    addDockWidget(Qt::LeftDockWidgetArea, treeDocker);
 
     m_treeModel = new AccessibleTree(this);
     m_treeModel->setRegistry(m_registry);
@@ -175,10 +174,16 @@ void MainWindow::MainWindow::initUi()
     m_propertyView->setItemsExpandable(false);
     m_propertyView->setExpandsOnDoubleClick(false);
     m_propertyView->setEditTriggers(QAbstractItemView::NoEditTriggers);
-
     m_propertyModel = new ObjectProperties(this);
     m_propertyView->setModel(m_propertyModel);
-    addDockWidget(Qt::RightDockWidgetArea, propertyDocker);
+
+    QDockWidget *uiDocker = new QDockWidget(QString("Boundaries"), this);
+    uiDocker->setObjectName("Boundaries");
+    uiDocker->setFeatures(QDockWidget::AllDockWidgetFeatures);
+    m_uiview = new UiView(uiDocker);
+    m_uiview->setAccessibleName(QLatin1String("Boundaries"));
+    m_uiview->setAccessibleDescription(QString("Visualize the component boundaries"));
+    uiDocker->setWidget(m_uiview);
 
     QDockWidget *eventsDocker = new QDockWidget(QString("Events"), this);
     eventsDocker->setObjectName("events");
@@ -189,7 +194,13 @@ void MainWindow::MainWindow::initUi()
     m_eventsEdit->setOpenLinks(false);
     connect(m_eventsEdit, SIGNAL(anchorClicked(QUrl)), this, SLOT(anchorClicked(QUrl)));
     eventsDocker->setWidget(m_eventsEdit);
+
+    addDockWidget(Qt::LeftDockWidgetArea, treeDocker);
+    addDockWidget(Qt::RightDockWidgetArea, propertyDocker);
+    addDockWidget(Qt::RightDockWidgetArea, uiDocker);
     addDockWidget(Qt::RightDockWidgetArea, eventsDocker);
+    tabifyDockWidget(uiDocker, eventsDocker);
+    tabifyDockWidget(uiDocker, propertyDocker);
 
     resize(minimumSize().expandedTo(QSize(760,520)));
 }
@@ -276,6 +287,7 @@ void MainWindow::MainWindow::selectionChanged(const QModelIndex& current, const 
         acc = static_cast<AccessibleWrapper*>(current.internalPointer())->acc;
     }
     m_propertyModel->setAccessibleObject(acc);
+    m_uiview->setAccessibleObject(acc);
     m_propertyView->expandAll();
     m_propertyView->resizeColumnToContents(0);
 }

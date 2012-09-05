@@ -33,6 +33,7 @@
 
 class AccessibleTree;
 class ObjectProperties;
+class UiView;
 
 class MainWindow :public QMainWindow
 {
@@ -89,6 +90,7 @@ private:
     ObjectProperties *m_propertyModel;
 
     QTextBrowser *m_eventsEdit;
+    UiView *m_uiview;
 
     QAction *m_resetTreeAction;
     QAction *m_enableA11yAction;

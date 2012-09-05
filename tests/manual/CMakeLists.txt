@@ -1,5 +1,7 @@
 project(accessibleapps)
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++0x")
+
 find_package(Qt4 REQUIRED)
 include(${QT_USE_FILE})
 add_definitions(${QT_DEFINITIONS})
@@ -19,13 +21,11 @@ include_directories(
 set(accessibleapps_SRCS
     main.cpp
     mainwindow.cpp
-    mainwindow.moc
     accessibletree.cpp
     accessibleproperties.cpp
+    uiview.cpp
     tests_auto_modeltest_modeltest.cpp
 )
-
-qt4_generate_moc(mainwindow.cpp ${CMAKE_CURRENT_BINARY_DIR}/mainwindow.moc)
 
 add_executable(accessibleapps ${accessibleapps_SRCS} ${accessibleapps_MOC})
 target_link_libraries(accessibleapps ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} ${QT_QTTEST_LIBRARY} ${KDE4_KDEUI_LIBRARY} kdeaccessibilityclient)
