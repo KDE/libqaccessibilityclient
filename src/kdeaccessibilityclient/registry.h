@@ -25,6 +25,7 @@
 
 #include "libkdeaccessibilityclient_export.h"
 #include "accessibleobject.h"
+#include <QUrl>
 
 #define accessibleRegistry (KAccessibleClient::Registry::instance())
 
