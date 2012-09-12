@@ -22,7 +22,7 @@
 #define LIBKDEACCESSIBILITYCLIENT_ACCESSIBLEOBJECT_H
 
 #include <qlist.h>
-#include <qshareddata.h>
+#include <QSharedPointer>
 #include <qaction.h>
 
 #include <atspi/atspi-constants.h>
@@ -433,9 +433,15 @@ public:
      */
     RegistryPrivate* registryPrivate() const;
 
+    /**
+        \internal getter to fetch the \a AccessibleObjectPrivate d-pointer
+        instance or NULL if this AccessibleObject is invalid.
+     */
+    QSharedPointer<AccessibleObjectPrivate> objectPrivate() const;
+
 private:
     AccessibleObject(RegistryPrivate *reg, const QString &service, const QString &path);
-    QExplicitlySharedDataPointer<AccessibleObjectPrivate> d;
+    QSharedPointer<AccessibleObjectPrivate> d;
 
     friend class RegistryPrivate;
     friend class AtSpiDBus;

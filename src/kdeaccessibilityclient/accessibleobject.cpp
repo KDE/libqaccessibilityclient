@@ -71,6 +71,11 @@ RegistryPrivate* AccessibleObject::registryPrivate() const
     return d ? d->registryPrivate : 0;
 }
 
+QSharedPointer<AccessibleObjectPrivate> AccessibleObject::objectPrivate() const
+{
+    return d;
+}
+
 AccessibleObject AccessibleObject::parent() const
 {
     return d->registryPrivate->parentAccessible(*this);

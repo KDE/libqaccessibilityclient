@@ -25,19 +25,9 @@
 using namespace KAccessibleClient;
 
 AccessibleObjectPrivate::AccessibleObjectPrivate(RegistryPrivate *reg, const QString &service_, const QString &path_)
-    : QSharedData()
-    , registryPrivate(reg)
+    : registryPrivate(reg)
     , service(service_)
     , path(path_)
-    , actionsFetched(false)
-{
-}
-
-AccessibleObjectPrivate::AccessibleObjectPrivate(const AccessibleObjectPrivate &other)
-    : QSharedData(other)
-    , registryPrivate(other.registryPrivate)
-    , service(other.service)
-    , path(other.path)
     , actionsFetched(false)
 {
 }

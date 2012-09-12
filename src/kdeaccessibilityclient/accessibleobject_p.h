@@ -23,7 +23,6 @@
 
 #include <qstring.h>
 #include <qlist.h>
-#include <qshareddata.h>
 
 class QAction;
 
@@ -31,11 +30,10 @@ namespace KAccessibleClient {
 
 class RegistryPrivate;
 
-class AccessibleObjectPrivate :public QSharedData
+class AccessibleObjectPrivate
 {
 public:
     AccessibleObjectPrivate(RegistryPrivate *reg, const QString &service_, const QString &path_);
-    AccessibleObjectPrivate(const AccessibleObjectPrivate &other);
     ~AccessibleObjectPrivate();
 
     RegistryPrivate *registryPrivate;
@@ -46,6 +44,9 @@ public:
     mutable bool actionsFetched;
 
     bool operator==(const AccessibleObjectPrivate &other) const;
+
+private:
+    Q_DISABLE_COPY(AccessibleObjectPrivate)
 };
 
 }
