@@ -444,7 +444,6 @@ private:
     QSharedPointer<AccessibleObjectPrivate> d;
 
     friend class RegistryPrivate;
-    friend class AtSpiDBus;
     friend QDebug KAccessibleClient::operator<<(QDebug, const AccessibleObject &);
 };
 
