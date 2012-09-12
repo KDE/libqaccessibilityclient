@@ -294,10 +294,17 @@ bool AccessibleObject::isActive() const
 
 bool AccessibleObject::isCheckable() const
 {
-    // FIXME
+    //FIXME: Find better AccessibleObject::isCheckable
     //return d->registryPrivate->state(*this) & (quint64(1) << ATSPI_STATE_);
-    qWarning() << "IMPLEMENT: AccessibleObject::isCheckable";
-    return 0;
+
+    AtspiRole role = d->registryPrivate->role(*this);
+    if (role == ATSPI_ROLE_CHECK_BOX ||
+        role == ATSPI_ROLE_CHECK_MENU_ITEM ||
+        role == ATSPI_ROLE_RADIO_BUTTON ||
+        role == ATSPI_ROLE_RADIO_MENU_ITEM ||
+        role == ATSPI_ROLE_TOGGLE_BUTTON)
+            return true;
+    return false;
 }
 
 bool AccessibleObject::isChecked() const
