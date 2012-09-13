@@ -61,14 +61,42 @@ QList<AccessibleObject> Registry::applications() const
     return d->topLevelAccessibles();
 }
 
-QUrl Registry::toUrl(const AccessibleObject &object) const
+QUrl Registry::url(const AccessibleObject &object) const
 {
-    return d->toUrl(object);
+    return d->url(object);
 }
 
 AccessibleObject Registry::fromUrl(const QUrl &url) const
 {
     return d->fromUrl(url);
+}
+
+AccessibleObject Registry::clientCacheObject(const QString &id) const
+{
+    RegistryPrivate::AccessibleObjectsHashConstIterator it = d->accessibleObjectsHash.constFind(id);
+    if (it == d->accessibleObjectsHash.constEnd() || !it.value())
+        return AccessibleObject();
+    return AccessibleObject(it.value()->registryPrivate, it.value()->service, it.value()->path);
+}
+
+QList<AccessibleObject> Registry::clientCacheObjects() const
+{
+    QList<AccessibleObject> result;
+    RegistryPrivate::AccessibleObjectsHashConstIterator it(d->accessibleObjectsHash.constBegin()), end(d->accessibleObjectsHash.constEnd());
+    for(; it != end; ++it)
+        if (it.value())
+            result.append(AccessibleObject(it.value()->registryPrivate, it.value()->service, it.value()->path));
+    return result;
+}
+
+int Registry::clientCacheObjectsCount() const
+{
+    return d->accessibleObjectsHash.count();
+}
+
+void Registry::clearClientCache()
+{
+    d->accessibleObjectsHash.clear();
 }
 
 #include "registry.moc"

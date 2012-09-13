@@ -50,6 +50,12 @@ private Q_SLOTS:
     void selectionChanged(const QModelIndex &current, const QModelIndex &);
     void treeCustomContextMenuRequested(const QPoint &pos);
     void anchorClicked(const QUrl &url);
+    void clearClientCache();
+    void showClientCache();
+
+    void added(const KAccessibleClient::AccessibleObject &object);
+    void removed(const KAccessibleClient::AccessibleObject &object);
+    void defunct(const KAccessibleClient::AccessibleObject &object);
 
     void windowCreated(const KAccessibleClient::AccessibleObject &object);
     void windowDestroyed(const KAccessibleClient::AccessibleObject &object);
@@ -69,8 +75,8 @@ private Q_SLOTS:
     void windowShaded(const KAccessibleClient::AccessibleObject &object);
     void windowUnshaded(const KAccessibleClient::AccessibleObject &object);
 
-    void stateChanged(const KAccessibleClient::AccessibleObject &object, const QString &state, int detail1, int detail2, const QVariant &args);
-    void childrenChanged(const KAccessibleClient::AccessibleObject &object);
+    void stateChanged(const KAccessibleClient::AccessibleObject &object, const QString &state, int detail1, int detail2);
+    void childrenChanged(const KAccessibleClient::AccessibleObject &object, const QString &state, int detail1, int detail2);
     void visibleDataChanged(const KAccessibleClient::AccessibleObject &object);
     void selectionChanged(const KAccessibleClient::AccessibleObject &object);
     void modelChanged(const KAccessibleClient::AccessibleObject &object);
@@ -93,8 +99,10 @@ private:
     UiView *m_uiview;
 
     QAction *m_resetTreeAction;
-    QAction *m_enableA11yAction;
     QAction *m_followFocusAction;
+    QAction *m_clearClientCacheAction;
+    QAction *m_showClientCacheAction;
+    QAction *m_enableA11yAction;
     QAction *m_quitAction;
 
     void initActions();

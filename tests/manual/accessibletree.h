@@ -25,6 +25,8 @@
 
 #include <kdeaccessibilityclient/registry.h>
 
+class AccessibleTree;
+
 class AccessibleWrapper
 {
 public:
@@ -42,6 +44,8 @@ public:
     AccessibleWrapper *parent();
 
 private:
+    friend class AccessibleTree;
+
     AccessibleWrapper *m_parent;
     QList<AccessibleWrapper*> m_children;
 };
@@ -52,9 +56,15 @@ class AccessibleTree :public QAbstractItemModel
 public:
     explicit AccessibleTree(QObject* parent = 0);
     ~AccessibleTree();
+
     void setRegistry(KAccessibleClient::Registry *registry);
 
     QModelIndex indexForAccessible(const KAccessibleClient::AccessibleObject &object);
+    bool addAccessible(const KAccessibleClient::AccessibleObject &object);
+    bool removeAccessible(const KAccessibleClient::AccessibleObject &object);
+    bool removeAccessible(const QModelIndex &index);
+
+    QList<AccessibleWrapper*> apps() const { return m_apps; }
 
     virtual int columnCount(const QModelIndex& parent = QModelIndex()) const;
     virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
@@ -72,6 +82,8 @@ Q_SIGNALS:
 private:
     KAccessibleClient::Registry *m_registry;
     QList<AccessibleWrapper*> m_apps;
+
+    AccessibleWrapper* addHierachyForObject(const KAccessibleClient::AccessibleObject &object);
 };
 
 #endif // ACCESSIBLETREE_H

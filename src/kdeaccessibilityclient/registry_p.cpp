@@ -40,8 +40,6 @@
 #include <qstring.h>
 #include <qhash.h>
 
-#include "accessibleobject_p.h"
-
 // interface names from at-spi2-core/atspi/atspi-misc-private.h
 #define ATSPI_DBUS_NAME_REGISTRY "org.a11y.atspi.Registry"
 #define ATSPI_DBUS_PATH_REGISTRY "/org/a11y/atspi/registry"
@@ -162,7 +160,7 @@ void RegistryPrivate::setEnabled(bool enable)
     }
 }
 
-QUrl RegistryPrivate::toUrl(const AccessibleObject &object) const
+QUrl RegistryPrivate::url(const AccessibleObject &object) const
 {
     QUrl u;
     u.setScheme(QLatin1String("AccessibleObject"));
@@ -559,7 +557,7 @@ QString RegistryPrivate::roleName(const AccessibleObject &object) const
 
     QDBusReply<QString> reply = conn.connection().call(message);
     if (!reply.isValid()) {
-        qWarning() << "Could not access role." << reply.error().message();
+        qWarning() << "Could not access roleName." << reply.error().message();
         return QString();
     }
     return reply.value();
@@ -572,7 +570,7 @@ QString RegistryPrivate::localizedRoleName(const AccessibleObject &object) const
 
     QDBusReply<QString> reply = conn.connection().call(message);
     if (!reply.isValid()) {
-        qWarning() << "Could not access role." << reply.error().message();
+        qWarning() << "Could not access localizedRoleName." << reply.error().message();\
         return QString();
     }
     return reply.value();
@@ -1012,14 +1010,26 @@ void RegistryPrivate::slotWindowUnshade(const QString &state, int detail1, int d
 void RegistryPrivate::slotStateChanged(const QString &state, int detail1, int detail2, const QDBusVariant &args, const QSpiObjectReference &reference)
 {
     //qDebug() << Q_FUNC_INFO << state << detail1 << detail2 << args.variant() << reference.path.path();
-    KAccessibleClient::AccessibleObject accessible = accessibleFromContext(reference);
-    if (q->subscribedEventListeners().testFlag(Registry::StateChanged)) {
-        emit q->stateChanged(accessible, state, detail1, detail2, args.variant());
-    }
-    if (state == QLatin1String("focused")) {
+    if (state == QLatin1String("defunct")) {
         if (detail1 == 1) {
-            if (q->subscribedEventListeners().testFlag(Registry::Focus))
+            removeAccessibleObject(reference);
+            return;
+        }
+    } else if (state == QLatin1String("focused")) {
+        if (detail1 == 1) {
+            if (q->subscribedEventListeners().testFlag(Registry::Focus)) {
+                KAccessibleClient::AccessibleObject accessible = accessibleFromContext(reference);
                 emit q->focusChanged(accessible);
+            }
+        }
+    }
+    if (q->subscribedEventListeners().testFlag(Registry::StateChanged)) {
+        const QString id = QDBusContext::message().path() + reference.service;
+        RegistryPrivate::AccessibleObjectsHashIterator it = accessibleObjectsHash.find(id);
+        if (it != accessibleObjectsHash.end()) {
+            KAccessibleClient::AccessibleObject accessible = accessibleFromContext(reference);
+            //KAccessibleClient::AccessibleObject accessible = it.value();
+            emit q->stateChanged(accessible, state, detail1, detail2);
         }
     }
 }
@@ -1029,9 +1039,76 @@ void RegistryPrivate::slotStateChanged(const QString &state, int detail1, int de
 //     emit q->linkSelected(accessibleFromContext(reference));
 // }
 
-void RegistryPrivate::slotChildrenChanged(const QString &/*state*/, int /*detail1*/, int /*detail2*/, const QDBusVariant &args, const KAccessibleClient::QSpiObjectReference &reference)
+bool RegistryPrivate::removeAccessibleObject(const KAccessibleClient::AccessibleObject &accessible)
 {
-    emit q->childrenChanged(accessibleFromContext(reference));
+    const QString id = accessible.id();
+    RegistryPrivate::AccessibleObjectsHashIterator it = accessibleObjectsHash.find(id);
+    if (it == accessibleObjectsHash.end())
+        return false;
+    if (!it.value()) {
+        accessibleObjectsHash.erase(it);
+        return false;
+    }
+    emit q->removed(accessible);
+    it.value()->setDefunct();
+    accessibleObjectsHash.erase(it);
+    return true;
+}
+
+bool RegistryPrivate::removeAccessibleObject(const KAccessibleClient::QSpiObjectReference &reference)
+{
+    const QString id = reference.path.path() + reference.service;
+    RegistryPrivate::AccessibleObjectsHashIterator it = accessibleObjectsHash.find(id);
+    if (it == accessibleObjectsHash.end())
+        return false;
+    if (!it.value()) {
+        accessibleObjectsHash.erase(it);
+        return false;
+    }
+    KAccessibleClient::AccessibleObject accessible = accessibleFromContext(reference);
+    emit q->removed(accessible);
+    it.value()->setDefunct();
+    accessibleObjectsHash.erase(it);
+    return true;
+}
+
+void RegistryPrivate::slotChildrenChanged(const QString &state, int detail1, int detail2, const QDBusVariant &args, const KAccessibleClient::QSpiObjectReference &reference)
+{
+    //qDebug() << Q_FUNC_INFO << state << detail1 << detail2 << args.variant() << reference.path.path();
+    if (state == QLatin1String("add")) {
+qDebug() << Q_FUNC_INFO << state << detail1 << detail2 << args.variant() << reference.path.path();
+#if 1
+//         if (detail1 == 1) {
+                KAccessibleClient::AccessibleObject accessible = accessibleFromContext(reference);
+                emit q->added(accessible);
+//         }
+#else
+            QVariant parent = getProperty(reference.service, reference.path.path(), QLatin1String("org.a11y.atspi.Accessible"), QLatin1String("Parent"));
+            const QDBusArgument arg = parent.value<QDBusArgument>();
+            QSpiObjectReference parentRef;
+            arg >> parentRef;
+
+            const QString parentId = parentRef.path.path() + parentRef.service;
+            RegistryPrivate::AccessibleObjectsHashIterator it = accessibleObjectsHash.find(parentId);
+            if (it != accessibleObjectsHash.end()) {
+                KAccessibleClient::AccessibleObject accessible = accessibleFromContext(reference);
+                emit q->added(accessible);
+            } else {
+                KAccessibleClient::AccessibleObject accessible = accessibleFromContext(reference);
+                emit q->added(accessible);
+            }
+#endif
+    } else if (state == QLatin1String("remove")) {
+        if (detail1 == 1) {
+            removeAccessibleObject(reference);
+        }
+    } else {
+        qDebug() << Q_FUNC_INFO << "ChildrenChanged state=" << state;
+        const QString id = QDBusContext::message().path() + reference.service;
+        RegistryPrivate::AccessibleObjectsHashIterator it = accessibleObjectsHash.find(id);
+        Q_ASSERT(it != accessibleObjectsHash.end());
+        emit q->childrenChanged(accessibleFromContext(reference), state, detail1, detail2);
+    }
 }
 
 void RegistryPrivate::slotVisibleDataChanged(const QString &/*state*/, int /*detail1*/, int /*detail2*/, const QDBusVariant &args, const KAccessibleClient::QSpiObjectReference &reference)

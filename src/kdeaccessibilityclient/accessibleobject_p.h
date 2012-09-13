@@ -45,6 +45,8 @@ public:
 
     bool operator==(const AccessibleObjectPrivate &other) const;
 
+    void setDefunct();
+
 private:
     Q_DISABLE_COPY(AccessibleObjectPrivate)
 };

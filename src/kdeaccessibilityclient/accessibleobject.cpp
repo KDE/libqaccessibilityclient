@@ -34,17 +34,38 @@ AccessibleObject::AccessibleObject()
 }
 
 AccessibleObject::AccessibleObject(RegistryPrivate *registryPrivate, const QString &service, const QString &path)
-    :d(new AccessibleObjectPrivate(registryPrivate, service, path))
+    :d(0)
 {
+    const QString id = path + service;
+    RegistryPrivate::AccessibleObjectsHashConstIterator it = registryPrivate->accessibleObjectsHash.constFind(id);
+    if (it != registryPrivate->accessibleObjectsHash.constEnd()) {
+        d = it.value();
+    } else {
+        d = QSharedPointer<AccessibleObjectPrivate>(new AccessibleObjectPrivate(registryPrivate, service, path));
+        registryPrivate->accessibleObjectsHash[id] = d;
+        qDebug() << "Add to cache AccessibleObject=" << id;
+    }
 }
 
 AccessibleObject::AccessibleObject(const AccessibleObject &other)
-    :d(other.d)
+    : d(other.d)
 {
 }
 
 AccessibleObject::~AccessibleObject()
 {
+}
+
+QString AccessibleObject::id() const
+{
+    if (!d || !d->registryPrivate)
+        return QString();
+    return d->path + d->service;
+}
+
+QUrl AccessibleObject::url() const
+{
+    return d && d->registryPrivate ? d->registryPrivate->url(*this) : QUrl();
 }
 
 bool AccessibleObject::isValid() const

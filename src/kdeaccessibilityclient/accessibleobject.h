@@ -89,6 +89,23 @@ public:
     bool operator==(const AccessibleObject &other) const;
 
     /**
+        \brief Returns a unique identifier for the object.
+     */
+    QString id() const;
+
+    /**
+        \brief Returns a QUrl that references the AccessibleObject.
+
+        This can be used to serialize/unserialize an AccessibleObject
+        to pass it around as string and restore the AccessibleObject
+        later on.
+
+        The returned QUrl returns a scheme of "AccessibleObject", the
+        dbus path as url path and the dbus service as url fragment.
+     */
+    QUrl url() const;
+
+    /**
         \brief Returns true if this object is valid.
 
         Invalid objects are for example returned when asking for the
@@ -443,6 +460,7 @@ private:
     AccessibleObject(RegistryPrivate *reg, const QString &service, const QString &path);
     QSharedPointer<AccessibleObjectPrivate> d;
 
+    friend class Registry;
     friend class RegistryPrivate;
     friend QDebug KAccessibleClient::operator<<(QDebug, const AccessibleObject &);
 };

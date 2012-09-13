@@ -24,13 +24,16 @@
 #include <atspi/atspi-constants.h>
 
 #include <qobject.h>
+#include <qmap.h>
 #include <qdbuscontext.h>
 #include <qdbusargument.h>
 #include <qsignalmapper.h>
+#include <qsharedpointer.h>
 
 #include "atspi/dbusconnection.h"
 #include "kdeaccessibilityclient/registry.h"
 #include "kdeaccessibilityclient/accessibleobject.h"
+#include "kdeaccessibilityclient/accessibleobject_p.h"
 #include "atspi/qt-atspi.h"
 
 class QDBusPendingCallWatcher;
@@ -51,7 +54,7 @@ public:
     bool isEnabled() const;
     void setEnabled(bool enable);
 
-    QUrl toUrl(const AccessibleObject &object) const;
+    QUrl url(const AccessibleObject &object) const;
     AccessibleObject fromUrl(const QUrl &url) const;
 
     void subscribeEventListeners(const Registry::EventListeners & listeners);
@@ -149,6 +152,8 @@ private Q_SLOTS:
 
 private:
     friend class Registry;
+    friend class AccessibleObject;
+    friend class AccessibleObjectPrivate;
 
     QVariant getProperty ( const QString &service, const QString &path, const QString &interface, const QString &name ) const;
     bool subscribeEvent(const QLatin1String &iface, const QLatin1String &signal);
@@ -160,6 +165,12 @@ private:
     Registry::EventListeners m_pendingSubscriptions;
     QHash<QString, AccessibleObject::Interface> interfaceHash;
     QSignalMapper m_eventMapper;
+
+    typedef QMap<QString, QSharedPointer<AccessibleObjectPrivate> >::Iterator AccessibleObjectsHashIterator;
+    typedef QMap<QString, QSharedPointer<AccessibleObjectPrivate> >::ConstIterator AccessibleObjectsHashConstIterator;
+    QMap<QString, QSharedPointer<AccessibleObjectPrivate> > accessibleObjectsHash;
+    bool removeAccessibleObject(const KAccessibleClient::AccessibleObject &accessible);
+    bool removeAccessibleObject(const KAccessibleClient::QSpiObjectReference &reference);
 };
 
 }

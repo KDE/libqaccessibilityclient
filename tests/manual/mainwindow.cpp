@@ -37,6 +37,14 @@
 #include <qscrollbar.h>
 #include <qsettings.h>
 #include <qurl.h>
+#include <qpointer.h>
+#include <qdialog.h>
+#include <QVBoxLayout>
+#include <QLabel>
+#include <QDialogButtonBox>
+#include <QPushButton>
+#include <QListView>
+#include <QStandardItemModel>
 
 #include "tests_auto_modeltest_modeltest.h"
 
@@ -53,6 +61,10 @@ MainWindow::MainWindow(QWidget *parent)
 
     // The ultimate model verificaton helper :p
     //new ModelTest(m_treeModel, this);
+
+    connect(m_registry, SIGNAL(added(KAccessibleClient::AccessibleObject)), this, SLOT(added(KAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(removed(KAccessibleClient::AccessibleObject)), this, SLOT(removed(KAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(defunct(KAccessibleClient::AccessibleObject)), this, SLOT(defunct(KAccessibleClient::AccessibleObject)));
 
     connect(m_registry, SIGNAL(windowCreated(KAccessibleClient::AccessibleObject)), this, SLOT(windowCreated(KAccessibleClient::AccessibleObject)));
     connect(m_registry, SIGNAL(windowDestroyed(KAccessibleClient::AccessibleObject)), this, SLOT(windowDestroyed(KAccessibleClient::AccessibleObject)));
@@ -72,8 +84,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(m_registry, SIGNAL(windowShaded(KAccessibleClient::AccessibleObject)), this, SLOT(windowShaded(KAccessibleClient::AccessibleObject)));
     connect(m_registry, SIGNAL(windowUnshaded(KAccessibleClient::AccessibleObject)), this, SLOT(windowUnshaded(KAccessibleClient::AccessibleObject)));
 
-    connect(m_registry, SIGNAL(stateChanged(KAccessibleClient::AccessibleObject,QString,int,int,QVariant)), this, SLOT(stateChanged(KAccessibleClient::AccessibleObject,QString,int,int,QVariant)));
-    connect(m_registry, SIGNAL(childrenChanged(KAccessibleClient::AccessibleObject)), this, SLOT(childrenChanged(KAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(stateChanged(KAccessibleClient::AccessibleObject,QString,int,int)), this, SLOT(stateChanged(KAccessibleClient::AccessibleObject,QString,int,int)));
+    connect(m_registry, SIGNAL(childrenChanged(KAccessibleClient::AccessibleObject,QString,int,int)), this, SLOT(childrenChanged(KAccessibleClient::AccessibleObject,QString,int,int)));
     connect(m_registry, SIGNAL(visibleDataChanged(KAccessibleClient::AccessibleObject)), this, SLOT(visibleDataChanged(KAccessibleClient::AccessibleObject)));
     connect(m_registry, SIGNAL(selectionChanged(KAccessibleClient::AccessibleObject)), this, SLOT(selectionChanged(KAccessibleClient::AccessibleObject)));
     connect(m_registry, SIGNAL(modelChanged(KAccessibleClient::AccessibleObject)), this, SLOT(modelChanged(KAccessibleClient::AccessibleObject)));
@@ -106,6 +118,19 @@ void MainWindow::MainWindow::initActions()
     m_resetTreeAction->setShortcut(QKeySequence(QKeySequence::Refresh));
     connect(m_resetTreeAction, SIGNAL(triggered()), m_treeModel, SLOT(resetModel()));
 
+    m_followFocusAction = new QAction(this);
+    m_followFocusAction->setText(QString("Follow Focus"));
+    m_followFocusAction->setCheckable(true);
+    m_followFocusAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_F));
+
+    m_clearClientCacheAction = new QAction(this);
+    m_clearClientCacheAction->setText(QString("Clear Cache"));
+    connect(m_clearClientCacheAction, SIGNAL(triggered()), this, SLOT(clearClientCache()));
+
+    m_showClientCacheAction = new QAction(this);
+    m_showClientCacheAction->setText(QString("Show Cache"));
+    connect(m_showClientCacheAction, SIGNAL(triggered()), this, SLOT(showClientCache()));
+
     m_enableA11yAction = new QAction(this);
     m_enableA11yAction->setText(QString("Enable Accessibility"));
     m_enableA11yAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_E));
@@ -114,11 +139,6 @@ void MainWindow::MainWindow::initActions()
     connect(m_registry, SIGNAL(enabledChanged(bool)), m_enableA11yAction, SLOT(setChecked(bool)));
     connect(m_enableA11yAction, SIGNAL(toggled(bool)), m_registry, SLOT(setEnabled(bool)));
 
-    m_followFocusAction = new QAction(this);
-    m_followFocusAction->setText(QString("Follow Focus"));
-    m_followFocusAction->setCheckable(true);
-    m_followFocusAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_F));
-
     m_quitAction = new QAction(tr("&Quit"), this);
     m_quitAction->setShortcuts(QKeySequence::Quit);
     connect(m_quitAction, SIGNAL(triggered()), this, SLOT(close()));
@@ -126,8 +146,9 @@ void MainWindow::MainWindow::initActions()
 
 void MainWindow::MainWindow::initMenu()
 {
-    QMenu *fileMenu = menuBar()->addMenu(QString("File"));
+    QMenu *fileMenu = menuBar()->addMenu(QString("Tree"));
     fileMenu->addAction(m_resetTreeAction);
+    fileMenu->addAction(m_followFocusAction);
     fileMenu->addSeparator();
     fileMenu->addAction(m_quitAction);
 
@@ -136,8 +157,12 @@ void MainWindow::MainWindow::initMenu()
     Q_FOREACH(const QDockWidget *docker, findChildren<QDockWidget*>()) {
         dockerMenu->addAction(docker->toggleViewAction());
     }
+    QMenu *cacheMenu = settingsMenu->addMenu(QString("Cache"));
+    cacheMenu->addAction(m_clearClientCacheAction);
+    cacheMenu->addAction(m_showClientCacheAction);
+
+    settingsMenu->addSeparator();
     settingsMenu->addAction(m_enableA11yAction);
-    settingsMenu->addAction(m_followFocusAction);
 }
 
 void MainWindow::MainWindow::initUi()
@@ -211,6 +236,57 @@ void MainWindow::anchorClicked(const QUrl &url)
     setCurrentObject(object);
 }
 
+void MainWindow::clearClientCache()
+{
+    qDebug() << Q_FUNC_INFO;
+    m_registry->clearClientCache();
+    //emit clientCacheCleared();
+}
+
+void MainWindow::showClientCache()
+{
+    QPointer<QDialog> dlg = new QDialog(this);
+    dlg->setWindowTitle(m_showClientCacheAction->text());
+    dlg->setModal(true);
+    QVBoxLayout *lay = new QVBoxLayout(dlg);
+    dlg->setLayout(lay);
+    QList<AccessibleObject> cache = m_registry->clientCacheObjects();
+    QString text = QString("Count: %1").arg(cache.count());
+    QLabel *label = new QLabel(text, dlg);
+    lay->addWidget(label);
+    QTreeView *list = new QTreeView(dlg);
+    list->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    list->setRootIsDecorated(false);
+    list->setSortingEnabled(true);
+    list->setItemsExpandable(false);
+    //list->setHeaderHidden(true);
+    QStandardItemModel *model = new QStandardItemModel(list);
+    model->setColumnCount(3);
+    model->setHorizontalHeaderLabels( QStringList() << QString("Name") << QString("Role") << QString("Identifier") );
+    Q_FOREACH(const AccessibleObject &obj, cache) {
+        model->appendRow( QList<QStandardItem*>()
+            << new QStandardItem(obj.name())
+            << new QStandardItem(obj.roleName())
+            << new QStandardItem(obj.id()) );
+    }
+    list->setModel(model);
+    list->resizeColumnToContents(0);
+    list->resizeColumnToContents(1);
+    list->resizeColumnToContents(2);
+    list->sortByColumn(2, Qt::AscendingOrder);
+    lay->addWidget(list);
+    QDialogButtonBox *buttons = new QDialogButtonBox(QDialogButtonBox::Close, Qt::Horizontal, dlg);
+    QPushButton *closeButton = buttons->button(QDialogButtonBox::Close);
+    connect(closeButton, SIGNAL(clicked(bool)), dlg, SLOT(accept()));
+    lay->addWidget(buttons);
+    dlg->resize(dlg->minimumSize().expandedTo(QSize(660,420)));
+    if (dlg->exec() == QDialog::Accepted && dlg) {
+        //dlg->;
+    }
+    if (dlg)
+        dlg->deleteLater();
+}
+
 void MainWindow::MainWindow::addLog(const KAccessibleClient::AccessibleObject &object, const QString &eventName, const QString &text)
 {
     if (object.name() == m_eventsEdit->accessibleName() && object.description() == m_eventsEdit->accessibleDescription())
@@ -224,7 +300,7 @@ void MainWindow::MainWindow::addLog(const KAccessibleClient::AccessibleObject &o
     cursor.movePosition(QTextCursor::EndOfBlock, QTextCursor::KeepAnchor);
 
     QString s = QString("%1: %2").arg(eventName).arg(object.name());
-    QUrl url = m_registry->toUrl(object);
+    QUrl url = m_registry->url(object);
     cursor.insertText(s.trimmed() + QLatin1Char(' '));
     cursor.insertHtml(QString("(<a href=\"%1\">%2</a>) ").arg(url.toString()).arg(object.roleName()));
     if (!text.isEmpty())
@@ -254,15 +330,20 @@ void MainWindow::setCurrentObject(const KAccessibleClient::AccessibleObject &obj
     }
 }
 
-void MainWindow::stateChanged(const KAccessibleClient::AccessibleObject &object, const QString &state, int detail1, int detail2, const QVariant &args)
+void MainWindow::stateChanged(const KAccessibleClient::AccessibleObject &object, const QString &state, int detail1, int detail2)
 {
+    Q_UNUSED(detail1);
+    Q_UNUSED(detail2);
     QString s = QString("%1").arg(state);
     addLog(object, QString("StateChanged"), s);
 }
 
-void MainWindow::childrenChanged(const KAccessibleClient::AccessibleObject &object)
+void MainWindow::childrenChanged(const KAccessibleClient::AccessibleObject &object, const QString &state, int detail1, int detail2)
 {
-    addLog(object, QString("ChildrenChanged"));
+    Q_UNUSED(detail1);
+    Q_UNUSED(detail2);
+    QString s = QString("%1").arg(state);
+    addLog(object, QString("ChildrenChanged"), s);
 }
 
 void MainWindow::visibleDataChanged(const KAccessibleClient::AccessibleObject &object)
@@ -306,14 +387,33 @@ void MainWindow::MainWindow::treeCustomContextMenuRequested(const QPoint &pos)
     menu->popup(m_treeView->mapToGlobal(pos));
 }
 
+void MainWindow::added(const KAccessibleClient::AccessibleObject &object)
+{
+    addLog(object, QString("Add Object"));
+    m_treeModel->addAccessible(object);
+}
+
+void MainWindow::removed(const KAccessibleClient::AccessibleObject &object)
+{
+    addLog(object, QString("Remove Object"));
+    m_treeModel->removeAccessible(object);
+}
+
+void MainWindow::defunct(const KAccessibleClient::AccessibleObject &object)
+{
+    removed(object);
+}
+
 void MainWindow::windowCreated(const KAccessibleClient::AccessibleObject &object)
 {
     addLog(object, QString("WindowCreate"));
+    m_treeModel->addAccessible(object);
 }
 
 void MainWindow::windowDestroyed(const KAccessibleClient::AccessibleObject &object)
 {
     addLog(object, QString("WindowDestroy"));
+    m_treeModel->removeAccessible(object);
 }
 
 void MainWindow::windowClosed(const KAccessibleClient::AccessibleObject &object)

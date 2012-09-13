@@ -19,8 +19,10 @@
 */
 
 #include "accessibleobject_p.h"
+#include "registry_p.h"
 
 #include <qaction.h>
+#include <qdebug.h>
 
 using namespace KAccessibleClient;
 
@@ -35,6 +37,13 @@ AccessibleObjectPrivate::AccessibleObjectPrivate(RegistryPrivate *reg, const QSt
 AccessibleObjectPrivate::~AccessibleObjectPrivate()
 {
     qDeleteAll(actions);
+
+//     const QString id = path + service;
+//     RegistryPrivate::AccessibleObjectsHashIterator it = registryPrivate->accessibleObjectsHash.find(id);
+//     if (it != registryPrivate->accessibleObjectsHash.constEnd()) {
+//         qDebug() << "Remove from cache AccessibleObject=" << id;
+//         registryPrivate->accessibleObjectsHash.erase(it);
+//     }
 }
 
 bool AccessibleObjectPrivate::operator==(const AccessibleObjectPrivate &other) const
@@ -42,4 +51,10 @@ bool AccessibleObjectPrivate::operator==(const AccessibleObjectPrivate &other) c
     return registryPrivate == other.registryPrivate &&
             service == other.service &&
             path == other.path;
+}
+
+void AccessibleObjectPrivate::setDefunct()
+{
+    service.clear();
+    path.clear();
 }

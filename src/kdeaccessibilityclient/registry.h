@@ -111,8 +111,13 @@ public slots:
         The returned QUrl returns a scheme of "AccessibleObject", the
         dbus path as url path and the dbus service as url fragment.
     */
-    QUrl toUrl(const AccessibleObject &object) const;
+    QUrl url(const AccessibleObject &object) const;
     AccessibleObject fromUrl(const QUrl &url) const;
+
+    AccessibleObject clientCacheObject(const QString &id) const;
+    QList<AccessibleObject> clientCacheObjects() const;
+    int clientCacheObjectsCount() const;
+    void clearClientCache();
 
 Q_SIGNALS:
 
@@ -123,6 +128,30 @@ Q_SIGNALS:
         ny someone else then this signal is emitted.
     */
     void enabledChanged(bool enabled);
+
+    /**
+        Emitted if a AccessibleObject is created.
+
+        This signal indicates that the \a AccessibleObject instance was
+        created and is going to be added/attached.
+    */
+    void added(const KAccessibleClient::AccessibleObject &object);
+
+    /**
+        Emitted if a AccessibleObject is destroyed.
+
+        This signal indicates that the \a AccessibleObject instance was
+        destroyed and ended its life-time.
+    */
+    void removed(const KAccessibleClient::AccessibleObject &object);
+
+    /**
+        Emitted if a AccessibleObject is marked defunct.
+
+        This signal indicates that the \a AccessibleObject became invalid
+        and does not point any longer to any valid accessible object.
+    */
+    void defunct(const KAccessibleClient::AccessibleObject &object);
 
     void windowCreated(const KAccessibleClient::AccessibleObject &object);
     void windowDestroyed(const KAccessibleClient::AccessibleObject &object);
@@ -145,8 +174,8 @@ Q_SIGNALS:
     //void propertyChanged(const KAccessibleClient::AccessibleObject &object);
     //void boundsChanged(const KAccessibleClient::AccessibleObject &object);
     //oid linkSelected(const KAccessibleClient::AccessibleObject &object);
-    void stateChanged(const KAccessibleClient::AccessibleObject &object, const QString &state, int detail1, int detail2, const QVariant &args);
-    void childrenChanged(const KAccessibleClient::AccessibleObject &object);
+    void stateChanged(const KAccessibleClient::AccessibleObject &object, const QString &state, int detail1, int detail2);
+    void childrenChanged(const KAccessibleClient::AccessibleObject &object, const QString &state, int detail1, int detail2);
     void visibleDataChanged(const KAccessibleClient::AccessibleObject &object);
     void selectionChanged(const KAccessibleClient::AccessibleObject &object);
     void modelChanged(const KAccessibleClient::AccessibleObject &object);
