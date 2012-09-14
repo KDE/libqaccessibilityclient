@@ -36,15 +36,21 @@ AccessibleObject::AccessibleObject()
 AccessibleObject::AccessibleObject(RegistryPrivate *registryPrivate, const QString &service, const QString &path)
     :d(0)
 {
-    const QString id = path + service;
-    RegistryPrivate::AccessibleObjectsHashConstIterator it = registryPrivate->accessibleObjectsHash.constFind(id);
-    if (it != registryPrivate->accessibleObjectsHash.constEnd()) {
-        d = it.value();
+    if (registryPrivate->m_cacheStrategy) {
+        const QString id = path + service;
+        d = registryPrivate->m_cacheStrategy->get(id);
+        if (!d) {
+            d = QSharedPointer<AccessibleObjectPrivate>(new AccessibleObjectPrivate(registryPrivate, service, path));
+            registryPrivate->m_cacheStrategy->add(id, d);
+        }
     } else {
         d = QSharedPointer<AccessibleObjectPrivate>(new AccessibleObjectPrivate(registryPrivate, service, path));
-        registryPrivate->accessibleObjectsHash[id] = d;
-        qDebug() << "Add to cache AccessibleObject=" << id;
     }
+}
+
+AccessibleObject::AccessibleObject(const QSharedPointer<AccessibleObjectPrivate> &dd)
+    :d(dd)
+{
 }
 
 AccessibleObject::AccessibleObject(const AccessibleObject &other)

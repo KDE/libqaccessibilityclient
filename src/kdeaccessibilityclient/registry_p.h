@@ -35,6 +35,7 @@
 #include "kdeaccessibilityclient/accessibleobject.h"
 #include "kdeaccessibilityclient/accessibleobject_p.h"
 #include "atspi/qt-atspi.h"
+#include "cachestrategy_p.h"
 
 class QDBusPendingCallWatcher;
 
@@ -165,10 +166,10 @@ private:
     Registry::EventListeners m_pendingSubscriptions;
     QHash<QString, AccessibleObject::Interface> interfaceHash;
     QSignalMapper m_eventMapper;
-
-    typedef QMap<QString, QSharedPointer<AccessibleObjectPrivate> >::Iterator AccessibleObjectsHashIterator;
-    typedef QMap<QString, QSharedPointer<AccessibleObjectPrivate> >::ConstIterator AccessibleObjectsHashConstIterator;
-    QMap<QString, QSharedPointer<AccessibleObjectPrivate> > accessibleObjectsHash;
+    CacheStrategy *m_cacheStrategy;
+//     typedef QMap<QString, QSharedPointer<AccessibleObjectPrivate> >::Iterator AccessibleObjectsHashIterator;
+//     typedef QMap<QString, QSharedPointer<AccessibleObjectPrivate> >::ConstIterator AccessibleObjectsHashConstIterator;
+//     QMap<QString, QSharedPointer<AccessibleObjectPrivate> > accessibleObjectsHash;
     bool removeAccessibleObject(const KAccessibleClient::AccessibleObject &accessible);
     bool removeAccessibleObject(const KAccessibleClient::QSpiObjectReference &reference);
 };

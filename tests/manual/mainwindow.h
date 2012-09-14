@@ -26,6 +26,7 @@
 #include <qtreeview.h>
 #include <qtextbrowser.h>
 #include <qaction.h>
+#include <qdialog.h>
 #include <qdebug.h>
 
 #include "kdeaccessibilityclient/accessibleobject.h"
@@ -34,6 +35,28 @@
 class AccessibleTree;
 class ObjectProperties;
 class UiView;
+
+class QTreeView;
+class QStandardItemModel;
+class QComboBox;
+class QLabel;
+
+class ClientCacheDialog : public QDialog
+{
+    Q_OBJECT
+public:
+    ClientCacheDialog(KAccessibleClient::Registry *registry, QWidget *parent = 0);
+private slots:
+    void clearCache();
+    void cacheStrategyChanged();
+    void updateView();
+private:
+    KAccessibleClient::Registry *m_registry;
+    QTreeView *m_view;
+    QStandardItemModel *m_model;
+    QComboBox *m_cacheCombo;
+    QLabel *m_countLabel;
+};
 
 class MainWindow :public QMainWindow
 {
@@ -50,7 +73,6 @@ private Q_SLOTS:
     void selectionChanged(const QModelIndex &current, const QModelIndex &);
     void treeCustomContextMenuRequested(const QPoint &pos);
     void anchorClicked(const QUrl &url);
-    void clearClientCache();
     void showClientCache();
 
     void added(const KAccessibleClient::AccessibleObject &object);
@@ -100,7 +122,6 @@ private:
 
     QAction *m_resetTreeAction;
     QAction *m_followFocusAction;
-    QAction *m_clearClientCacheAction;
     QAction *m_showClientCacheAction;
     QAction *m_enableA11yAction;
     QAction *m_quitAction;

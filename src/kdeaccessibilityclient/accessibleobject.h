@@ -458,6 +458,7 @@ public:
 
 private:
     AccessibleObject(RegistryPrivate *reg, const QString &service, const QString &path);
+    AccessibleObject(const QSharedPointer<AccessibleObjectPrivate> &dd);
     QSharedPointer<AccessibleObjectPrivate> d;
 
     friend class Registry;

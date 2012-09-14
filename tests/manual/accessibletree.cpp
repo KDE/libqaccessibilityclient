@@ -230,14 +230,14 @@ QModelIndex AccessibleTree::indexForAccessible(const AccessibleObject& object)
 //Q_ASSERT(!object.supportedInterfaces().testFlag(KAccessibleClient::AccessibleObject::Application));
 //return indexForAccessible(object.application());
 
-//             Q_FOREACH(const KAccessibleClient::AccessibleObject &child, object.children()) {
-//                 if (child.supportedInterfaces().testFlag(KAccessibleClient::AccessibleObject::Application)) {
-//                     for (int i = 0; i < m_apps.size(); ++i) {
-//                         if (m_apps.at(i)->acc == object)
-//                             return createIndex(i, 0, m_apps.at(i));
-//                     }
-//                 }
-//             }
+            Q_FOREACH(const KAccessibleClient::AccessibleObject &child, object.children()) {
+                if (child.supportedInterfaces().testFlag(KAccessibleClient::AccessibleObject::Application)) {
+                    for (int i = 0; i < m_apps.size(); ++i) {
+                        if (m_apps.at(i)->acc == object)
+                            return createIndex(i, 0, m_apps.at(i));
+                    }
+                }
+            }
         }
     }
     return QModelIndex();
@@ -329,9 +329,8 @@ bool AccessibleTree::removeAccessible(const QModelIndex &index)
         Q_ASSERT(wraper);
         Q_ASSERT(m_apps[row] == wraper);
         if (m_apps[row] == wraper) {
+            qDebug() << Q_FUNC_INFO << "Delete application accessible object! indexRow=" << row;
             delete m_apps.takeAt(row);
-            qDebug()<<Q_FUNC_INFO<<"DELETE APP!!! indexRow="<<row;
-            Q_ASSERT(false);
         }
     }
     endRemoveRows();

@@ -45,10 +45,105 @@
 #include <QPushButton>
 #include <QListView>
 #include <QStandardItemModel>
+#include <QComboBox>
 
 #include "tests_auto_modeltest_modeltest.h"
 
 using namespace KAccessibleClient;
+
+ClientCacheDialog::ClientCacheDialog(KAccessibleClient::Registry *registry, QWidget *parent)
+    : QDialog(parent)
+    , m_registry(registry)
+{
+    setModal(true);
+    QVBoxLayout *lay = new QVBoxLayout(this);
+    setLayout(lay);
+
+    m_view = new QTreeView(this);
+    m_view->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    m_view->setRootIsDecorated(false);
+    m_view->setSortingEnabled(true);
+    m_view->setItemsExpandable(false);
+    //list->setHeaderHidden(true);
+    m_model = new QStandardItemModel(m_view);
+    m_model->setColumnCount(3);
+    m_view->setModel(m_model);
+    lay->addWidget(m_view);
+
+    QHBoxLayout *buttonsLay = new QHBoxLayout(this);
+    buttonsLay->setMargin(0);
+    buttonsLay->setSpacing(lay->margin());
+    QPushButton *updateButton = new QPushButton(QString("Refresh"), this);
+    buttonsLay->addWidget(updateButton);
+    connect(updateButton, SIGNAL(clicked(bool)), this, SLOT(updateView()));
+    QPushButton *clearButton = new QPushButton(QString("Clear"), this);
+    buttonsLay->addWidget(clearButton);
+
+    QLabel *cacheLabel = new QLabel(QString("Strategy:"), this);
+    buttonsLay->addWidget(cacheLabel);
+    m_cacheCombo = new QComboBox(this);
+    cacheLabel->setBuddy(m_cacheCombo);
+    m_cacheCombo->setEditable(false);
+    m_cacheCombo->addItem(QString("Disable"), int(KAccessibleClient::Registry::NoCache));
+    m_cacheCombo->addItem(QString("Weak"), int(KAccessibleClient::Registry::WeakCache));
+    m_cacheCombo->addItem(QString("Strong"), int(KAccessibleClient::Registry::StrongCache));
+    for(int i = 0; i < m_cacheCombo->count(); ++i) {
+        if (m_cacheCombo->itemData(i).toInt() == m_registry->cacheType()) {
+            m_cacheCombo->setCurrentIndex(i);
+            break;
+        }
+    }
+    connect(m_cacheCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(cacheStrategyChanged()));
+    buttonsLay->addWidget(m_cacheCombo);
+    buttonsLay->addWidget(new QLabel(QString("Count:"), this));
+    m_countLabel = new QLabel(this);
+    buttonsLay->addWidget(m_countLabel);
+    buttonsLay->addStretch(1);
+
+    connect(clearButton, SIGNAL(clicked(bool)), this, SLOT(clearCache()));
+    QDialogButtonBox *buttons = new QDialogButtonBox(QDialogButtonBox::Close, Qt::Horizontal, this);
+    buttonsLay->addWidget(buttons);
+    QPushButton *closeButton = buttons->button(QDialogButtonBox::Close);
+    connect(closeButton, SIGNAL(clicked(bool)), this, SLOT(accept()));
+    lay->addLayout(buttonsLay);
+
+    resize(minimumSize().expandedTo(QSize(660,420)));
+
+    updateView();
+    m_view->sortByColumn(2, Qt::AscendingOrder);
+}
+
+void ClientCacheDialog::clearCache()
+{
+    m_registry->clearClientCache();
+    updateView();
+}
+
+void ClientCacheDialog::cacheStrategyChanged()
+{
+    int c = m_cacheCombo->itemData(m_cacheCombo->currentIndex()).toInt();
+    m_registry->setCacheType(Registry::CacheType(c));
+    updateView();
+}
+
+void ClientCacheDialog::updateView()
+{
+    m_model->clear();
+    m_model->setHorizontalHeaderLabels( QStringList() << QString("Name") << QString("Role") << QString("Identifier") );
+    QStringList cache = m_registry->clientCacheObjects();
+    m_countLabel->setText(QString::number(cache.count()));
+    Q_FOREACH(const QString &c, cache) {
+        AccessibleObject obj = m_registry->clientCacheObject(c);
+        if (obj.isValid())
+            m_model->appendRow( QList<QStandardItem*>()
+                << new QStandardItem(obj.name())
+                << new QStandardItem(obj.roleName())
+                << new QStandardItem(obj.id()) );
+    }
+    m_view->setColumnWidth(0, 180);
+    m_view->resizeColumnToContents(1);
+    m_view->resizeColumnToContents(2);
+}
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -95,17 +190,19 @@ MainWindow::MainWindow(QWidget *parent)
     connect(m_registry, SIGNAL(textSelectionChanged(KAccessibleClient::AccessibleObject)), this, SLOT(textSelectionChanged(KAccessibleClient::AccessibleObject)));
     connect(m_registry, SIGNAL(textChanged(KAccessibleClient::AccessibleObject)), this, SLOT(textChanged(KAccessibleClient::AccessibleObject)));
 
-    //m_registry->subscribeEventListeners(KAccessibleClient::Registry::Focus);
-    m_registry->subscribeEventListeners(KAccessibleClient::Registry::AllEventListeners);
-
     QSettings settings("kde.org", "kdea11yapp");
+    m_registry->setCacheType(Registry::CacheType(settings.value("cacheStrategy", m_registry->cacheType()).toInt()));
     restoreGeometry(settings.value("geometry").toByteArray());
     restoreState(settings.value("windowState").toByteArray());
+
+    //m_registry->subscribeEventListeners(KAccessibleClient::Registry::Focus);
+    m_registry->subscribeEventListeners(KAccessibleClient::Registry::AllEventListeners);
 }
 
 void MainWindow::MainWindow::closeEvent(QCloseEvent *event)
 {
     QSettings settings("kde.org", "kdea11yapp");
+    settings.setValue("cacheStrategy", int(m_registry->cacheType()));
     settings.setValue("geometry", saveGeometry());
     settings.setValue("windowState", saveState());
     QMainWindow::closeEvent(event);
@@ -123,12 +220,8 @@ void MainWindow::MainWindow::initActions()
     m_followFocusAction->setCheckable(true);
     m_followFocusAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_F));
 
-    m_clearClientCacheAction = new QAction(this);
-    m_clearClientCacheAction->setText(QString("Clear Cache"));
-    connect(m_clearClientCacheAction, SIGNAL(triggered()), this, SLOT(clearClientCache()));
-
     m_showClientCacheAction = new QAction(this);
-    m_showClientCacheAction->setText(QString("Show Cache"));
+    m_showClientCacheAction->setText(QString("Cache..."));
     connect(m_showClientCacheAction, SIGNAL(triggered()), this, SLOT(showClientCache()));
 
     m_enableA11yAction = new QAction(this);
@@ -157,10 +250,7 @@ void MainWindow::MainWindow::initMenu()
     Q_FOREACH(const QDockWidget *docker, findChildren<QDockWidget*>()) {
         dockerMenu->addAction(docker->toggleViewAction());
     }
-    QMenu *cacheMenu = settingsMenu->addMenu(QString("Cache"));
-    cacheMenu->addAction(m_clearClientCacheAction);
-    cacheMenu->addAction(m_showClientCacheAction);
-
+    settingsMenu->addAction(m_showClientCacheAction);
     settingsMenu->addSeparator();
     settingsMenu->addAction(m_enableA11yAction);
 }
@@ -236,52 +326,11 @@ void MainWindow::anchorClicked(const QUrl &url)
     setCurrentObject(object);
 }
 
-void MainWindow::clearClientCache()
-{
-    qDebug() << Q_FUNC_INFO;
-    m_registry->clearClientCache();
-    //emit clientCacheCleared();
-}
-
 void MainWindow::showClientCache()
 {
-    QPointer<QDialog> dlg = new QDialog(this);
+    QPointer<ClientCacheDialog> dlg(new ClientCacheDialog(m_registry, this));
     dlg->setWindowTitle(m_showClientCacheAction->text());
-    dlg->setModal(true);
-    QVBoxLayout *lay = new QVBoxLayout(dlg);
-    dlg->setLayout(lay);
-    QList<AccessibleObject> cache = m_registry->clientCacheObjects();
-    QString text = QString("Count: %1").arg(cache.count());
-    QLabel *label = new QLabel(text, dlg);
-    lay->addWidget(label);
-    QTreeView *list = new QTreeView(dlg);
-    list->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    list->setRootIsDecorated(false);
-    list->setSortingEnabled(true);
-    list->setItemsExpandable(false);
-    //list->setHeaderHidden(true);
-    QStandardItemModel *model = new QStandardItemModel(list);
-    model->setColumnCount(3);
-    model->setHorizontalHeaderLabels( QStringList() << QString("Name") << QString("Role") << QString("Identifier") );
-    Q_FOREACH(const AccessibleObject &obj, cache) {
-        model->appendRow( QList<QStandardItem*>()
-            << new QStandardItem(obj.name())
-            << new QStandardItem(obj.roleName())
-            << new QStandardItem(obj.id()) );
-    }
-    list->setModel(model);
-    list->resizeColumnToContents(0);
-    list->resizeColumnToContents(1);
-    list->resizeColumnToContents(2);
-    list->sortByColumn(2, Qt::AscendingOrder);
-    lay->addWidget(list);
-    QDialogButtonBox *buttons = new QDialogButtonBox(QDialogButtonBox::Close, Qt::Horizontal, dlg);
-    QPushButton *closeButton = buttons->button(QDialogButtonBox::Close);
-    connect(closeButton, SIGNAL(clicked(bool)), dlg, SLOT(accept()));
-    lay->addWidget(buttons);
-    dlg->resize(dlg->minimumSize().expandedTo(QSize(660,420)));
     if (dlg->exec() == QDialog::Accepted && dlg) {
-        //dlg->;
     }
     if (dlg)
         dlg->deleteLater();
@@ -289,6 +338,8 @@ void MainWindow::showClientCache()
 
 void MainWindow::MainWindow::addLog(const KAccessibleClient::AccessibleObject &object, const QString &eventName, const QString &text)
 {
+    if (!object.isValid())
+        return;
     if (object.name() == m_eventsEdit->accessibleName() && object.description() == m_eventsEdit->accessibleDescription())
         return;
 

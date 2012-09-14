@@ -43,6 +43,7 @@ class LIBKDEACCESSIBILITYCLIENT_EXPORT Registry : public QObject
 {
     Q_OBJECT
     Q_ENUMS(EventListener)
+    Q_ENUMS(CacheType)
 
 public:
 
@@ -71,8 +72,21 @@ public:
     };
     Q_DECLARE_FLAGS(EventListeners, EventListener)
 
-    Registry(QObject *parent = 0);
-    ~Registry();
+    enum CacheType {
+        NoCache, ///< Disable any caching.
+        WeakCache, ///< Cache only objects in used and free them as long as noone holds a reference to them any longer.
+        StrongCache ///< Cache all objects forever and only free them once they got explicit removed.
+    };
+
+    CacheType cacheType() const;
+    void setCacheType(CacheType type);
+
+    AccessibleObject clientCacheObject(const QString &id) const;
+    QStringList clientCacheObjects() const;
+    void clearClientCache();
+
+    explicit Registry(QObject *parent = 0);
+    virtual ~Registry();
 
 public slots:
 
@@ -113,11 +127,6 @@ public slots:
     */
     QUrl url(const AccessibleObject &object) const;
     AccessibleObject fromUrl(const QUrl &url) const;
-
-    AccessibleObject clientCacheObject(const QString &id) const;
-    QList<AccessibleObject> clientCacheObjects() const;
-    int clientCacheObjectsCount() const;
-    void clearClientCache();
 
 Q_SIGNALS:
 
