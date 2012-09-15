@@ -87,7 +87,9 @@
 using namespace KAccessibleClient;
 
 RegistryPrivate::RegistryPrivate(Registry *qq)
-    :q(qq), m_subscriptions(Registry::NoEventListeners), m_cacheStrategy(0)
+    :q(qq)
+    , m_subscriptions(Registry::NoEventListeners)
+    , m_cacheStrategy(new CacheWeakStrategy())
 {
     connect(&conn, SIGNAL(connectionFetched()), this, SLOT(connectionFetched()));
     connect(&conn, SIGNAL(enabledChanged(bool)), q, SIGNAL(enabledChanged(bool)));
