@@ -32,18 +32,19 @@ AccessibleObjectPrivate::AccessibleObjectPrivate(RegistryPrivate *reg, const QSt
     , path(path_)
     , actionsFetched(false)
 {
+    //qDebug() << Q_FUNC_INFO;
 }
 
 AccessibleObjectPrivate::~AccessibleObjectPrivate()
 {
-    qDeleteAll(actions);
+    //qDebug() << Q_FUNC_INFO;
 
-//     const QString id = path + service;
-//     RegistryPrivate::AccessibleObjectsHashIterator it = registryPrivate->accessibleObjectsHash.find(id);
-//     if (it != registryPrivate->accessibleObjectsHash.constEnd()) {
-//         qDebug() << "Remove from cache AccessibleObject=" << id;
-//         registryPrivate->accessibleObjectsHash.erase(it);
-//     }
+    if (registryPrivate->m_cacheStrategy) {
+        const QString id = path + service;
+        registryPrivate->m_cacheStrategy->remove(id);
+    }
+
+    qDeleteAll(actions);
 }
 
 bool AccessibleObjectPrivate::operator==(const AccessibleObjectPrivate &other) const
