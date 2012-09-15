@@ -339,6 +339,11 @@ bool AccessibleObject::isChecked() const
     return d->registryPrivate->state(*this) & (quint64(1) << ATSPI_STATE_CHECKED);
 }
 
+bool AccessibleObject::isDefunct() const
+{
+    return d->defunct;
+}
+
 bool AccessibleObject::isDefault() const
 {
     return d->registryPrivate->state(*this) & (quint64(1) << ATSPI_STATE_IS_DEFAULT);

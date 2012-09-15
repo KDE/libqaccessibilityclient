@@ -399,7 +399,7 @@ public:
     bool isActive() const;
     bool isCheckable() const;
     bool isChecked() const;
-//    bool isDefunct() const;
+    bool isDefunct() const;
     bool isEditable() const;
     bool isExpandable() const;
     bool isExpanded() const;

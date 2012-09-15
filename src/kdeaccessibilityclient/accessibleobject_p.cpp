@@ -30,6 +30,7 @@ AccessibleObjectPrivate::AccessibleObjectPrivate(RegistryPrivate *reg, const QSt
     : registryPrivate(reg)
     , service(service_)
     , path(path_)
+    , defunct(false)
     , actionsFetched(false)
 {
     //qDebug() << Q_FUNC_INFO;
@@ -56,6 +57,8 @@ bool AccessibleObjectPrivate::operator==(const AccessibleObjectPrivate &other) c
 
 void AccessibleObjectPrivate::setDefunct()
 {
-    service.clear();
-    path.clear();
+    //service.clear();
+    //path.clear();
+
+    defunct = true;
 }

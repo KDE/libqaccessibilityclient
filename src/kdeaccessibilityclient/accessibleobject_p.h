@@ -40,6 +40,7 @@ public:
     QString service;
     QString path;
 
+    bool defunct;
     mutable QList<QAction*> actions;
     mutable bool actionsFetched;
 
