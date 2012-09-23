@@ -68,6 +68,7 @@ class AccessibilityClientTest :public QObject
 private Q_SLOTS:
     void initTestCase();
 
+    void tst_accessibleObject();
     void tst_application();
     void tst_navigation();
     void tst_focus();
@@ -87,6 +88,7 @@ void AccessibilityClientTest::initTestCase()
         qWarning() << "QT_ACCESSIBILITY=1 not found, this leads to failing tests with Qt 4";
 }
 
+
 AccessibleObject getAppObject(const Registry &r, const QString &appName)
 {
     AccessibleObject accApp;
@@ -100,6 +102,14 @@ AccessibleObject getAppObject(const Registry &r, const QString &appName)
         }
     }
     return accApp;
+}
+
+void AccessibilityClientTest::tst_accessibleObject()
+{
+    AccessibleObject invalidObject;
+    QVERIFY(!invalidObject.isValid());
+    AccessibleObject invalid2(invalidObject);
+    QVERIFY(!invalid2.isValid());
 }
 
 void AccessibilityClientTest::tst_application()
@@ -116,6 +126,13 @@ void AccessibilityClientTest::tst_application()
     QVERIFY(accApp.isValid());
     QCOMPARE(accApp.name(), appName);
     QCOMPARE(accApp.childCount(), 1);
+
+    AccessibleObject copy1(accApp);
+    AccessibleObject copy2 = accApp;
+    QVERIFY(copy1.isValid());
+    QCOMPARE(copy1.name(), appName);
+    QVERIFY(copy2.isValid());
+    QCOMPARE(copy2.name(), appName);
 }
 
 void AccessibilityClientTest::tst_navigation()
