@@ -181,7 +181,6 @@ Q_SIGNALS:
     void windowShaded(const KAccessibleClient::AccessibleObject &object);
     void windowUnshaded(const KAccessibleClient::AccessibleObject &object);
 
-    //void propertyChanged(const KAccessibleClient::AccessibleObject &object);
     //void boundsChanged(const KAccessibleClient::AccessibleObject &object);
     //void linkSelected(const KAccessibleClient::AccessibleObject &object);
     void stateChanged(const KAccessibleClient::AccessibleObject &object, const QString &state, int detail1, int detail2);
