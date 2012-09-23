@@ -79,7 +79,9 @@ private Q_SLOTS:
     void tst_characterExtents();
 
 private:
+    bool startHelperProcess();
     Registry registry;
+    QProcess helperProcess;
 };
 
 void AccessibilityClientTest::initTestCase()
@@ -253,23 +255,34 @@ void AccessibilityClientTest::tst_navigation()
     QVERIFY(!accLine.isVisible());
 }
 
+bool AccessibilityClientTest::startHelperProcess()
+{
+    if (!QFileInfo("./simplewidgetapp").exists()) {
+        qWarning() << "WARNING: Could not find test case helper executable."
+            " Please run this test in the path where the executable is located.";
+        return false;
+    }
+
+    // start peer server
+#ifdef Q_OS_WIN
+    proc.start("simplewidgetapp");
+#else
+    helperProcess.start("./simplewidgetapp");
+#endif
+    if (!helperProcess.waitForStarted()) {
+        qWarning() << "WARNING: Could not start helper executable. Test will not run.";
+        return false;
+    }
+    return true;
+}
+
 void AccessibilityClientTest::tst_focus()
 {
     registry.subscribeEventListeners(Registry::Focus);
     EventListener *listener = new EventListener;
     connect(&registry, SIGNAL(focusChanged(KAccessibleClient::AccessibleObject)), listener, SLOT(focus(KAccessibleClient::AccessibleObject)));
 
-    QVERIFY2(QFileInfo("./simplewidgetapp").exists(), "Could not find test case helper executable."
-                    " Please run this test in the path where the executable is located.");
-
-    QProcess proc;
-    // start peer server
-#ifdef Q_OS_WIN
-    proc.start("simplewidgetapp");
-#else
-    proc.start("./simplewidgetapp");
-#endif
-    QVERIFY(proc.waitForStarted());
+    QVERIFY(startHelperProcess());
 
     AccessibleObject remoteApp;
     QString appName = QLatin1String("LibKdeAccessibilityClient Simple Widget App");
@@ -303,19 +316,12 @@ void AccessibilityClientTest::tst_focus()
     // use action interface to select the first button again and check that we get an event
 
     delete listener;
-    proc.terminate();
+    helperProcess.terminate();
 }
 
 void AccessibilityClientTest::tst_extents()
 {
-    QProcess proc;
-    #ifdef Q_OS_WIN
-    proc.start("simplewidgetapp");
-    #else
-    proc.start("./simplewidgetapp");
-    #endif
-
-    QVERIFY(proc.waitForStarted());
+    QVERIFY(startHelperProcess());
 
     AccessibleObject remoteApp;
     QString appName = QLatin1String("LibKdeAccessibilityClient Simple Widget App");
@@ -339,7 +345,7 @@ void AccessibilityClientTest::tst_extents()
     AccessibleObject button1 = window.child(0);
     QVERIFY(button1.name()=="Button 1");
     QCOMPARE(button1.boundingRect(),QRect(13,33,100,20));
-    proc.terminate();
+    helperProcess.terminate();
 }
 
 void AccessibilityClientTest::tst_characterExtents()
@@ -358,7 +364,7 @@ void AccessibilityClientTest::tst_characterExtents()
     //Check if the widget is correct
     QVERIFY(app.isValid());
     QCOMPARE(app.name(), appName);
-    QCOMPARE(app.childCount(),1);
+    QCOMPARE(app.childCount(), 1);
 
     AccessibleObject textArea = app.child(0).child(0);
     QVERIFY(textArea.supportedInterfaces() & KAccessibleClient::AccessibleObject::Text);
