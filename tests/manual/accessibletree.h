@@ -63,6 +63,7 @@ public:
     bool addAccessible(const KAccessibleClient::AccessibleObject &object);
     bool removeAccessible(const KAccessibleClient::AccessibleObject &object);
     bool removeAccessible(const QModelIndex &index);
+    bool updateAccessible(const KAccessibleClient::AccessibleObject &object);
 
     QList<AccessibleWrapper*> apps() const { return m_apps; }
 

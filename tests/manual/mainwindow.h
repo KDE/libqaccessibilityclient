@@ -110,6 +110,9 @@ private Q_SLOTS:
     void textSelectionChanged(const KAccessibleClient::AccessibleObject &object);
     void textChanged(const KAccessibleClient::AccessibleObject &object);
 
+    void accessibleNameChanged(const KAccessibleClient::AccessibleObject &object);
+    void accessibleDescriptionChanged(const KAccessibleClient::AccessibleObject &object);
+
 private:
     KAccessibleClient::Registry *m_registry;
 

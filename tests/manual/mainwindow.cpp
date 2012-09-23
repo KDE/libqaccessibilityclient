@@ -191,6 +191,9 @@ MainWindow::MainWindow(QWidget *parent)
     connect(m_registry, SIGNAL(textSelectionChanged(KAccessibleClient::AccessibleObject)), this, SLOT(textSelectionChanged(KAccessibleClient::AccessibleObject)));
     connect(m_registry, SIGNAL(textChanged(KAccessibleClient::AccessibleObject)), this, SLOT(textChanged(KAccessibleClient::AccessibleObject)));
 
+    connect(m_registry, SIGNAL(accessibleNameChanged(KAccessibleClient::AccessibleObject)), this, SLOT(accessibleNameChanged(KAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(accessibleDescriptionChanged(KAccessibleClient::AccessibleObject)), this, SLOT(accessibleDescriptionChanged(KAccessibleClient::AccessibleObject)));
+
     QSettings settings("kde.org", "kdea11yapp");
     m_registry->setCacheType(Registry::CacheType(settings.value("cacheStrategy", m_registry->cacheType()).toInt()));
     restoreGeometry(settings.value("geometry").toByteArray());
@@ -578,3 +581,16 @@ void MainWindow::textChanged(const KAccessibleClient::AccessibleObject &object)
 {
     addLog(object, QString("TextChanged"));
 }
+
+void MainWindow::accessibleNameChanged(const KAccessibleClient::AccessibleObject &object)
+{
+    addLog(object, QString("AccessibleNameChanged"));
+    m_treeModel->updateAccessible(object);
+}
+
+void MainWindow::accessibleDescriptionChanged(const KAccessibleClient::AccessibleObject &object)
+{
+    addLog(object, QString("AccessibleDescriptionChanged"));
+    m_treeModel->updateAccessible(object);
+}
+

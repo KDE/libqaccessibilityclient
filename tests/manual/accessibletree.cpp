@@ -335,3 +335,9 @@ bool AccessibleTree::removeAccessible(const QModelIndex &index)
     endRemoveRows();
 }
 
+bool AccessibleTree::updateAccessible(const KAccessibleClient::AccessibleObject &object)
+{
+    QModelIndex index = indexForAccessible(object);
+    emit dataChanged(index, index);
+}
+

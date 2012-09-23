@@ -64,6 +64,7 @@ public:
         TextCaretMoved = 0x400,             /*!< The text caret moved its position - see signal \sa textCaretMoved */
         TextChanged = 0x800,                /*!< The text changed - see signal \sa textChanged */
         TextSelectionChanged = 0x1000,      /*!< The text selection changed - see signal \sa textSelectionChanged */
+        PropertyChanged = 0x2000,           /*!< A property changed. See signals \sa accessibleNameChanged and \sa accessibleDescriptionChanged */
         //TextBoundsChanged = 0x2000,
         //TextAttributesChanged = 0x4000,
         //AttributesChanged = 0x8000,
@@ -233,6 +234,23 @@ Q_SIGNALS:
         a text-interface (like QLineEdit, QTextArea and QComboBox) changed.
     */
     void textSelectionChanged(const KAccessibleClient::AccessibleObject &object);
+
+
+    /**
+        \brief Emitted when an accessible name changes
+
+        When subscribed to the PropertyChanged EventListener, this signal is emitted
+	whenever the accessible-name property changes its value.
+    */
+    void accessibleNameChanged(const KAccessibleClient::AccessibleObject &object); 
+
+    /**
+        \brief Emitted when an accessible description changes
+
+        When subscribed to the PropertyChanged EventListener, this signal is emitted
+	whenever the accessiblei-description property changes its value.
+    */
+    void accessibleDescriptionChanged(const KAccessibleClient::AccessibleObject &object); 
 
     //void textBoundsChanged(const KAccessibleClient::AccessibleObject &object);
     void textChanged(const KAccessibleClient::AccessibleObject &object);

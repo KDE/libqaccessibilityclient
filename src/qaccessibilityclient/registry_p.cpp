@@ -82,7 +82,7 @@
 
 #define QSPI_REGISTRY_NAME "org.a11y.atspi.Registry"
 
-#define ATSPI_DEBUG
+//#define ATSPI_DEBUG
 
 using namespace KAccessibleClient;
 
@@ -352,6 +352,14 @@ void RegistryPrivate::subscribeEventListeners(const Registry::EventListeners &li
                     QString(), QLatin1String(""), QLatin1String("org.a11y.atspi.Event.Object"), QLatin1String("TextSelectionChanged"),
                     this, SLOT(slotTextSelectionChanged(QString,int,int,QDBusVariant,KAccessibleClient::QSpiObjectReference)));
         if (!success) qWarning() << "Could not subscribe to accessibility TextSelectionChanged events.";
+    }
+
+    if (listeners.testFlag(Registry::PropertyChanged )) {
+        subscriptions << QLatin1String("object:property-change");
+        bool success = conn.connection().connect(
+                    QString(), QLatin1String(""), QLatin1String("org.a11y.atspi.Event.Object"), QLatin1String("PropertyChange"),
+                    this, SLOT(slotPropertyChange(QString,int,int,QDBusVariant,KAccessibleClient::QSpiObjectReference)));
+        if (!success) qWarning() << "Could not subscribe to accessibility PropertyChange events.";
     }
 
     Q_FOREACH(const QString &subscription, subscriptions) {
@@ -1003,12 +1011,17 @@ void RegistryPrivate::slotWindowUnshade(const QString &state, int detail1, int d
     emit q->windowUnshaded(accessibleFromContext(reference));
 }
 
-// void RegistryPrivate::slotPropertyChange(const QString &state, int detail1, int detail2, const QDBusVariant &args, const QSpiObjectReference &reference)
-// {
-// #ifdef ATSPI_DEBUG
-//     qDebug() << Q_FUNC_INFO << state << detail1 << detail2 << args.variant() << reference.path.path();
-// #endif
-// }
+void RegistryPrivate::slotPropertyChange(const QString &property, int detail1, int detail2, const QDBusVariant &args, const QSpiObjectReference &reference)
+{
+#ifdef ATSPI_DEBUG
+    qDebug() << Q_FUNC_INFO << property << detail1 << detail2 << args.variant() << reference.path.path();
+#endif
+    if (property == QLatin1String("accessible-name")) {
+        emit q->accessibleNameChanged(accessibleFromContext(reference));
+    } else if (property == QLatin1String("accessible-description")) {
+        emit q->accessibleDescriptionChanged(accessibleFromContext(reference));
+    }
+}
 
 void RegistryPrivate::slotStateChanged(const QString &state, int detail1, int detail2, const QDBusVariant &args, const QSpiObjectReference &reference)
 {
