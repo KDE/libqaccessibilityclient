@@ -40,7 +40,7 @@
 
 typedef QSharedPointer<QAccessibleInterface> QAIPointer;
 
-using namespace KAccessibleClient;
+using namespace QAccessibleClient;
 
 struct Event {
     Event(const AccessibleObject &obj)
@@ -54,7 +54,7 @@ class EventListener : public QObject
 {
     Q_OBJECT
 public Q_SLOTS:
-    void focus(const KAccessibleClient::AccessibleObject &object) {
+    void focus(const QAccessibleClient::AccessibleObject &object) {
         focusEvents.append(Event(object));
     }
 
@@ -117,7 +117,7 @@ void AccessibilityClientTest::tst_accessibleObject()
 
 void AccessibilityClientTest::tst_application()
 {
-    QString appName = QLatin1String("Lib KAccessibleClient test");
+    QString appName = QLatin1String("Lib QAccessibleClient test");
     qApp->setApplicationName(appName);
     QWidget w;
     w.setAccessibleName("Foobar 99");
@@ -140,7 +140,7 @@ void AccessibilityClientTest::tst_application()
 
 void AccessibilityClientTest::tst_navigation()
 {
-    QString appName = QLatin1String("Lib KAccessibleClient test");
+    QString appName = QLatin1String("Lib QAccessibleClient test");
     qApp->setApplicationName(appName);
     QWidget w;
     w.setAccessibleName("Root Widget");
@@ -280,7 +280,7 @@ void AccessibilityClientTest::tst_focus()
 {
     registry.subscribeEventListeners(Registry::Focus);
     EventListener *listener = new EventListener;
-    connect(&registry, SIGNAL(focusChanged(KAccessibleClient::AccessibleObject)), listener, SLOT(focus(KAccessibleClient::AccessibleObject)));
+    connect(&registry, SIGNAL(focusChanged(QAccessibleClient::AccessibleObject)), listener, SLOT(focus(QAccessibleClient::AccessibleObject)));
 
     QVERIFY(startHelperProcess());
 
@@ -339,7 +339,7 @@ void AccessibilityClientTest::tst_extents()
     QCOMPARE(remoteApp.name(), appName);
 
     AccessibleObject window = remoteApp.child(0);
-    QVERIFY(window.supportedInterfaces() & KAccessibleClient::AccessibleObject::Component);
+    QVERIFY(window.supportedInterfaces() & QAccessibleClient::AccessibleObject::Component);
     QCOMPARE(window.boundingRect(),QRect(3,23,200,100));
 
     AccessibleObject button1 = window.child(0);
@@ -350,7 +350,7 @@ void AccessibilityClientTest::tst_extents()
 
 void AccessibilityClientTest::tst_characterExtents()
 {
-    QString appName = QLatin1String("Lib KAccessibleClient test");
+    QString appName = QLatin1String("Lib QAccessibleClient test");
 
     QWidget w;
     w.setAccessibleName("Root Widget");
@@ -367,7 +367,7 @@ void AccessibilityClientTest::tst_characterExtents()
     QCOMPARE(app.childCount(), 1);
 
     AccessibleObject textArea = app.child(0).child(0);
-    QVERIFY(textArea.supportedInterfaces() & KAccessibleClient::AccessibleObject::Text);
+    QVERIFY(textArea.supportedInterfaces() & QAccessibleClient::AccessibleObject::Text);
 
     QCOMPARE(textArea.characterRect(), QRect(20,40,0,14));
 

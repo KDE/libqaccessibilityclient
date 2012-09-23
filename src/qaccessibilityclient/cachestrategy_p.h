@@ -18,10 +18,10 @@
     License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef LIBKDEACCESSIBILITYCLIENT_CACHESTRATEGY_P_H
-#define LIBKDEACCESSIBILITYCLIENT_CACHESTRATEGY_P_H
+#ifndef QACCESSIBILITYCLIENT_CACHESTRATEGY_P_H
+#define QACCESSIBILITYCLIENT_CACHESTRATEGY_P_H
 
-namespace KAccessibleClient {
+namespace QAccessibleClient {
 
 class CacheStrategy
 {

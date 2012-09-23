@@ -31,7 +31,7 @@
 typedef QList<uint> QSpiUIntList;
 Q_DECLARE_METATYPE(QSpiUIntList);
 
-namespace KAccessibleClient {
+namespace QAccessibleClient {
 
 /**
     Register meta types for dbus.
@@ -49,7 +49,7 @@ struct QSpiObjectReference
     QDBusObjectPath path;
 };
 
-typedef QList<KAccessibleClient::QSpiObjectReference> QSpiObjectReferenceList;
+typedef QList<QAccessibleClient::QSpiObjectReference> QSpiObjectReferenceList;
 
 struct QSpiAction
 {
@@ -82,9 +82,9 @@ const QDBusArgument &operator>>(const QDBusArgument &argument, QSpiAction &addre
 
 }
 
-Q_DECLARE_METATYPE(KAccessibleClient::QSpiObjectReference);
-Q_DECLARE_METATYPE(KAccessibleClient::QSpiObjectReferenceList);
-Q_DECLARE_METATYPE(KAccessibleClient::QSpiAction)
-Q_DECLARE_METATYPE(KAccessibleClient::QSpiActionArray)
+Q_DECLARE_METATYPE(QAccessibleClient::QSpiObjectReference);
+Q_DECLARE_METATYPE(QAccessibleClient::QSpiObjectReferenceList);
+Q_DECLARE_METATYPE(QAccessibleClient::QSpiAction)
+Q_DECLARE_METATYPE(QAccessibleClient::QSpiActionArray)
 
 #endif

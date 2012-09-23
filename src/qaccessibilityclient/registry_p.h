@@ -18,8 +18,8 @@
     License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef LIBKDEACCESSIBILITYCLIENT_REGISTRY_P_H
-#define LIBKDEACCESSIBILITYCLIENT_REGISTRY_P_H
+#ifndef QACCESSIBILITYCLIENT_REGISTRY_P_H
+#define QACCESSIBILITYCLIENT_REGISTRY_P_H
 
 #include <atspi/atspi-constants.h>
 
@@ -39,7 +39,7 @@
 
 class QDBusPendingCallWatcher;
 
-namespace KAccessibleClient {
+namespace QAccessibleClient {
 
 class DBusConnection;
 class AtSpiDBus;
@@ -111,42 +111,42 @@ private Q_SLOTS:
     void slotSubscribeEventListenerFinished(QDBusPendingCallWatcher *call);
     void a11yConnectionChanged(const QString &interface,const QVariantMap &changedProperties, const QStringList &invalidatedProperties);
 
-    void slotPropertyChange(const QString &property, int detail1, int detail2, const QDBusVariant &args, const KAccessibleClient::QSpiObjectReference &reference);
-    void slotWindowCreate(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const KAccessibleClient::QSpiObjectReference &reference);
-    void slotWindowDestroy(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const KAccessibleClient::QSpiObjectReference &reference);
-    void slotWindowClose(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const KAccessibleClient::QSpiObjectReference &reference);
-    void slotWindowReparent(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const KAccessibleClient::QSpiObjectReference &reference);
-    void slotWindowMinimize(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const KAccessibleClient::QSpiObjectReference &reference);
-    void slotWindowMaximize(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const KAccessibleClient::QSpiObjectReference &reference);
-    void slotWindowRestore(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const KAccessibleClient::QSpiObjectReference &reference);
-    void slotWindowActivate(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const KAccessibleClient::QSpiObjectReference &reference);
-    void slotWindowDeactivate(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const KAccessibleClient::QSpiObjectReference &reference);
-    void slotWindowDesktopCreate(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const KAccessibleClient::QSpiObjectReference &reference);
-    void slotWindowDesktopDestroy(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const KAccessibleClient::QSpiObjectReference &reference);
-    void slotWindowRaise(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const KAccessibleClient::QSpiObjectReference &reference);
-    void slotWindowLower(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const KAccessibleClient::QSpiObjectReference &reference);
-    void slotWindowMove(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const KAccessibleClient::QSpiObjectReference &reference);
-    void slotWindowResize(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const KAccessibleClient::QSpiObjectReference &reference);
-    void slotWindowShade(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const KAccessibleClient::QSpiObjectReference &reference);
-    void slotWindowUnshade(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const KAccessibleClient::QSpiObjectReference &reference);
+    void slotPropertyChange(const QString &property, int detail1, int detail2, const QDBusVariant &args, const QAccessibleClient::QSpiObjectReference &reference);
+    void slotWindowCreate(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const QAccessibleClient::QSpiObjectReference &reference);
+    void slotWindowDestroy(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const QAccessibleClient::QSpiObjectReference &reference);
+    void slotWindowClose(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const QAccessibleClient::QSpiObjectReference &reference);
+    void slotWindowReparent(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const QAccessibleClient::QSpiObjectReference &reference);
+    void slotWindowMinimize(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const QAccessibleClient::QSpiObjectReference &reference);
+    void slotWindowMaximize(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const QAccessibleClient::QSpiObjectReference &reference);
+    void slotWindowRestore(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const QAccessibleClient::QSpiObjectReference &reference);
+    void slotWindowActivate(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const QAccessibleClient::QSpiObjectReference &reference);
+    void slotWindowDeactivate(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const QAccessibleClient::QSpiObjectReference &reference);
+    void slotWindowDesktopCreate(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const QAccessibleClient::QSpiObjectReference &reference);
+    void slotWindowDesktopDestroy(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const QAccessibleClient::QSpiObjectReference &reference);
+    void slotWindowRaise(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const QAccessibleClient::QSpiObjectReference &reference);
+    void slotWindowLower(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const QAccessibleClient::QSpiObjectReference &reference);
+    void slotWindowMove(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const QAccessibleClient::QSpiObjectReference &reference);
+    void slotWindowResize(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const QAccessibleClient::QSpiObjectReference &reference);
+    void slotWindowShade(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const QAccessibleClient::QSpiObjectReference &reference);
+    void slotWindowUnshade(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const QAccessibleClient::QSpiObjectReference &reference);
 
-    void slotStateChanged(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const KAccessibleClient::QSpiObjectReference &reference);
-    //void slotPropertyChanged(const QString &state, int detail1, int detail2, const QDBusVariant &args, const KAccessibleClient::QSpiObjectReference &reference);
-    //void slotBoundsChanged(const QString &state, int detail1, int detail2, const QDBusVariant &args, const KAccessibleClient::QSpiObjectReference &reference);
-    //void slotLinkSelected(const QString &state, int detail1, int detail2, const QDBusVariant &args, const KAccessibleClient::QSpiObjectReference &reference);
+    void slotStateChanged(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const QAccessibleClient::QSpiObjectReference &reference);
+    //void slotPropertyChanged(const QString &state, int detail1, int detail2, const QDBusVariant &args, const QAccessibleClient::QSpiObjectReference &reference);
+    //void slotBoundsChanged(const QString &state, int detail1, int detail2, const QDBusVariant &args, const QAccessibleClient::QSpiObjectReference &reference);
+    //void slotLinkSelected(const QString &state, int detail1, int detail2, const QDBusVariant &args, const QAccessibleClient::QSpiObjectReference &reference);
 
-    void slotChildrenChanged(const QString &state, int detail1, int detail2, const QDBusVariant &args, const KAccessibleClient::QSpiObjectReference &reference);
-    void slotVisibleDataChanged(const QString &state, int detail1, int detail2, const QDBusVariant &args, const KAccessibleClient::QSpiObjectReference &reference);
-    void slotSelectionChanged(const QString &state, int detail1, int detail2, const QDBusVariant &args, const KAccessibleClient::QSpiObjectReference &reference);
-    void slotModelChanged(const QString &state, int detail1, int detail2, const QDBusVariant &args, const KAccessibleClient::QSpiObjectReference &reference);
+    void slotChildrenChanged(const QString &state, int detail1, int detail2, const QDBusVariant &args, const QAccessibleClient::QSpiObjectReference &reference);
+    void slotVisibleDataChanged(const QString &state, int detail1, int detail2, const QDBusVariant &args, const QAccessibleClient::QSpiObjectReference &reference);
+    void slotSelectionChanged(const QString &state, int detail1, int detail2, const QDBusVariant &args, const QAccessibleClient::QSpiObjectReference &reference);
+    void slotModelChanged(const QString &state, int detail1, int detail2, const QDBusVariant &args, const QAccessibleClient::QSpiObjectReference &reference);
 
-    void slotTextCaretMoved(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const KAccessibleClient::QSpiObjectReference &reference);
-    void slotTextSelectionChanged(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const KAccessibleClient::QSpiObjectReference &reference);
+    void slotTextCaretMoved(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const QAccessibleClient::QSpiObjectReference &reference);
+    void slotTextSelectionChanged(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const QAccessibleClient::QSpiObjectReference &reference);
 
-    //void slotTextBoundsChanged(const QString &state, int detail1, int detail2, const QDBusVariant &args, const KAccessibleClient::QSpiObjectReference &reference);
-    void slotTextChanged(const QString &state, int detail1, int detail2, const QDBusVariant &args, const KAccessibleClient::QSpiObjectReference &reference);
-    //void slotTextAttributesChanged(const QString &state, int detail1, int detail2, const QDBusVariant &args, const KAccessibleClient::QSpiObjectReference &reference);
-    //void slotAttributesChanged(const QString &state, int detail1, int detail2, const QDBusVariant &args, const KAccessibleClient::QSpiObjectReference &reference);
+    //void slotTextBoundsChanged(const QString &state, int detail1, int detail2, const QDBusVariant &args, const QAccessibleClient::QSpiObjectReference &reference);
+    void slotTextChanged(const QString &state, int detail1, int detail2, const QDBusVariant &args, const QAccessibleClient::QSpiObjectReference &reference);
+    //void slotTextAttributesChanged(const QString &state, int detail1, int detail2, const QDBusVariant &args, const QAccessibleClient::QSpiObjectReference &reference);
+    //void slotAttributesChanged(const QString &state, int detail1, int detail2, const QDBusVariant &args, const QAccessibleClient::QSpiObjectReference &reference);
 
     void actionTriggered(const QString &action);
 
@@ -169,8 +169,8 @@ private:
 //     typedef QMap<QString, QSharedPointer<AccessibleObjectPrivate> >::Iterator AccessibleObjectsHashIterator;
 //     typedef QMap<QString, QSharedPointer<AccessibleObjectPrivate> >::ConstIterator AccessibleObjectsHashConstIterator;
 //     QMap<QString, QSharedPointer<AccessibleObjectPrivate> > accessibleObjectsHash;
-    bool removeAccessibleObject(const KAccessibleClient::AccessibleObject &accessible);
-    bool removeAccessibleObject(const KAccessibleClient::QSpiObjectReference &reference);
+    bool removeAccessibleObject(const QAccessibleClient::AccessibleObject &accessible);
+    bool removeAccessibleObject(const QAccessibleClient::QSpiObjectReference &reference);
 };
 
 }

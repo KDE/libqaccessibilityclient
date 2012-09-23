@@ -18,15 +18,15 @@
     License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef LIBKDEACCESSIBILITYCLIENT_ACCESSIBLEOBJECT_P_H
-#define LIBKDEACCESSIBILITYCLIENT_ACCESSIBLEOBJECT_P_H
+#ifndef QACCESSIBILITYCLIENT_ACCESSIBLEOBJECT_P_H
+#define QACCESSIBILITYCLIENT_ACCESSIBLEOBJECT_P_H
 
 #include <qstring.h>
 #include <qlist.h>
 
 class QAction;
 
-namespace KAccessibleClient {
+namespace QAccessibleClient {
 
 class RegistryPrivate;
 

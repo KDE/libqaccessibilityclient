@@ -18,8 +18,8 @@
     License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef LIBKDEACCESSIBILITYCLIENT_ACCESSIBLEOBJECT_H
-#define LIBKDEACCESSIBILITYCLIENT_ACCESSIBLEOBJECT_H
+#ifndef QACCESSIBILITYCLIENT_ACCESSIBLEOBJECT_H
+#define QACCESSIBILITYCLIENT_ACCESSIBLEOBJECT_H
 
 #include <qlist.h>
 #include <QSharedPointer>
@@ -29,7 +29,7 @@
 
 #include "qaccessibilityclient_export.h"
 
-namespace KAccessibleClient {
+namespace QAccessibleClient {
 
 class AccessibleObjectPrivate;
 class RegistryPrivate;
@@ -44,7 +44,7 @@ class RegistryPrivate;
 
     It is implicitly shared and only created by the library.
 */
-class LIBKDEACCESSIBILITYCLIENT_EXPORT AccessibleObject
+class QACCESSIBILITYCLIENT_EXPORT AccessibleObject
 {
 public:
 
@@ -463,15 +463,15 @@ private:
 
     friend class Registry;
     friend class RegistryPrivate;
-    friend QDebug KAccessibleClient::operator<<(QDebug, const AccessibleObject &);
+    friend QDebug QAccessibleClient::operator<<(QDebug, const AccessibleObject &);
 };
 
 #ifndef QT_NO_DEBUG_STREAM
-LIBKDEACCESSIBILITYCLIENT_EXPORT QDebug operator<<(QDebug, const AccessibleObject &);
+QACCESSIBILITYCLIENT_EXPORT QDebug operator<<(QDebug, const AccessibleObject &);
 #endif
 
 }
 
-Q_DECLARE_METATYPE(KAccessibleClient::AccessibleObject)
+Q_DECLARE_METATYPE(QAccessibleClient::AccessibleObject)
 
 #endif

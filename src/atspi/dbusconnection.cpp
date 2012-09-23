@@ -25,7 +25,7 @@
 #include <QtDBus/QDBusPendingReply>
 #include <QtCore/QDebug>
 
-using namespace KAccessibleClient;
+using namespace QAccessibleClient;
 
 DBusConnection::DBusConnection()
     : QObject()

@@ -26,7 +26,7 @@
 #include "accessibleobject_p.h"
 #include "registry_p.h"
 
-using namespace KAccessibleClient;
+using namespace QAccessibleClient;
 
 AccessibleObject::AccessibleObject()
     :d(0)
@@ -410,7 +410,7 @@ bool AccessibleObject::supportsAutocompletion() const
 }
 
 #ifndef QT_NO_DEBUG_STREAM
-LIBKDEACCESSIBILITYCLIENT_EXPORT QDebug KAccessibleClient::operator<<(QDebug d, const AccessibleObject &object)
+QACCESSIBILITYCLIENT_EXPORT QDebug QAccessibleClient::operator<<(QDebug d, const AccessibleObject &object)
 {
     d.nospace();
     d << "AccessibleObject("; //d:" << hex << (void *) object.d << dec;

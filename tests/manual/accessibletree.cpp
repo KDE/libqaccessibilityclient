@@ -23,7 +23,7 @@
 #include <qdebug.h>
 #include <qstack.h>
 
-using namespace KAccessibleClient;
+using namespace QAccessibleClient;
 
 AccessibleWrapper* AccessibleWrapper::parent()
 {
@@ -165,7 +165,7 @@ int AccessibleTree::rowCount(const QModelIndex& parent) const
     return 0;
 }
 
-void AccessibleTree::setRegistry(KAccessibleClient::Registry* registry)
+void AccessibleTree::setRegistry(QAccessibleClient::Registry* registry)
 {
     m_registry = registry;
     resetModel();
@@ -173,7 +173,7 @@ void AccessibleTree::setRegistry(KAccessibleClient::Registry* registry)
 
 AccessibleWrapper* AccessibleTree::addHierachyForObject(const AccessibleObject &object)
 {
-    bool isApp = object.supportedInterfaces().testFlag(KAccessibleClient::AccessibleObject::Application);
+    bool isApp = object.supportedInterfaces().testFlag(QAccessibleClient::AccessibleObject::Application);
 
     AccessibleObject parent = isApp ? AccessibleObject() : object.parent();
     AccessibleWrapper *wraper = 0;
@@ -211,7 +211,7 @@ QModelIndex AccessibleTree::indexForAccessible(const AccessibleObject& object)
     if (!object.isValid())
         return QModelIndex();
 
-    if (object.supportedInterfaces().testFlag(KAccessibleClient::AccessibleObject::Application)) {
+    if (object.supportedInterfaces().testFlag(QAccessibleClient::AccessibleObject::Application)) {
         // top level
         for (int i = 0; i < m_apps.size(); ++i) {
             if (m_apps.at(i)->acc == object)
@@ -226,11 +226,11 @@ QModelIndex AccessibleTree::indexForAccessible(const AccessibleObject& object)
             return in;
         } else {
             qWarning() << Q_FUNC_INFO << "Invalid indexForAccessible: " << object;
-//Q_ASSERT(!object.supportedInterfaces().testFlag(KAccessibleClient::AccessibleObject::Application));
+//Q_ASSERT(!object.supportedInterfaces().testFlag(QAccessibleClient::AccessibleObject::Application));
 //return indexForAccessible(object.application());
 
-            Q_FOREACH(const KAccessibleClient::AccessibleObject &child, object.children()) {
-                if (child.supportedInterfaces().testFlag(KAccessibleClient::AccessibleObject::Application)) {
+            Q_FOREACH(const QAccessibleClient::AccessibleObject &child, object.children()) {
+                if (child.supportedInterfaces().testFlag(QAccessibleClient::AccessibleObject::Application)) {
                     for (int i = 0; i < m_apps.size(); ++i) {
                         if (m_apps.at(i)->acc == object)
                             return createIndex(i, 0, m_apps.at(i));
@@ -242,10 +242,10 @@ QModelIndex AccessibleTree::indexForAccessible(const AccessibleObject& object)
     return QModelIndex();
 }
 
-bool AccessibleTree::addAccessible(const KAccessibleClient::AccessibleObject &object)
+bool AccessibleTree::addAccessible(const QAccessibleClient::AccessibleObject &object)
 {
     qDebug()<<Q_FUNC_INFO<<object;
-    KAccessibleClient::AccessibleObject parent = object.parent();
+    QAccessibleClient::AccessibleObject parent = object.parent();
     QModelIndex parentIndex = indexForAccessible(parent);
     if (parentIndex.isValid()) {
         int idx = object.indexInParent();
@@ -262,8 +262,8 @@ bool AccessibleTree::addAccessible(const KAccessibleClient::AccessibleObject &ob
             endInsertRows();
         }
     } else { // top-level
-        QList<KAccessibleClient::AccessibleObject> newChildren;
-        if (object.supportedInterfaces().testFlag(KAccessibleClient::AccessibleObject::Application)) {
+        QList<QAccessibleClient::AccessibleObject> newChildren;
+        if (object.supportedInterfaces().testFlag(QAccessibleClient::AccessibleObject::Application)) {
             QModelIndex objectIndex = indexForAccessible(object);
             if (objectIndex.isValid()) {
                 emit dataChanged(objectIndex, objectIndex);
@@ -272,8 +272,8 @@ bool AccessibleTree::addAccessible(const KAccessibleClient::AccessibleObject &ob
             }
         } else {
             // This is for the case there was a new desktop widget created on the top of one ore several new apps.
-            Q_FOREACH(const KAccessibleClient::AccessibleObject &child, object.children()) {
-                if (child.supportedInterfaces().testFlag(KAccessibleClient::AccessibleObject::Application)) {
+            Q_FOREACH(const QAccessibleClient::AccessibleObject &child, object.children()) {
+                if (child.supportedInterfaces().testFlag(QAccessibleClient::AccessibleObject::Application)) {
                     bool alreadyKnown = false;
                     for (int i = 0; i < m_apps.size() && !alreadyKnown; ++i)
                         if (m_apps.at(i)->acc == child)
@@ -293,7 +293,7 @@ bool AccessibleTree::addAccessible(const KAccessibleClient::AccessibleObject &ob
         if (!newChildren.isEmpty()) {
             int idx = m_apps.count();
             beginInsertRows(QModelIndex(), idx, idx + newChildren.count() - 1);
-            Q_FOREACH(const KAccessibleClient::AccessibleObject &child, newChildren) {
+            Q_FOREACH(const QAccessibleClient::AccessibleObject &child, newChildren) {
                 m_apps.append(new AccessibleWrapper(child, 0));
             }
             endInsertRows();
@@ -302,7 +302,7 @@ bool AccessibleTree::addAccessible(const KAccessibleClient::AccessibleObject &ob
     return true;
 }
 
-bool AccessibleTree::removeAccessible(const KAccessibleClient::AccessibleObject &object)
+bool AccessibleTree::removeAccessible(const QAccessibleClient::AccessibleObject &object)
 {
     qDebug() << Q_FUNC_INFO << object;
     QModelIndex index = indexForAccessible(object);
@@ -335,7 +335,7 @@ bool AccessibleTree::removeAccessible(const QModelIndex &index)
     endRemoveRows();
 }
 
-bool AccessibleTree::updateAccessible(const KAccessibleClient::AccessibleObject &object)
+bool AccessibleTree::updateAccessible(const QAccessibleClient::AccessibleObject &object)
 {
     QModelIndex index = indexForAccessible(object);
     emit dataChanged(index, index);

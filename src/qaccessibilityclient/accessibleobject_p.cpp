@@ -24,7 +24,7 @@
 #include <qaction.h>
 #include <qdebug.h>
 
-using namespace KAccessibleClient;
+using namespace QAccessibleClient;
 
 AccessibleObjectPrivate::AccessibleObjectPrivate(RegistryPrivate *reg, const QString &service_, const QString &path_)
     : registryPrivate(reg)

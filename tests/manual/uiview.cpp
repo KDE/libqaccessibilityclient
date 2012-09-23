@@ -27,7 +27,7 @@
 #include <QHBoxLayout>
 #include <QDebug>
 
-using namespace KAccessibleClient;
+using namespace QAccessibleClient;
 
 struct RoleColor
 {
@@ -161,7 +161,7 @@ UiWidget::UiWidget(UiView *view)
     }
 }
 
-void UiWidget::setAccessibleObject(const KAccessibleClient::AccessibleObject &acc)
+void UiWidget::setAccessibleObject(const QAccessibleClient::AccessibleObject &acc)
 {
     delete m_image; m_image = 0;
     m_object = acc;
@@ -209,14 +209,14 @@ QPixmap UiWidget::grabScreen() const
     return pm;
 }
 
-QRect UiWidget::bounds(const KAccessibleClient::AccessibleObject &acc) const
+QRect UiWidget::bounds(const QAccessibleClient::AccessibleObject &acc) const
 {
     if (!acc.isValid())
         return QRect();
     QRect rect;
     AccessibleObject::Interfaces ifaces = acc.supportedInterfaces();
     if( !(ifaces & AccessibleObject::Application) ) {
-        KAccessibleClient::AccessibleObject parent = acc.parent();
+        QAccessibleClient::AccessibleObject parent = acc.parent();
         rect = bounds(parent);
     }
     if( ifaces & AccessibleObject::Component ) {
@@ -227,14 +227,14 @@ QRect UiWidget::bounds(const KAccessibleClient::AccessibleObject &acc) const
     return rect;
 }
 
-void UiWidget::drawObject(QPainter *painter, const KAccessibleClient::AccessibleObject &acc, int depth)
+void UiWidget::drawObject(QPainter *painter, const QAccessibleClient::AccessibleObject &acc, int depth)
 {
     if (!acc.isValid())
         return;
     ++depth;
     AccessibleObject::Interfaces ifaces = acc.supportedInterfaces();
     if( !(ifaces & AccessibleObject::Application) ) {
-        KAccessibleClient::AccessibleObject parent = acc.parent();
+        QAccessibleClient::AccessibleObject parent = acc.parent();
         drawObject(painter, parent, depth);
     }
     if( ifaces & AccessibleObject::Component ) {
@@ -280,7 +280,7 @@ UiView::~UiView()
 {
 }
 
-void UiView::setAccessibleObject(const KAccessibleClient::AccessibleObject &acc)
+void UiView::setAccessibleObject(const QAccessibleClient::AccessibleObject &acc)
 {
     m_uiWidget->setAccessibleObject(acc);
     widget()->resize(m_uiWidget->size());

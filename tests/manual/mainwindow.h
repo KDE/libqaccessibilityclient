@@ -45,13 +45,13 @@ class ClientCacheDialog : public QDialog
 {
     Q_OBJECT
 public:
-    ClientCacheDialog(KAccessibleClient::Registry *registry, QWidget *parent = 0);
+    ClientCacheDialog(QAccessibleClient::Registry *registry, QWidget *parent = 0);
 private slots:
     void clearCache();
     void cacheStrategyChanged();
     void updateView();
 private:
-    KAccessibleClient::Registry *m_registry;
+    QAccessibleClient::Registry *m_registry;
     QTreeView *m_view;
     QStandardItemModel *m_model;
     QComboBox *m_cacheCombo;
@@ -76,45 +76,45 @@ private Q_SLOTS:
     void anchorClicked(const QUrl &url);
     void showClientCache();
 
-    void added(const KAccessibleClient::AccessibleObject &object);
-    void removed(const KAccessibleClient::AccessibleObject &object);
-    void defunct(const KAccessibleClient::AccessibleObject &object);
+    void added(const QAccessibleClient::AccessibleObject &object);
+    void removed(const QAccessibleClient::AccessibleObject &object);
+    void defunct(const QAccessibleClient::AccessibleObject &object);
 
-    void windowCreated(const KAccessibleClient::AccessibleObject &object);
-    void windowDestroyed(const KAccessibleClient::AccessibleObject &object);
-    void windowClosed(const KAccessibleClient::AccessibleObject &object);
-    void windowReparented(const KAccessibleClient::AccessibleObject &object);
-    void windowMinimized(const KAccessibleClient::AccessibleObject &object);
-    void windowMaximized(const KAccessibleClient::AccessibleObject &object);
-    void windowRestored(const KAccessibleClient::AccessibleObject &object);
-    void windowActivated(const KAccessibleClient::AccessibleObject &object);
-    void windowDeactivated(const KAccessibleClient::AccessibleObject &object);
-    void windowDesktopCreated(const KAccessibleClient::AccessibleObject &object);
-    void windowDesktopDestroyed(const KAccessibleClient::AccessibleObject &object);
-    void windowRaised(const KAccessibleClient::AccessibleObject &object);
-    void windowLowered(const KAccessibleClient::AccessibleObject &object);
-    void windowMoved(const KAccessibleClient::AccessibleObject &object);
-    void windowResized(const KAccessibleClient::AccessibleObject &object);
-    void windowShaded(const KAccessibleClient::AccessibleObject &object);
-    void windowUnshaded(const KAccessibleClient::AccessibleObject &object);
+    void windowCreated(const QAccessibleClient::AccessibleObject &object);
+    void windowDestroyed(const QAccessibleClient::AccessibleObject &object);
+    void windowClosed(const QAccessibleClient::AccessibleObject &object);
+    void windowReparented(const QAccessibleClient::AccessibleObject &object);
+    void windowMinimized(const QAccessibleClient::AccessibleObject &object);
+    void windowMaximized(const QAccessibleClient::AccessibleObject &object);
+    void windowRestored(const QAccessibleClient::AccessibleObject &object);
+    void windowActivated(const QAccessibleClient::AccessibleObject &object);
+    void windowDeactivated(const QAccessibleClient::AccessibleObject &object);
+    void windowDesktopCreated(const QAccessibleClient::AccessibleObject &object);
+    void windowDesktopDestroyed(const QAccessibleClient::AccessibleObject &object);
+    void windowRaised(const QAccessibleClient::AccessibleObject &object);
+    void windowLowered(const QAccessibleClient::AccessibleObject &object);
+    void windowMoved(const QAccessibleClient::AccessibleObject &object);
+    void windowResized(const QAccessibleClient::AccessibleObject &object);
+    void windowShaded(const QAccessibleClient::AccessibleObject &object);
+    void windowUnshaded(const QAccessibleClient::AccessibleObject &object);
 
-    void stateChanged(const KAccessibleClient::AccessibleObject &object, const QString &state, int detail1, int detail2);
-    void childAdded(const KAccessibleClient::AccessibleObject &object, int childIndex);
-    void childRemoved(const KAccessibleClient::AccessibleObject &object, int childIndex);
-    void visibleDataChanged(const KAccessibleClient::AccessibleObject &object);
-    void selectionChanged(const KAccessibleClient::AccessibleObject &object);
-    void modelChanged(const KAccessibleClient::AccessibleObject &object);
+    void stateChanged(const QAccessibleClient::AccessibleObject &object, const QString &state, int detail1, int detail2);
+    void childAdded(const QAccessibleClient::AccessibleObject &object, int childIndex);
+    void childRemoved(const QAccessibleClient::AccessibleObject &object, int childIndex);
+    void visibleDataChanged(const QAccessibleClient::AccessibleObject &object);
+    void selectionChanged(const QAccessibleClient::AccessibleObject &object);
+    void modelChanged(const QAccessibleClient::AccessibleObject &object);
 
-    void focusChanged(const KAccessibleClient::AccessibleObject &object);
-    void textCaretMoved(const KAccessibleClient::AccessibleObject &object, int pos);
-    void textSelectionChanged(const KAccessibleClient::AccessibleObject &object);
-    void textChanged(const KAccessibleClient::AccessibleObject &object);
+    void focusChanged(const QAccessibleClient::AccessibleObject &object);
+    void textCaretMoved(const QAccessibleClient::AccessibleObject &object, int pos);
+    void textSelectionChanged(const QAccessibleClient::AccessibleObject &object);
+    void textChanged(const QAccessibleClient::AccessibleObject &object);
 
-    void accessibleNameChanged(const KAccessibleClient::AccessibleObject &object);
-    void accessibleDescriptionChanged(const KAccessibleClient::AccessibleObject &object);
+    void accessibleNameChanged(const QAccessibleClient::AccessibleObject &object);
+    void accessibleDescriptionChanged(const QAccessibleClient::AccessibleObject &object);
 
 private:
-    KAccessibleClient::Registry *m_registry;
+    QAccessibleClient::Registry *m_registry;
 
     QTreeView *m_treeView;
     AccessibleTree *m_treeModel;
@@ -135,8 +135,8 @@ private:
     void initMenu();
     void initUi();
 
-    void addLog(const KAccessibleClient::AccessibleObject &object, const QString &eventName, const QString &text = QString());
-    void setCurrentObject(const KAccessibleClient::AccessibleObject &object);
+    void addLog(const QAccessibleClient::AccessibleObject &object, const QString &eventName, const QString &text = QString());
+    void setCurrentObject(const QAccessibleClient::AccessibleObject &object);
 };
 
 #endif

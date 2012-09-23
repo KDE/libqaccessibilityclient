@@ -22,27 +22,27 @@
 #include <QtDBus/QDBusArgument>
 #include <QtDBus/qdbusmetatype.h>
 
-namespace KAccessibleClient {
+namespace QAccessibleClient {
 
 void registerDBusTypes()
 {
-    qRegisterMetaType<KAccessibleClient::QSpiObjectReference>();
-    qDBusRegisterMetaType<KAccessibleClient::QSpiObjectReference>();
+    qRegisterMetaType<QAccessibleClient::QSpiObjectReference>();
+    qDBusRegisterMetaType<QAccessibleClient::QSpiObjectReference>();
 
-    qRegisterMetaType<KAccessibleClient::QSpiObjectReferenceList>();
-    qDBusRegisterMetaType<KAccessibleClient::QSpiObjectReferenceList>();
+    qRegisterMetaType<QAccessibleClient::QSpiObjectReferenceList>();
+    qDBusRegisterMetaType<QAccessibleClient::QSpiObjectReferenceList>();
 
-    qRegisterMetaType<KAccessibleClient::QSpiAction>();
-    qDBusRegisterMetaType<KAccessibleClient::QSpiAction>();
+    qRegisterMetaType<QAccessibleClient::QSpiAction>();
+    qDBusRegisterMetaType<QAccessibleClient::QSpiAction>();
 
-    qRegisterMetaType<KAccessibleClient::QSpiActionArray>();
-    qDBusRegisterMetaType<KAccessibleClient::QSpiActionArray>();
+    qRegisterMetaType<QAccessibleClient::QSpiActionArray>();
+    qDBusRegisterMetaType<QAccessibleClient::QSpiActionArray>();
 }
 
 /* QSpiObjectReference */
 /*---------------------------------------------------------------------------*/
 
-QDBusArgument &operator<<(QDBusArgument &argument, const KAccessibleClient::QSpiObjectReference &address)
+QDBusArgument &operator<<(QDBusArgument &argument, const QAccessibleClient::QSpiObjectReference &address)
 {
     argument.beginStructure();
     argument << address.service;
@@ -51,7 +51,7 @@ QDBusArgument &operator<<(QDBusArgument &argument, const KAccessibleClient::QSpi
     return argument;
 }
 
-const QDBusArgument &operator>>(const QDBusArgument &argument, KAccessibleClient::QSpiObjectReference &address)
+const QDBusArgument &operator>>(const QDBusArgument &argument, QAccessibleClient::QSpiObjectReference &address)
 {
     argument.beginStructure();
     argument >> address.service;
@@ -60,7 +60,7 @@ const QDBusArgument &operator>>(const QDBusArgument &argument, KAccessibleClient
     return argument;
 }
 
-QDBusArgument &operator<<(QDBusArgument &argument, const KAccessibleClient::QSpiAction &action)
+QDBusArgument &operator<<(QDBusArgument &argument, const QAccessibleClient::QSpiAction &action)
 {
     argument.beginStructure();
     argument << action.name;
@@ -70,7 +70,7 @@ QDBusArgument &operator<<(QDBusArgument &argument, const KAccessibleClient::QSpi
     return argument;
 }
 
-const QDBusArgument &operator>>(const QDBusArgument &argument, KAccessibleClient::QSpiAction &action)
+const QDBusArgument &operator>>(const QDBusArgument &argument, QAccessibleClient::QSpiAction &action)
 {
     argument.beginStructure();
     argument >> action.name;

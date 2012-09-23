@@ -49,9 +49,9 @@
 
 #include "tests_auto_modeltest_modeltest.h"
 
-using namespace KAccessibleClient;
+using namespace QAccessibleClient;
 
-ClientCacheDialog::ClientCacheDialog(KAccessibleClient::Registry *registry, QWidget *parent)
+ClientCacheDialog::ClientCacheDialog(QAccessibleClient::Registry *registry, QWidget *parent)
     : QDialog(parent)
     , m_registry(registry)
 {
@@ -84,9 +84,9 @@ ClientCacheDialog::ClientCacheDialog(KAccessibleClient::Registry *registry, QWid
     m_cacheCombo = new QComboBox(this);
     cacheLabel->setBuddy(m_cacheCombo);
     m_cacheCombo->setEditable(false);
-    m_cacheCombo->addItem(QString("Disable"), int(KAccessibleClient::Registry::NoCache));
-    m_cacheCombo->addItem(QString("Weak"), int(KAccessibleClient::Registry::WeakCache));
-    m_cacheCombo->addItem(QString("Strong"), int(KAccessibleClient::Registry::StrongCache));
+    m_cacheCombo->addItem(QString("Disable"), int(QAccessibleClient::Registry::NoCache));
+    m_cacheCombo->addItem(QString("Weak"), int(QAccessibleClient::Registry::WeakCache));
+    m_cacheCombo->addItem(QString("Strong"), int(QAccessibleClient::Registry::StrongCache));
     for(int i = 0; i < m_cacheCombo->count(); ++i) {
         if (m_cacheCombo->itemData(i).toInt() == m_registry->cacheType()) {
             m_cacheCombo->setCurrentIndex(i);
@@ -148,7 +148,7 @@ void ClientCacheDialog::updateView()
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
-    m_registry = new KAccessibleClient::Registry(this);
+    m_registry = new QAccessibleClient::Registry(this);
 
     initUi();
     initActions();
@@ -157,50 +157,50 @@ MainWindow::MainWindow(QWidget *parent)
     // The ultimate model verificaton helper :p
     //new ModelTest(m_treeModel, this);
 
-    connect(m_registry, SIGNAL(added(KAccessibleClient::AccessibleObject)), this, SLOT(added(KAccessibleClient::AccessibleObject)));
-    connect(m_registry, SIGNAL(removed(KAccessibleClient::AccessibleObject)), this, SLOT(removed(KAccessibleClient::AccessibleObject)));
-    connect(m_registry, SIGNAL(defunct(KAccessibleClient::AccessibleObject)), this, SLOT(defunct(KAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(added(QAccessibleClient::AccessibleObject)), this, SLOT(added(QAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(removed(QAccessibleClient::AccessibleObject)), this, SLOT(removed(QAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(defunct(QAccessibleClient::AccessibleObject)), this, SLOT(defunct(QAccessibleClient::AccessibleObject)));
 
-    connect(m_registry, SIGNAL(windowCreated(KAccessibleClient::AccessibleObject)), this, SLOT(windowCreated(KAccessibleClient::AccessibleObject)));
-    connect(m_registry, SIGNAL(windowDestroyed(KAccessibleClient::AccessibleObject)), this, SLOT(windowDestroyed(KAccessibleClient::AccessibleObject)));
-    connect(m_registry, SIGNAL(windowClosed(KAccessibleClient::AccessibleObject)), this, SLOT(windowClosed(KAccessibleClient::AccessibleObject)));
-    connect(m_registry, SIGNAL(windowReparented(KAccessibleClient::AccessibleObject)), this, SLOT(windowReparented(KAccessibleClient::AccessibleObject)));
-    connect(m_registry, SIGNAL(windowMinimized(KAccessibleClient::AccessibleObject)), this, SLOT(windowMinimized(KAccessibleClient::AccessibleObject)));
-    connect(m_registry, SIGNAL(windowMaximized(KAccessibleClient::AccessibleObject)), this, SLOT(windowMaximized(KAccessibleClient::AccessibleObject)));
-    connect(m_registry, SIGNAL(windowRestored(KAccessibleClient::AccessibleObject)), this, SLOT(windowRestored(KAccessibleClient::AccessibleObject)));
-    connect(m_registry, SIGNAL(windowActivated(KAccessibleClient::AccessibleObject)), this, SLOT(windowActivated(KAccessibleClient::AccessibleObject)));
-    connect(m_registry, SIGNAL(windowDeactivated(KAccessibleClient::AccessibleObject)), this, SLOT(windowDeactivated(KAccessibleClient::AccessibleObject)));
-    connect(m_registry, SIGNAL(windowDesktopCreated(KAccessibleClient::AccessibleObject)), this, SLOT(windowDesktopCreated(KAccessibleClient::AccessibleObject)));
-    connect(m_registry, SIGNAL(windowDesktopDestroyed(KAccessibleClient::AccessibleObject)), this, SLOT(windowDesktopDestroyed(KAccessibleClient::AccessibleObject)));
-    connect(m_registry, SIGNAL(windowRaised(KAccessibleClient::AccessibleObject)), this, SLOT(windowRaised(KAccessibleClient::AccessibleObject)));
-    connect(m_registry, SIGNAL(windowLowered(KAccessibleClient::AccessibleObject)), this, SLOT(windowLowered(KAccessibleClient::AccessibleObject)));
-    connect(m_registry, SIGNAL(windowMoved(KAccessibleClient::AccessibleObject)), this, SLOT(windowMoved(KAccessibleClient::AccessibleObject)));
-    connect(m_registry, SIGNAL(windowResized(KAccessibleClient::AccessibleObject)), this, SLOT(windowResized(KAccessibleClient::AccessibleObject)));
-    connect(m_registry, SIGNAL(windowShaded(KAccessibleClient::AccessibleObject)), this, SLOT(windowShaded(KAccessibleClient::AccessibleObject)));
-    connect(m_registry, SIGNAL(windowUnshaded(KAccessibleClient::AccessibleObject)), this, SLOT(windowUnshaded(KAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(windowCreated(QAccessibleClient::AccessibleObject)), this, SLOT(windowCreated(QAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(windowDestroyed(QAccessibleClient::AccessibleObject)), this, SLOT(windowDestroyed(QAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(windowClosed(QAccessibleClient::AccessibleObject)), this, SLOT(windowClosed(QAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(windowReparented(QAccessibleClient::AccessibleObject)), this, SLOT(windowReparented(QAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(windowMinimized(QAccessibleClient::AccessibleObject)), this, SLOT(windowMinimized(QAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(windowMaximized(QAccessibleClient::AccessibleObject)), this, SLOT(windowMaximized(QAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(windowRestored(QAccessibleClient::AccessibleObject)), this, SLOT(windowRestored(QAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(windowActivated(QAccessibleClient::AccessibleObject)), this, SLOT(windowActivated(QAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(windowDeactivated(QAccessibleClient::AccessibleObject)), this, SLOT(windowDeactivated(QAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(windowDesktopCreated(QAccessibleClient::AccessibleObject)), this, SLOT(windowDesktopCreated(QAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(windowDesktopDestroyed(QAccessibleClient::AccessibleObject)), this, SLOT(windowDesktopDestroyed(QAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(windowRaised(QAccessibleClient::AccessibleObject)), this, SLOT(windowRaised(QAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(windowLowered(QAccessibleClient::AccessibleObject)), this, SLOT(windowLowered(QAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(windowMoved(QAccessibleClient::AccessibleObject)), this, SLOT(windowMoved(QAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(windowResized(QAccessibleClient::AccessibleObject)), this, SLOT(windowResized(QAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(windowShaded(QAccessibleClient::AccessibleObject)), this, SLOT(windowShaded(QAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(windowUnshaded(QAccessibleClient::AccessibleObject)), this, SLOT(windowUnshaded(QAccessibleClient::AccessibleObject)));
 
-    connect(m_registry, SIGNAL(stateChanged(KAccessibleClient::AccessibleObject,QString,int,int)), this, SLOT(stateChanged(KAccessibleClient::AccessibleObject,QString,int,int)));
-    connect(m_registry, SIGNAL(childAdded(KAccessibleClient::AccessibleObject,int)), this, SLOT(childAdded(KAccessibleClient::AccessibleObject,int)));
-    connect(m_registry, SIGNAL(childRemoved(KAccessibleClient::AccessibleObject,int)), this, SLOT(childRemoved(KAccessibleClient::AccessibleObject,int)));
-    connect(m_registry, SIGNAL(visibleDataChanged(KAccessibleClient::AccessibleObject)), this, SLOT(visibleDataChanged(KAccessibleClient::AccessibleObject)));
-    connect(m_registry, SIGNAL(selectionChanged(KAccessibleClient::AccessibleObject)), this, SLOT(selectionChanged(KAccessibleClient::AccessibleObject)));
-    connect(m_registry, SIGNAL(modelChanged(KAccessibleClient::AccessibleObject)), this, SLOT(modelChanged(KAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(stateChanged(QAccessibleClient::AccessibleObject,QString,int,int)), this, SLOT(stateChanged(QAccessibleClient::AccessibleObject,QString,int,int)));
+    connect(m_registry, SIGNAL(childAdded(QAccessibleClient::AccessibleObject,int)), this, SLOT(childAdded(QAccessibleClient::AccessibleObject,int)));
+    connect(m_registry, SIGNAL(childRemoved(QAccessibleClient::AccessibleObject,int)), this, SLOT(childRemoved(QAccessibleClient::AccessibleObject,int)));
+    connect(m_registry, SIGNAL(visibleDataChanged(QAccessibleClient::AccessibleObject)), this, SLOT(visibleDataChanged(QAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(selectionChanged(QAccessibleClient::AccessibleObject)), this, SLOT(selectionChanged(QAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(modelChanged(QAccessibleClient::AccessibleObject)), this, SLOT(modelChanged(QAccessibleClient::AccessibleObject)));
 
-    connect(m_registry, SIGNAL(focusChanged(KAccessibleClient::AccessibleObject)), this, SLOT(focusChanged(KAccessibleClient::AccessibleObject)));
-    connect(m_registry, SIGNAL(textCaretMoved(KAccessibleClient::AccessibleObject,int)), this, SLOT(textCaretMoved(KAccessibleClient::AccessibleObject,int)));
-    connect(m_registry, SIGNAL(textSelectionChanged(KAccessibleClient::AccessibleObject)), this, SLOT(textSelectionChanged(KAccessibleClient::AccessibleObject)));
-    connect(m_registry, SIGNAL(textChanged(KAccessibleClient::AccessibleObject)), this, SLOT(textChanged(KAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(focusChanged(QAccessibleClient::AccessibleObject)), this, SLOT(focusChanged(QAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(textCaretMoved(QAccessibleClient::AccessibleObject,int)), this, SLOT(textCaretMoved(QAccessibleClient::AccessibleObject,int)));
+    connect(m_registry, SIGNAL(textSelectionChanged(QAccessibleClient::AccessibleObject)), this, SLOT(textSelectionChanged(QAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(textChanged(QAccessibleClient::AccessibleObject)), this, SLOT(textChanged(QAccessibleClient::AccessibleObject)));
 
-    connect(m_registry, SIGNAL(accessibleNameChanged(KAccessibleClient::AccessibleObject)), this, SLOT(accessibleNameChanged(KAccessibleClient::AccessibleObject)));
-    connect(m_registry, SIGNAL(accessibleDescriptionChanged(KAccessibleClient::AccessibleObject)), this, SLOT(accessibleDescriptionChanged(KAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(accessibleNameChanged(QAccessibleClient::AccessibleObject)), this, SLOT(accessibleNameChanged(QAccessibleClient::AccessibleObject)));
+    connect(m_registry, SIGNAL(accessibleDescriptionChanged(QAccessibleClient::AccessibleObject)), this, SLOT(accessibleDescriptionChanged(QAccessibleClient::AccessibleObject)));
 
     QSettings settings("kde.org", "kdea11yapp");
     m_registry->setCacheType(Registry::CacheType(settings.value("cacheStrategy", m_registry->cacheType()).toInt()));
     restoreGeometry(settings.value("geometry").toByteArray());
     restoreState(settings.value("windowState").toByteArray());
 
-    //m_registry->subscribeEventListeners(KAccessibleClient::Registry::Focus);
-    m_registry->subscribeEventListeners(KAccessibleClient::Registry::AllEventListeners);
+    //m_registry->subscribeEventListeners(QAccessibleClient::Registry::Focus);
+    m_registry->subscribeEventListeners(QAccessibleClient::Registry::AllEventListeners);
 }
 
 MainWindow::~MainWindow()
@@ -331,7 +331,7 @@ void MainWindow::MainWindow::initUi()
 
 void MainWindow::anchorClicked(const QUrl &url)
 {
-    KAccessibleClient::AccessibleObject object = m_registry->fromUrl(url);
+    QAccessibleClient::AccessibleObject object = m_registry->fromUrl(url);
     setCurrentObject(object);
 }
 
@@ -345,7 +345,7 @@ void MainWindow::showClientCache()
         dlg->deleteLater();
 }
 
-void MainWindow::MainWindow::addLog(const KAccessibleClient::AccessibleObject &object, const QString &eventName, const QString &text)
+void MainWindow::MainWindow::addLog(const QAccessibleClient::AccessibleObject &object, const QString &eventName, const QString &text)
 {
     if (!object.isValid())
         return;
@@ -374,7 +374,7 @@ void MainWindow::MainWindow::addLog(const KAccessibleClient::AccessibleObject &o
         m_eventsEdit->verticalScrollBar()->setValue(m_eventsEdit->verticalScrollBar()->maximum());
 }
 
-void MainWindow::setCurrentObject(const KAccessibleClient::AccessibleObject &object)
+void MainWindow::setCurrentObject(const QAccessibleClient::AccessibleObject &object)
 {
     QModelIndex index = m_treeModel->indexForAccessible(object);
     if (index.isValid()) {
@@ -390,7 +390,7 @@ void MainWindow::setCurrentObject(const KAccessibleClient::AccessibleObject &obj
     }
 }
 
-void MainWindow::stateChanged(const KAccessibleClient::AccessibleObject &object, const QString &state, int detail1, int detail2)
+void MainWindow::stateChanged(const QAccessibleClient::AccessibleObject &object, const QString &state, int detail1, int detail2)
 {
     Q_UNUSED(detail1);
     Q_UNUSED(detail2);
@@ -398,34 +398,34 @@ void MainWindow::stateChanged(const KAccessibleClient::AccessibleObject &object,
     addLog(object, QString("StateChanged"), s);
 }
 
-void MainWindow::childAdded(const KAccessibleClient::AccessibleObject &object, int childIndex)
+void MainWindow::childAdded(const QAccessibleClient::AccessibleObject &object, int childIndex)
 {
     addLog(object, QString("ChildAdded"), QString::number(childIndex));
 }
 
-void MainWindow::childRemoved(const KAccessibleClient::AccessibleObject &object, int childIndex)
+void MainWindow::childRemoved(const QAccessibleClient::AccessibleObject &object, int childIndex)
 {
     addLog(object, QString("ChildRemoved"), QString::number(childIndex));
 }
 
-void MainWindow::visibleDataChanged(const KAccessibleClient::AccessibleObject &object)
+void MainWindow::visibleDataChanged(const QAccessibleClient::AccessibleObject &object)
 {
     addLog(object, QString("VisibleDataChanged"));
 }
 
-void MainWindow::selectionChanged(const KAccessibleClient::AccessibleObject &object)
+void MainWindow::selectionChanged(const QAccessibleClient::AccessibleObject &object)
 {
     addLog(object, QString("SelectionChanged"));
 }
 
-void MainWindow::modelChanged(const KAccessibleClient::AccessibleObject &object)
+void MainWindow::modelChanged(const QAccessibleClient::AccessibleObject &object)
 {
     addLog(object, QString("ModelChanged"));
 }
 
 void MainWindow::MainWindow::selectionChanged(const QModelIndex& current, const QModelIndex&)
 {
-    KAccessibleClient::AccessibleObject acc;
+    QAccessibleClient::AccessibleObject acc;
     if (current.isValid() && current.internalPointer()) {
         acc = static_cast<AccessibleWrapper*>(current.internalPointer())->acc;
     }
@@ -440,7 +440,7 @@ void MainWindow::MainWindow::treeCustomContextMenuRequested(const QPoint &pos)
     QModelIndex current = m_treeView->currentIndex();
     if (!current.isValid())
         return;
-    KAccessibleClient::AccessibleObject acc = static_cast<AccessibleWrapper*>(current.internalPointer())->acc;
+    QAccessibleClient::AccessibleObject acc = static_cast<AccessibleWrapper*>(current.internalPointer())->acc;
     QMenu *menu = new QMenu(this);
     connect(menu, SIGNAL(aboutToHide()), menu, SLOT(deleteLater()));
     Q_FOREACH(QAction *a, acc.actions()) {
@@ -449,111 +449,111 @@ void MainWindow::MainWindow::treeCustomContextMenuRequested(const QPoint &pos)
     menu->popup(m_treeView->mapToGlobal(pos));
 }
 
-void MainWindow::added(const KAccessibleClient::AccessibleObject &object)
+void MainWindow::added(const QAccessibleClient::AccessibleObject &object)
 {
     addLog(object, QString("Add Object"));
     m_treeModel->addAccessible(object);
 }
 
-void MainWindow::removed(const KAccessibleClient::AccessibleObject &object)
+void MainWindow::removed(const QAccessibleClient::AccessibleObject &object)
 {
     addLog(object, QString("Remove Object"));
     m_treeModel->removeAccessible(object);
 }
 
-void MainWindow::defunct(const KAccessibleClient::AccessibleObject &object)
+void MainWindow::defunct(const QAccessibleClient::AccessibleObject &object)
 {
     removed(object);
 }
 
-void MainWindow::windowCreated(const KAccessibleClient::AccessibleObject &object)
+void MainWindow::windowCreated(const QAccessibleClient::AccessibleObject &object)
 {
     addLog(object, QString("WindowCreate"));
     m_treeModel->addAccessible(object);
 }
 
-void MainWindow::windowDestroyed(const KAccessibleClient::AccessibleObject &object)
+void MainWindow::windowDestroyed(const QAccessibleClient::AccessibleObject &object)
 {
     addLog(object, QString("WindowDestroy"));
     m_treeModel->removeAccessible(object);
 }
 
-void MainWindow::windowClosed(const KAccessibleClient::AccessibleObject &object)
+void MainWindow::windowClosed(const QAccessibleClient::AccessibleObject &object)
 {
     addLog(object, QString("WindowClose"));
 }
 
-void MainWindow::windowReparented(const KAccessibleClient::AccessibleObject &object)
+void MainWindow::windowReparented(const QAccessibleClient::AccessibleObject &object)
 {
     addLog(object, QString("WindowReparent"));
 }
 
-void MainWindow::windowMinimized(const KAccessibleClient::AccessibleObject &object)
+void MainWindow::windowMinimized(const QAccessibleClient::AccessibleObject &object)
 {
     addLog(object, QString("WindowMinimize"));
 }
 
-void MainWindow::windowMaximized(const KAccessibleClient::AccessibleObject &object)
+void MainWindow::windowMaximized(const QAccessibleClient::AccessibleObject &object)
 {
     addLog(object, QString("WindowMaximize"));
 }
 
-void MainWindow::windowRestored(const KAccessibleClient::AccessibleObject &object)
+void MainWindow::windowRestored(const QAccessibleClient::AccessibleObject &object)
 {
     addLog(object, QString("WindowRestore"));
 }
 
-void MainWindow::windowActivated(const KAccessibleClient::AccessibleObject &object)
+void MainWindow::windowActivated(const QAccessibleClient::AccessibleObject &object)
 {
     addLog(object, QString("WindowActivate"));
 }
 
-void MainWindow::windowDeactivated(const KAccessibleClient::AccessibleObject &object)
+void MainWindow::windowDeactivated(const QAccessibleClient::AccessibleObject &object)
 {
     addLog(object, QString("WindowDeactivate"));
 }
 
-void MainWindow::windowDesktopCreated(const KAccessibleClient::AccessibleObject &object)
+void MainWindow::windowDesktopCreated(const QAccessibleClient::AccessibleObject &object)
 {
     addLog(object, QString("WindowDesktopCreate"));
 }
 
-void MainWindow::windowDesktopDestroyed(const KAccessibleClient::AccessibleObject &object)
+void MainWindow::windowDesktopDestroyed(const QAccessibleClient::AccessibleObject &object)
 {
     addLog(object, QString("WindowDesktopDestroy"));
 }
 
-void MainWindow::windowRaised(const KAccessibleClient::AccessibleObject &object)
+void MainWindow::windowRaised(const QAccessibleClient::AccessibleObject &object)
 {
     addLog(object, QString("WindowRaise"));
 }
 
-void MainWindow::windowLowered(const KAccessibleClient::AccessibleObject &object)
+void MainWindow::windowLowered(const QAccessibleClient::AccessibleObject &object)
 {
     addLog(object, QString("WindowLower"));
 }
 
-void MainWindow::windowMoved(const KAccessibleClient::AccessibleObject &object)
+void MainWindow::windowMoved(const QAccessibleClient::AccessibleObject &object)
 {
     addLog(object, QString("WindowMove"));
 }
 
-void MainWindow::windowResized(const KAccessibleClient::AccessibleObject &object)
+void MainWindow::windowResized(const QAccessibleClient::AccessibleObject &object)
 {
     addLog(object, QString("WindowResize"));
 }
 
-void MainWindow::windowShaded(const KAccessibleClient::AccessibleObject &object)
+void MainWindow::windowShaded(const QAccessibleClient::AccessibleObject &object)
 {
     addLog(object, QString("WindowShade"));
 }
 
-void MainWindow::windowUnshaded(const KAccessibleClient::AccessibleObject &object)
+void MainWindow::windowUnshaded(const QAccessibleClient::AccessibleObject &object)
 {
     addLog(object, QString("WindowUnshade"));
 }
 
-void MainWindow::focusChanged(const KAccessibleClient::AccessibleObject &object)
+void MainWindow::focusChanged(const QAccessibleClient::AccessibleObject &object)
 {
     if (m_followFocusAction->isChecked()) {
         // We need to block the focus for the treeView while setting the current item
@@ -567,28 +567,28 @@ void MainWindow::focusChanged(const KAccessibleClient::AccessibleObject &object)
     }
 }
 
-void MainWindow::MainWindow::textCaretMoved(const KAccessibleClient::AccessibleObject &object, int pos)
+void MainWindow::MainWindow::textCaretMoved(const QAccessibleClient::AccessibleObject &object, int pos)
 {
     addLog(object, QString("TextCaretMoved"));
 }
 
-void MainWindow::MainWindow::textSelectionChanged(const KAccessibleClient::AccessibleObject &object)
+void MainWindow::MainWindow::textSelectionChanged(const QAccessibleClient::AccessibleObject &object)
 {
     addLog(object, QString("TextSelectionChanged"));
 }
 
-void MainWindow::textChanged(const KAccessibleClient::AccessibleObject &object)
+void MainWindow::textChanged(const QAccessibleClient::AccessibleObject &object)
 {
     addLog(object, QString("TextChanged"));
 }
 
-void MainWindow::accessibleNameChanged(const KAccessibleClient::AccessibleObject &object)
+void MainWindow::accessibleNameChanged(const QAccessibleClient::AccessibleObject &object)
 {
     addLog(object, QString("AccessibleNameChanged"));
     m_treeModel->updateAccessible(object);
 }
 
-void MainWindow::accessibleDescriptionChanged(const KAccessibleClient::AccessibleObject &object)
+void MainWindow::accessibleDescriptionChanged(const QAccessibleClient::AccessibleObject &object)
 {
     addLog(object, QString("AccessibleDescriptionChanged"));
     m_treeModel->updateAccessible(object);

@@ -30,10 +30,10 @@ class AccessibleTree;
 class AccessibleWrapper
 {
 public:
-    AccessibleWrapper(const KAccessibleClient::AccessibleObject &object, AccessibleWrapper *parent)
+    AccessibleWrapper(const QAccessibleClient::AccessibleObject &object, AccessibleWrapper *parent)
     : acc(object), m_parent(parent)
     {}
-    KAccessibleClient::AccessibleObject acc;
+    QAccessibleClient::AccessibleObject acc;
 
     ~AccessibleWrapper() {
         qDeleteAll(m_children);
@@ -57,13 +57,13 @@ public:
     explicit AccessibleTree(QObject* parent = 0);
     ~AccessibleTree();
 
-    void setRegistry(KAccessibleClient::Registry *registry);
+    void setRegistry(QAccessibleClient::Registry *registry);
 
-    QModelIndex indexForAccessible(const KAccessibleClient::AccessibleObject &object);
-    bool addAccessible(const KAccessibleClient::AccessibleObject &object);
-    bool removeAccessible(const KAccessibleClient::AccessibleObject &object);
+    QModelIndex indexForAccessible(const QAccessibleClient::AccessibleObject &object);
+    bool addAccessible(const QAccessibleClient::AccessibleObject &object);
+    bool removeAccessible(const QAccessibleClient::AccessibleObject &object);
     bool removeAccessible(const QModelIndex &index);
-    bool updateAccessible(const KAccessibleClient::AccessibleObject &object);
+    bool updateAccessible(const QAccessibleClient::AccessibleObject &object);
 
     QList<AccessibleWrapper*> apps() const { return m_apps; }
 
@@ -81,10 +81,10 @@ Q_SIGNALS:
     void navigationError(const QModelIndex &) const;
 
 private:
-    KAccessibleClient::Registry *m_registry;
+    QAccessibleClient::Registry *m_registry;
     QList<AccessibleWrapper*> m_apps;
 
-    AccessibleWrapper* addHierachyForObject(const KAccessibleClient::AccessibleObject &object);
+    AccessibleWrapper* addHierachyForObject(const QAccessibleClient::AccessibleObject &object);
 };
 
 #endif // ACCESSIBLETREE_H

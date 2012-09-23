@@ -26,7 +26,7 @@
 #include <QtDBus/QDBusConnection>
 #include <QtDBus/QDBusPendingCallWatcher>
 
-namespace KAccessibleClient {
+namespace QAccessibleClient {
 
 
 /**

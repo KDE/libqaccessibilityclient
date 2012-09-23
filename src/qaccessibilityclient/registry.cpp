@@ -23,7 +23,7 @@
 
 #include <qurl.h>
 
-using namespace KAccessibleClient;
+using namespace QAccessibleClient;
 
 Registry::Registry(QObject *parent)
     : QObject(parent), d(new RegistryPrivate(this))

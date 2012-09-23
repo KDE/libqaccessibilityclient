@@ -24,7 +24,7 @@
 #include <qobject.h>
 #include <qstandarditemmodel.h>
 
-namespace KAccessibleClient {
+namespace QAccessibleClient {
     class AccessibleObject;
 }
 
@@ -34,11 +34,11 @@ public:
     explicit ObjectProperties(QObject *parent = 0);
     virtual ~ObjectProperties();
 
-    void setAccessibleObject(const KAccessibleClient::AccessibleObject &acc);
+    void setAccessibleObject(const QAccessibleClient::AccessibleObject &acc);
 
 private:
     QStandardItem* append(const QString &name, const QVariant &value = QVariant(), QStandardItem *parentItem = 0);
-    QString stateString(const KAccessibleClient::AccessibleObject &acc);
+    QString stateString(const QAccessibleClient::AccessibleObject &acc);
 };
 
 #endif
