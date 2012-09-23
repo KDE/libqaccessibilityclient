@@ -58,7 +58,6 @@ AccessibleTree::AccessibleTree(QObject* parent)
 
 AccessibleTree::~AccessibleTree()
 {
-    qDeleteAll(m_apps);
 }
 
 QVariant AccessibleTree::headerData(int section, Qt::Orientation orientation, int role) const
