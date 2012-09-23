@@ -13,7 +13,7 @@ add_definitions(-DQT_USE_FAST_CONCATENATION -DQT_USE_FAST_OPERATOR_PLUS)
 set(CMAKE_AUTOMOC TRUE)
 
 # override the KDE defaults and build tests unless explicitly disabled
-#option(KDE4_BUILD_TESTS  "Build the tests" ON)
+option(KDE4_BUILD_TESTS  "Build the tests" ON)
 
 find_package(Qt4 REQUIRED)
 include(${QT_USE_FILE})

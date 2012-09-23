@@ -29,6 +29,7 @@
 #include <qaccessible.h>
 #include <qdebug.h>
 #include <qprocess.h>
+#include <qfileinfo.h>
 
 #include "qaccessibilityclient/qaccessibilityclient_export.h"
 #include "qaccessibilityclient/registry.h"
@@ -258,13 +259,16 @@ void AccessibilityClientTest::tst_focus()
     EventListener *listener = new EventListener;
     connect(&registry, SIGNAL(focusChanged(KAccessibleClient::AccessibleObject)), listener, SLOT(focus(KAccessibleClient::AccessibleObject)));
 
+    QVERIFY2(QFileInfo("./simplewidgetapp").exists(), "Could not find test case helper executable."
+                    " Please run this test in the path where the executable is located.");
+
     QProcess proc;
     // start peer server
-    #ifdef Q_OS_WIN
+#ifdef Q_OS_WIN
     proc.start("simplewidgetapp");
-    #else
+#else
     proc.start("./simplewidgetapp");
-    #endif
+#endif
     QVERIFY(proc.waitForStarted());
 
     AccessibleObject remoteApp;
