@@ -199,6 +199,11 @@ MainWindow::MainWindow(QWidget *parent)
     m_registry->subscribeEventListeners(KAccessibleClient::Registry::AllEventListeners);
 }
 
+MainWindow::~MainWindow()
+{
+    delete m_registry;
+}
+
 void MainWindow::MainWindow::closeEvent(QCloseEvent *event)
 {
     QSettings settings("kde.org", "kdea11yapp");
