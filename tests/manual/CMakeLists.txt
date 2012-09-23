@@ -28,4 +28,4 @@ set(accessibleapps_SRCS
 )
 
 add_executable(accessibleapps ${accessibleapps_SRCS} ${accessibleapps_MOC})
-target_link_libraries(accessibleapps ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} ${QT_QTTEST_LIBRARY} ${KDE4_KDEUI_LIBRARY} kdeaccessibilityclient)
+target_link_libraries(accessibleapps ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} ${QT_QTTEST_LIBRARY} ${KDE4_KDEUI_LIBRARY} qaccessibilityclient)

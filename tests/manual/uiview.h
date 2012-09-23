@@ -21,8 +21,8 @@
 #ifndef UIVIEW_H
 #define UIVIEW_H
 
-#include "kdeaccessibilityclient/accessibleobject.h"
-#include "kdeaccessibilityclient/registry.h"
+#include "qaccessibilityclient/accessibleobject.h"
+#include "qaccessibilityclient/registry.h"
 
 #include <QImage>
 #include <QPixmap>

@@ -30,9 +30,9 @@
 #include <qdebug.h>
 #include <qprocess.h>
 
-#include "kdeaccessibilityclient/libkdeaccessibilityclient_export.h"
-#include "kdeaccessibilityclient/registry.h"
-#include "kdeaccessibilityclient/accessibleobject.h"
+#include "qaccessibilityclient/qaccessibilityclient_export.h"
+#include "qaccessibilityclient/registry.h"
+#include "qaccessibilityclient/accessibleobject.h"
 
 #include "atspi/dbusconnection.h"
 #include "atspi/atspi-constants.h"

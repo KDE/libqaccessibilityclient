@@ -21,8 +21,8 @@
 #include "mainwindow.h"
 #include "accessibleproperties.h"
 #include "uiview.h"
-#include "kdeaccessibilityclient/registry.h"
-#include "kdeaccessibilityclient/accessibleobject.h"
+#include "qaccessibilityclient/registry.h"
+#include "qaccessibilityclient/accessibleobject.h"
 #include "accessibletree.h"
 
 #include <qitemselectionmodel.h>

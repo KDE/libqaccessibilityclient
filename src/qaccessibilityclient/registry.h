@@ -23,7 +23,7 @@
 
 #include <qobject.h>
 
-#include "libkdeaccessibilityclient_export.h"
+#include "qaccessibilityclient_export.h"
 #include "accessibleobject.h"
 #include <QUrl>
 

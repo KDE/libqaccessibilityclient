@@ -1,9 +1,9 @@
-project(LibKdeAccessibilityClient)
+project(QAccessibilityClient)
 
-set(LIBKDEACCESSIBILITYCLIENT_VERSION_MAJOR 0)
-set(LIBKDEACCESSIBILITYCLIENT_VERSION_MINOR 1)
-set(LIBKDEACCESSIBILITYCLIENT_VERSION_PATCH 0)
-set(LIBKDEACCESSIBILITYCLIENT_VERSION ${LIBKDEACCESSIBILITYCLIENT_VERSION_MAJOR}.${LIBKDEACCESSIBILITYCLIENT_VERSION_MINOR}.${LIBKDEACCESSIBILITYCLIENT_VERSION_PATCH})
+set(QACCESSIBILITYCLIENT_VERSION_MAJOR 0)
+set(QACCESSIBILITYCLIENT_VERSION_MINOR 1)
+set(QACCESSIBILITYCLIENT_VERSION_PATCH 0)
+set(QACCESSIBILITYCLIENT_VERSION ${QACCESSIBILITYCLIENT_VERSION_MAJOR}.${QACCESSIBILITYCLIENT_VERSION_MINOR}.${QACCESSIBILITYCLIENT_VERSION_PATCH})
 
 # minimum required cmake is 2.8.6 for automoc-support
 cmake_minimum_required(VERSION 2.8.6)
@@ -42,7 +42,7 @@ else (WIN32)
    set(INCLUDE_INSTALL_DIR  "${CMAKE_INSTALL_PREFIX}/include")
 endif (WIN32)
 
-set(_LibKdeAccessibilityClient_CONFIG_DEST "${LIB_INSTALL_DIR}/cmake/${PROJECT_NAME}")
+set(_QAccessibilityClient_CONFIG_DEST "${LIB_INSTALL_DIR}/cmake/${PROJECT_NAME}")
 
 set(INSTALL_TARGETS_DEFAULT_ARGS  RUNTIME DESTINATION "${BIN_INSTALL_DIR}"
                                   LIBRARY DESTINATION "${LIB_INSTALL_DIR}"
@@ -66,10 +66,10 @@ macro(MAKE_INSTALL_PATH_ABSOLUTE out in)
    endif()
 endmacro(MAKE_INSTALL_PATH_ABSOLUTE out in)
 
-make_install_path_absolute(LIBKDEACCESSIBILITYCLIENT_INCLUDE_DIR ${INCLUDE_INSTALL_DIR})
-make_install_path_absolute(LIBKDEACCESSIBILITYCLIENT_LIB_DIR     ${LIB_INSTALL_DIR})
+make_install_path_absolute(QACCESSIBILITYCLIENT_INCLUDE_DIR ${INCLUDE_INSTALL_DIR})
+make_install_path_absolute(QACCESSIBILITYCLIENT_LIB_DIR     ${LIB_INSTALL_DIR})
 
-configure_file( "${LibKdeAccessibilityClient_SOURCE_DIR}/LibKdeAccessibilityClientConfig.cmake.in" "${LibKdeAccessibilityClient_BINARY_DIR}/LibKdeAccessibilityClientConfig.cmake" @ONLY )
+configure_file( "${QAccessibilityClient_SOURCE_DIR}/QAccessibilityClientConfig.cmake.in" "${QAccessibilityClient_BINARY_DIR}/QAccessibilityClientConfig.cmake" @ONLY )
 install( FILES
-         "${LibKdeAccessibilityClient_BINARY_DIR}/LibKdeAccessibilityClientConfig.cmake"
-         DESTINATION "${_LibKdeAccessibilityClient_CONFIG_DEST}" )
+         "${QAccessibilityClient_BINARY_DIR}/QAccessibilityClientConfig.cmake"
+         DESTINATION "${_QAccessibilityClient_CONFIG_DEST}" )

@@ -29,8 +29,8 @@
 #include <qdialog.h>
 #include <qdebug.h>
 
-#include "kdeaccessibilityclient/accessibleobject.h"
-#include "kdeaccessibilityclient/registry.h"
+#include "qaccessibilityclient/accessibleobject.h"
+#include "qaccessibilityclient/registry.h"
 
 class AccessibleTree;
 class ObjectProperties;

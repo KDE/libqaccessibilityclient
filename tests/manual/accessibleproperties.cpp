@@ -20,8 +20,8 @@
 
 #include "accessibleproperties.h"
 
-#include "kdeaccessibilityclient/accessibleobject.h"
-#include "kdeaccessibilityclient/registry.h"
+#include "qaccessibilityclient/accessibleobject.h"
+#include "qaccessibilityclient/registry.h"
 
 using namespace KAccessibleClient;
 

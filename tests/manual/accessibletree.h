@@ -23,7 +23,7 @@
 
 #include <qabstractitemmodel.h>
 
-#include <kdeaccessibilityclient/registry.h>
+#include <qaccessibilityclient/registry.h>
 
 class AccessibleTree;
 

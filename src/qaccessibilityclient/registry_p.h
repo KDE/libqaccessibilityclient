@@ -31,9 +31,9 @@
 #include <qsharedpointer.h>
 
 #include "atspi/dbusconnection.h"
-#include "kdeaccessibilityclient/registry.h"
-#include "kdeaccessibilityclient/accessibleobject.h"
-#include "kdeaccessibilityclient/accessibleobject_p.h"
+#include "qaccessibilityclient/registry.h"
+#include "qaccessibilityclient/accessibleobject.h"
+#include "qaccessibilityclient/accessibleobject_p.h"
 #include "atspi/qt-atspi.h"
 #include "cachestrategy_p.h"
 

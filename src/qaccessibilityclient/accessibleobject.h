@@ -27,7 +27,7 @@
 
 #include <atspi/atspi-constants.h>
 
-#include "libkdeaccessibilityclient_export.h"
+#include "qaccessibilityclient_export.h"
 
 namespace KAccessibleClient {
 

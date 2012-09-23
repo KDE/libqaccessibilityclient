@@ -5,39 +5,39 @@ include_directories(
 )
 
 add_definitions(-DQT_NO_CAST_FROM_ASCII -DQT_NO_CAST_TO_ASCII)
-add_definitions(-DLIBKDEACCESSIBILITYCLIENT_LIBRARY)
+add_definitions(-DQACCESSIBILITYCLIENT_LIBRARY)
 
-set(LibKdeAccessibilityClient_SRCS
-    kdeaccessibilityclient/accessibleobject_p.cpp
-    kdeaccessibilityclient/accessibleobject.cpp
-    kdeaccessibilityclient/registry.cpp
-    kdeaccessibilityclient/registry_p.cpp
+set(QAccessibilityClient_SRCS
+    qaccessibilityclient/accessibleobject_p.cpp
+    qaccessibilityclient/accessibleobject.cpp
+    qaccessibilityclient/registry.cpp
+    qaccessibilityclient/registry_p.cpp
 )
 
-set(LibKdeAccessibilityClientPrivate_SRCS
+set(QAccessibilityClientPrivate_SRCS
     atspi/dbusconnection.cpp
     atspi/qt-atspi.cpp
 )
 
-add_library(kdeaccessibilityclient SHARED ${LibKdeAccessibilityClient_SRCS} ${LibKdeAccessibilityClientPrivate_SRCS})
+add_library(qaccessibilityclient SHARED ${QAccessibilityClient_SRCS} ${QAccessibilityClientPrivate_SRCS})
 
-target_link_libraries(kdeaccessibilityclient ${QT_QTCORE_LIBRARY} ${QT_QTDBUS_LIBRARY})
+target_link_libraries(qaccessibilityclient ${QT_QTCORE_LIBRARY} ${QT_QTDBUS_LIBRARY})
 
-set(LIBKDEACCESSIBILITYCLIENT_SOVERSION ${LIBKDEACCESSIBILITYCLIENT_VERSION_MAJOR})
-set_target_properties(kdeaccessibilityclient
-    PROPERTIES VERSION ${LIBKDEACCESSIBILITYCLIENT_VERSION}
-    SOVERSION ${LIBKDEACCESSIBILITYCLIENT_SOVERSION}
+set(QACCESSIBILITYCLIENT_SOVERSION ${QACCESSIBILITYCLIENT_VERSION_MAJOR})
+set_target_properties(qaccessibilityclient
+    PROPERTIES VERSION ${QACCESSIBILITYCLIENT_VERSION}
+    SOVERSION ${QACCESSIBILITYCLIENT_SOVERSION}
 )
 
 
-install(TARGETS kdeaccessibilityclient EXPORT LibKdeAccessibilityClient ${INSTALL_TARGETS_DEFAULT_ARGS})
-install(EXPORT LibKdeAccessibilityClient DESTINATION ${_LibKdeAccessibilityClient_CONFIG_DEST})
+install(TARGETS qaccessibilityclient EXPORT QAccessibilityClient ${INSTALL_TARGETS_DEFAULT_ARGS})
+install(EXPORT QAccessibilityClient DESTINATION ${_QAccessibilityClient_CONFIG_DEST})
 
 ########### install files ###############
 
 install(FILES
-    kdeaccessibilityclient/libkdeaccessibilityclient_export.h
-    kdeaccessibilityclient/accessibleobject.h
-    kdeaccessibilityclient/registry.h
-    DESTINATION ${INCLUDE_INSTALL_DIR}/kdeaccessibilityclient COMPONENT Devel
+    qaccessibilityclient/qaccessibilityclient_export.h
+    qaccessibilityclient/accessibleobject.h
+    qaccessibilityclient/registry.h
+    DESTINATION ${INCLUDE_INSTALL_DIR}/qaccessibilityclient COMPONENT Devel
 )
