@@ -75,8 +75,8 @@ public:
 
     enum CacheType {
         NoCache, ///< Disable any caching.
-        WeakCache, ///< Cache only objects in used and free them as long as noone holds a reference to them any longer.
-        StrongCache ///< Cache all objects forever and only free them once they got explicit removed.
+        WeakCache, ///< Cache only objects in use and free them as long as no-one holds a reference to them any longer.
+        StrongCache ///< Cache all objects forever and only free them once they got explicitly removed.
     };
 
     CacheType cacheType() const;
