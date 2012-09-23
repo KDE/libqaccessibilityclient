@@ -187,7 +187,7 @@ void RegistryPrivate::connectionFetched()
 
     QDBusConnection session = QDBusConnection::sessionBus();
     if (session.isConnected()) {
-        bool connected = session.connect(QLatin1String("org.a11y.Bus"), QLatin1String("/org/a11y/bus"), QLatin1String("org.freedesktop.DBus"), QLatin1String("PropertiesChanged"), this, SLOT(propertiesChanged(QString,QVariantMap,QStringList)));
+        bool connected = session.connect(QLatin1String("org.a11y.Bus"), QLatin1String("/org/a11y/bus"), QLatin1String("org.freedesktop.DBus"), QLatin1String("PropertiesChanged"), this, SLOT(a11yConnectionChanged(QString,QVariantMap,QStringList)));
         if (!connected)
             qWarning() << Q_FUNC_INFO << "Failed to connect with signal org.a11y.Status.PropertiesChanged on org.a11y.Bus";
     }
@@ -378,8 +378,6 @@ void RegistryPrivate::subscribeEventListeners(const Registry::EventListeners &li
 
 //    conn.connection().connect(QString(), QLatin1String(""), QLatin1String("org.a11y.atspi.Event.Object"), QLatin1String("ChildrenChanged"), this,
 //                                  SLOT(slotChildrenChanged(QString, int, int, QDBusVariant, QSpiObjectReference)));
-//    conn.connection().connect(QString(), QLatin1String(""), QLatin1String("org.a11y.atspi.Event.Object"), QLatin1String("PropertyChanged"), this,
-//                                  SLOT(slotPropertyChange(QString, int, int, QDBusVariant, QSpiObjectReference)));
 
 // accerciser
 //     (u':1.7', u'Object:StateChanged:'),
@@ -431,7 +429,7 @@ void RegistryPrivate::slotSubscribeEventListenerFinished(QDBusPendingCallWatcher
     call->deleteLater();
 }
 
-void RegistryPrivate::propertiesChanged(const QString &interface,const QVariantMap &changedProperties, const QStringList &invalidatedProperties)
+void RegistryPrivate::a11yConnectionChanged(const QString &interface,const QVariantMap &changedProperties, const QStringList &invalidatedProperties)
 {
     //qDebug() << Q_FUNC_INFO << "interface=" << interface << "changedProperties=" << changedProperties << "invalidatedProperties=" << invalidatedProperties;
     if (conn.status() != DBusConnection::Connected)
