@@ -99,7 +99,8 @@ private Q_SLOTS:
     void windowUnshaded(const KAccessibleClient::AccessibleObject &object);
 
     void stateChanged(const KAccessibleClient::AccessibleObject &object, const QString &state, int detail1, int detail2);
-    void childrenChanged(const KAccessibleClient::AccessibleObject &object, const QString &state, int detail1, int detail2);
+    void childAdded(const KAccessibleClient::AccessibleObject &object, int childIndex);
+    void childRemoved(const KAccessibleClient::AccessibleObject &object, int childIndex);
     void visibleDataChanged(const KAccessibleClient::AccessibleObject &object);
     void selectionChanged(const KAccessibleClient::AccessibleObject &object);
     void modelChanged(const KAccessibleClient::AccessibleObject &object);

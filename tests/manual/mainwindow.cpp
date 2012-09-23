@@ -180,7 +180,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(m_registry, SIGNAL(windowUnshaded(KAccessibleClient::AccessibleObject)), this, SLOT(windowUnshaded(KAccessibleClient::AccessibleObject)));
 
     connect(m_registry, SIGNAL(stateChanged(KAccessibleClient::AccessibleObject,QString,int,int)), this, SLOT(stateChanged(KAccessibleClient::AccessibleObject,QString,int,int)));
-    connect(m_registry, SIGNAL(childrenChanged(KAccessibleClient::AccessibleObject,QString,int,int)), this, SLOT(childrenChanged(KAccessibleClient::AccessibleObject,QString,int,int)));
+    connect(m_registry, SIGNAL(childAdded(KAccessibleClient::AccessibleObject,int)), this, SLOT(childAdded(KAccessibleClient::AccessibleObject,int)));
+    connect(m_registry, SIGNAL(childRemoved(KAccessibleClient::AccessibleObject,int)), this, SLOT(childRemoved(KAccessibleClient::AccessibleObject,int)));
     connect(m_registry, SIGNAL(visibleDataChanged(KAccessibleClient::AccessibleObject)), this, SLOT(visibleDataChanged(KAccessibleClient::AccessibleObject)));
     connect(m_registry, SIGNAL(selectionChanged(KAccessibleClient::AccessibleObject)), this, SLOT(selectionChanged(KAccessibleClient::AccessibleObject)));
     connect(m_registry, SIGNAL(modelChanged(KAccessibleClient::AccessibleObject)), this, SLOT(modelChanged(KAccessibleClient::AccessibleObject)));
@@ -394,12 +395,14 @@ void MainWindow::stateChanged(const KAccessibleClient::AccessibleObject &object,
     addLog(object, QString("StateChanged"), s);
 }
 
-void MainWindow::childrenChanged(const KAccessibleClient::AccessibleObject &object, const QString &state, int detail1, int detail2)
+void MainWindow::childAdded(const KAccessibleClient::AccessibleObject &object, int childIndex)
 {
-    Q_UNUSED(detail1);
-    Q_UNUSED(detail2);
-    QString s = QString("%1").arg(state);
-    addLog(object, QString("ChildrenChanged"), s);
+    addLog(object, QString("ChildAdded"), QString::number(childIndex));
+}
+
+void MainWindow::childRemoved(const KAccessibleClient::AccessibleObject &object, int childIndex)
+{
+    addLog(object, QString("ChildRemoved"), QString::number(childIndex));
 }
 
 void MainWindow::visibleDataChanged(const KAccessibleClient::AccessibleObject &object)

@@ -425,7 +425,7 @@ void RegistryPrivate::slotSubscribeEventListenerFinished(QDBusPendingCallWatcher
 
 void RegistryPrivate::propertiesChanged(const QString &interface,const QVariantMap &changedProperties, const QStringList &invalidatedProperties)
 {
-    qDebug() << Q_FUNC_INFO << "interface=" << interface << "changedProperties=" << changedProperties << "invalidatedProperties=" << invalidatedProperties;
+    //qDebug() << Q_FUNC_INFO << "interface=" << interface << "changedProperties=" << changedProperties << "invalidatedProperties=" << invalidatedProperties;
     if (conn.status() != DBusConnection::Connected)
         return;
     if (interface == QLatin1String("org.a11y.Status")) {
@@ -1080,51 +1080,20 @@ bool RegistryPrivate::removeAccessibleObject(const KAccessibleClient::QSpiObject
 
 void RegistryPrivate::slotChildrenChanged(const QString &state, int detail1, int detail2, const QDBusVariant &args, const KAccessibleClient::QSpiObjectReference &reference)
 {
-    //qDebug() << Q_FUNC_INFO << state << detail1 << detail2 << args.variant() << reference.path.path();
+    qDebug() << Q_FUNC_INFO << state << detail1 << detail2 << args.variant() << reference.path.path();
+    KAccessibleClient::AccessibleObject parentAccessible = accessibleFromContext(reference);
+    if (!parentAccessible.isValid()) {
+        qWarning() << Q_FUNC_INFO << "Children change with invalid parent." << reference.path.path();
+        return;
+    }
+
+    int index = detail1;
     if (state == QLatin1String("add")) {
-qDebug() << Q_FUNC_INFO << state << detail1 << detail2 << args.variant() << reference.path.path();
-#if 1
-//         if (detail1 == 1) {
-                KAccessibleClient::AccessibleObject accessible = accessibleFromContext(reference);
-                if (accessible.isValid())
-                    emit q->added(accessible);
-//         }
-#else
-//             QVariant parent = getProperty(reference.service, reference.path.path(), QLatin1String("org.a11y.atspi.Accessible"), QLatin1String("Parent"));
-//             const QDBusArgument arg = parent.value<QDBusArgument>();
-//             QSpiObjectReference parentRef;
-//             arg >> parentRef;
-//
-//             const QString parentId = parentRef.path.path() + parentRef.service;
-//             RegistryPrivate::AccessibleObjectsHashIterator it = accessibleObjectsHash.find(parentId);
-//             if (it != accessibleObjectsHash.end()) {
-//                 KAccessibleClient::AccessibleObject accessible(it.value());
-// //TODO emit q->updated(accessible);
-//                 if (accessible.isValid())
-//                     emit q->added(accessible);
-//             } else {
-//                 KAccessibleClient::AccessibleObject accessible = accessibleFromContext(reference);
-//                 if (accessible.isValid())
-//                     emit q->added(accessible);
-//             }
-#endif
+        emit q->childAdded(parentAccessible, index);
     } else if (state == QLatin1String("remove")) {
-        if (detail1 == 1) {
-            removeAccessibleObject(reference);
-        }
+        emit q->childRemoved(parentAccessible, index);
     } else {
-        qDebug() << Q_FUNC_INFO << "ChildrenChanged state=" << state;
-        if (m_cacheStrategy) {
-            const QString id = QDBusContext::message().path() + reference.service;
-            QSharedPointer<AccessibleObjectPrivate> p = m_cacheStrategy->get(id);
-            if (p) {
-                KAccessibleClient::AccessibleObject accessible(p);
-                emit q->childrenChanged(accessible, state, detail1, detail2);
-            }
-        } else {
-            KAccessibleClient::AccessibleObject accessible = accessibleFromContext(reference);
-            emit q->childrenChanged(accessible, state, detail1, detail2);
-        }
+        qWarning() << "Invalid state in ChildrenChanged." << state;
     }
 }
 

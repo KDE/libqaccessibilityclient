@@ -182,9 +182,27 @@ Q_SIGNALS:
 
     //void propertyChanged(const KAccessibleClient::AccessibleObject &object);
     //void boundsChanged(const KAccessibleClient::AccessibleObject &object);
-    //oid linkSelected(const KAccessibleClient::AccessibleObject &object);
+    //void linkSelected(const KAccessibleClient::AccessibleObject &object);
     void stateChanged(const KAccessibleClient::AccessibleObject &object, const QString &state, int detail1, int detail2);
-    void childrenChanged(const KAccessibleClient::AccessibleObject &object, const QString &state, int detail1, int detail2);
+
+    /**
+        \brief Notifies about a new AccessibleObject
+
+        The childAdded signal is emitted when a new accessible object is created.
+        This signal depends on the implementation of the server side and is not
+        reliable for all applications.
+        The parameter \a childIndex is the index of the child that has been added.
+        \sa AccessibleObject::child(), childRemoved()
+     */
+    void childAdded(const KAccessibleClient::AccessibleObject &parent, int childIndex);
+
+    /**
+        \brief Notifies that an AccessibleObject has been removed
+
+        The parameter \a childIndex is the index of the child that has been removed.
+        \sa AccessibleObject::child(), childAdded()
+     */
+    void childRemoved(const KAccessibleClient::AccessibleObject &parent, int childIndex);
     void visibleDataChanged(const KAccessibleClient::AccessibleObject &object);
     void selectionChanged(const KAccessibleClient::AccessibleObject &object);
     void modelChanged(const KAccessibleClient::AccessibleObject &object);
