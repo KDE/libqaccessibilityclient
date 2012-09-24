@@ -57,8 +57,9 @@ bool AccessibleObjectPrivate::operator==(const AccessibleObjectPrivate &other) c
 
 void AccessibleObjectPrivate::setDefunct()
 {
-    //service.clear();
-    //path.clear();
-
     defunct = true;
+
+    Q_FOREACH(QAction *action, actions) {
+        action->setEnabled(false);
+    }
 }
