@@ -33,8 +33,6 @@ uint qHash(const QAccessibleClient::AccessibleObject& object);
 #include <QSharedPointer>
 #include <qaction.h>
 
-#include <atspi/atspi-constants.h>
-
 #include "qaccessibilityclient_export.h"
 
 namespace QAccessibleClient {
@@ -58,30 +56,115 @@ public:
 
     enum Interface {
         NoInterface = 0x0,
-        Cache = 0x1,
-        Accessible = 0x2,
-        Action = 0x4,
-        Application = 0x8,
-        Collection = 0x10,
-        Component = 0x20,
-        Document = 0x40,
-        EditableText = 0x80,
-        EventKeyboard = 0x100,
-        EventMouse = 0x200,
-        EventObject = 0x400,
-        Hyperlink = 0x800,
-        Hypertext = 0x1000,
-        Image = 0x2000,
-        Selection = 0x4000,
-        Table = 0x8000,
-        Text = 0x10000,
-        Value = 0x20000,
-        Socket = 0x40000,
-        EventWindow = 0x80000,
-        EventFocus = 0x100000
+        CacheInterface = 0x1,
+        AccessibleInterface = 0x2,
+        ActionInterface = 0x4,
+        ApplicationInterface = 0x8,
+        CollectionInterface = 0x10,
+        ComponentInterface = 0x20,
+        DocumentInterface = 0x40,
+        EditableTextInterface = 0x80,
+        EventKeyboardInterface = 0x100,
+        EventMouseInterface = 0x200,
+        EventObjectInterface = 0x400,
+        HyperlinkInterface = 0x800,
+        HypertextInterface = 0x1000,
+        ImageInterface = 0x2000,
+        SelectionInterface = 0x4000,
+        TableInterface = 0x8000,
+        TextInterface = 0x10000,
+        ValueInterface = 0x20000,
+        SocketInterface = 0x40000,
+        EventWindowInterface = 0x80000,
+        EventFocusInterface = 0x100000
     };
-
     Q_DECLARE_FLAGS(Interfaces, Interface)
+
+    enum Role {
+        NoRole, /*!< The object is invalid and has no role set. This is generally a bug. */
+        CheckBox,
+        ColumnHeader,
+        ComboBox,
+        DesktopFrame,
+        Dial,
+        Dialog,
+        Filler,
+        Frame,
+        Icon,
+        Label,
+        ListView,
+        ListItem,
+        Menu,
+        MenuBar,
+        MenuItem,
+        Tab,
+        TabContainer,
+        PasswordText,
+        PopupMenu,
+        ProgressBar,
+        Button,
+        RadioButton,
+        RadioMenuItem,
+        RowHeader,
+        ScrollBar,
+        ScrollArea,
+        Separator,
+        Slider,
+        SpinButton,
+        StatusBar,
+        TableView,
+        TableCell,
+        TableColumnHeader,
+        TableColumn,
+        TableRowHeader,
+        TableRow,
+        Terminal,
+        Text,
+        ToggleButton,
+        ToolBar,
+        ToolTip,
+        TreeView,
+        Window ,
+        TableRow,
+        TreeItem
+// Roles in Qt, I don't think we want those
+//    TitleBar       = 0x00000001,
+//    Grip           = 0x00000004,
+//    Sound          = 0x00000005,
+//    Cursor         = 0x00000006,
+//    Caret          = 0x00000007,
+//    AlertMessage   = 0x00000008,
+//    Client         = 0x0000000A,
+//    Application    = 0x0000000E,
+//    Document       = 0x0000000F,
+//    Pane           = 0x00000010,
+//    Chart          = 0x00000011,
+//    Border         = 0x00000013,
+//    Grouping       = 0x00000014,
+//    Cell           = 0x0000001D,
+//    Link           = 0x0000001E,
+//    HelpBalloon    = 0x0000001F,
+//    Assistant      = 0x00000020,
+//    PageTab        = 0x00000025,
+//    PropertyPage   = 0x00000026,
+//    Indicator      = 0x00000027,
+//    Graphic        = 0x00000028,
+//    StaticText     = 0x00000029,
+//    EditableText   = 0x0000002A,  // Editable, selectable, etc.
+//    HotkeyField    = 0x00000032,
+//    SpinBox        = 0x00000034,
+//    Canvas         = 0x00000035,
+//    Animation      = 0x00000036,
+//    Equation       = 0x00000037,
+//    ButtonDropDown = 0x00000038,
+//    ButtonMenu     = 0x00000039,
+//    ButtonDropGrid = 0x0000003A,
+//    Whitespace     = 0x0000003B,
+//    PageTabList    = 0x0000003C,
+//    Clock          = 0x0000003D,
+//    Splitter       = 0x0000003E,
+//    LayeredPane    = 0x00000080,
+    };
 
     /**
         \brief Construct an invalid AccessibleObject.
@@ -172,7 +255,7 @@ public:
     /**
         \brief Returns the role as integer value of this accessible.
      */
-    AtspiRole role() const;
+    Role role() const;
 
     /**
         \brief Returns the name of the role of this accessible.

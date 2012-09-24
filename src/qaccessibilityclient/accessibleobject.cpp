@@ -26,6 +26,8 @@
 #include "accessibleobject_p.h"
 #include "registry_p.h"
 
+#include <atspi/atspi-constants.h>
+
 using namespace QAccessibleClient;
 
 AccessibleObject::AccessibleObject()
@@ -138,7 +140,7 @@ QString AccessibleObject::description() const
     return d->registryPrivate->description(*this);
 }
 
-AtspiRole AccessibleObject::role() const
+AccessibleObject::Role AccessibleObject::role() const
 {
     return d->registryPrivate->role(*this);
 }
@@ -170,7 +172,7 @@ double AccessibleObject::alpha() const
 
 QRect AccessibleObject::boundingRect() const
 {
-    if( supportedInterfaces() & AccessibleObject::Component ){
+    if( supportedInterfaces() & AccessibleObject::ComponentInterface ){
         return d->registryPrivate->boundingRect(*this);
     } else {
         qWarning() << "boundingRect called on accessible that does not implement component";
@@ -180,7 +182,7 @@ QRect AccessibleObject::boundingRect() const
 
 QRect AccessibleObject::characterRect() const
 {
-    if( supportedInterfaces() & AccessibleObject::Text ){
+    if( supportedInterfaces() & AccessibleObject::TextInterface ){
         return d->registryPrivate->characterRect(*this);
     } else {
         qWarning() << "characterRect called on accessible that does not implement text";
@@ -195,7 +197,7 @@ AccessibleObject::Interfaces AccessibleObject::supportedInterfaces() const
 
 int AccessibleObject::caretOffset() const
 {
-    if( supportedInterfaces() & AccessibleObject::Text ){
+    if( supportedInterfaces() & AccessibleObject::TextInterface ){
         return d->registryPrivate->caretOffset(*this);
     } else {
         qWarning() << "caretOffset called on accessible that does not implement text";
@@ -206,12 +208,12 @@ int AccessibleObject::caretOffset() const
 QPoint AccessibleObject::focusPoint() const
 {
     Interfaces ifaces = supportedInterfaces();
-    if (ifaces & Text) {
+    if (ifaces & TextInterface) {
         QRect r = characterRect();
         if (!r.isNull())
             return r.center();
     }
-    if (ifaces & Component) {
+    if (ifaces & ComponentInterface) {
         QRect r = boundingRect();
         if (!r.isNull())
             return r.center();
@@ -324,13 +326,15 @@ bool AccessibleObject::isCheckable() const
     //FIXME: Find better AccessibleObject::isCheckable
     //return d->registryPrivate->state(*this) & (quint64(1) << ATSPI_STATE_);
 
-    AtspiRole role = d->registryPrivate->role(*this);
-    if (role == ATSPI_ROLE_CHECK_BOX ||
-        role == ATSPI_ROLE_CHECK_MENU_ITEM ||
-        role == ATSPI_ROLE_RADIO_BUTTON ||
-        role == ATSPI_ROLE_RADIO_MENU_ITEM ||
-        role == ATSPI_ROLE_TOGGLE_BUTTON)
-            return true;
+    Role role = d->registryPrivate->role(*this);
+
+// FIXME
+//    if (role == ATSPI_ROLE_CHECK_BOX ||
+//        role == ATSPI_ROLE_CHECK_MENU_ITEM ||
+//        role == ATSPI_ROLE_RADIO_BUTTON ||
+//        role == ATSPI_ROLE_RADIO_MENU_ITEM ||
+//        role == ATSPI_ROLE_TOGGLE_BUTTON)
+//            return true;
     return false;
 }
 

@@ -36,7 +36,6 @@
 #include "qaccessibilityclient/accessibleobject.h"
 
 #include "atspi/dbusconnection.h"
-#include "atspi/atspi-constants.h"
 
 typedef QSharedPointer<QAccessibleInterface> QAIPointer;
 
@@ -198,7 +197,7 @@ void AccessibilityClientTest::tst_navigation()
     qDebug() << "NAME: " << accW.name();
     QCOMPARE(accW.name(), w.accessibleName());
     QCOMPARE(accW.description(), w.accessibleDescription());
-    QCOMPARE(accW.role(), ATSPI_ROLE_FILLER);
+    QCOMPARE(accW.role(), AccessibleObject::Filler);
     QCOMPARE(accW.roleName(), QLatin1String("filler"));
     QCOMPARE(accW.childCount(), 1);
     QCOMPARE(accW.indexInParent(), 0);
@@ -209,7 +208,7 @@ void AccessibilityClientTest::tst_navigation()
     QVERIFY(accButton.isValid());
     QCOMPARE(accButton.name(), button->text());
     QCOMPARE(accButton.description(), desc);
-    QCOMPARE(accButton.role(), ATSPI_ROLE_PUSH_BUTTON);
+    QCOMPARE(accButton.role(), AccessibleObject::Button);
     QCOMPARE(accButton.roleName(), QLatin1String("push button"));
     QVERIFY(!accButton.localizedRoleName().isEmpty());
     QCOMPARE(accButton.indexInParent(), 0);
@@ -242,7 +241,7 @@ void AccessibilityClientTest::tst_navigation()
     AccessibleObject accLabel = accW.child(1);
     QVERIFY(accLabel.isValid());
     QCOMPARE(accLabel.name(), label->text());
-    QCOMPARE(accLabel.role(), ATSPI_ROLE_LABEL);
+    QCOMPARE(accLabel.role(), AccessibleObject::Label);
     QCOMPARE(accLabel.roleName(), QLatin1String("label"));
     QCOMPARE(accLabel.indexInParent(), 1);
     QVERIFY(accLabel.isVisible());
@@ -256,7 +255,7 @@ void AccessibilityClientTest::tst_navigation()
     AccessibleObject accLine = accW.child(2);
     QVERIFY(accLine.isValid());
     QCOMPARE(accLine.name(), label->text());
-    QCOMPARE(accLine.role(), ATSPI_ROLE_TEXT);
+    QCOMPARE(accLine.role(), AccessibleObject::Text);
     QCOMPARE(accLine.roleName(), QLatin1String("text"));
     QCOMPARE(accLine.indexInParent(), 2);
     QVERIFY(accLine.isEditable());
@@ -419,7 +418,7 @@ void AccessibilityClientTest::tst_extents()
     QCOMPARE(remoteApp.name(), appName);
 
     AccessibleObject window = remoteApp.child(0);
-    QVERIFY(window.supportedInterfaces() & QAccessibleClient::AccessibleObject::Component);
+    QVERIFY(window.supportedInterfaces() & QAccessibleClient::AccessibleObject::ComponentInterface);
     QCOMPARE(window.boundingRect(),QRect(3,23,200,100));
 
     AccessibleObject button1 = window.child(0);
@@ -447,7 +446,7 @@ void AccessibilityClientTest::tst_characterExtents()
     QCOMPARE(app.childCount(), 1);
 
     AccessibleObject textArea = app.child(0).child(0);
-    QVERIFY(textArea.supportedInterfaces() & QAccessibleClient::AccessibleObject::Text);
+    QVERIFY(textArea.supportedInterfaces() & QAccessibleClient::AccessibleObject::TextInterface);
 
     QCOMPARE(textArea.characterRect(), QRect(20,40,0,14));
 

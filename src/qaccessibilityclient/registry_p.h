@@ -63,7 +63,7 @@ public:
 
     QString name(const AccessibleObject &object) const;
     QString description(const AccessibleObject &object) const;
-    AtspiRole role(const AccessibleObject &object) const;
+    AccessibleObject::Role role(const AccessibleObject &object) const;
     QString roleName(const AccessibleObject &object) const;
     QString localizedRoleName(const AccessibleObject &object) const;
     quint64 state(const AccessibleObject &object) const;
@@ -151,12 +151,9 @@ private Q_SLOTS:
     void actionTriggered(const QString &action);
 
 private:
-    friend class Registry;
-    friend class AccessibleObject;
-    friend class AccessibleObjectPrivate;
-
     QVariant getProperty ( const QString &service, const QString &path, const QString &interface, const QString &name ) const;
     bool subscribeEvent(const QLatin1String &iface, const QLatin1String &signal);
+    static AccessibleObject::Role atspiRoleToRole(AtspiRole role);
 
     DBusConnection conn;
     QSignalMapper m_actionMapper;
@@ -171,6 +168,10 @@ private:
 //     QMap<QString, QSharedPointer<AccessibleObjectPrivate> > accessibleObjectsHash;
     bool removeAccessibleObject(const QAccessibleClient::AccessibleObject &accessible);
     bool removeAccessibleObject(const QAccessibleClient::QSpiObjectReference &reference);
+
+    friend class Registry;
+    friend class AccessibleObject;
+    friend class AccessibleObjectPrivate;
 };
 
 }

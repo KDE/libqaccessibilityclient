@@ -99,27 +99,27 @@ RegistryPrivate::RegistryPrivate(Registry *qq)
 
 void RegistryPrivate::init()
 {
-    interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_CACHE)] = AccessibleObject::Cache;
-    interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_ACCESSIBLE)] = AccessibleObject::Accessible;
-    interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_ACTION)] = AccessibleObject::Action;
-    interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_APPLICATION)] = AccessibleObject::Application;
-    interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_COLLECTION)] = AccessibleObject::Collection;
-    interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_COMPONENT)] = AccessibleObject::Component;
-    interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_DOCUMENT)] = AccessibleObject::Document;
-    interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_EDITABLE_TEXT)] = AccessibleObject::Text;
-    interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_EVENT_KEYBOARD)] = AccessibleObject::EventKeyboard;
-    interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_EVENT_MOUSE)] = AccessibleObject::EventMouse;
-    interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_EVENT_OBJECT)] = AccessibleObject::EventObject;
-    interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_HYPERLINK)] = AccessibleObject::Hyperlink;
-    interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_HYPERTEXT)] = AccessibleObject::Hypertext;
-    interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_IMAGE)] = AccessibleObject::Image;
-    interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_SELECTION)] = AccessibleObject::Selection;
-    interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_TABLE)] = AccessibleObject::Table;
-    interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_TEXT)] = AccessibleObject::Text;
-    interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_VALUE)] = AccessibleObject::Value;
-    interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_SOCKET)] = AccessibleObject::Socket;
-    interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_EVENT_WINDOW)] = AccessibleObject::EventWindow;
-    interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_EVENT_FOCUS)] = AccessibleObject::EventFocus;
+    interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_CACHE)] = AccessibleObject::CacheInterface;
+    interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_ACCESSIBLE)] = AccessibleObject::AccessibleInterface;
+    interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_ACTION)] = AccessibleObject::ActionInterface;
+    interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_APPLICATION)] = AccessibleObject::ApplicationInterface;
+    interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_COLLECTION)] = AccessibleObject::CollectionInterface;
+    interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_COMPONENT)] = AccessibleObject::ComponentInterface;
+    interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_DOCUMENT)] = AccessibleObject::DocumentInterface;
+    interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_EDITABLE_TEXT)] = AccessibleObject::TextInterface;
+    interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_EVENT_KEYBOARD)] = AccessibleObject::EventKeyboardInterface;
+    interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_EVENT_MOUSE)] = AccessibleObject::EventMouseInterface;
+    interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_EVENT_OBJECT)] = AccessibleObject::EventObjectInterface;
+    interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_HYPERLINK)] = AccessibleObject::HyperlinkInterface;
+    interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_HYPERTEXT)] = AccessibleObject::HypertextInterface;
+    interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_IMAGE)] = AccessibleObject::ImageInterface;
+    interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_SELECTION)] = AccessibleObject::SelectionInterface;
+    interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_TABLE)] = AccessibleObject::TableInterface;
+    interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_TEXT)] = AccessibleObject::TextInterface;
+    interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_VALUE)] = AccessibleObject::ValueInterface;
+    interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_SOCKET)] = AccessibleObject::SocketInterface;
+    interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_EVENT_WINDOW)] = AccessibleObject::EventWindowInterface;
+    interfaceHash[QLatin1String(ATSPI_DBUS_INTERFACE_EVENT_FOCUS)] = AccessibleObject::EventFocusInterface;
 }
 
 bool RegistryPrivate::isEnabled() const
@@ -569,10 +569,10 @@ QString RegistryPrivate::description(const AccessibleObject &object) const
     return getProperty(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Accessible"), QLatin1String("Description")).toString();
 }
 
-AtspiRole RegistryPrivate::role(const AccessibleObject &object) const
+AccessibleObject::Role RegistryPrivate::role(const AccessibleObject &object) const
 {
     if (!object.isValid())
-        return ATSPI_ROLE_INVALID;
+        return AccessibleObject::NoRole;
 
     QDBusMessage message = QDBusMessage::createMethodCall (
                 object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Accessible"), QLatin1String("GetRole"));
@@ -580,9 +580,120 @@ AtspiRole RegistryPrivate::role(const AccessibleObject &object) const
     QDBusReply<uint> reply = conn.connection().call(message);
     if (!reply.isValid()) {
         qWarning() << "Could not access role." << reply.error().message();
-        return ATSPI_ROLE_INVALID;
+        return AccessibleObject::NoRole;
     }
-    return (AtspiRole) reply.value();
+    return atspiRoleToRole((AtspiRole)reply.value());
+}
+
+AccessibleObject::Role RegistryPrivate::atspiRoleToRole(AtspiRole role)
+{
+    switch (role) {
+    case ATSPI_ROLE_INVALID: return AccessibleObject::NoRole;
+//    case ATSPI_ROLE_ACCELERATOR_LABEL: return AccessibleObject::;
+//    case ATSPI_ROLE_ALERT: return AccessibleObject::;
+//    case ATSPI_ROLE_ANIMATION: return AccessibleObject::;
+//    case ATSPI_ROLE_ARROW: return AccessibleObject::;
+//    case ATSPI_ROLE_CALENDAR: return AccessibleObject::;
+//    case ATSPI_ROLE_CANVAS: return AccessibleObject::;
+    case ATSPI_ROLE_CHECK_BOX: return AccessibleObject::CheckBox;
+    case ATSPI_ROLE_CHECK_MENU_ITEM: return AccessibleObject::MenuItem;
+//    case ATSPI_ROLE_COLOR_CHOOSER: return AccessibleObject::;
+    case ATSPI_ROLE_COLUMN_HEADER: return AccessibleObject::ColumnHeader;
+    case ATSPI_ROLE_COMBO_BOX: return AccessibleObject::ComboBox;
+//    case ATSPI_ROLE_DATE_EDITOR: return AccessibleObject::;
+//    case ATSPI_ROLE_DESKTOP_ICON: return AccessibleObject::;
+    case ATSPI_ROLE_DESKTOP_FRAME: return AccessibleObject::DesktopFrame;
+//    case ATSPI_ROLE_DIAL: return AccessibleObject::;
+    case ATSPI_ROLE_DIALOG: return AccessibleObject::Dialog;
+//    case ATSPI_ROLE_DIRECTORY_PANE: return AccessibleObject::;
+//    case ATSPI_ROLE_DRAWING_AREA: return AccessibleObject::;
+//    case ATSPI_ROLE_FILE_CHOOSER: return AccessibleObject::;
+    case ATSPI_ROLE_FILLER: return AccessibleObject::Filler;
+//    case ATSPI_ROLE_FOCUS_TRAVERSABLE: return AccessibleObject::;
+//    case ATSPI_ROLE_FONT_CHOOSER: return AccessibleObject::;
+    case ATSPI_ROLE_FRAME: return AccessibleObject::Frame;
+//    case ATSPI_ROLE_GLASS_PANE: return AccessibleObject::;
+//    case ATSPI_ROLE_HTML_CONTAINER: return AccessibleObject::;
+    case ATSPI_ROLE_ICON: return AccessibleObject::Icon;
+//    case ATSPI_ROLE_IMAGE: return AccessibleObject::;
+//    case ATSPI_ROLE_INTERNAL_FRAME: return AccessibleObject::;
+    case ATSPI_ROLE_LABEL: return AccessibleObject::Label;
+//    case ATSPI_ROLE_LAYERED_PANE: return AccessibleObject::;
+    case ATSPI_ROLE_LIST: return AccessibleObject::ListView;
+    case ATSPI_ROLE_LIST_ITEM: return AccessibleObject::ListItem;
+    case ATSPI_ROLE_MENU: return AccessibleObject::Menu;
+    case ATSPI_ROLE_MENU_BAR: return AccessibleObject::MenuBar;
+    case ATSPI_ROLE_MENU_ITEM: return AccessibleObject::MenuItem;
+//    case ATSPI_ROLE_OPTION_PANE: return AccessibleObject::;
+    case ATSPI_ROLE_PAGE_TAB: return AccessibleObject::Tab;
+    case ATSPI_ROLE_PAGE_TAB_LIST: return AccessibleObject::TabContainer;
+//    case ATSPI_ROLE_PANEL: return AccessibleObject::;
+    case ATSPI_ROLE_PASSWORD_TEXT: return AccessibleObject::PasswordText;
+    case ATSPI_ROLE_POPUP_MENU: return AccessibleObject::PopupMenu;
+    case ATSPI_ROLE_PROGRESS_BAR: return AccessibleObject::ProgressBar;
+    case ATSPI_ROLE_PUSH_BUTTON: return AccessibleObject::Button;
+    case ATSPI_ROLE_RADIO_BUTTON: return AccessibleObject::RadioButton;
+    case ATSPI_ROLE_RADIO_MENU_ITEM: return AccessibleObject::RadioMenuItem;
+//    case ATSPI_ROLE_ROOT_PANE: return AccessibleObject::;
+    case ATSPI_ROLE_ROW_HEADER: return AccessibleObject::RowHeader;
+    case ATSPI_ROLE_SCROLL_BAR: return AccessibleObject::ScrollBar;
+    case ATSPI_ROLE_SCROLL_PANE: return AccessibleObject::ScrollArea;
+    case ATSPI_ROLE_SEPARATOR: return AccessibleObject::Separator;
+    case ATSPI_ROLE_SLIDER: return AccessibleObject::Slider;
+    case ATSPI_ROLE_SPIN_BUTTON: return AccessibleObject::SpinButton;
+//    case ATSPI_ROLE_SPLIT_PANE: return AccessibleObject::;
+    case ATSPI_ROLE_STATUS_BAR: return AccessibleObject::StatusBar;
+    case ATSPI_ROLE_TABLE: return AccessibleObject::TableView;
+    case ATSPI_ROLE_TABLE_CELL: return AccessibleObject::TableCell;
+    case ATSPI_ROLE_TABLE_COLUMN_HEADER: return AccessibleObject::TableColumnHeader;
+    case ATSPI_ROLE_TABLE_ROW_HEADER: return AccessibleObject::TableRowHeader;
+//    case ATSPI_ROLE_TEAROFF_MENU_ITEM: return AccessibleObject::;
+    case ATSPI_ROLE_TERMINAL: return AccessibleObject::Terminal;
+    case ATSPI_ROLE_TEXT: return AccessibleObject::Text;
+    case ATSPI_ROLE_TOGGLE_BUTTON: return AccessibleObject::ToggleButton;
+    case ATSPI_ROLE_TOOL_BAR: return AccessibleObject::ToolBar;
+    case ATSPI_ROLE_TOOL_TIP: return AccessibleObject::ToolTip;
+    case ATSPI_ROLE_TREE: return AccessibleObject::TreeView;
+    case ATSPI_ROLE_TREE_TABLE: return AccessibleObject::TreeView;
+    case ATSPI_ROLE_UNKNOWN: return AccessibleObject::NoRole;
+//    case ATSPI_ROLE_VIEWPORT: return AccessibleObject::;
+    case ATSPI_ROLE_WINDOW: return AccessibleObject::Window;
+//    case ATSPI_ROLE_EXTENDED: return AccessibleObject::;
+//    case ATSPI_ROLE_HEADER: return AccessibleObject::;
+//    case ATSPI_ROLE_FOOTER: return AccessibleObject::;
+//    case ATSPI_ROLE_PARAGRAPH: return AccessibleObject::;
+//    case ATSPI_ROLE_RULER: return AccessibleObject::;
+//    case ATSPI_ROLE_APPLICATION: return AccessibleObject::;
+//    case ATSPI_ROLE_AUTOCOMPLETE: return AccessibleObject::;
+//    case ATSPI_ROLE_EDITBAR: return AccessibleObject::;
+//    case ATSPI_ROLE_EMBEDDED: return AccessibleObject::;
+//    case ATSPI_ROLE_ENTRY: return AccessibleObject::;
+//    case ATSPI_ROLE_CHART: return AccessibleObject::;
+//    case ATSPI_ROLE_CAPTION: return AccessibleObject::;
+//    case ATSPI_ROLE_DOCUMENT_FRAME: return AccessibleObject::;
+//    case ATSPI_ROLE_HEADING: return AccessibleObject::;
+//    case ATSPI_ROLE_PAGE: return AccessibleObject::;
+//    case ATSPI_ROLE_SECTION: return AccessibleObject::;
+//    case ATSPI_ROLE_REDUNDANT_OBJECT: return AccessibleObject::;
+//    case ATSPI_ROLE_FORM: return AccessibleObject::;
+//    case ATSPI_ROLE_LINK: return AccessibleObject::;
+//    case ATSPI_ROLE_INPUT_METHOD_WINDOW: return AccessibleObject::;
+    case ATSPI_ROLE_TABLE_ROW: return AccessibleObject::TableRow;
+    case ATSPI_ROLE_TREE_ITEM: return AccessibleObject::TreeItem;
+//    case ATSPI_ROLE_DOCUMENT_SPREADSHEET: return AccessibleObject::;
+//    case ATSPI_ROLE_DOCUMENT_PRESENTATION: return AccessibleObject::;
+//    case ATSPI_ROLE_DOCUMENT_TEXT: return AccessibleObject::;
+//    case ATSPI_ROLE_DOCUMENT_WEB: return AccessibleObject::;
+//    case ATSPI_ROLE_DOCUMENT_EMAIL: return AccessibleObject::;
+//    case ATSPI_ROLE_COMMENT: return AccessibleObject::;
+//    case ATSPI_ROLE_LIST_BOX: return AccessibleObject::;
+//    case ATSPI_ROLE_GROUPING: return AccessibleObject::;
+//    case ATSPI_ROLE_IMAGE_MAP: return AccessibleObject::;
+//    case ATSPI_ROLE_NOTIFICATION: return AccessibleObject::;
+//    case ATSPI_ROLE_INFO_BAR: return AccessibleObject::;
+//    case ATSPI_ROLE_LAST_DEFINED: return AccessibleObject::;
+    }
+    return AccessibleObject::NoRole;
 }
 
 QString RegistryPrivate::roleName(const AccessibleObject &object) const

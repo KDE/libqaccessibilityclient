@@ -46,7 +46,7 @@ protected:
     QPixmap m_screen;
     QRect m_bounds;
     QAccessibleClient::AccessibleObject m_object;
-    QMap<AtspiRole, const char*> m_roleColors;
+    QMap<QAccessibleClient::AccessibleObject::Role, const char*> m_roleColors;
 
     virtual void paintEvent(QPaintEvent *event);
 private:

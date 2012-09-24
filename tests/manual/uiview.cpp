@@ -31,116 +31,116 @@ using namespace QAccessibleClient;
 
 struct RoleColor
 {
-    AtspiRole m_role;
+    AccessibleObject::Role m_role;
     const char *m_color;
-    RoleColor(AtspiRole role, const char *color) : m_role(role), m_color(color) {}
+    RoleColor(AccessibleObject::Role role, const char *color) : m_role(role), m_color(color) {}
 };
 
 static RoleColor roleColors[] = {
-    { ATSPI_ROLE_INVALID, "" },
+    { AccessibleObject::NoRole, "#ff0000" },
 //     { ATSPI_ROLE_ACCELERATOR_LABEL, "" },
-    { ATSPI_ROLE_ALERT, "#ffacac" },
-//     { ATSPI_ROLE_ANIMATION, "" },
-//     { ATSPI_ROLE_ARROW, "" },
-//     { ATSPI_ROLE_CALENDAR, "" },
-//     { ATSPI_ROLE_CANVAS, "" },
-    { ATSPI_ROLE_CHECK_BOX, "#6666ff" },
-    { ATSPI_ROLE_CHECK_MENU_ITEM, "#ff6666" },
-    { ATSPI_ROLE_COLOR_CHOOSER, "#6666ff" },
-//     { ATSPI_ROLE_COLUMN_HEADER, "" },
-    { ATSPI_ROLE_COMBO_BOX, "#6666ff" },
-    { ATSPI_ROLE_DATE_EDITOR, "#6666ff" },
-//     { ATSPI_ROLE_DESKTOP_ICON, "" },
-    { ATSPI_ROLE_DESKTOP_FRAME, "#c0c0c0" },
-    { ATSPI_ROLE_DIAL, "#6666ff" },
-    { ATSPI_ROLE_DIALOG, "#c0c0c0" },
-//     { ATSPI_ROLE_DIRECTORY_PANE, "" },
-//     { ATSPI_ROLE_DRAWING_AREA, "" },
-    { ATSPI_ROLE_FILE_CHOOSER, "#6666ff" },
-//     { ATSPI_ROLE_FILLER, "" },
-//     { ATSPI_ROLE_FOCUS_TRAVERSABLE, "" },
-    { ATSPI_ROLE_FONT_CHOOSER, "#6666ff" },
-    { ATSPI_ROLE_FRAME, "#c0c0c0" },
-//     { ATSPI_ROLE_GLASS_PANE, "" },
-//     { ATSPI_ROLE_HTML_CONTAINER, "" },
-//     { ATSPI_ROLE_ICON, "" },
-//     { ATSPI_ROLE_IMAGE, "" },
-    { ATSPI_ROLE_INTERNAL_FRAME, "#c0c0c0" },
-    { ATSPI_ROLE_LABEL, "#ffffaa" },
-//     { ATSPI_ROLE_LAYERED_PANE, "" },
-    { ATSPI_ROLE_LIST, "#acacff" },
-    { ATSPI_ROLE_LIST_ITEM, "#6666ff" },
-    { ATSPI_ROLE_MENU, "#acacff" },
-    { ATSPI_ROLE_MENU_BAR, "#acacff" },
-    { ATSPI_ROLE_MENU_ITEM, "#6666ff" },
-//     { ATSPI_ROLE_OPTION_PANE, "" },
-    { ATSPI_ROLE_PAGE_TAB, "#acacff" },
-    { ATSPI_ROLE_PAGE_TAB_LIST, "#6666ff" },
-    { ATSPI_ROLE_PANEL, "#c0c0c0" },
-    { ATSPI_ROLE_PASSWORD_TEXT, "#ffffaa" },
-    { ATSPI_ROLE_POPUP_MENU, "#acacff" },
-//     { ATSPI_ROLE_PROGRESS_BAR, "" },
-    { ATSPI_ROLE_PUSH_BUTTON, "#6666ff" },
-    { ATSPI_ROLE_RADIO_BUTTON, "#6666ff" },
-    { ATSPI_ROLE_RADIO_MENU_ITEM, "#6666ff" },
-    { ATSPI_ROLE_ROOT_PANE, "#c0c0c0" },
-//     { ATSPI_ROLE_ROW_HEADER, "" },
-//     { ATSPI_ROLE_SCROLL_BAR, "" },
-//     { ATSPI_ROLE_SCROLL_PANE, "" },
-    { ATSPI_ROLE_SEPARATOR, "#acacff" },
-    { ATSPI_ROLE_SLIDER, "#6666ff" },
-    { ATSPI_ROLE_SPIN_BUTTON, "#6666ff" },
-//     { ATSPI_ROLE_SPLIT_PANE, "" },
-    { ATSPI_ROLE_STATUS_BAR, "#c0c0c0" },
-    { ATSPI_ROLE_TABLE, "#acacff" },
-    { ATSPI_ROLE_TABLE_CELL, "#6666ff" },
-    { ATSPI_ROLE_TABLE_COLUMN_HEADER, "#3333ff" },
-    { ATSPI_ROLE_TABLE_ROW_HEADER, "#3333ff" },
-    { ATSPI_ROLE_TEAROFF_MENU_ITEM, "#6666ff" },
-    { ATSPI_ROLE_TERMINAL, "#6666ff" },
-    { ATSPI_ROLE_TEXT, "#ffffaa" },
-    { ATSPI_ROLE_TOGGLE_BUTTON, "#6666ff" },
+//    { ATSPI_ROLE_ALERT, "#ffacac" },
+////     { ATSPI_ROLE_ANIMATION, "" },
+////     { ATSPI_ROLE_ARROW, "" },
+////     { ATSPI_ROLE_CALENDAR, "" },
+////     { ATSPI_ROLE_CANVAS, "" },
+    { AccessibleObject::CheckBox, "#6666ff" },
+    { AccessibleObject::MenuItem, "#ff6666" },
+//    { ATSPI_ROLE_COLOR_CHOOSER, "#6666ff" },
+////     { ATSPI_ROLE_COLUMN_HEADER, "" },
+    { AccessibleObject::ComboBox, "#6666ff" },
+//    { ATSPI_ROLE_DATE_EDITOR, "#6666ff" },
+////     { ATSPI_ROLE_DESKTOP_ICON, "" },
+    { AccessibleObject::DesktopFrame, "#c0c0c0" },
+    { AccessibleObject::Dial, "#6666ff" },
+    { AccessibleObject::Dialog, "#c0c0c0" },
+////     { ATSPI_ROLE_DIRECTORY_PANE, "" },
+////     { ATSPI_ROLE_DRAWING_AREA, "" },
+//    { ATSPI_ROLE_FILE_CHOOSER, "#6666ff" },
+////     { ATSPI_ROLE_FILLER, "" },
+////     { ATSPI_ROLE_FOCUS_TRAVERSABLE, "" },
+//    { ATSPI_ROLE_FONT_CHOOSER, "#6666ff" },
+    { AccessibleObject::Frame, "#c0c0c0" },
+////     { ATSPI_ROLE_GLASS_PANE, "" },
+////     { ATSPI_ROLE_HTML_CONTAINER, "" },
+////     { ATSPI_ROLE_ICON, "" },
+////     { ATSPI_ROLE_IMAGE, "" },
+//    { ATSPI_ROLE_INTERNAL_FRAME, "#c0c0c0" },
+//    { ATSPI_ROLE_LABEL, "#ffffaa" },
+////     { ATSPI_ROLE_LAYERED_PANE, "" },
+    { AccessibleObject::ListView, "#acacff" },
+    { AccessibleObject::ListItem, "#6666ff" },
+    { AccessibleObject::Menu, "#acacff" },
+    { AccessibleObject::MenuBar, "#acacff" },
+    { AccessibleObject::MenuItem, "#6666ff" },
+////     { ATSPI_ROLE_OPTION_PANE, "" },
+    { AccessibleObject::Tab, "#acacff" },
+    { AccessibleObject::TabContainer, "#6666ff" },
+//    { AccessibleObject::Panel, "#c0c0c0" },
+    { AccessibleObject::PasswordText, "#ffffaa" },
+    { AccessibleObject::PopupMenu, "#acacff" },
+////     { ATSPI_ROLE_PROGRESS_BAR, "" },
+    { AccessibleObject::Button, "#6666ff" },
+    { AccessibleObject::RadioButton, "#6666ff" },
+    { AccessibleObject::RadioMenuItem, "#6666ff" },
+//    { ATSPI_ROLE_ROOT_PANE, "#c0c0c0" },
+////     { ATSPI_ROLE_ROW_HEADER, "" },
+////     { ATSPI_ROLE_SCROLL_BAR, "" },
+////     { ATSPI_ROLE_SCROLL_PANE, "" },
+    { AccessibleObject::Separator, "#acacff" },
+    { AccessibleObject::Slider, "#6666ff" },
+    { AccessibleObject::SpinButton, "#6666ff" },
+////     { ATSPI_ROLE_SPLIT_PANE, "" },
+    { AccessibleObject::StatusBar, "#c0c0c0" },
+    { AccessibleObject::TableView, "#acacff" },
+    { AccessibleObject::TableCell, "#6666ff" },
+    { AccessibleObject::TableColumnHeader, "#3333ff" },
+    { AccessibleObject::TableRowHeader, "#3333ff" },
+//    { ATSPI_ROLE_TEAROFF_MENU_ITEM, "#6666ff" },
+    { AccessibleObject::Terminal, "#6666ff" },
+    { AccessibleObject::Text, "#ffffaa" },
+    { AccessibleObject::ToggleButton, "#6666ff" },
 //     { ATSPI_ROLE_TOOL_BAR, "" },
-    { ATSPI_ROLE_TOOL_TIP, "#ffffaa" },
-    { ATSPI_ROLE_TREE, "#acacff" },
-    { ATSPI_ROLE_TREE_TABLE, "#acacff" },
+    { AccessibleObject::ToolTip, "#ffffaa" },
+    { AccessibleObject::TreeView, "#acacff" },
+//    { ATSPI_ROLE_TREE_TABLE, "#acacff" },
 //     { ATSPI_ROLE_UNKNOWN, "" },
-    { ATSPI_ROLE_VIEWPORT, "#c0c0c0" },
-    { ATSPI_ROLE_WINDOW, "#c0c0c0" },
+//    { ATSPI_ROLE_VIEWPORT, "#c0c0c0" },
+    { AccessibleObject::Window, "#c0c0c0" },
 //     { ATSPI_ROLE_EXTENDED, "" },
 //     { ATSPI_ROLE_HEADER, "" },
 //     { ATSPI_ROLE_FOOTER, "" },
-    { ATSPI_ROLE_PARAGRAPH, "#ffffaa" },
+//    { ATSPI_ROLE_PARAGRAPH, "#ffffaa" },
 //     { ATSPI_ROLE_RULER, "" },
 //     { ATSPI_ROLE_APPLICATION, "" },
 //     { ATSPI_ROLE_AUTOCOMPLETE, "" },
-    { ATSPI_ROLE_EDITBAR, "#6666ff" },
+//    { ATSPI_ROLE_EDITBAR, "#6666ff" },
 //     { ATSPI_ROLE_EMBEDDED, "" },
 //     { ATSPI_ROLE_ENTRY, "" },
 //     { ATSPI_ROLE_CHART, "" },
-    { ATSPI_ROLE_CAPTION, "#ffffaa" },
+//    { ATSPI_ROLE_CAPTION, "#ffffaa" },
 //     { ATSPI_ROLE_DOCUMENT_FRAME, "" },
 //     { ATSPI_ROLE_HEADING, "" },
 //     { ATSPI_ROLE_PAGE, "" },
-    { ATSPI_ROLE_SECTION, "#ffffaa" },
+//    { ATSPI_ROLE_SECTION, "#ffffaa" },
 //     { ATSPI_ROLE_REDUNDANT_OBJECT, "" },
 //     { ATSPI_ROLE_FORM, "" },
-    { ATSPI_ROLE_LINK, "#6666ff" },
+//    { ATSPI_ROLE_LINK, "#6666ff" },
 //     { ATSPI_ROLE_INPUT_METHOD_WINDOW, "" },
-    { ATSPI_ROLE_TABLE_ROW, "#6666ff" },
-    { ATSPI_ROLE_TREE_ITEM, "#6666ff" },
+    { AccessibleObject::TableRow, "#6666ff" },
+    { AccessibleObject::TableCell, "#6666ff" },
 //     { ATSPI_ROLE_DOCUMENT_SPREADSHEET, "" },
 //     { ATSPI_ROLE_DOCUMENT_PRESENTATION, "" },
-    { ATSPI_ROLE_DOCUMENT_TEXT, "#ffffaa" },
-    { ATSPI_ROLE_DOCUMENT_WEB, "#ffffaa" },
-    { ATSPI_ROLE_DOCUMENT_EMAIL, "#ffffaa" },
-    { ATSPI_ROLE_COMMENT, "#ffffaa" },
-    { ATSPI_ROLE_LIST_BOX, "#6666ff" },
-//     { ATSPI_ROLE_GROUPING, "" },
-//     { ATSPI_ROLE_IMAGE_MAP, "" },
-//     { ATSPI_ROLE_NOTIFICATION, "" },
-    { ATSPI_ROLE_INFO_BAR, "#ffffaa" },
-    { ATSPI_ROLE_LAST_DEFINED, "" }
+//    { ATSPI_ROLE_DOCUMENT_TEXT, "#ffffaa" },
+//    { ATSPI_ROLE_DOCUMENT_WEB, "#ffffaa" },
+//    { ATSPI_ROLE_DOCUMENT_EMAIL, "#ffffaa" },
+//    { ATSPI_ROLE_COMMENT, "#ffffaa" },
+//    { ATSPI_ROLE_LIST_BOX, "#6666ff" },
+////     { ATSPI_ROLE_GROUPING, "" },
+////     { ATSPI_ROLE_IMAGE_MAP, "" },
+////     { ATSPI_ROLE_NOTIFICATION, "" },
+//    { ATSPI_ROLE_INFO_BAR, "#ffffaa" },
+//    { ATSPI_ROLE_LAST_DEFINED, "" }
 };
 
 #define ROLECOLORSCOUNT (sizeof(roleColors)/(sizeof(roleColors[0])))
@@ -215,11 +215,11 @@ QRect UiWidget::bounds(const QAccessibleClient::AccessibleObject &acc) const
         return QRect();
     QRect rect;
     AccessibleObject::Interfaces ifaces = acc.supportedInterfaces();
-    if( !(ifaces & AccessibleObject::Application) ) {
+    if( !(ifaces & AccessibleObject::ApplicationInterface) ) {
         QAccessibleClient::AccessibleObject parent = acc.parent();
         rect = bounds(parent);
     }
-    if( ifaces & AccessibleObject::Component ) {
+    if( ifaces & AccessibleObject::ComponentInterface ) {
         QRect r = acc.boundingRect();
         if (!r.isNull())
             rect = rect.isNull() ? r : rect.united(r);
@@ -233,17 +233,17 @@ void UiWidget::drawObject(QPainter *painter, const QAccessibleClient::Accessible
         return;
     ++depth;
     AccessibleObject::Interfaces ifaces = acc.supportedInterfaces();
-    if( !(ifaces & AccessibleObject::Application) ) {
+    if( !(ifaces & AccessibleObject::ApplicationInterface) ) {
         QAccessibleClient::AccessibleObject parent = acc.parent();
         drawObject(painter, parent, depth);
     }
-    if( ifaces & AccessibleObject::Component ) {
+    if( ifaces & AccessibleObject::ComponentInterface ) {
         QRect r = acc.boundingRect();
         if (!r.isNull()) {
             r.moveTopLeft(r.topLeft() - m_bounds.topLeft());
 
             QColor color;
-            QMap<AtspiRole, const char*>::ConstIterator colorIt = m_roleColors.constFind(acc.role());
+            QMap<AccessibleObject::Role, const char*>::ConstIterator colorIt = m_roleColors.constFind(acc.role());
             if (colorIt != m_roleColors.constEnd()) {
                 color = QColor(colorIt.value());
             } else {
