@@ -1053,97 +1053,109 @@ QVariant RegistryPrivate::getProperty(const QString &service, const QString &pat
 
 AccessibleObject RegistryPrivate::accessibleFromPath(const QString &service, const QString &path) const
 {
+    if (m_cacheStrategy) {
+        const QString id = path + service;
+        QSharedPointer<AccessibleObjectPrivate> accPrivate = m_cacheStrategy->get(id);
+        if (accPrivate) {
+            return QAccessibleClient::AccessibleObject(accPrivate);
+        }
+    }
     return AccessibleObject(const_cast<RegistryPrivate*>(this), service, path);
 }
 
-AccessibleObject RegistryPrivate::accessibleFromContext(const QSpiObjectReference &reference) const
+AccessibleObject RegistryPrivate::accessibleFromReference(const QSpiObjectReference &reference) const
 {
-    return AccessibleObject(const_cast<RegistryPrivate*>(this), reference.service, QDBusContext::message().path());
+    return accessibleFromPath(reference.service, reference.path.path());
 }
 
-void RegistryPrivate::slotWindowCreate(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const QAccessibleClient::QSpiObjectReference &reference)
+AccessibleObject RegistryPrivate::accessibleFromContext() const
 {
-    emit q->windowCreated(accessibleFromContext(reference));
+    return accessibleFromPath(QDBusContext::message().service(), QDBusContext::message().path());
+}
+
+void RegistryPrivate::slotWindowCreate(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const QAccessibleClient::QSpiObjectReference &)
+{
+    emit q->windowCreated(accessibleFromContext());
 }
 
 void RegistryPrivate::slotWindowDestroy(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const QAccessibleClient::QSpiObjectReference &reference)
 {
-    emit q->windowDestroyed(accessibleFromContext(reference));
+    emit q->windowDestroyed(accessibleFromReference(reference));
 }
 
 void RegistryPrivate::slotWindowClose(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const QAccessibleClient::QSpiObjectReference &reference)
 {
-    emit q->windowClosed(accessibleFromContext(reference));
+    emit q->windowClosed(accessibleFromReference(reference));
 }
 
 void RegistryPrivate::slotWindowReparent(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const QAccessibleClient::QSpiObjectReference &reference)
 {
-    emit q->windowReparented(accessibleFromContext(reference));
+    emit q->windowReparented(accessibleFromReference(reference));
 }
 
 void RegistryPrivate::slotWindowMinimize(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const QAccessibleClient::QSpiObjectReference &reference)
 {
-    emit q->windowMinimized(accessibleFromContext(reference));
+    emit q->windowMinimized(accessibleFromReference(reference));
 }
 
 void RegistryPrivate::slotWindowMaximize(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const QAccessibleClient::QSpiObjectReference &reference)
 {
-    emit q->windowMaximized(accessibleFromContext(reference));
+    emit q->windowMaximized(accessibleFromReference(reference));
 }
 
 void RegistryPrivate::slotWindowRestore(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const QAccessibleClient::QSpiObjectReference &reference)
 {
-    emit q->windowRestored(accessibleFromContext(reference));
+    emit q->windowRestored(accessibleFromReference(reference));
 }
 
 void RegistryPrivate::slotWindowActivate(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const QAccessibleClient::QSpiObjectReference &reference)
 {
-    emit q->windowActivated(accessibleFromContext(reference));
+    emit q->windowActivated(accessibleFromReference(reference));
 }
 
 void RegistryPrivate::slotWindowDeactivate(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const QAccessibleClient::QSpiObjectReference &reference)
 {
-    emit q->windowDeactivated(accessibleFromContext(reference));
+    emit q->windowDeactivated(accessibleFromReference(reference));
 }
 
 void RegistryPrivate::slotWindowDesktopCreate(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const QAccessibleClient::QSpiObjectReference &reference)
 {
-    emit q->windowDesktopCreated(accessibleFromContext(reference));
+    emit q->windowDesktopCreated(accessibleFromReference(reference));
 }
 
 void RegistryPrivate::slotWindowDesktopDestroy(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const QAccessibleClient::QSpiObjectReference &reference)
 {
-    emit q->windowDesktopDestroyed(accessibleFromContext(reference));
+    emit q->windowDesktopDestroyed(accessibleFromReference(reference));
 }
 
 void RegistryPrivate::slotWindowRaise(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const QAccessibleClient::QSpiObjectReference &reference)
 {
-    emit q->windowRaised(accessibleFromContext(reference));
+    emit q->windowRaised(accessibleFromReference(reference));
 }
 
 void RegistryPrivate::slotWindowLower(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const QAccessibleClient::QSpiObjectReference &reference)
 {
-    emit q->windowLowered(accessibleFromContext(reference));
+    emit q->windowLowered(accessibleFromReference(reference));
 }
 
 void RegistryPrivate::slotWindowMove(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const QAccessibleClient::QSpiObjectReference &reference)
 {
-    emit q->windowMoved(accessibleFromContext(reference));
+    emit q->windowMoved(accessibleFromReference(reference));
 }
 
 void RegistryPrivate::slotWindowResize(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const QAccessibleClient::QSpiObjectReference &reference)
 {
-    emit q->windowResized(accessibleFromContext(reference));
+    emit q->windowResized(accessibleFromReference(reference));
 }
 
 void RegistryPrivate::slotWindowShade(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const QAccessibleClient::QSpiObjectReference &reference)
 {
-    emit q->windowShaded(accessibleFromContext(reference));
+    emit q->windowShaded(accessibleFromReference(reference));
 }
 
 void RegistryPrivate::slotWindowUnshade(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const QAccessibleClient::QSpiObjectReference &reference)
 {
-    emit q->windowUnshaded(accessibleFromContext(reference));
+    emit q->windowUnshaded(accessibleFromReference(reference));
 }
 
 void RegistryPrivate::slotPropertyChange(const QString &property, int detail1, int detail2, const QDBusVariant &args, const QSpiObjectReference &reference)
@@ -1152,46 +1164,35 @@ void RegistryPrivate::slotPropertyChange(const QString &property, int detail1, i
     qDebug() << Q_FUNC_INFO << property << detail1 << detail2 << args.variant() << reference.path.path();
 #endif
     if (property == QLatin1String("accessible-name")) {
-        emit q->accessibleNameChanged(accessibleFromContext(reference));
+        emit q->accessibleNameChanged(accessibleFromReference(reference));
     } else if (property == QLatin1String("accessible-description")) {
-        emit q->accessibleDescriptionChanged(accessibleFromContext(reference));
+        emit q->accessibleDescriptionChanged(accessibleFromReference(reference));
     }
 }
 
-void RegistryPrivate::slotStateChanged(const QString &state, int detail1, int detail2, const QDBusVariant &args, const QSpiObjectReference &reference)
+void RegistryPrivate::slotStateChanged(const QString &state, int detail1, int detail2, const QDBusVariant &, const QSpiObjectReference &reference)
 {
     //qDebug() << Q_FUNC_INFO << state << detail1 << detail2 << args.variant() << reference.path.path();
-    if (state == QLatin1String("defunct")) {
-        if (detail1 == 1) {
-            removeAccessibleObject(reference);
-            return;
-        }
-    } else if (state == QLatin1String("focused")) {
-        if (detail1 == 1) {
-            if (q->subscribedEventListeners().testFlag(Registry::Focus)) {
-                QAccessibleClient::AccessibleObject accessible = accessibleFromContext(reference);
-                emit q->focusChanged(accessible);
-            }
-        }
+    if (state == QLatin1String("defunct") && (detail1 == 1)) {
+        removeAccessibleObject(reference);
+        return;
     }
+
+    if (state == QLatin1String("focused") && (detail1 == 1) &&
+            (q->subscribedEventListeners().testFlag(Registry::Focus))) {
+        QAccessibleClient::AccessibleObject accessible = accessibleFromReference(reference);
+        emit q->focusChanged(accessible);
+    }
+
     if (q->subscribedEventListeners().testFlag(Registry::StateChanged)) {
-        if (m_cacheStrategy) {
-            const QString id = QDBusContext::message().path() + reference.service;
-            QSharedPointer<AccessibleObjectPrivate> p = m_cacheStrategy->get(id);
-            if (p) {
-                QAccessibleClient::AccessibleObject accessible(p);
-                emit q->stateChanged(accessible, state, detail1, detail2);
-            }
-        } else {
-            QAccessibleClient::AccessibleObject accessible = accessibleFromContext(reference);
-            emit q->stateChanged(accessible, state, detail1, detail2);
-        }
+        AccessibleObject accessible = accessibleFromReference(reference);
+        emit q->stateChanged(accessible, state, detail1 == 1);
     }
 }
 
 // void RegistryPrivate::slotLinkSelected(const QString &/*state*/, int /*detail1*/, int /*detail2*/, const QDBusVariant &args, const QAccessibleClient::QSpiObjectReference &reference)
 // {
-//     emit q->linkSelected(accessibleFromContext(reference));
+//     emit q->linkSelected(accessibleFromReference(reference));
 // }
 
 bool RegistryPrivate::removeAccessibleObject(const QAccessibleClient::AccessibleObject &accessible)
@@ -1217,7 +1218,7 @@ bool RegistryPrivate::removeAccessibleObject(const QAccessibleClient::QSpiObject
         const QString id = reference.path.path() + reference.service;
         acc = m_cacheStrategy->get(id);
     } else {
-        acc = accessibleFromContext(reference);
+        acc = accessibleFromReference(reference);
     }
     if (acc.isValid()) {
         if (removeAccessibleObject(acc))
@@ -1229,7 +1230,7 @@ bool RegistryPrivate::removeAccessibleObject(const QAccessibleClient::QSpiObject
 void RegistryPrivate::slotChildrenChanged(const QString &state, int detail1, int detail2, const QDBusVariant &args, const QAccessibleClient::QSpiObjectReference &reference)
 {
     qDebug() << Q_FUNC_INFO << state << detail1 << detail2 << args.variant() << reference.path.path();
-    QAccessibleClient::AccessibleObject parentAccessible = accessibleFromContext(reference);
+    QAccessibleClient::AccessibleObject parentAccessible = accessibleFromReference(reference);
     if (!parentAccessible.isValid()) {
         qWarning() << Q_FUNC_INFO << "Children change with invalid parent." << reference.path.path();
         return;
@@ -1247,32 +1248,32 @@ void RegistryPrivate::slotChildrenChanged(const QString &state, int detail1, int
 
 void RegistryPrivate::slotVisibleDataChanged(const QString &/*state*/, int /*detail1*/, int /*detail2*/, const QDBusVariant &args, const QAccessibleClient::QSpiObjectReference &reference)
 {
-    emit q->visibleDataChanged(accessibleFromContext(reference));
+    emit q->visibleDataChanged(accessibleFromReference(reference));
 }
 
 void RegistryPrivate::slotSelectionChanged(const QString &/*state*/, int /*detail1*/, int /*detail2*/, const QDBusVariant &args, const QAccessibleClient::QSpiObjectReference &reference)
 {
-    emit q->selectionChanged(accessibleFromContext(reference));
+    emit q->selectionChanged(accessibleFromReference(reference));
 }
 
 void RegistryPrivate::slotModelChanged(const QString &/*state*/, int /*detail1*/, int /*detail2*/, const QDBusVariant &args, const QAccessibleClient::QSpiObjectReference &reference)
 {
-    emit q->modelChanged(accessibleFromContext(reference));
+    emit q->modelChanged(accessibleFromReference(reference));
 }
 
 void RegistryPrivate::slotTextCaretMoved(const QString &/*state*/, int detail1, int /*detail2*/, const QDBusVariant &/*args*/, const QSpiObjectReference &reference)
 {
-    emit q->textCaretMoved(accessibleFromContext(reference), detail1);
+    emit q->textCaretMoved(accessibleFromReference(reference), detail1);
 }
 
 void RegistryPrivate::slotTextSelectionChanged(const QString &/*state*/, int /*detail1*/, int /*detail2*/, const QDBusVariant &/*args*/, const QSpiObjectReference &reference)
 {
-    emit q->textSelectionChanged(accessibleFromContext(reference));
+    emit q->textSelectionChanged(accessibleFromReference(reference));
 }
 
 void RegistryPrivate::slotTextChanged(const QString &/*state*/, int /*detail1*/, int /*detail2*/, const QDBusVariant &/*args*/, const QSpiObjectReference &reference)
 {
-    emit q->textChanged(accessibleFromContext(reference));
+    emit q->textChanged(accessibleFromReference(reference));
 }
 
 #include "registry_p.moc"

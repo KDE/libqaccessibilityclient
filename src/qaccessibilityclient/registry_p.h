@@ -105,7 +105,8 @@ public:
 
 private Q_SLOTS:
     AccessibleObject accessibleFromPath(const QString &service, const QString &path) const;
-    AccessibleObject accessibleFromContext(const QSpiObjectReference &reference) const;
+    AccessibleObject accessibleFromReference(const QSpiObjectReference &reference) const;
+    AccessibleObject accessibleFromContext() const;
 
     void connectionFetched();
     void slotSubscribeEventListenerFinished(QDBusPendingCallWatcher *call);

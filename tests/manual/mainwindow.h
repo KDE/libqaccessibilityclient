@@ -98,7 +98,7 @@ private Q_SLOTS:
     void windowShaded(const QAccessibleClient::AccessibleObject &object);
     void windowUnshaded(const QAccessibleClient::AccessibleObject &object);
 
-    void stateChanged(const QAccessibleClient::AccessibleObject &object, const QString &state, int detail1, int detail2);
+    void stateChanged(const QAccessibleClient::AccessibleObject &object, const QString &state, bool active);
     void childAdded(const QAccessibleClient::AccessibleObject &object, int childIndex);
     void childRemoved(const QAccessibleClient::AccessibleObject &object, int childIndex);
     void visibleDataChanged(const QAccessibleClient::AccessibleObject &object);

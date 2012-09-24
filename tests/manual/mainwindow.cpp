@@ -179,7 +179,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(m_registry, SIGNAL(windowShaded(QAccessibleClient::AccessibleObject)), this, SLOT(windowShaded(QAccessibleClient::AccessibleObject)));
     connect(m_registry, SIGNAL(windowUnshaded(QAccessibleClient::AccessibleObject)), this, SLOT(windowUnshaded(QAccessibleClient::AccessibleObject)));
 
-    connect(m_registry, SIGNAL(stateChanged(QAccessibleClient::AccessibleObject,QString,int,int)), this, SLOT(stateChanged(QAccessibleClient::AccessibleObject,QString,int,int)));
+    connect(m_registry, SIGNAL(stateChanged(QAccessibleClient::AccessibleObject,QString,bool)), this, SLOT(stateChanged(QAccessibleClient::AccessibleObject,QString,bool)));
     connect(m_registry, SIGNAL(childAdded(QAccessibleClient::AccessibleObject,int)), this, SLOT(childAdded(QAccessibleClient::AccessibleObject,int)));
     connect(m_registry, SIGNAL(childRemoved(QAccessibleClient::AccessibleObject,int)), this, SLOT(childRemoved(QAccessibleClient::AccessibleObject,int)));
     connect(m_registry, SIGNAL(visibleDataChanged(QAccessibleClient::AccessibleObject)), this, SLOT(visibleDataChanged(QAccessibleClient::AccessibleObject)));
@@ -390,11 +390,9 @@ void MainWindow::setCurrentObject(const QAccessibleClient::AccessibleObject &obj
     }
 }
 
-void MainWindow::stateChanged(const QAccessibleClient::AccessibleObject &object, const QString &state, int detail1, int detail2)
+void MainWindow::stateChanged(const QAccessibleClient::AccessibleObject &object, const QString &state, bool active)
 {
-    Q_UNUSED(detail1);
-    Q_UNUSED(detail2);
-    QString s = QString("%1").arg(state);
+    QString s = state + QString(": ") + (active ? QString("true") : QString("false"));
     addLog(object, QString("StateChanged"), s);
 }
 

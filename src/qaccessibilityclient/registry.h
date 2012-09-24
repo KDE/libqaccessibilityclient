@@ -185,7 +185,14 @@ Q_SIGNALS:
 
     //void boundsChanged(const QAccessibleClient::AccessibleObject &object);
     //void linkSelected(const QAccessibleClient::AccessibleObject &object);
-    void stateChanged(const QAccessibleClient::AccessibleObject &object, const QString &state, int detail1, int detail2);
+
+    /**
+        \brief Notifies about a state change in an object.
+
+        The \a state of \a object has change.
+        If the state is now set \a active is true, otherwise the state was removed.
+     */
+    void stateChanged(const QAccessibleClient::AccessibleObject &object, const QString &state, bool active);
 
     /**
         \brief Notifies about a new AccessibleObject
@@ -213,9 +220,9 @@ Q_SIGNALS:
         \brief Emitted when the focus changed.
 
         When subscribed to the Focus EventListener then this signal is emitted
-        every time the focus changes.
+        every time the focus changes. \a object is the newly focused AccessibleObject.
     */
-    void focusChanged(const QAccessibleClient::AccessibleObject &);
+    void focusChanged(const QAccessibleClient::AccessibleObject &object);
 
     /**
         \brief Emitted when the text cared moved.
