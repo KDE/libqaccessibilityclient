@@ -327,14 +327,12 @@ bool AccessibleObject::isCheckable() const
     //return d->registryPrivate->state(*this) & (quint64(1) << ATSPI_STATE_);
 
     Role role = d->registryPrivate->role(*this);
-
-// FIXME
-//    if (role == ATSPI_ROLE_CHECK_BOX ||
-//        role == ATSPI_ROLE_CHECK_MENU_ITEM ||
-//        role == ATSPI_ROLE_RADIO_BUTTON ||
-//        role == ATSPI_ROLE_RADIO_MENU_ITEM ||
-//        role == ATSPI_ROLE_TOGGLE_BUTTON)
-//            return true;
+    if (role == AccessibleObject::CheckBox ||
+        role == AccessibleObject::CheckableMenuItem ||
+        role == AccessibleObject::RadioButton ||
+        role == AccessibleObject::RadioMenuItem ||
+        role == AccessibleObject::ToggleButton)
+            return true;
     return false;
 }
 

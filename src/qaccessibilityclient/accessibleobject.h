@@ -83,6 +83,7 @@ public:
     enum Role {
         NoRole, /*!< The object is invalid and has no role set. This is generally a bug. */
         CheckBox,
+        CheckableMenuItem,
         ColumnHeader,
         ComboBox,
         DesktopFrame,

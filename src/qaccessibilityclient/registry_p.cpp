@@ -596,7 +596,7 @@ AccessibleObject::Role RegistryPrivate::atspiRoleToRole(AtspiRole role)
 //    case ATSPI_ROLE_CALENDAR: return AccessibleObject::;
 //    case ATSPI_ROLE_CANVAS: return AccessibleObject::;
     case ATSPI_ROLE_CHECK_BOX: return AccessibleObject::CheckBox;
-    case ATSPI_ROLE_CHECK_MENU_ITEM: return AccessibleObject::MenuItem;
+    case ATSPI_ROLE_CHECK_MENU_ITEM: return AccessibleObject::CheckableMenuItem;
 //    case ATSPI_ROLE_COLOR_CHOOSER: return AccessibleObject::;
     case ATSPI_ROLE_COLUMN_HEADER: return AccessibleObject::ColumnHeader;
     case ATSPI_ROLE_COMBO_BOX: return AccessibleObject::ComboBox;
