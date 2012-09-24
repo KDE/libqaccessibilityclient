@@ -1053,13 +1053,6 @@ QVariant RegistryPrivate::getProperty(const QString &service, const QString &pat
 
 AccessibleObject RegistryPrivate::accessibleFromPath(const QString &service, const QString &path) const
 {
-    if (m_cacheStrategy) {
-        const QString id = path + service;
-        QSharedPointer<AccessibleObjectPrivate> accPrivate = m_cacheStrategy->get(id);
-        if (accPrivate) {
-            return QAccessibleClient::AccessibleObject(accPrivate);
-        }
-    }
     return AccessibleObject(const_cast<RegistryPrivate*>(this), service, path);
 }
 
