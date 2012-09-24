@@ -23,8 +23,8 @@
 
 #include <qstring.h>
 #include <qlist.h>
-
-class QAction;
+#include <qsharedpointer.h>
+#include <qaction.h>
 
 namespace QAccessibleClient {
 
@@ -41,7 +41,7 @@ public:
     QString path;
 
     bool defunct;
-    mutable QList<QAction*> actions;
+    mutable QVector< QSharedPointer<QAction> > actions;
     mutable bool actionsFetched;
 
     bool operator==(const AccessibleObjectPrivate &other) const;

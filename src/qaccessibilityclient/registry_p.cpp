@@ -976,7 +976,7 @@ QRect RegistryPrivate::imageRect(const AccessibleObject &object) const
     return QRect( reply.value() );
 }
 
-QList<QAction*> RegistryPrivate::actions(const AccessibleObject &object)
+QVector< QSharedPointer<QAction> > RegistryPrivate::actions(const AccessibleObject &object)
 {
     QDBusMessage message = QDBusMessage::createMethodCall (
                 object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Action"), QLatin1String("GetActions"));
@@ -984,11 +984,11 @@ QList<QAction*> RegistryPrivate::actions(const AccessibleObject &object)
     QDBusReply<QSpiActionArray> reply = conn.connection().call(message);
     if (!reply.isValid()) {
         qWarning() << "Could not access actions." << reply.error().message();
-        return QList<QAction*>();
+        return QVector< QSharedPointer<QAction> >();
     }
 
     QSpiActionArray actionArray = reply.value();
-    QList<QAction*> list;
+    QVector< QSharedPointer<QAction> > list;
     for(int i = 0; i < actionArray.count(); ++i) {
         const QSpiAction &a = actionArray[i];
         QAction *action = new QAction(this);
@@ -1000,7 +1000,7 @@ QList<QAction*> RegistryPrivate::actions(const AccessibleObject &object)
         action->setShortcut(shortcut);
         m_actionMapper.setMapping(action, id);
         connect(action, SIGNAL(triggered()), &m_actionMapper, SLOT(map()));
-        list.append(action);
+        list.append(QSharedPointer<QAction>(action));
     }
     return list;
 }

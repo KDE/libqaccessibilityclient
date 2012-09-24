@@ -213,7 +213,7 @@ void ObjectProperties::setAccessibleObject(const QAccessibleClient::AccessibleOb
 
     if (interfaces.testFlag(QAccessibleClient::AccessibleObject::ActionInterface)) {
         QStandardItem *item = append(QString("Action"));
-        Q_FOREACH(QAction *a, acc.actions()) {
+        Q_FOREACH(const QSharedPointer<QAction> &a, acc.actions()) {
             QStandardItem *nameItem = new QStandardItem(a->text());
             QStandardItem *valueItem = new QStandardItem(a->whatsThis());
             item->appendRow(QList<QStandardItem*>() << nameItem << valueItem);

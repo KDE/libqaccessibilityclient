@@ -93,7 +93,7 @@ public:
     QString imageLocale(const AccessibleObject &object) const;
     QRect imageRect(const AccessibleObject &object) const;
 
-    QList<QAction*> actions(const AccessibleObject &object);
+    QVector< QSharedPointer<QAction> > actions(const AccessibleObject &object);
 
     QList<AccessibleObject> topLevelAccessibles() const;
     AccessibleObject parentAccessible(const AccessibleObject &object) const;

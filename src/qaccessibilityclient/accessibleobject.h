@@ -484,7 +484,7 @@ public:
 
         Just trigger() the action to execute the underlying method at the accessible.
     */
-    QList<QAction*> actions() const;
+    QVector< QSharedPointer<QAction> > actions() const;
 
     // states
     bool isActive() const;

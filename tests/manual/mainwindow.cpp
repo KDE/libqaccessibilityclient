@@ -441,8 +441,8 @@ void MainWindow::MainWindow::treeCustomContextMenuRequested(const QPoint &pos)
     QAccessibleClient::AccessibleObject acc = static_cast<AccessibleWrapper*>(current.internalPointer())->acc;
     QMenu *menu = new QMenu(this);
     connect(menu, SIGNAL(aboutToHide()), menu, SLOT(deleteLater()));
-    Q_FOREACH(QAction *a, acc.actions()) {
-        menu->addAction(a);
+    Q_FOREACH(const QSharedPointer<QAction> &a, acc.actions()) {
+        menu->addAction(a.data());
     }
     menu->popup(m_treeView->mapToGlobal(pos));
 }

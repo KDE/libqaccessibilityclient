@@ -294,7 +294,7 @@ QRect AccessibleObject::imageRect() const
     return d->registryPrivate->imageRect(*this);
 }
 
-QList<QAction*> AccessibleObject::actions() const
+QVector< QSharedPointer<QAction> > AccessibleObject::actions() const
 {
     // Actions in atspi are supposed to be static what means they cannot change in
     // between (e.g. actions removed or added or edited) so we can safely just

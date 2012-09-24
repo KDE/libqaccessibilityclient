@@ -44,8 +44,6 @@ AccessibleObjectPrivate::~AccessibleObjectPrivate()
         const QString id = path + service;
         registryPrivate->m_cacheStrategy->remove(id);
     }
-
-    qDeleteAll(actions);
 }
 
 bool AccessibleObjectPrivate::operator==(const AccessibleObjectPrivate &other) const
@@ -59,7 +57,8 @@ void AccessibleObjectPrivate::setDefunct()
 {
     defunct = true;
 
-    Q_FOREACH(QAction *action, actions) {
+    for(int i = 0; i < actions.count(); ++i) {
+        const QSharedPointer<QAction> &action = actions[i];
         action->setEnabled(false);
     }
 }
