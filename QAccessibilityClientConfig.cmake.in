@@ -2,7 +2,7 @@
 
 # Thanks to the generated exported target, simply use qaccessibilityclient
 # e.g. target_link_libraries(mytarget qaccessibilityclient)
-include(QAccessibilityClient.cmake)
+include(@_QAccessibilityClient_CONFIG_DEST@/QAccessibilityClient.cmake)
 
 set(QACCESSIBILITYCLIENT_VERSION_MAJOR @QACCESSIBILITYCLIENT_VERSION_MAJOR@)
 set(QACCESSIBILITYCLIENT_VERSION_MINOR @QACCESSIBILITYCLIENT_VERSION_MINOR@)
