@@ -125,8 +125,7 @@ public:
         ToolBar,
         ToolTip,
         TreeView,
-        Window ,
-        TableRow,
+        Window,
         TreeItem
 // Roles in Qt, I don't think we want those
 //    TitleBar       = 0x00000001,
