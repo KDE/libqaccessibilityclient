@@ -21,6 +21,14 @@
 #ifndef QACCESSIBILITYCLIENT_ACCESSIBLEOBJECT_H
 #define QACCESSIBILITYCLIENT_ACCESSIBLEOBJECT_H
 
+#include <QtGlobal>
+
+namespace QAccessibleClient {
+    class AccessibleObject;
+}
+
+uint qHash(const QAccessibleClient::AccessibleObject& object);
+
 #include <qlist.h>
 #include <QSharedPointer>
 #include <qaction.h>
@@ -464,6 +472,7 @@ private:
     friend class Registry;
     friend class RegistryPrivate;
     friend QDebug QAccessibleClient::operator<<(QDebug, const AccessibleObject &);
+    friend uint ::qHash(const AccessibleObject& object);
 };
 
 #ifndef QT_NO_DEBUG_STREAM

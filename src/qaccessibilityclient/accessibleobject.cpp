@@ -421,3 +421,6 @@ QACCESSIBILITYCLIENT_EXPORT QDebug QAccessibleClient::operator<<(QDebug d, const
 }
 #endif
 
+uint qHash(const QAccessibleClient::AccessibleObject& object) {
+    return qHash(object.d);
+}
