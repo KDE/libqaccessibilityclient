@@ -409,6 +409,7 @@ public:
     bool isChecked() const;
     bool isDefunct() const;
     bool isEditable() const;
+    bool isEnabled() const;
     bool isExpandable() const;
     bool isExpanded() const;
     bool isFocusable() const;

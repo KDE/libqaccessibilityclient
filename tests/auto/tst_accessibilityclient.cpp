@@ -346,7 +346,57 @@ void AccessibilityClientTest::tst_focus()
 
 void AccessibilityClientTest::tst_states()
 {
+    registry.subscribeEventListeners(Registry::StateChanged);
 
+    QString appName = QLatin1String("Lib QAccessibleClient test");
+    qApp->setApplicationName(appName);
+    QWidget w;
+    w.setAccessibleName("Root Widget");
+    w.setAccessibleDescription("This is a useless widget");
+    QVBoxLayout *layout = new QVBoxLayout;
+    w.setLayout(layout);
+
+    QPushButton *button1 = new QPushButton;
+    layout->addWidget(button1);
+    button1->setText(QLatin1String("Hello a11y"));
+    QString desc = "This is a button...";
+    button1->setAccessibleDescription(desc);
+
+    QPushButton *button2 = new QPushButton;
+    layout->addWidget(button2);
+    button2->setText(QLatin1String("Hello a11y"));
+
+    w.show();
+    button1->setFocus();
+    QTest::qWaitForWindowShown(&w);
+
+    AccessibleObject accApp = getAppObject(registry, appName);
+    QVERIFY(accApp.isValid());
+
+    // Root widget
+    AccessibleObject accW = accApp.child(0);
+    QVERIFY(accW.isValid());
+
+    // Buttons
+    AccessibleObject accButton1 = accW.child(0);
+    QVERIFY(accButton1.isValid());
+    QCOMPARE(accButton1.name(), button1->text());
+
+    AccessibleObject accButton2 = accW.child(1);
+    QVERIFY(accButton2.isValid());
+    QCOMPARE(accButton2.name(), button2->text());
+
+    QVERIFY(accButton1.isVisible());
+    button1->setVisible(false);
+    QVERIFY(!accButton1.isVisible());
+    button1->setVisible(true);
+    QVERIFY(accButton1.isVisible());
+
+    QVERIFY(accButton1.isEnabled());
+    button1->setEnabled(false);
+    QVERIFY(!accButton1.isEnabled());
+    button1->setEnabled(true);
+    QVERIFY(accButton1.isEnabled());
 }
 
 void AccessibilityClientTest::tst_extents()

@@ -354,6 +354,11 @@ bool AccessibleObject::isEditable() const
     return d->registryPrivate->state(*this) & (quint64(1) << ATSPI_STATE_EDITABLE);
 }
 
+bool AccessibleObject::isEnabled() const
+{
+    return d->registryPrivate->state(*this) & (quint64(1) << ATSPI_STATE_ENABLED);
+}
+
 bool AccessibleObject::isExpandable() const
 {
     return d->registryPrivate->state(*this) & (quint64(1) << ATSPI_STATE_EXPANDABLE);
