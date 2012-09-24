@@ -201,23 +201,21 @@ void RegistryPrivate::connectionFetched()
 void RegistryPrivate::subscribeEventListeners(const Registry::EventListeners &listeners)
 {
     if (conn.isFetchingConnection()) {
-        m_pendingSubscriptions |= listeners;
+        m_pendingSubscriptions = listeners;
         return;
     }
 
-    QStringList subscriptions;
+    Registry::EventListeners addedListeners = listeners & ~m_subscriptions;
+    Registry::EventListeners removedListeners = m_subscriptions & ~listeners;
 
-    m_subscriptions |= listeners;
+    QStringList newSubscriptions;
+    QStringList removedSubscriptions;
 
-    if (listeners.testFlag(Registry::Window)) {
-        subscriptions <<
-            QLatin1String("window:maximize") << QLatin1String("window:minimize") << QLatin1String("window:restore") <<
-            QLatin1String("window:close") << QLatin1String("window:create") << QLatin1String("window:reparent") <<
-            QLatin1String("window:desktop-create") << QLatin1String("window:desktop-destroy") <<
-            QLatin1String("window:activate") << QLatin1String("window:deactivate") <<
-            QLatin1String("window:raise") << QLatin1String("window:lower") <<
-            QLatin1String("window:move") << QLatin1String("window:resize") <<
-            QLatin1String("window:shade") << QLatin1String("window:unshade");
+    if (removedListeners.testFlag(Registry::Window)) {
+        removedSubscriptions << QLatin1String("window:");
+    } else if (addedListeners.testFlag(Registry::Window)) {
+        // subscribe all window events
+        newSubscriptions << QLatin1String("window:");
 
         bool created = conn.connection().connect(
                     QString(), QLatin1String(""), QLatin1String("org.a11y.atspi.Event.Window"), QLatin1String("Create"),
@@ -292,77 +290,101 @@ void RegistryPrivate::subscribeEventListeners(const Registry::EventListeners &li
         }
     }
 
-    if (listeners.testFlag(Registry::ChildrenChanged)) {
-        subscriptions << QLatin1String("object:children-changed");
+    if (removedListeners.testFlag(Registry::ChildrenChanged)) {
+        removedSubscriptions << QLatin1String("object:children-changed");
+    } else if (addedListeners.testFlag(Registry::ChildrenChanged)) {
+        newSubscriptions << QLatin1String("object:children-changed");
         bool success = conn.connection().connect(
                     QString(), QLatin1String(""), QLatin1String("org.a11y.atspi.Event.Object"), QLatin1String("ChildrenChanged"),
                     this, SLOT(slotChildrenChanged(QString,int,int,QDBusVariant,QAccessibleClient::QSpiObjectReference)));
         if (!success) qWarning() << "Could not subscribe to accessibility ChildrenChanged events.";
     }
-    if (listeners.testFlag(Registry::VisibleDataChanged)) {
-        subscriptions << QLatin1String("object:visibledata-changed");
+
+    if (removedListeners.testFlag(Registry::VisibleDataChanged)) {
+        removedSubscriptions << QLatin1String("object:visibledata-changed");
+    } else if (addedListeners.testFlag(Registry::VisibleDataChanged)) {
+        newSubscriptions << QLatin1String("object:visibledata-changed");
         bool success = conn.connection().connect(
                     QString(), QLatin1String(""), QLatin1String("org.a11y.atspi.Event.Object"), QLatin1String("VisibleDataChanged"),
                     this, SLOT(slotVisibleDataChanged(QString,int,int,QDBusVariant,QAccessibleClient::QSpiObjectReference)));
         if (!success) qWarning() << "Could not subscribe to accessibility VisibleDataChanged events.";
     }
-    if (listeners.testFlag(Registry::SelectionChanged)) {
-        subscriptions << QLatin1String("object:selection-changed");
+
+    if (removedListeners.testFlag(Registry::SelectionChanged)) {
+        removedSubscriptions << QLatin1String("object:selection-changed");
+    } else if (addedListeners.testFlag(Registry::SelectionChanged)) {
+        newSubscriptions << QLatin1String("object:selection-changed");
         bool success = conn.connection().connect(
                     QString(), QLatin1String(""), QLatin1String("org.a11y.atspi.Event.Object"), QLatin1String("SelectionChanged"),
                     this, SLOT(slotSelectionChanged(QString,int,int,QDBusVariant,QAccessibleClient::QSpiObjectReference)));
         if (!success) qWarning() << "Could not subscribe to accessibility SelectionChanged events.";
     }
-    if (listeners.testFlag(Registry::ModelChanged)) {
-        subscriptions << QLatin1String("object:model-changed");
+
+
+    if (removedListeners.testFlag(Registry::ModelChanged)) {
+        removedSubscriptions << QLatin1String("object:model-changed");
+    } else if (addedListeners.testFlag(Registry::ModelChanged)) {
+        newSubscriptions << QLatin1String("object:model-changed");
         bool success = conn.connection().connect(
                     QString(), QLatin1String(""), QLatin1String("org.a11y.atspi.Event.Object"), QLatin1String("ModelChanged"),
                     this, SLOT(slotModelChanged(QString,int,int,QDBusVariant,QAccessibleClient::QSpiObjectReference)));
         if (!success) qWarning() << "Could not subscribe to accessibility ModelChanged events.";
     }
 
-    if (listeners.testFlag(Registry::StateChanged) || listeners.testFlag(Registry::Focus)) {
-        if (listeners.testFlag(Registry::Focus)) subscriptions << QLatin1String("focus:");
-        subscriptions << QLatin1String("object:state-changed");
+    // we need state-changed-focus for focus events
+    if ((removedListeners.testFlag(Registry::StateChanged) || removedListeners.testFlag(Registry::Focus))
+            && (!(addedListeners.testFlag(Registry::StateChanged) || addedListeners.testFlag(Registry::Focus)))) {
+        removedSubscriptions << QLatin1String("object:state-changed");
+    } else if (addedListeners.testFlag(Registry::StateChanged) || addedListeners.testFlag(Registry::Focus)) {
+        if (listeners.testFlag(Registry::Focus)) newSubscriptions << QLatin1String("focus:");
+        newSubscriptions << QLatin1String("object:state-changed");
         bool success = conn.connection().connect(
                     QString(), QLatin1String(""), QLatin1String("org.a11y.atspi.Event.Object"), QLatin1String("StateChanged"),
                     this, SLOT(slotStateChanged(QString,int,int,QDBusVariant,QAccessibleClient::QSpiObjectReference)));
         if (!success) qWarning() << "Could not subscribe to accessibility Focus events.";
     }
 
-    if (listeners.testFlag(Registry::TextChanged)) {
-        subscriptions << QLatin1String("object:text-changed");
+    if (removedListeners.testFlag(Registry::TextChanged)) {
+        removedSubscriptions << QLatin1String("object:text-changed");
+    } else if (addedListeners.testFlag(Registry::TextChanged)) {
+        newSubscriptions << QLatin1String("object:text-changed");
         bool success = conn.connection().connect(
                     QString(), QLatin1String(""), QLatin1String("org.a11y.atspi.Event.Object"), QLatin1String("TextChanged"),
                     this, SLOT(slotTextChanged(QString,int,int,QDBusVariant,QAccessibleClient::QSpiObjectReference)));
         if (!success) qWarning() << "Could not subscribe to accessibility TextChanged events.";
     }
 
-    if (listeners.testFlag(Registry::TextCaretMoved) || listeners.testFlag(Registry::Focus)) {
-        subscriptions << QLatin1String("object:text-caret-moved");
+    if (removedListeners.testFlag(Registry::TextCaretMoved)) {
+        removedSubscriptions << QLatin1String("object:text-caret-moved");
+    } else if (addedListeners.testFlag(Registry::TextCaretMoved)) {
+        newSubscriptions << QLatin1String("object:text-caret-moved");
         bool success = conn.connection().connect(
                     QString(), QLatin1String(""), QLatin1String("org.a11y.atspi.Event.Object"), QLatin1String("TextCaretMoved"),
                     this, SLOT(slotTextCaretMoved(QString,int,int,QDBusVariant,QAccessibleClient::QSpiObjectReference)));
         if (!success) qWarning() << "Could not subscribe to accessibility TextCaretMoved events.";
     }
 
-    if (listeners.testFlag(Registry::TextSelectionChanged) || listeners.testFlag(Registry::Focus)) {
-        subscriptions << QLatin1String("object:text-selection-changed");
+    if (removedListeners.testFlag(Registry::TextSelectionChanged)) {
+        removedSubscriptions << QLatin1String("object:text-selection-changed");
+    } else if (addedListeners.testFlag(Registry::TextSelectionChanged)) {
+        newSubscriptions << QLatin1String("object:text-selection-changed");
         bool success = conn.connection().connect(
                     QString(), QLatin1String(""), QLatin1String("org.a11y.atspi.Event.Object"), QLatin1String("TextSelectionChanged"),
                     this, SLOT(slotTextSelectionChanged(QString,int,int,QDBusVariant,QAccessibleClient::QSpiObjectReference)));
         if (!success) qWarning() << "Could not subscribe to accessibility TextSelectionChanged events.";
     }
 
-    if (listeners.testFlag(Registry::PropertyChanged )) {
-        subscriptions << QLatin1String("object:property-change");
+    if (removedListeners.testFlag(Registry::PropertyChanged)) {
+        removedSubscriptions << QLatin1String("object:property-change");
+    } else if (addedListeners.testFlag(Registry::PropertyChanged )) {
+        newSubscriptions << QLatin1String("object:property-change");
         bool success = conn.connection().connect(
                     QString(), QLatin1String(""), QLatin1String("org.a11y.atspi.Event.Object"), QLatin1String("PropertyChange"),
                     this, SLOT(slotPropertyChange(QString,int,int,QDBusVariant,QAccessibleClient::QSpiObjectReference)));
         if (!success) qWarning() << "Could not subscribe to accessibility PropertyChange events.";
     }
 
-    Q_FOREACH(const QString &subscription, subscriptions) {
+    Q_FOREACH(const QString &subscription, newSubscriptions) {
         QDBusMessage m = QDBusMessage::createMethodCall(QLatin1String("org.a11y.atspi.Registry"),
                                                         QLatin1String("/org/a11y/atspi/registry"),
                                                         QLatin1String("org.a11y.atspi.Registry"), QLatin1String("RegisterEvent"));
@@ -373,11 +395,15 @@ void RegistryPrivate::subscribeEventListeners(const Registry::EventListeners &li
         QObject::connect(watcher, SIGNAL(finished(QDBusPendingCallWatcher*)), this, SLOT(slotSubscribeEventListenerFinished(QDBusPendingCallWatcher*)));
     }
 
-//    subscriptions << QLatin1String("object:property-change:accessiblename")
-//                  << QLatin1String("object:bounds-changed")
+    Q_FOREACH(const QString &subscription, removedSubscriptions) {
+        QDBusMessage m = QDBusMessage::createMethodCall(QLatin1String("org.a11y.atspi.Registry"),
+                                                        QLatin1String("/org/a11y/atspi/registry"),
+                                                        QLatin1String("org.a11y.atspi.Registry"), QLatin1String("DeregisterEvent"));
+        m.setArguments(QVariantList() << subscription);
+        conn.connection().asyncCall(m);
+    }
 
-//    conn.connection().connect(QString(), QLatin1String(""), QLatin1String("org.a11y.atspi.Event.Object"), QLatin1String("ChildrenChanged"), this,
-//                                  SLOT(slotChildrenChanged(QString, int, int, QDBusVariant, QSpiObjectReference)));
+    m_subscriptions = listeners;
 
 // accerciser
 //     (u':1.7', u'Object:StateChanged:'),

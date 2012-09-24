@@ -106,6 +106,8 @@ public slots:
     /**
         In order to get notified of changes in accessible applications
         it is neccessary to subscribe to the listeners that are relevant.
+
+        This will unsubscribe all previously subscribed event listeners.
     */
     void subscribeEventListeners(const EventListeners &listeners) const;
     EventListeners subscribedEventListeners() const;
@@ -261,6 +263,8 @@ private:
     RegistryPrivate *d;
     friend class RegistryPrivate;
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(Registry::EventListeners)
 
 }
 

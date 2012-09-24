@@ -68,11 +68,14 @@ class AccessibilityClientTest :public QObject
 
 private Q_SLOTS:
     void initTestCase();
+    void cleanup();
 
+    void tst_registry();
     void tst_accessibleObject();
     void tst_application();
     void tst_navigation();
     void tst_focus();
+    void tst_states();
 
     void tst_extents();
 
@@ -105,6 +108,28 @@ AccessibleObject getAppObject(const Registry &r, const QString &appName)
         }
     }
     return accApp;
+}
+
+void AccessibilityClientTest::cleanup()
+{
+    registry.subscribeEventListeners(Registry::NoEventListeners);
+}
+
+void AccessibilityClientTest::tst_registry()
+{
+    QVERIFY(registry.subscribedEventListeners() == Registry::NoEventListeners);
+    registry.subscribeEventListeners(Registry::Window);
+    QVERIFY(registry.subscribedEventListeners() == Registry::Window);
+    registry.subscribeEventListeners(Registry::Focus);
+    QVERIFY(registry.subscribedEventListeners() == Registry::Focus);
+    registry.subscribeEventListeners(Registry::Focus | Registry::Window);
+    QVERIFY(registry.subscribedEventListeners() == Registry::Focus | Registry::Window);
+
+    registry.subscribeEventListeners(Registry::NoEventListeners);
+    QVERIFY(registry.subscribedEventListeners() == Registry::NoEventListeners);
+    registry.subscribeEventListeners(Registry::AllEventListeners);
+    QVERIFY(registry.subscribedEventListeners() == Registry::AllEventListeners);
+    QVERIFY(registry.subscribedEventListeners() & Registry::Window);
 }
 
 void AccessibilityClientTest::tst_accessibleObject()
@@ -317,6 +342,11 @@ void AccessibilityClientTest::tst_focus()
 
     delete listener;
     helperProcess.terminate();
+}
+
+void AccessibilityClientTest::tst_states()
+{
+
 }
 
 void AccessibilityClientTest::tst_extents()
