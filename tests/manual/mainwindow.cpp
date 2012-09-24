@@ -20,6 +20,7 @@
 
 #include "mainwindow.h"
 #include "accessibleproperties.h"
+#include "eventview.h"
 #include "uiview.h"
 #include "qaccessibilityclient/registry.h"
 #include "qaccessibilityclient/accessibleobject.h"
@@ -31,10 +32,6 @@
 #include <qheaderview.h>
 #include <qdockwidget.h>
 #include <qmenubar.h>
-#include <qtextdocument.h>
-#include <qtextcursor.h>
-#include <QTextBlock>
-#include <qscrollbar.h>
 #include <qsettings.h>
 #include <qurl.h>
 #include <qpointer.h>
@@ -312,12 +309,9 @@ void MainWindow::MainWindow::initUi()
     QDockWidget *eventsDocker = new QDockWidget(QString("Events"), this);
     eventsDocker->setObjectName("events");
     eventsDocker->setFeatures(QDockWidget::AllDockWidgetFeatures);
-    m_eventsEdit = new QTextBrowser(eventsDocker);
-    m_eventsEdit->setAccessibleName(QLatin1String("Events View"));
-    m_eventsEdit->setAccessibleDescription(QString("Displays all received events"));
-    m_eventsEdit->setOpenLinks(false);
-    connect(m_eventsEdit, SIGNAL(anchorClicked(QUrl)), this, SLOT(anchorClicked(QUrl)));
-    eventsDocker->setWidget(m_eventsEdit);
+    m_eventsWidget = new EventsWidget(m_registry, eventsDocker);
+    connect(m_eventsWidget, SIGNAL(anchorClicked(QUrl)), this, SLOT(anchorClicked(QUrl)));
+    eventsDocker->setWidget(m_eventsWidget);
 
     addDockWidget(Qt::LeftDockWidgetArea, treeDocker);
     addDockWidget(Qt::RightDockWidgetArea, propertyDocker);
@@ -345,35 +339,6 @@ void MainWindow::showClientCache()
         dlg->deleteLater();
 }
 
-void MainWindow::MainWindow::addLog(const QAccessibleClient::AccessibleObject &object, const QString &eventName, const QString &text)
-{
-    if (!object.isValid())
-        return;
-    if (object.name() == m_eventsEdit->accessibleName() && object.description() == m_eventsEdit->accessibleDescription())
-        return;
-
-    bool wasMax = m_eventsEdit->verticalScrollBar()->value() == m_eventsEdit->verticalScrollBar()->maximum();
-
-    QTextDocument *doc = m_eventsEdit->document();
-    doc->blockSignals(true); // to prevent infinte TextCaretMoved events
-    QTextCursor cursor(doc->lastBlock());
-    cursor.movePosition(QTextCursor::EndOfBlock, QTextCursor::KeepAnchor);
-
-    QString s = QString("%1: %2").arg(eventName).arg(object.name());
-    QUrl url = m_registry->url(object);
-    cursor.insertText(s.trimmed() + QLatin1Char(' '));
-    cursor.insertHtml(QString("(<a href=\"%1\">%2</a>) ").arg(url.toString()).arg(object.roleName()));
-    if (!text.isEmpty())
-        cursor.insertText(QLatin1Char(' ') + text);
-
-    cursor.insertBlock();
-
-    doc->blockSignals(false);
-
-    if (wasMax) // scroll down if we where before scrolled down too
-        m_eventsEdit->verticalScrollBar()->setValue(m_eventsEdit->verticalScrollBar()->maximum());
-}
-
 void MainWindow::setCurrentObject(const QAccessibleClient::AccessibleObject &object)
 {
     QModelIndex index = m_treeModel->indexForAccessible(object);
@@ -393,32 +358,32 @@ void MainWindow::setCurrentObject(const QAccessibleClient::AccessibleObject &obj
 void MainWindow::stateChanged(const QAccessibleClient::AccessibleObject &object, const QString &state, bool active)
 {
     QString s = state + QString(": ") + (active ? QString("true") : QString("false"));
-    addLog(object, QString("StateChanged"), s);
+    m_eventsWidget->addLog(object, QString("StateChanged"), s);
 }
 
 void MainWindow::childAdded(const QAccessibleClient::AccessibleObject &object, int childIndex)
 {
-    addLog(object, QString("ChildAdded"), QString::number(childIndex));
+    m_eventsWidget->addLog(object, QString("ChildAdded"), QString::number(childIndex));
 }
 
 void MainWindow::childRemoved(const QAccessibleClient::AccessibleObject &object, int childIndex)
 {
-    addLog(object, QString("ChildRemoved"), QString::number(childIndex));
+    m_eventsWidget->addLog(object, QString("ChildRemoved"), QString::number(childIndex));
 }
 
 void MainWindow::visibleDataChanged(const QAccessibleClient::AccessibleObject &object)
 {
-    addLog(object, QString("VisibleDataChanged"));
+    m_eventsWidget->addLog(object, QString("VisibleDataChanged"));
 }
 
 void MainWindow::selectionChanged(const QAccessibleClient::AccessibleObject &object)
 {
-    addLog(object, QString("SelectionChanged"));
+    m_eventsWidget->addLog(object, QString("SelectionChanged"));
 }
 
 void MainWindow::modelChanged(const QAccessibleClient::AccessibleObject &object)
 {
-    addLog(object, QString("ModelChanged"));
+    m_eventsWidget->addLog(object, QString("ModelChanged"));
 }
 
 void MainWindow::MainWindow::selectionChanged(const QModelIndex& current, const QModelIndex&)
@@ -449,13 +414,13 @@ void MainWindow::MainWindow::treeCustomContextMenuRequested(const QPoint &pos)
 
 void MainWindow::added(const QAccessibleClient::AccessibleObject &object)
 {
-    addLog(object, QString("Add Object"));
+    m_eventsWidget->addLog(object, QString("Add Object"));
     m_treeModel->addAccessible(object);
 }
 
 void MainWindow::removed(const QAccessibleClient::AccessibleObject &object)
 {
-    addLog(object, QString("Remove Object"));
+    m_eventsWidget->addLog(object, QString("Remove Object"));
     m_treeModel->removeAccessible(object);
 }
 
@@ -466,89 +431,89 @@ void MainWindow::defunct(const QAccessibleClient::AccessibleObject &object)
 
 void MainWindow::windowCreated(const QAccessibleClient::AccessibleObject &object)
 {
-    addLog(object, QString("WindowCreate"));
+    m_eventsWidget->addLog(object, QString("WindowCreate"));
     m_treeModel->addAccessible(object);
 }
 
 void MainWindow::windowDestroyed(const QAccessibleClient::AccessibleObject &object)
 {
-    addLog(object, QString("WindowDestroy"));
+    m_eventsWidget->addLog(object, QString("WindowDestroy"));
     m_treeModel->removeAccessible(object);
 }
 
 void MainWindow::windowClosed(const QAccessibleClient::AccessibleObject &object)
 {
-    addLog(object, QString("WindowClose"));
+    m_eventsWidget->addLog(object, QString("WindowClose"));
 }
 
 void MainWindow::windowReparented(const QAccessibleClient::AccessibleObject &object)
 {
-    addLog(object, QString("WindowReparent"));
+    m_eventsWidget->addLog(object, QString("WindowReparent"));
 }
 
 void MainWindow::windowMinimized(const QAccessibleClient::AccessibleObject &object)
 {
-    addLog(object, QString("WindowMinimize"));
+    m_eventsWidget->addLog(object, QString("WindowMinimize"));
 }
 
 void MainWindow::windowMaximized(const QAccessibleClient::AccessibleObject &object)
 {
-    addLog(object, QString("WindowMaximize"));
+    m_eventsWidget->addLog(object, QString("WindowMaximize"));
 }
 
 void MainWindow::windowRestored(const QAccessibleClient::AccessibleObject &object)
 {
-    addLog(object, QString("WindowRestore"));
+    m_eventsWidget->addLog(object, QString("WindowRestore"));
 }
 
 void MainWindow::windowActivated(const QAccessibleClient::AccessibleObject &object)
 {
-    addLog(object, QString("WindowActivate"));
+    m_eventsWidget->addLog(object, QString("WindowActivate"));
 }
 
 void MainWindow::windowDeactivated(const QAccessibleClient::AccessibleObject &object)
 {
-    addLog(object, QString("WindowDeactivate"));
+    m_eventsWidget->addLog(object, QString("WindowDeactivate"));
 }
 
 void MainWindow::windowDesktopCreated(const QAccessibleClient::AccessibleObject &object)
 {
-    addLog(object, QString("WindowDesktopCreate"));
+    m_eventsWidget->addLog(object, QString("WindowDesktopCreate"));
 }
 
 void MainWindow::windowDesktopDestroyed(const QAccessibleClient::AccessibleObject &object)
 {
-    addLog(object, QString("WindowDesktopDestroy"));
+    m_eventsWidget->addLog(object, QString("WindowDesktopDestroy"));
 }
 
 void MainWindow::windowRaised(const QAccessibleClient::AccessibleObject &object)
 {
-    addLog(object, QString("WindowRaise"));
+    m_eventsWidget->addLog(object, QString("WindowRaise"));
 }
 
 void MainWindow::windowLowered(const QAccessibleClient::AccessibleObject &object)
 {
-    addLog(object, QString("WindowLower"));
+    m_eventsWidget->addLog(object, QString("WindowLower"));
 }
 
 void MainWindow::windowMoved(const QAccessibleClient::AccessibleObject &object)
 {
-    addLog(object, QString("WindowMove"));
+    m_eventsWidget->addLog(object, QString("WindowMove"));
 }
 
 void MainWindow::windowResized(const QAccessibleClient::AccessibleObject &object)
 {
-    addLog(object, QString("WindowResize"));
+    m_eventsWidget->addLog(object, QString("WindowResize"));
 }
 
 void MainWindow::windowShaded(const QAccessibleClient::AccessibleObject &object)
 {
-    addLog(object, QString("WindowShade"));
+    m_eventsWidget->addLog(object, QString("WindowShade"));
 }
 
 void MainWindow::windowUnshaded(const QAccessibleClient::AccessibleObject &object)
 {
-    addLog(object, QString("WindowUnshade"));
+    m_eventsWidget->addLog(object, QString("WindowUnshade"));
 }
 
 void MainWindow::focusChanged(const QAccessibleClient::AccessibleObject &object)
@@ -567,28 +532,28 @@ void MainWindow::focusChanged(const QAccessibleClient::AccessibleObject &object)
 
 void MainWindow::MainWindow::textCaretMoved(const QAccessibleClient::AccessibleObject &object, int pos)
 {
-    addLog(object, QString("TextCaretMoved"));
+    m_eventsWidget->addLog(object, QString("TextCaretMoved"));
 }
 
 void MainWindow::MainWindow::textSelectionChanged(const QAccessibleClient::AccessibleObject &object)
 {
-    addLog(object, QString("TextSelectionChanged"));
+    m_eventsWidget->addLog(object, QString("TextSelectionChanged"));
 }
 
 void MainWindow::textChanged(const QAccessibleClient::AccessibleObject &object)
 {
-    addLog(object, QString("TextChanged"));
+    m_eventsWidget->addLog(object, QString("TextChanged"));
 }
 
 void MainWindow::accessibleNameChanged(const QAccessibleClient::AccessibleObject &object)
 {
-    addLog(object, QString("AccessibleNameChanged"));
+    m_eventsWidget->addLog(object, QString("AccessibleNameChanged"));
     m_treeModel->updateAccessible(object);
 }
 
 void MainWindow::accessibleDescriptionChanged(const QAccessibleClient::AccessibleObject &object)
 {
-    addLog(object, QString("AccessibleDescriptionChanged"));
+    m_eventsWidget->addLog(object, QString("AccessibleDescriptionChanged"));
     m_treeModel->updateAccessible(object);
 }
 

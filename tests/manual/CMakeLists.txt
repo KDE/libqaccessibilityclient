@@ -23,6 +23,7 @@ set(accessibleapps_SRCS
     mainwindow.cpp
     accessibletree.cpp
     accessibleproperties.cpp
+    eventview.cpp
     uiview.cpp
     tests_auto_modeltest_modeltest.cpp
 )

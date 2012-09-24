@@ -121,7 +121,7 @@ public slots:
     /**
         Returns a QUrl that references the AccessibleObject.
 
-        This can be used to serialize/unserialize an AccessibleObject
+        This can be used to serialize/deserialize an AccessibleObject
         to pass it around as string and restore the AccessibleObject
         later on.
 

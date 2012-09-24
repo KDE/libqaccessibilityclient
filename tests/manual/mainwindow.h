@@ -34,6 +34,7 @@
 
 class AccessibleTree;
 class ObjectProperties;
+class EventsWidget;
 class UiView;
 
 class QTreeView;
@@ -122,7 +123,7 @@ private:
     QTreeView *m_propertyView;
     ObjectProperties *m_propertyModel;
 
-    QTextBrowser *m_eventsEdit;
+    EventsWidget *m_eventsWidget;
     UiView *m_uiview;
 
     QAction *m_resetTreeAction;
