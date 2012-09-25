@@ -27,6 +27,7 @@
 
 class EventsWidget :public QWidget
 {
+    Q_OBJECT
 public:
     explicit EventsWidget(QAccessibleClient::Registry *registry, QWidget *parent = 0)
         : QWidget(parent), m_registry(registry) {
