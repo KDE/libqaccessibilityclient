@@ -991,7 +991,7 @@ QVector< QSharedPointer<QAction> > RegistryPrivate::actions(const AccessibleObje
     QVector< QSharedPointer<QAction> > list;
     for(int i = 0; i < actionArray.count(); ++i) {
         const QSpiAction &a = actionArray[i];
-        QAction *action = new QAction(this);
+        QAction *action = new QAction(0);
         QString id = QString(QLatin1String("%1;%2;%3")).arg(object.d->service).arg(object.d->path).arg(i);
         action->setObjectName(id);
         action->setText(a.name);
