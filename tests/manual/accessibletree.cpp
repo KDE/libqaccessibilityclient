@@ -88,7 +88,10 @@ QVariant AccessibleTree::data(const QModelIndex& index, int role) const
     switch (role) {
         case Qt::DisplayRole:
             if (index.column() == 0) {
-                return acc.name();
+                QString name = acc.name();
+                if (name.isEmpty())
+                    name = QString("[%1]").arg(acc.roleName());
+                return name;
             } else if (index.column() == 1) {
                 return acc.roleName();
             }
