@@ -28,5 +28,11 @@ set(accessibleapps_SRCS
     tests_auto_modeltest_modeltest.cpp
 )
 
-add_executable(accessibleapps ${accessibleapps_SRCS} ${accessibleapps_MOC})
+set(accessibleapps_UIS
+    eventview.ui
+)
+
+qt4_wrap_ui(accessibleapps_UI_HDRS ${accessibleapps_UIS})
+
+add_executable(accessibleapps ${accessibleapps_SRCS} ${accessibleapps_MOC} ${accessibleapps_UI_HDRS})
 target_link_libraries(accessibleapps ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} ${QT_QTTEST_LIBRARY} ${KDE4_KDEUI_LIBRARY} qaccessibilityclient)

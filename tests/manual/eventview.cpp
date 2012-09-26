@@ -25,16 +25,27 @@
 #include <QTextBlock>
 #include <qscrollbar.h>
 
+EventsWidget::EventsWidget(QAccessibleClient::Registry *registry, QWidget *parent)
+    : QWidget(parent), m_registry(registry) {
+    m_ui.setupUi(this);
+
+    m_ui.eventTextBrowser->setAccessibleName(QLatin1String("Events View"));
+    m_ui.eventTextBrowser->setAccessibleDescription(QString("Displays all received events"));
+    m_ui.eventTextBrowser->setOpenLinks(false);
+    connect(m_ui.eventTextBrowser, SIGNAL(anchorClicked(QUrl)), this, SIGNAL(anchorClicked(QUrl)));
+    connect(m_ui.clearButton, SIGNAL(clicked()), this, SLOT(clearLog()));
+}
+
 void EventsWidget::addLog(const QAccessibleClient::AccessibleObject &object, const QString &eventName, const QString &text)
 {
     if (!object.isValid())
         return;
-    if (object.name() == m_eventsEdit->accessibleName() && object.description() == m_eventsEdit->accessibleDescription())
+    if (object.name() == m_ui.eventTextBrowser->accessibleName() && object.description() == m_ui.eventTextBrowser->accessibleDescription())
         return;
 
-    bool wasMax = m_eventsEdit->verticalScrollBar()->value() == m_eventsEdit->verticalScrollBar()->maximum();
+    bool wasMax = m_ui.eventTextBrowser->verticalScrollBar()->value() == m_ui.eventTextBrowser->verticalScrollBar()->maximum();
 
-    QTextDocument *doc = m_eventsEdit->document();
+    QTextDocument *doc = m_ui.eventTextBrowser->document();
     doc->blockSignals(true); // to prevent infinte TextCaretMoved events
     QTextCursor cursor(doc->lastBlock());
     cursor.movePosition(QTextCursor::EndOfBlock, QTextCursor::KeepAnchor);
@@ -51,5 +62,10 @@ void EventsWidget::addLog(const QAccessibleClient::AccessibleObject &object, con
     doc->blockSignals(false);
 
     if (wasMax) // scroll down if we where before scrolled down too
-        m_eventsEdit->verticalScrollBar()->setValue(m_eventsEdit->verticalScrollBar()->maximum());
+        m_ui.eventTextBrowser->verticalScrollBar()->setValue(m_ui.eventTextBrowser->verticalScrollBar()->maximum());
+}
+
+void EventsWidget::clearLog()
+{
+    m_ui.eventTextBrowser->clear();
 }

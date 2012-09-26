@@ -25,27 +25,22 @@
 #include "qaccessibilityclient/registry.h"
 #include "qaccessibilityclient/accessibleobject.h"
 
+#include "ui_eventview.h"
+
 class EventsWidget :public QWidget
 {
     Q_OBJECT
 public:
-    explicit EventsWidget(QAccessibleClient::Registry *registry, QWidget *parent = 0)
-        : QWidget(parent), m_registry(registry) {
-        setLayout(new QVBoxLayout());
-        layout()->setMargin(0);
-
-        m_eventsEdit = new QTextBrowser(this);
-        m_eventsEdit->setAccessibleName(QLatin1String("Events View"));
-        m_eventsEdit->setAccessibleDescription(QString("Displays all received events"));
-        m_eventsEdit->setOpenLinks(false);
-        layout()->addWidget(m_eventsEdit);
-        connect(m_eventsEdit, SIGNAL(anchorClicked(QUrl)), this, SIGNAL(anchorClicked(QUrl)));
-    }
+    explicit EventsWidget(QAccessibleClient::Registry *registry, QWidget *parent = 0);
     void addLog(const QAccessibleClient::AccessibleObject &object, const QString &eventName, const QString &text = QString());
 
 Q_SIGNALS:
     void anchorClicked(const QUrl &);
+
+private Q_SLOTS:
+    void clearLog();
+
 private:
     QAccessibleClient::Registry *m_registry;
-    QTextBrowser *m_eventsEdit;
+    Ui::EventViewWidget m_ui;
 };
