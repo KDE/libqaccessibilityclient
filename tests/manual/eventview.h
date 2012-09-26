@@ -37,10 +37,26 @@ public:
 Q_SIGNALS:
     void anchorClicked(const QUrl &);
 
-private Q_SLOTS:
-    void clearLog();
+public Q_SLOTS:
+    void checkStateChanged();
 
 private:
+    enum EventTypes {
+        NoEvents = 0x00,
+        StateChanged = 0x01,
+        NameChanged = 0x02,
+        DescriptionChanged = 0x04,
+        Window = 0x08,
+        Focus = 0x10,
+        Document = 0x20,
+        Object = 0x40,
+        Text = 0x80,
+        Others = 0x100,
+
+        AllEvents = 0xffff
+    };
+
     QAccessibleClient::Registry *m_registry;
     Ui::EventViewWidget m_ui;
+    int m_selectedEvents;
 };

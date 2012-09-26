@@ -25,15 +25,18 @@
 #include <QTextBlock>
 #include <qscrollbar.h>
 
+using namespace QAccessibleClient;
+
 EventsWidget::EventsWidget(QAccessibleClient::Registry *registry, QWidget *parent)
-    : QWidget(parent), m_registry(registry) {
+    : QWidget(parent), m_registry(registry), m_selectedEvents(AllEvents) {
     m_ui.setupUi(this);
 
     m_ui.eventTextBrowser->setAccessibleName(QLatin1String("Events View"));
     m_ui.eventTextBrowser->setAccessibleDescription(QString("Displays all received events"));
     m_ui.eventTextBrowser->setOpenLinks(false);
     connect(m_ui.eventTextBrowser, SIGNAL(anchorClicked(QUrl)), this, SIGNAL(anchorClicked(QUrl)));
-    connect(m_ui.clearButton, SIGNAL(clicked()), this, SLOT(clearLog()));
+    connect(m_ui.clearButton, SIGNAL(clicked()), m_ui.eventTextBrowser, SLOT(clear()));
+    connect(m_ui.eventSelectionTree->model(), SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(checkStateChanged()));
 }
 
 void EventsWidget::addLog(const QAccessibleClient::AccessibleObject &object, const QString &eventName, const QString &text)
@@ -41,6 +44,52 @@ void EventsWidget::addLog(const QAccessibleClient::AccessibleObject &object, con
     if (!object.isValid())
         return;
     if (object.name() == m_ui.eventTextBrowser->accessibleName() && object.description() == m_ui.eventTextBrowser->accessibleDescription())
+        return;
+
+    bool found = false;
+
+    if (eventName == QLatin1String("StateChanged")) {
+        found = true;
+        if (text.contains("focus")) {
+            found = true;
+            if (!(m_selectedEvents & Focus))
+                return;
+        } else {
+            if (!(m_selectedEvents & StateChanged))
+                return;
+        }
+    }
+    if (eventName == QLatin1String("AccessibleNameChanged")) {
+        found = true;
+        if (!(m_selectedEvents & NameChanged))
+            return;
+    }
+    if (eventName == QLatin1String("AccessibleDescriptionChanged")) {
+        found = true;
+        if (!(m_selectedEvents & DescriptionChanged))
+            return;
+    }
+    if (eventName.startsWith("Window")) {
+        found = true;
+        if (!(m_selectedEvents & Window))
+            return;
+    }
+    if (eventName.startsWith("Document")) {
+        found = true;
+        if (!(m_selectedEvents & Document))
+            return;
+    }
+    if (eventName.startsWith("Object")) {
+        found = true;
+        if (!(m_selectedEvents & Object))
+            return;
+    }
+    if (eventName.startsWith("Text")) {
+        found = true;
+        if (!(m_selectedEvents & Text))
+            return;
+    }
+    if (!(m_selectedEvents & Others) && !found)
         return;
 
     bool wasMax = m_ui.eventTextBrowser->verticalScrollBar()->value() == m_ui.eventTextBrowser->verticalScrollBar()->maximum();
@@ -65,7 +114,32 @@ void EventsWidget::addLog(const QAccessibleClient::AccessibleObject &object, con
         m_ui.eventTextBrowser->verticalScrollBar()->setValue(m_ui.eventTextBrowser->verticalScrollBar()->maximum());
 }
 
-void EventsWidget::clearLog()
+void EventsWidget::checkStateChanged()
 {
-    m_ui.eventTextBrowser->clear();
+    m_selectedEvents = NoEvents;
+    QAbstractItemModel *model = m_ui.eventSelectionTree->model();
+    for (int i = 0; i < model->rowCount(); ++i) {
+        QModelIndex index = model->index(i, 0);
+        bool checked = model->data(index, Qt::CheckStateRole).toBool();
+        if (checked) {
+            if (model->data(index) == "Window")
+                m_selectedEvents = m_selectedEvents | Window;
+            if (model->data(index) == "Name Changed")
+                m_selectedEvents = m_selectedEvents | NameChanged;
+            if (model->data(index) == "Description Changed")
+                m_selectedEvents = m_selectedEvents | DescriptionChanged;
+            if (model->data(index) == "State Changed")
+                m_selectedEvents = m_selectedEvents | StateChanged;
+            if (model->data(index) == "Focus")
+                m_selectedEvents = m_selectedEvents | Focus;
+            if (model->data(index) == "Text")
+                m_selectedEvents = m_selectedEvents | Text;
+            if (model->data(index) == "Document")
+                m_selectedEvents = m_selectedEvents | Document;
+            if (model->data(index) == "Object")
+                m_selectedEvents = m_selectedEvents | Object;
+            if (model->data(index) == "Others")
+                m_selectedEvents = m_selectedEvents | Others;
+        }
+    }
 }
