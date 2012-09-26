@@ -115,6 +115,13 @@ private Q_SLOTS:
     void accessibleDescriptionChanged(const QAccessibleClient::AccessibleObject &object);
 
 private:
+    void initActions();
+    void initMenu();
+    void initUi();
+
+    void addLog(const QAccessibleClient::AccessibleObject &object, const QString &eventName, const QString &text = QString());
+    void setCurrentObject(const QAccessibleClient::AccessibleObject &object);
+
     QAccessibleClient::Registry *m_registry;
 
     QTreeView *m_treeView;
@@ -131,13 +138,6 @@ private:
     QAction *m_showClientCacheAction;
     QAction *m_enableA11yAction;
     QAction *m_quitAction;
-
-    void initActions();
-    void initMenu();
-    void initUi();
-
-    void addLog(const QAccessibleClient::AccessibleObject &object, const QString &eventName, const QString &text = QString());
-    void setCurrentObject(const QAccessibleClient::AccessibleObject &object);
 };
 
 #endif
