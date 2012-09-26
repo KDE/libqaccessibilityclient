@@ -39,58 +39,28 @@ EventsWidget::EventsWidget(QAccessibleClient::Registry *registry, QWidget *paren
     connect(m_ui.eventSelectionTree->model(), SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(checkStateChanged()));
 }
 
-void EventsWidget::addLog(const QAccessibleClient::AccessibleObject &object, const QString &eventName, const QString &text)
+void EventsWidget::addLog(const QAccessibleClient::AccessibleObject &object, EventsWidget::EventTypes eventType, const QString &text)
 {
     if (!object.isValid())
         return;
     if (object.name() == m_ui.eventTextBrowser->accessibleName() && object.description() == m_ui.eventTextBrowser->accessibleDescription())
         return;
 
-    bool found = false;
-
-    if (eventName == QLatin1String("StateChanged")) {
-        found = true;
-        if (text.contains("focus")) {
-            found = true;
-            if (!(m_selectedEvents & Focus))
-                return;
-        } else {
-            if (!(m_selectedEvents & StateChanged))
-                return;
-        }
-    }
-    if (eventName == QLatin1String("AccessibleNameChanged")) {
-        found = true;
-        if (!(m_selectedEvents & NameChanged))
-            return;
-    }
-    if (eventName == QLatin1String("AccessibleDescriptionChanged")) {
-        found = true;
-        if (!(m_selectedEvents & DescriptionChanged))
-            return;
-    }
-    if (eventName.startsWith("Window")) {
-        found = true;
-        if (!(m_selectedEvents & Window))
-            return;
-    }
-    if (eventName.startsWith("Document")) {
-        found = true;
-        if (!(m_selectedEvents & Document))
-            return;
-    }
-    if (eventName.startsWith("Object")) {
-        found = true;
-        if (!(m_selectedEvents & Object))
-            return;
-    }
-    if (eventName.startsWith("Text")) {
-        found = true;
-        if (!(m_selectedEvents & Text))
-            return;
-    }
-    if (!(m_selectedEvents & Others) && !found)
+    if (!(m_selectedEvents & eventType))
         return;
+
+    QString eventName;
+    switch (eventType) {
+    case Focus:              eventName = QLatin1String("Focus event"); break;
+    case StateChanged:       eventName = QLatin1String("State changed"); break;
+    case NameChanged:        eventName = QLatin1String("Name changed"); break;
+    case DescriptionChanged: eventName = QLatin1String("Description changed"); break;
+    case Window:             eventName = QLatin1String("Window event"); break;
+    case Document:           eventName = QLatin1String("Document event"); break;
+    case Object:             eventName = QLatin1String("Object event"); break;
+    case Text:               eventName = QLatin1String("Text event"); break;
+    case Table:              eventName = QLatin1String("Table event"); break;
+    }
 
     bool wasMax = m_ui.eventTextBrowser->verticalScrollBar()->value() == m_ui.eventTextBrowser->verticalScrollBar()->maximum();
 
@@ -99,12 +69,12 @@ void EventsWidget::addLog(const QAccessibleClient::AccessibleObject &object, con
     QTextCursor cursor(doc->lastBlock());
     cursor.movePosition(QTextCursor::EndOfBlock, QTextCursor::KeepAnchor);
 
-    QString s = QString("%1: %2").arg(eventName).arg(object.name());
-    QUrl url = m_registry->url(object);
-    cursor.insertText(s.trimmed() + QLatin1Char(' '));
-    cursor.insertHtml(QString("(<a href=\"%1\">%2</a>) ").arg(url.toString()).arg(object.roleName()));
+    cursor.insertText(eventName.trimmed() + QLatin1String(": "));
     if (!text.isEmpty())
-        cursor.insertText(QLatin1Char(' ') + text);
+        cursor.insertText(text + QLatin1Char(' '));
+    QString url = m_registry->url(object).toString();
+    QString objectString = object.name() + QString(" [%1]").arg(object.roleName());
+    cursor.insertHtml(QString("<a href=\"%1\">%2</a> ").arg(url).arg(objectString));
 
     cursor.insertBlock();
 

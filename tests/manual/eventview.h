@@ -31,17 +31,7 @@ class EventsWidget :public QWidget
 {
     Q_OBJECT
 public:
-    explicit EventsWidget(QAccessibleClient::Registry *registry, QWidget *parent = 0);
-    void addLog(const QAccessibleClient::AccessibleObject &object, const QString &eventName, const QString &text = QString());
-
-Q_SIGNALS:
-    void anchorClicked(const QUrl &);
-
-public Q_SLOTS:
-    void checkStateChanged();
-
-private:
-    enum EventTypes {
+    enum EventType {
         NoEvents = 0x00,
         StateChanged = 0x01,
         NameChanged = 0x02,
@@ -51,11 +41,26 @@ private:
         Document = 0x20,
         Object = 0x40,
         Text = 0x80,
-        Others = 0x100,
+        Table = 0x100,
+
+
+
+        Others = 0x100000,
 
         AllEvents = 0xffff
     };
+    Q_DECLARE_FLAGS(EventTypes, EventType)
 
+    explicit EventsWidget(QAccessibleClient::Registry *registry, QWidget *parent = 0);
+    void addLog(const QAccessibleClient::AccessibleObject &object, EventTypes type, const QString &text = QString());
+
+Q_SIGNALS:
+    void anchorClicked(const QUrl &);
+
+public Q_SLOTS:
+    void checkStateChanged();
+
+private:
     QAccessibleClient::Registry *m_registry;
     Ui::EventViewWidget m_ui;
     int m_selectedEvents;
