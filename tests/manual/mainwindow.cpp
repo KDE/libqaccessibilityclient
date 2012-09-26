@@ -145,6 +145,7 @@ void ClientCacheDialog::updateView()
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
+    setWindowTitle(QLatin1String("Randamizer"));
     m_registry = new QAccessibleClient::Registry(this);
 
     initUi();
@@ -196,7 +197,6 @@ MainWindow::MainWindow(QWidget *parent)
     restoreGeometry(settings.value("geometry").toByteArray());
     restoreState(settings.value("windowState").toByteArray());
 
-    //m_registry->subscribeEventListeners(QAccessibleClient::Registry::Focus);
     m_registry->subscribeEventListeners(QAccessibleClient::Registry::AllEventListeners);
 }
 

@@ -25,7 +25,7 @@
 int main(int argc, char** argv)
 {
     QApplication app(argc, argv);
-    app.setApplicationName(QLatin1String("TestApp"));
+    app.setApplicationName(QLatin1String("Randamizer"));
 
     MainWindow window;
     window.show();
