@@ -21,6 +21,7 @@
 #include <qtextbrowser.h>
 
 #include <qboxlayout.h>
+#include <qaccessible.h>
 
 #include "qaccessibilityclient/registry.h"
 #include "qaccessibilityclient/accessibleobject.h"
@@ -59,9 +60,17 @@ Q_SIGNALS:
 
 public Q_SLOTS:
     void checkStateChanged();
-
+private Q_SLOTS:
+    void installUpdateHandler();
 private:
     QAccessibleClient::Registry *m_registry;
     Ui::EventViewWidget m_ui;
     int m_selectedEvents;
+
+    // This is to avoid sending updates for the events view.
+    // The reason is that we end up in endless loops with other accessible tools such as accerciser.
+    // No normal application should have to do this.
+    static void customUpdateHandler(QObject*object, int who, QAccessible::Event reason);
+    static QAccessible::UpdateHandler m_originalAccessibilityUpdateHandler;
+    static QObject *m_textEditForAccessibilityUpdateHandler;
 };

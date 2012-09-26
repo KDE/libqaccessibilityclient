@@ -22,10 +22,13 @@
 
 #include <qtextdocument.h>
 #include <qtextcursor.h>
-#include <QTextBlock>
+#include <qtextobject.h>
+#include <qtimer.h>
 #include <qscrollbar.h>
 
 using namespace QAccessibleClient;
+QAccessible::UpdateHandler EventsWidget::m_originalAccessibilityUpdateHandler = 0;
+QObject *EventsWidget::m_textEditForAccessibilityUpdateHandler = 0;
 
 EventsWidget::EventsWidget(QAccessibleClient::Registry *registry, QWidget *parent)
     : QWidget(parent), m_registry(registry), m_selectedEvents(AllEvents) {
@@ -37,6 +40,26 @@ EventsWidget::EventsWidget(QAccessibleClient::Registry *registry, QWidget *paren
     connect(m_ui.eventTextBrowser, SIGNAL(anchorClicked(QUrl)), this, SIGNAL(anchorClicked(QUrl)));
     connect(m_ui.clearButton, SIGNAL(clicked()), m_ui.eventTextBrowser, SLOT(clear()));
     connect(m_ui.eventSelectionTree->model(), SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(checkStateChanged()));
+
+    m_textEditForAccessibilityUpdateHandler = m_ui.eventTextBrowser;
+
+    // We need to wait for a11y to be active for this hack.
+    QTimer::singleShot(500, this, SLOT(installUpdateHandler()));
+}
+
+void EventsWidget::installUpdateHandler()
+{
+    m_originalAccessibilityUpdateHandler = QAccessible::installUpdateHandler(customUpdateHandler);
+    if (!m_originalAccessibilityUpdateHandler)
+        QTimer::singleShot(500, this, SLOT(installUpdateHandler()));
+}
+
+void EventsWidget::customUpdateHandler(QObject *object, int who, QAccessible::Event reason)
+{
+    if (object == m_textEditForAccessibilityUpdateHandler)
+        return;
+    //if (m_originalAccessibilityUpdateHandler)
+    //    m_originalAccessibilityUpdateHandler(object, who, reason);
 }
 
 void EventsWidget::addLog(const QAccessibleClient::AccessibleObject &object, EventsWidget::EventTypes eventType, const QString &text)
