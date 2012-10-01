@@ -25,7 +25,6 @@ set(accessibleapps_SRCS
     accessibleproperties.cpp
     eventview.cpp
     uiview.cpp
-    tests_auto_modeltest_modeltest.cpp
 )
 
 set(accessibleapps_UIS

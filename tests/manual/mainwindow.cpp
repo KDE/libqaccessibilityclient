@@ -44,8 +44,6 @@
 #include <QStandardItemModel>
 #include <QComboBox>
 
-#include "tests_auto_modeltest_modeltest.h"
-
 using namespace QAccessibleClient;
 
 ClientCacheDialog::ClientCacheDialog(QAccessibleClient::Registry *registry, QWidget *parent)
@@ -151,9 +149,6 @@ MainWindow::MainWindow(QWidget *parent)
     initUi();
     initActions();
     initMenu();
-
-    // The ultimate model verificaton helper :p
-    //new ModelTest(m_treeModel, this);
 
     connect(m_registry, SIGNAL(added(QAccessibleClient::AccessibleObject)), this, SLOT(added(QAccessibleClient::AccessibleObject)));
     connect(m_registry, SIGNAL(removed(QAccessibleClient::AccessibleObject)), this, SLOT(removed(QAccessibleClient::AccessibleObject)));
