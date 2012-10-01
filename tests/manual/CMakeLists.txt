@@ -5,6 +5,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++0x")
 find_package(Qt4 REQUIRED)
 include(${QT_USE_FILE})
 add_definitions(${QT_DEFINITIONS})
+add_definitions(${Qt5Core_EXECUTABLE_COMPILE_FLAGS})
 
 include_directories(
     ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR}

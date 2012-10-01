@@ -70,7 +70,11 @@ private:
     // This is to avoid sending updates for the events view.
     // The reason is that we end up in endless loops with other accessible tools such as accerciser.
     // No normal application should have to do this.
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+    static void customUpdateHandler(QAccessibleEvent *event);
+#else
     static void customUpdateHandler(QObject*object, int who, QAccessible::Event reason);
+#endif
     static QAccessible::UpdateHandler m_originalAccessibilityUpdateHandler;
     static QObject *m_textEditForAccessibilityUpdateHandler;
 };

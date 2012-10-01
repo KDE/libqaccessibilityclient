@@ -180,7 +180,11 @@ void AccessibilityClientTest::tst_navigation()
     w.show();
     button->setFocus();
 
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+    QTest::qWaitForWindowExposed(&w);
+#else
     QTest::qWaitForWindowShown(&w);
+#endif
 
     // App
     AccessibleObject accApp = getAppObject(registry, appName);
@@ -367,7 +371,12 @@ void AccessibilityClientTest::tst_states()
 
     w.show();
     button1->setFocus();
+
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+    QTest::qWaitForWindowExposed(&w);
+#else
     QTest::qWaitForWindowShown(&w);
+#endif
 
     AccessibleObject accApp = getAppObject(registry, appName);
     QVERIFY(accApp.isValid());
@@ -436,8 +445,11 @@ void AccessibilityClientTest::tst_characterExtents()
     QTextEdit *textEdit = new QTextEdit(&w);
     textEdit->setGeometry(10,10,600,400);
     w.show();
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+    QTest::qWaitForWindowExposed(&w);
+#else
     QTest::qWaitForWindowShown(&w);
-
+#endif
     AccessibleObject app = getAppObject(registry, appName);
 
     //Check if the widget is correct

@@ -21,7 +21,11 @@ set(QAccessibilityClientPrivate_SRCS
 
 add_library(qaccessibilityclient SHARED ${QAccessibilityClient_SRCS} ${QAccessibilityClientPrivate_SRCS})
 
-target_link_libraries(qaccessibilityclient ${QT_QTCORE_LIBRARY} ${QT_QTDBUS_LIBRARY})
+if (QT5_BUILD)
+    target_link_libraries(qaccessibilityclient ${Qt5Core_LIBRARIES} ${Qt5Widgets_LIBRARIES} ${Qt5DBus_LIBRARIES})
+else (QT5_BUILD)
+    target_link_libraries(qaccessibilityclient ${QT_QTCORE_LIBRARY} ${QT_QTDBUS_LIBRARY})
+endif(QT5_BUILD)
 
 set(QACCESSIBILITYCLIENT_SOVERSION ${QACCESSIBILITYCLIENT_VERSION_MAJOR})
 set_target_properties(qaccessibilityclient

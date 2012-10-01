@@ -15,15 +15,33 @@ set(CMAKE_AUTOMOC TRUE)
 # override the KDE defaults and build tests unless explicitly disabled
 option(KDE4_BUILD_TESTS  "Build the tests" ON)
 
-find_package(Qt4 REQUIRED)
-include(${QT_USE_FILE})
-add_definitions(${QT_DEFINITIONS})
-
 include_directories(
     ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR}
-    ${QT4_INCLUDES} ${QT_INCLUDE_DIR} ${QT_QT_INCLUDE_DIR} ${QT_QTDBUS_INCLUDE_DIR}
 )
+
+find_package(Qt5Widgets QUIET)
+find_package(Qt5DBus QUIET)
+
+
+if (${Qt5Widgets_FOUND} AND ${Qt5DBus_FOUND})
+    set(QT5_BUILD True)
+endif (${Qt5Widgets_FOUND} AND ${Qt5DBus_FOUND})
+
+if (QT5_BUILD)
+    message("Using Qt 5")
+    add_definitions(${Qt5Core_DEFINITIONS} ${Qt5Widgets_DEFINITIONS} ${Qt5DBus_DEFINITIONS})
+    include_directories(${Qt5Core_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS} ${Qt5DBus_INCLUDE_DIRS})
+else (QT5_BUILD)
+    find_package(Qt4 REQUIRED)
+    if (${QT4_FOUND})
+        message("Using Qt 4")
+        include(${QT_USE_FILE})
+        add_definitions(${QT_DEFINITIONS})
+        include_directories(${QT4_INCLUDES} ${QT_INCLUDE_DIR} ${QT_QT_INCLUDE_DIR} ${QT_QTDBUS_INCLUDE_DIR})
+    endif (${QT4_FOUND})
+endif (QT5_BUILD)
+
 
 set(CMAKE_INSTALL_NAME_DIR ${LIB_INSTALL_DIR})
 

@@ -54,8 +54,14 @@ void EventsWidget::installUpdateHandler()
         QTimer::singleShot(500, this, SLOT(installUpdateHandler()));
 }
 
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+void EventsWidget::customUpdateHandler(QAccessibleEvent *event)
+{
+    QObject *object = event->object();
+#else
 void EventsWidget::customUpdateHandler(QObject *object, int who, QAccessible::Event reason)
 {
+#endif
     if (object == m_textEditForAccessibilityUpdateHandler)
         return;
     //if (m_originalAccessibilityUpdateHandler)
