@@ -62,28 +62,12 @@
            <string>Window</string>
           </property>
           <property name="checkState">
-           <enum>Checked</enum>
+           <enum>Unchecked</enum>
           </property>
          </item>
          <item>
           <property name="text">
            <string>State Changed</string>
-          </property>
-          <property name="checkState">
-           <enum>Checked</enum>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Name Changed</string>
-          </property>
-          <property name="checkState">
-           <enum>Checked</enum>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Description Changed</string>
           </property>
           <property name="checkState">
            <enum>Checked</enum>
@@ -99,10 +83,26 @@
          </item>
          <item>
           <property name="text">
+           <string>Name Changed</string>
+          </property>
+          <property name="checkState">
+           <enum>Unchecked</enum>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Description Changed</string>
+          </property>
+          <property name="checkState">
+           <enum>Unchecked</enum>
+          </property>
+         </item>
+         <item>
+          <property name="text">
            <string>Document</string>
           </property>
           <property name="checkState">
-           <enum>Checked</enum>
+           <enum>Unchecked</enum>
           </property>
          </item>
          <item>
@@ -110,7 +110,7 @@
            <string>Object</string>
           </property>
           <property name="checkState">
-           <enum>Checked</enum>
+           <enum>Unchecked</enum>
           </property>
          </item>
          <item>
@@ -118,7 +118,7 @@
            <string>Text</string>
           </property>
           <property name="checkState">
-           <enum>Checked</enum>
+           <enum>Unchecked</enum>
           </property>
          </item>
          <item>
@@ -126,7 +126,7 @@
            <string>Others</string>
           </property>
           <property name="checkState">
-           <enum>Checked</enum>
+           <enum>Unchecked</enum>
           </property>
          </item>
         </widget>
