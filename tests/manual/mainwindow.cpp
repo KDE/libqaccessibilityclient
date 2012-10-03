@@ -287,7 +287,7 @@ void MainWindow::MainWindow::initUi()
     m_propertyView->setAccessibleName(QString("List of properties"));
     m_propertyView->setAccessibleDescription(QString("Displays a the properties of the selected accessible object"));
     m_propertyView->setRootIsDecorated(false);
-    m_propertyView->setItemsExpandable(false);
+    m_propertyView->setItemsExpandable(true);
     m_propertyView->setExpandsOnDoubleClick(false);
     m_propertyView->setEditTriggers(QAbstractItemView::NoEditTriggers);
     m_propertyModel = new ObjectProperties(this);
