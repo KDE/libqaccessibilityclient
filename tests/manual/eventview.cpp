@@ -25,6 +25,7 @@
 #include <qtextobject.h>
 #include <qtimer.h>
 #include <qscrollbar.h>
+#include <qdebug.h>
 
 using namespace QAccessibleClient;
 QAccessible::UpdateHandler EventsWidget::m_originalAccessibilityUpdateHandler = 0;
@@ -104,6 +105,15 @@ void EventsWidget::addLog(const QAccessibleClient::AccessibleObject &object, Eve
     QString url = m_registry->url(object).toString();
     QString objectString = object.name() + QString(" [%1]").arg(object.roleName());
     cursor.insertHtml(QString("<a href=\"%1\">%2</a> ").arg(url).arg(objectString));
+
+    AccessibleObject app = object.application();
+    if (app.isValid()) {
+        qDebug() << app;
+        cursor.insertText(" (" + app.name() + ")");
+    } else {
+        qDebug() << "Invalid parent: " << object;
+        cursor.insertText(" (invalid application)");
+    }
 
     cursor.insertBlock();
 
