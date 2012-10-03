@@ -521,7 +521,7 @@ AccessibleObject RegistryPrivate::child(const AccessibleObject &object, int inde
     QDBusReply<QSpiObjectReference> reply = conn.connection().call(message);
     if (!reply.isValid()) {
         qWarning() << "Could not access child." << reply.error().message();
-        return AccessibleObject(0, QString(), QString());
+        return AccessibleObject();
     }
     const QSpiObjectReference child = reply.value();
     return AccessibleObject(const_cast<RegistryPrivate*>(this), child.service, child.path.path());
@@ -847,7 +847,7 @@ AccessibleObject RegistryPrivate::application(const AccessibleObject &object) co
     QDBusReply<QSpiObjectReference> reply = conn.connection().call(message);
     if (!reply.isValid()) {
         qWarning() << "Could not access application." << reply.error().message();
-        return AccessibleObject(0, QString(), QString());
+        return AccessibleObject();
     }
     const QSpiObjectReference child = reply.value();
     return AccessibleObject(const_cast<RegistryPrivate*>(this), child.service, child.path.path());

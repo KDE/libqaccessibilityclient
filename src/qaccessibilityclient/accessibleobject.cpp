@@ -38,6 +38,9 @@ AccessibleObject::AccessibleObject()
 AccessibleObject::AccessibleObject(RegistryPrivate *registryPrivate, const QString &service, const QString &path)
     :d(0)
 {
+    Q_ASSERT(registryPrivate);
+    Q_ASSERT(!service.isEmpty());
+    Q_ASSERT(!path.isEmpty());
     if (registryPrivate->m_cacheStrategy) {
         const QString id = path + service;
         d = registryPrivate->m_cacheStrategy->get(id);
