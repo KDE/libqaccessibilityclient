@@ -337,7 +337,14 @@ void AccessibilityClientTest::tst_focus()
     AccessibleObject window = remoteApp.child(0);
     AccessibleObject button1 = window.child(0);
     AccessibleObject button2 = window.child(1);
-    QCOMPARE(listener->focusEvents.size(), 2);
+
+    // we can get other focus events, check that we only use the ones from our app
+    for (int i = 0; i < listener->focusEvents.count(); ++i) {
+        AccessibleObject ev = listener->focusEvents.at(i).object;
+        if (ev.application() != remoteApp)
+            listener->focusEvents.removeAt(i);;
+    }
+    QVERIFY(listener->focusEvents.size() == 2);
     QCOMPARE(listener->focusEvents.at(0).object, button1);
     QCOMPARE(listener->focusEvents.at(1).object, button2);
 
