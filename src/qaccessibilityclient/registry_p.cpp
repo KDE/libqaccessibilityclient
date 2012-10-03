@@ -1163,11 +1163,21 @@ void RegistryPrivate::slotPropertyChange(const QString &property, int detail1, i
     }
 }
 
-void RegistryPrivate::slotStateChanged(const QString &state, int detail1, int detail2, const QDBusVariant &, const QSpiObjectReference &reference)
+void RegistryPrivate::slotStateChanged(const QString &state, int detail1, int detail2, const QDBusVariant &object, const QSpiObjectReference &reference)
 {
     //qDebug() << Q_FUNC_INFO << state << detail1 << detail2 << reference.service << reference.path.path() << QDBusContext::message();
+
+    QVariant o = object.variant();
+    qDebug() << o;
+    QSpiObjectReference ref;
+    o.value<QDBusArgument>() >> ref;
+    Q_ASSERT(QDBusContext::message().service() == ref.service && QDBusContext::message().path() == ref.path.path());
+
     if (state == QLatin1String("defunct") && (detail1 == 1)) {
-        removeAccessibleObject(reference);
+        QSpiObjectReference removed;
+        removed.service = QDBusContext::message().service();
+        removed.path = QDBusObjectPath(QDBusContext::message().path());
+        removeAccessibleObject(removed);
         return;
     }
 
