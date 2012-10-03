@@ -43,6 +43,7 @@ EventsWidget::EventsWidget(QAccessibleClient::Registry *registry, QWidget *paren
     connect(m_ui.eventSelectionTree->model(), SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(checkStateChanged()));
 
     m_textEditForAccessibilityUpdateHandler = m_ui.eventTextBrowser;
+    checkStateChanged();
 
     // We need to wait for a11y to be active for this hack.
     QTimer::singleShot(500, this, SLOT(installUpdateHandler()));
