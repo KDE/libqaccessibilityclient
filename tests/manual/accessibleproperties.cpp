@@ -57,6 +57,20 @@ void ObjectProperties::setAccessibleObject(const QAccessibleClient::AccessibleOb
         append(QString("Visible"), acc.isVisible(), item);
         append(QString("Default"), acc.isDefault(), item);
         append(QString("State"), stateString(acc), item);
+        append(tr("Url"), acc.url(), item);
+        AccessibleObject parent = acc.parent();
+        if (parent.isValid())
+            append(tr("Parent"), parent.url(), item);
+        int childCount = acc.childCount();
+        QStandardItem *children = append(QString("Children"), acc.childCount(), item);
+        for (int i = 0; i < childCount; ++i) {
+            AccessibleObject child = acc.child(i);
+            if (!child.isValid()) {
+                append(QLatin1String("Broken child"), QString::number(i), children);
+            } else {
+                append(child.name().isEmpty() ? tr("[%1]").arg(child.roleName()) : child.name(), child.url(), children);
+            }
+        }
         //GetAttributes
     }
     if (interfaces.testFlag(QAccessibleClient::AccessibleObject::ComponentInterface)) {
