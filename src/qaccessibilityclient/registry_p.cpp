@@ -892,7 +892,7 @@ QString RegistryPrivate::appBusAddress(const AccessibleObject &object) const
     QDBusMessage message = QDBusMessage::createMethodCall(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Application"), QLatin1String("GetApplicationBusAddress"));
     QDBusReply<QString> reply = conn.connection().call(message);
     if (!reply.isValid()) {
-        qWarning() << "Could not access appBusAddress." << reply.error().message();
+        qWarning() << Q_FUNC_INFO << "Could not access application bus address. Error: " << reply.error().message() << " in response to: " << message;
         return QString();
     }
     return reply.value();
