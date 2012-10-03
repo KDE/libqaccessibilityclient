@@ -108,7 +108,6 @@ void EventsWidget::addLog(const QAccessibleClient::AccessibleObject &object, Eve
 
     AccessibleObject app = object.application();
     if (app.isValid()) {
-        qDebug() << app;
         cursor.insertText(" (" + app.name() + ")");
     } else {
         qDebug() << "Invalid parent: " << object;
