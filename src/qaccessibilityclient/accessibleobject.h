@@ -178,6 +178,9 @@ public:
     ~AccessibleObject();
     AccessibleObject &operator=(const AccessibleObject &other);
     bool operator==(const AccessibleObject &other) const;
+    inline bool operator!=(const AccessibleObject &other) const {
+        return !operator==(other);
+    }
 
     /**
         \brief Returns a unique identifier for the object.
