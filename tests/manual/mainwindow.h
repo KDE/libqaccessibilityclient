@@ -124,8 +124,8 @@ private:
 
     QAccessibleClient::Registry *m_registry;
 
-    QTreeView *m_treeView;
-    AccessibleTree *m_treeModel;
+    QTreeView *m_accessibleObjectTreeView;
+    AccessibleTree *m_accessibleObjectTreeModel;
 
     QTreeView *m_propertyView;
     ObjectProperties *m_propertyModel;

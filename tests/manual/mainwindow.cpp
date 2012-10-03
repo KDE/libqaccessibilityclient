@@ -214,7 +214,7 @@ void MainWindow::MainWindow::initActions()
     m_resetTreeAction = new QAction(this);
     m_resetTreeAction->setText(QString("Reset Tree"));
     m_resetTreeAction->setShortcut(QKeySequence(QKeySequence::Refresh));
-    connect(m_resetTreeAction, SIGNAL(triggered()), m_treeModel, SLOT(resetModel()));
+    connect(m_resetTreeAction, SIGNAL(triggered()), m_accessibleObjectTreeModel, SLOT(resetModel()));
 
     m_followFocusAction = new QAction(this);
     m_followFocusAction->setText(QString("Follow Focus"));
@@ -264,20 +264,20 @@ void MainWindow::MainWindow::initUi()
     QDockWidget *treeDocker = new QDockWidget(QString("Tree"), this);
     treeDocker->setObjectName("tree");
     treeDocker->setFeatures(QDockWidget::AllDockWidgetFeatures);
-    m_treeView = new QTreeView(treeDocker);
-    m_treeView->setAccessibleName(QString("Tree of accessibles"));
-    m_treeView->setAccessibleDescription(QString("Displays a hierachical tree of accessible objects"));
-    m_treeView->setSelectionBehavior(QAbstractItemView::SelectRows);
-    m_treeView->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    treeDocker->setWidget(m_treeView);
+    m_accessibleObjectTreeView = new QTreeView(treeDocker);
+    m_accessibleObjectTreeView->setAccessibleName(QString("Tree of accessibles"));
+    m_accessibleObjectTreeView->setAccessibleDescription(QString("Displays a hierachical tree of accessible objects"));
+    m_accessibleObjectTreeView->setSelectionBehavior(QAbstractItemView::SelectRows);
+    m_accessibleObjectTreeView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    treeDocker->setWidget(m_accessibleObjectTreeView);
 
-    m_treeModel = new AccessibleTree(this);
-    m_treeModel->setRegistry(m_registry);
-    m_treeView->setModel(m_treeModel);
-    m_treeView->setColumnWidth(0, 240);
-    m_treeView->setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(m_treeView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(selectionChanged(QModelIndex,QModelIndex)));
-    connect(m_treeView, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(treeCustomContextMenuRequested(QPoint)));
+    m_accessibleObjectTreeModel = new AccessibleTree(this);
+    m_accessibleObjectTreeModel->setRegistry(m_registry);
+    m_accessibleObjectTreeView->setModel(m_accessibleObjectTreeModel);
+    m_accessibleObjectTreeView->setColumnWidth(0, 240);
+    m_accessibleObjectTreeView->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(m_accessibleObjectTreeView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(selectionChanged(QModelIndex,QModelIndex)));
+    connect(m_accessibleObjectTreeView, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(treeCustomContextMenuRequested(QPoint)));
 
     QDockWidget *propertyDocker = new QDockWidget(QString("Properties"), this);
     propertyDocker->setObjectName("properties");
@@ -336,12 +336,12 @@ void MainWindow::showClientCache()
 
 void MainWindow::setCurrentObject(const QAccessibleClient::AccessibleObject &object)
 {
-    QModelIndex index = m_treeModel->indexForAccessible(object);
+    QModelIndex index = m_accessibleObjectTreeModel->indexForAccessible(object);
     if (index.isValid()) {
-        QModelIndex other = m_treeModel->index(index.row(), index.column()+1, index.parent());
+        QModelIndex other = m_accessibleObjectTreeModel->index(index.row(), index.column()+1, index.parent());
         Q_ASSERT(other.isValid());
-        m_treeView->selectionModel()->select(QItemSelection(index, other), QItemSelectionModel::SelectCurrent);
-        m_treeView->scrollTo(index);
+        m_accessibleObjectTreeView->selectionModel()->select(QItemSelection(index, other), QItemSelectionModel::SelectCurrent);
+        m_accessibleObjectTreeView->scrollTo(index);
 
         // Unlike calling setCurrentIndex the select call aboves doe not emit the selectionChanged signal. So, do explicit.
         selectionChanged(index, QModelIndex());
@@ -399,7 +399,7 @@ void MainWindow::MainWindow::selectionChanged(const QModelIndex& current, const 
 
 void MainWindow::MainWindow::treeCustomContextMenuRequested(const QPoint &pos)
 {
-    QModelIndex current = m_treeView->currentIndex();
+    QModelIndex current = m_accessibleObjectTreeView->currentIndex();
     if (!current.isValid())
         return;
     QAccessibleClient::AccessibleObject acc = static_cast<AccessibleWrapper*>(current.internalPointer())->acc;
@@ -408,19 +408,19 @@ void MainWindow::MainWindow::treeCustomContextMenuRequested(const QPoint &pos)
     Q_FOREACH(const QSharedPointer<QAction> &a, acc.actions()) {
         menu->addAction(a.data());
     }
-    menu->popup(m_treeView->mapToGlobal(pos));
+    menu->popup(m_accessibleObjectTreeView->mapToGlobal(pos));
 }
 
 void MainWindow::added(const QAccessibleClient::AccessibleObject &object)
 {
     m_eventsWidget->addLog(object, EventsWidget::Object, QString("Add Object"));
-    m_treeModel->addAccessible(object);
+    m_accessibleObjectTreeModel->addAccessible(object);
 }
 
 void MainWindow::removed(const QAccessibleClient::AccessibleObject &object)
 {
     m_eventsWidget->addLog(object, EventsWidget::Object, "RemoveObject");
-    m_treeModel->removeAccessible(object);
+    m_accessibleObjectTreeModel->removeAccessible(object);
 }
 
 void MainWindow::defunct(const QAccessibleClient::AccessibleObject &object)
@@ -431,13 +431,13 @@ void MainWindow::defunct(const QAccessibleClient::AccessibleObject &object)
 void MainWindow::windowCreated(const QAccessibleClient::AccessibleObject &object)
 {
     m_eventsWidget->addLog(object, EventsWidget::Window, "Create");
-    m_treeModel->addAccessible(object);
+    m_accessibleObjectTreeModel->addAccessible(object);
 }
 
 void MainWindow::windowDestroyed(const QAccessibleClient::AccessibleObject &object)
 {
     m_eventsWidget->addLog(object, EventsWidget::Window, QString("Destroy"));
-    m_treeModel->removeAccessible(object);
+    m_accessibleObjectTreeModel->removeAccessible(object);
 }
 
 void MainWindow::windowClosed(const QAccessibleClient::AccessibleObject &object)
@@ -520,12 +520,12 @@ void MainWindow::focusChanged(const QAccessibleClient::AccessibleObject &object)
     if (m_followFocusAction->isChecked()) {
         // We need to block the focus for the treeView while setting the current item
         // to prevent that setting that item would change focus to the treeView.
-        Qt::FocusPolicy prevFocusPolicy = m_treeView->focusPolicy();
-        m_treeView->setFocusPolicy(Qt::NoFocus);
+        Qt::FocusPolicy prevFocusPolicy = m_accessibleObjectTreeView->focusPolicy();
+        m_accessibleObjectTreeView->setFocusPolicy(Qt::NoFocus);
 
         setCurrentObject(object);
 
-        m_treeView->setFocusPolicy(prevFocusPolicy);
+        m_accessibleObjectTreeView->setFocusPolicy(prevFocusPolicy);
     }
 }
 
@@ -547,12 +547,12 @@ void MainWindow::textChanged(const QAccessibleClient::AccessibleObject &object)
 void MainWindow::accessibleNameChanged(const QAccessibleClient::AccessibleObject &object)
 {
     m_eventsWidget->addLog(object, EventsWidget::NameChanged);
-    m_treeModel->updateAccessible(object);
+    m_accessibleObjectTreeModel->updateAccessible(object);
 }
 
 void MainWindow::accessibleDescriptionChanged(const QAccessibleClient::AccessibleObject &object)
 {
     m_eventsWidget->addLog(object, EventsWidget::DescriptionChanged);
-    m_treeModel->updateAccessible(object);
+    m_accessibleObjectTreeModel->updateAccessible(object);
 }
 
