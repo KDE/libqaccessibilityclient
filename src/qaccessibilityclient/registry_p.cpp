@@ -804,10 +804,19 @@ QRect RegistryPrivate::characterRect(const AccessibleObject &object) const
     args << coords;
     message.setArguments(args);
 
+
     QDBusReply< QRect > reply = conn.connection().call(message);
     if(!reply.isValid()){
-        qWarning() << "Could not get Character Extents. " << reply.error().message();
-        return QRect();
+        if (reply.error().type() == QDBusError::InvalidSignature) {
+            QDBusMessage reply2 = conn.connection().call(message);
+            if (reply2.signature() != QLatin1String("iiii")) {
+                qWarning() << "Could not get Character Extents. " << reply.error().message();
+                return QRect();
+            }
+            QList<QVariant> args = reply2.arguments();
+            QRect rect(args.at(0).toInt(), args.at(1).toInt(), args.at(2).toInt(), args.at(3).toInt());
+            return rect;
+        }
     }
 
     return reply.value();
