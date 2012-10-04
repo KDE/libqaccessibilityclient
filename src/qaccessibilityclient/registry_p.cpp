@@ -1167,12 +1167,6 @@ void RegistryPrivate::slotStateChanged(const QString &state, int detail1, int de
 {
     //qDebug() << Q_FUNC_INFO << state << detail1 << detail2 << reference.service << reference.path.path() << QDBusContext::message();
 
-    QVariant o = object.variant();
-    qDebug() << o;
-    QSpiObjectReference ref;
-    o.value<QDBusArgument>() >> ref;
-    Q_ASSERT(QDBusContext::message().service() == ref.service && QDBusContext::message().path() == ref.path.path());
-
     if (state == QLatin1String("defunct") && (detail1 == 1)) {
         QSpiObjectReference removed;
         removed.service = QDBusContext::message().service();
