@@ -24,6 +24,7 @@ set(accessibleapps_SRCS
     mainwindow.cpp
     accessibletree.cpp
     accessibleproperties.cpp
+    clientcachedialog.cpp
     eventview.cpp
     uiview.cpp
 )
