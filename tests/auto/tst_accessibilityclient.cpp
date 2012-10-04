@@ -467,11 +467,9 @@ void AccessibilityClientTest::tst_characterExtents()
     AccessibleObject textArea = app.child(0).child(0);
     QVERIFY(textArea.supportedInterfaces() & QAccessibleClient::AccessibleObject::TextInterface);
 
-    QCOMPARE(textArea.characterRect(), QRect(20,40,0,14));
-
-    textEdit->setText("This is useless text that is being used to test this text area.\n I \n hope \n this will get correct\n\t\t\tCharacterExtents !");
-
-    QCOMPARE(textArea.characterRect(), QRect(20,40,7,14));
+    QCOMPARE(textArea.characterRect(0), QRect(20,40,0,14));
+    textEdit->setText("This is useless text that is being used to test this text area.\n I \n hope \n this will get correct\n\t\t\tCharacterExtents!");
+    QCOMPARE(textArea.characterRect(1), QRect(20,40,7,14));
 }
 
 

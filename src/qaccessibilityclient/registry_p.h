@@ -71,7 +71,7 @@ public:
     int mdiZOrder(const AccessibleObject &object) const;
     double alpha(const AccessibleObject &object) const;
     QRect boundingRect(const AccessibleObject &object) const;
-    QRect characterRect(const AccessibleObject &object) const;
+    QRect characterRect(const AccessibleObject &object, int offset) const;
     AccessibleObject::Interfaces supportedInterfaces(const AccessibleObject &object) const;
     int caretOffset(const AccessibleObject &object) const;
 

@@ -800,7 +800,7 @@ QRect RegistryPrivate::boundingRect(const AccessibleObject &object) const
     return QRect( reply.value() );
 }
 
-QRect RegistryPrivate::characterRect(const AccessibleObject &object) const
+QRect RegistryPrivate::characterRect(const AccessibleObject &object, int offset) const
 {
     QDBusMessage message = QDBusMessage::createMethodCall(
             object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Text"),
@@ -808,7 +808,7 @@ QRect RegistryPrivate::characterRect(const AccessibleObject &object) const
 
     QVariantList args;
     quint32 coords = ATSPI_COORD_TYPE_SCREEN;
-    args << caretOffset(object);
+    args << offset;
     args << coords;
     message.setArguments(args);
 

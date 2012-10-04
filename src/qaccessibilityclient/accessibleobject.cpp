@@ -183,10 +183,10 @@ QRect AccessibleObject::boundingRect() const
     }
 }
 
-QRect AccessibleObject::characterRect() const
+QRect AccessibleObject::characterRect(int offset) const
 {
     if( supportedInterfaces() & AccessibleObject::TextInterface ){
-        return d->registryPrivate->characterRect(*this);
+        return d->registryPrivate->characterRect(*this, offset);
     } else {
         qWarning() << "characterRect called on accessible that does not implement text";
         return QRect();
@@ -212,7 +212,8 @@ QPoint AccessibleObject::focusPoint() const
 {
     Interfaces ifaces = supportedInterfaces();
     if (ifaces & TextInterface) {
-        QRect r = characterRect();
+        int offset = caretOffset();
+        QRect r = characterRect(offset);
         if (!r.isNull())
             return r.center();
     }

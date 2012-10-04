@@ -311,14 +311,14 @@ public:
     QRect boundingRect() const;
 
     /**
-        \brief Returns a bounding rectangle for the characters present in the accessible.
+        \brief Returns a bounding rectangle for the character at position \a offset.
 
-        boundingRect might give a large rectangle for a large text area that has little text.
-        This function returns a bounding QRect for the characters present in the text area.
+        This function is only supported for accessibles that implement the text interface.
+        It will return an empty rectangle for invalid offsets or accessibles.
 
-        \return QRect that bounds the text in an accessible.
+        \return QRect that bounds the character.
     */
-    QRect characterRect() const;
+    QRect characterRect(int offset) const;
 
     /**
         \brief Returns List of interfaces supported by the accessible.

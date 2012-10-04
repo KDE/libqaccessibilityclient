@@ -189,8 +189,9 @@ void ObjectProperties::setAccessibleObject(const QAccessibleClient::AccessibleOb
     }
     if (interfaces.testFlag(QAccessibleClient::AccessibleObject::TextInterface)) {
         QStandardItem *item = append(QString("Text"));
-        append(QString("CharacterRect"), acc.characterRect(), item);
-        append(QString("CaretOffset"), acc.caretOffset(), item);
+        int offset = acc.caretOffset();
+        append(QString("CaretOffset"), offset, item);
+        append(QString("CharacterRect"), acc.characterRect(offset), item);
     }
     if (interfaces.testFlag(QAccessibleClient::AccessibleObject::ValueInterface)) {
         QStandardItem *item = append(QString("Value"));
