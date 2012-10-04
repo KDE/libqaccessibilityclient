@@ -482,7 +482,15 @@ AccessibleObject RegistryPrivate::parentAccessible(const AccessibleObject &objec
     const QDBusArgument arg = parent.value<QDBusArgument>();
     QSpiObjectReference ref;
     arg >> ref;
-    //if (ref.service.isEmpty() || ref.path.path().isEmpty()) return AccessibleObject();
+
+    if (ref.path.path() == object.d->path) {
+        qWarning() << "WARNING: Accessible claims to be its own parent: " << object;
+        return AccessibleObject();
+    }
+
+    if (ref.service.isEmpty() || ref.path.path().isEmpty())
+        return AccessibleObject();
+
     return AccessibleObject(const_cast<RegistryPrivate*>(this), ref.service, ref.path.path());
 }
 
