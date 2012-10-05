@@ -33,6 +33,7 @@ public:
     AccessibleWrapper(const QAccessibleClient::AccessibleObject &object, AccessibleWrapper *parent)
     : acc(object), m_parent(parent)
     {}
+
     QAccessibleClient::AccessibleObject acc;
 
     ~AccessibleWrapper() {
@@ -76,6 +77,12 @@ public:
 
 public Q_SLOTS:
     void resetModel();
+    /*!
+        \brief Updates all applications in the tree.
+
+        Removes and adds top level applications. This is less invasive then modelReset.
+    */
+    void updateTopLevelApps();
 
 Q_SIGNALS:
     void navigationError(const QModelIndex &) const;

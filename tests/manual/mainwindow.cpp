@@ -334,7 +334,10 @@ void MainWindow::windowCreated(const QAccessibleClient::AccessibleObject &object
 void MainWindow::windowDestroyed(const QAccessibleClient::AccessibleObject &object)
 {
     m_eventsWidget->addLog(object, EventsWidget::Window, QString("Destroy"));
-    m_accessibleObjectTreeModel->removeAccessible(object);
+    if (!m_accessibleObjectTreeModel->removeAccessible(object)) {
+        // assume the app has gone
+        m_accessibleObjectTreeModel->updateTopLevelApps();
+    }
 }
 
 void MainWindow::windowClosed(const QAccessibleClient::AccessibleObject &object)

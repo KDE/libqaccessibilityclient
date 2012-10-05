@@ -188,6 +188,24 @@ void AccessibleTree::resetModel()
     endResetModel();
 }
 
+void AccessibleTree::updateTopLevelApps()
+{
+    QList<AccessibleObject> topLevelApps = m_registry->applications();
+    for (int i = m_apps.count() - 1; i >= 0; --i) {
+        AccessibleObject app = m_apps.at(i)->acc;
+        int indexOfApp = topLevelApps.indexOf(app);
+        if (indexOfApp < 0) {
+            removeAccessible(index(i, 0, QModelIndex()));
+        } else {
+            topLevelApps.takeAt(i);
+        }
+    }
+
+    foreach (const AccessibleObject &newApp, topLevelApps) {
+        addAccessible(newApp);
+    }
+}
+
 QModelIndex AccessibleTree::indexForAccessible(const AccessibleObject& object)
 {
     if (!object.isValid())
