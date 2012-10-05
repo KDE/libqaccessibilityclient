@@ -18,6 +18,9 @@
     License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#ifndef EVENTVIEW_H
+#define EVENTVIEW_H
+
 #include <qtextbrowser.h>
 
 #include <qboxlayout.h>
@@ -78,3 +81,5 @@ private:
     static QAccessible::UpdateHandler m_originalAccessibilityUpdateHandler;
     static QObject *m_textEditForAccessibilityUpdateHandler;
 };
+
+#endif
