@@ -425,8 +425,12 @@ QACCESSIBILITYCLIENT_EXPORT QDebug QAccessibleClient::operator<<(QDebug d, const
 {
     d.nospace();
     d << "AccessibleObject("; //d:" << hex << (void *) object.d << dec;
-    d << "service=" << object.d->service;
-    d << " path=" << object.d->path;
+    if (object.d) {
+        d << "service=" << object.d->service;
+        d << " path=" << object.d->path;
+    } else {
+        d << "invalid";
+    }
     d << ")";
     return d.space();
 }
