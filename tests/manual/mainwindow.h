@@ -46,7 +46,6 @@ class MainWindow :public QMainWindow
 public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    void listAccessibles();
 
 protected:
     void closeEvent(QCloseEvent *event);
