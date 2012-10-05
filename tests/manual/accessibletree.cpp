@@ -235,60 +235,43 @@ QModelIndex AccessibleTree::indexForAccessible(const AccessibleObject& object)
 
 bool AccessibleTree::addAccessible(const QAccessibleClient::AccessibleObject &object)
 {
-    qDebug()<<Q_FUNC_INFO<<object;
+    // qDebug() << Q_FUNC_INFO << object;
     QAccessibleClient::AccessibleObject parent = object.parent();
-    QModelIndex parentIndex = indexForAccessible(parent);
-    if (parentIndex.isValid()) {
-        int idx = object.indexInParent();
-        //int idx = parent.children().indexOf(object);
-        Q_ASSERT(idx >= 0);
-        QModelIndex objectIndex = index(idx, 0, parentIndex);
-        if (objectIndex.isValid() && static_cast<AccessibleWrapper*>(objectIndex.internalPointer())->acc == object) {
-            emit dataChanged(objectIndex, objectIndex);
-        } else {
-            beginInsertRows(parentIndex, idx, idx);
-            AccessibleWrapper *parentWrapper = static_cast<AccessibleWrapper*>(parentIndex.internalPointer());
-            Q_ASSERT(parentWrapper);
-            parentWrapper->m_children.insert(idx, new AccessibleWrapper(object, parentWrapper));
-            endInsertRows();
-        }
-    } else { // top-level
-        QList<QAccessibleClient::AccessibleObject> newChildren;
-        if (object.supportedInterfaces().testFlag(QAccessibleClient::AccessibleObject::ApplicationInterface)) {
-            QModelIndex objectIndex = indexForAccessible(object);
-            if (objectIndex.isValid()) {
-                emit dataChanged(objectIndex, objectIndex);
-            } else {
-                newChildren.append(object);
-            }
-        } else {
-            // This is for the case there was a new desktop widget created on the top of one ore several new apps.
-            Q_FOREACH(const QAccessibleClient::AccessibleObject &child, object.children()) {
-                if (child.supportedInterfaces().testFlag(QAccessibleClient::AccessibleObject::ApplicationInterface)) {
-                    bool alreadyKnown = false;
-                    for (int i = 0; i < m_apps.size() && !alreadyKnown; ++i)
-                        if (m_apps.at(i)->acc == child)
-                            alreadyKnown = true;
-                    if (alreadyKnown)
-                        continue;
-                    QModelIndex childIndex = indexForAccessible(child);
-                    if (childIndex.isValid()) {
-                        emit dataChanged(childIndex, childIndex);
-                    } else {
-                        newChildren.append(child);
-                    }
-                }
-            }
-        }
 
-        if (!newChildren.isEmpty()) {
-            int idx = m_apps.count();
-            beginInsertRows(QModelIndex(), idx, idx + newChildren.count() - 1);
-            Q_FOREACH(const QAccessibleClient::AccessibleObject &child, newChildren) {
-                m_apps.append(new AccessibleWrapper(child, 0));
-            }
-            endInsertRows();
+    // We have no parent -> top level.
+    if (!parent.isValid()) {
+        if (!object.supportedInterfaces().testFlag(QAccessibleClient::AccessibleObject::ApplicationInterface))
+            qWarning() << Q_FUNC_INFO << "Found top level accessible that does not implement the application interface" << object;
+
+        beginInsertRows(QModelIndex(), m_apps.count(), m_apps.count());
+        m_apps.append(new AccessibleWrapper(object, 0));
+        endInsertRows();
+        return true;
+    }
+
+    // If the parent is not known, add it too.
+    QModelIndex parentIndex = indexForAccessible(parent);
+    if (!parentIndex.isValid()) {
+        if (!addAccessible(parent)) {
+            qWarning() << Q_FUNC_INFO << "Could not add accessible (invalid parent): " << object;
+            return false;
         }
+        parentIndex = indexForAccessible(parent);
+        Q_ASSERT(parentIndex.isValid());
+    }
+
+    // Add this item (or emit dataChanged, if it's there already).
+    int idx = object.indexInParent();
+    Q_ASSERT(idx >= 0);
+    QModelIndex objectIndex = index(idx, 0, parentIndex);
+    if (objectIndex.isValid() && static_cast<AccessibleWrapper*>(objectIndex.internalPointer())->acc == object) {
+        emit dataChanged(objectIndex, objectIndex);
+    } else {
+        beginInsertRows(parentIndex, idx, idx);
+        AccessibleWrapper *parentWrapper = static_cast<AccessibleWrapper*>(parentIndex.internalPointer());
+        Q_ASSERT(parentWrapper);
+        parentWrapper->m_children.insert(idx, new AccessibleWrapper(object, parentWrapper));
+        endInsertRows();
     }
     return true;
 }
