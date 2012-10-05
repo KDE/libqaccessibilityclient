@@ -2,10 +2,9 @@ project(accessibleapps)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++0x")
 
-find_package(Qt4 REQUIRED)
-include(${QT_USE_FILE})
-add_definitions(${QT_DEFINITIONS})
-add_definitions(${Qt5Core_EXECUTABLE_COMPILE_FLAGS})
+if (QT5_BUILD)
+    add_definitions(${Qt5Core_EXECUTABLE_COMPILE_FLAGS})
+endif (QT5_BUILD)
 
 include_directories(
     ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR}
@@ -33,7 +32,11 @@ set(accessibleapps_UIS
     eventview.ui
 )
 
-qt4_wrap_ui(accessibleapps_UI_HDRS ${accessibleapps_UIS})
+if (QT5_BUILD)
+    qt5_wrap_ui(accessibleapps_UI_HDRS ${accessibleapps_UIS})
+else (QT5_BUILD)
+    qt4_wrap_ui(accessibleapps_UI_HDRS ${accessibleapps_UIS})
+endif (QT5_BUILD)
 
 add_executable(accessibleapps ${accessibleapps_SRCS} ${accessibleapps_MOC} ${accessibleapps_UI_HDRS})
 target_link_libraries(accessibleapps ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} ${QT_QTTEST_LIBRARY} ${KDE4_KDEUI_LIBRARY} qaccessibilityclient)
