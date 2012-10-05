@@ -83,8 +83,6 @@ Q_SIGNALS:
 private:
     QAccessibleClient::Registry *m_registry;
     QList<AccessibleWrapper*> m_apps;
-
-    AccessibleWrapper* addHierachyForObject(const QAccessibleClient::AccessibleObject &object);
 };
 
 #endif // ACCESSIBLETREE_H

@@ -174,24 +174,6 @@ void AccessibleTree::setRegistry(QAccessibleClient::Registry* registry)
     resetModel();
 }
 
-AccessibleWrapper* AccessibleTree::addHierachyForObject(const AccessibleObject &object)
-{
-    bool isApp = object.supportedInterfaces().testFlag(QAccessibleClient::AccessibleObject::ApplicationInterface);
-
-    AccessibleObject parent = isApp ? AccessibleObject() : object.parent();
-    AccessibleWrapper *wraper = 0;
-    if (parent.isValid()) {
-//         AccessibleWrapper *parentWraper = static_cast<AccessibleWrapper*>(parent.internalPointer());
-//         Q_ASSERT(parentWraper);
-        AccessibleWrapper *parentWraper = addHierachyForObject(parent);
-        wraper = parentWraper->child(object.indexInParent());
-        Q_ASSERT(wraper);
-    } else {
-        wraper = new AccessibleWrapper(object, 0);
-    }
-    return wraper;
-}
-
 void AccessibleTree::resetModel()
 {
     beginResetModel();
@@ -200,10 +182,7 @@ void AccessibleTree::resetModel()
     if (m_registry) {
         QList<AccessibleObject> children = m_registry->applications();
         foreach (const AccessibleObject &c, children) {
-            AccessibleWrapper* wraper = addHierachyForObject(c);
-            while(AccessibleWrapper* p = wraper->parent())
-                wraper = p;
-            m_apps.append(wraper);
+            m_apps.append(new AccessibleWrapper(c, 0));
         }
     }
     endResetModel();
