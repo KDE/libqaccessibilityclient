@@ -214,7 +214,7 @@ QPoint AccessibleObject::focusPoint() const
     if (ifaces & TextInterface) {
         int offset = caretOffset();
         QRect r = characterRect(offset);
-        if (!r.isNull())
+        if (r.x() != 0 || r.y() != 0)
             return r.center();
     }
     if (ifaces & ComponentInterface) {
