@@ -29,6 +29,8 @@
 #include <QSortFilterProxyModel>
 #include <QStandardItemModel>
 #include <QStandardItem>
+#include <QMetaObject>
+#include <QMetaEnum>
 #include <qdebug.h>
 
 class EventsModel : public QStandardItemModel
@@ -72,9 +74,7 @@ public:
 protected:
     virtual bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const {
         QModelIndex index = sourceModel()->index(source_row, 0, source_parent);
-        Q_ASSERT(index.isValid());
         EventsWidget::EventType type = index.data(Qt::UserRole).value<EventsWidget::EventType>();
-        Q_ASSERT(int(type)>0);
         return m_types.testFlag(type);
     }
 private:
@@ -97,6 +97,9 @@ EventsWidget::EventsWidget(QAccessibleClient::Registry *registry, QWidget *paren
     m_ui.eventListView->setModel(proxyModel);
 
     QStandardItemModel *filerModel = new QStandardItemModel();
+    filerModel->setColumnCount(2);
+    filerModel->appendRow(new QStandardItem(QString("Event Filter")));
+
     QVector< QPair<EventType, QString> > filterList;
     filterList << QPair<EventType, QString>(StateChanged, "State");
     filterList << QPair<EventType, QString>(NameChanged, "Name");
@@ -115,7 +118,7 @@ EventsWidget::EventsWidget(QAccessibleClient::Registry *registry, QWidget *paren
         item->setData(QVariant::fromValue<EventType>(p.first), Qt::UserRole);
         //item->setData(Qt::Unchecked, Qt::CheckStateRole);
         item->setData(Qt::Checked, Qt::CheckStateRole);
-        filerModel->appendRow(item);
+        filerModel->appendRow(QList<QStandardItem*>() << item << new QStandardItem());
     }
     m_ui.filterComboBox->setModel(filerModel);
 
@@ -214,16 +217,23 @@ void EventsWidget::addLog(const QAccessibleClient::AccessibleObject &object, Eve
 void EventsWidget::checkStateChanged()
 {
     EventTypes types;
+    QStringList names;
+    bool allEvents = true;
+    QMetaEnum e = metaObject()->enumerator(metaObject()->indexOfEnumerator("EventType"));
+    Q_ASSERT(e.isValid());
     QAbstractItemModel *model = m_ui.filterComboBox->model();
-    for (int i = 0; i < model->rowCount(); ++i) {
+    for (int i = 1; i < model->rowCount(); ++i) {
         QModelIndex index = model->index(i, 0);
         bool checked = model->data(index, Qt::CheckStateRole).toBool();
         if (checked) {
             EventType type = model->data(index, Qt::UserRole).value<EventType>();
-            Q_ASSERT(int(type)>0);
             types |= type;
+            names.append(QString::fromLatin1(e.valueToKey(type)));
+        } else {
+            allEvents = false;
         }
     }
+
     EventsProxyModel *proxyModel = dynamic_cast<EventsProxyModel*>(m_ui.eventListView->model());
     proxyModel->setFiler(types);
 }

@@ -19,7 +19,14 @@
      <item>
       <layout class="QGridLayout" name="gridLayout" columnstretch="1,0">
        <item row="0" column="0">
-        <widget class="QComboBox" name="filterComboBox"/>
+        <widget class="QComboBox" name="filterComboBox">
+         <property name="currentIndex">
+          <number>-1</number>
+         </property>
+         <property name="maxVisibleItems">
+          <number>15</number>
+         </property>
+        </widget>
        </item>
        <item row="0" column="1">
         <widget class="QPushButton" name="clearButton">
