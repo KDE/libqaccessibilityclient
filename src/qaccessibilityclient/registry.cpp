@@ -46,6 +46,16 @@ void Registry::setEnabled(bool enable)
     d->setEnabled(enable);
 }
 
+bool Registry::isScreenReaderEnabled() const
+{
+    return d->isScreenReaderEnabled();
+}
+
+void Registry::setScreenReaderEnabled(bool enable)
+{
+    d->setScreenReaderEnabled(enable);
+}
+
 void Registry::subscribeEventListeners(const EventListeners &listeners) const
 {
     d->subscribeEventListeners(listeners);

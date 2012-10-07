@@ -125,39 +125,47 @@ bool RegistryPrivate::isEnabled() const
 {
     if (conn.status() != DBusConnection::Connected)
         return false;
-
-    QDBusConnection c = QDBusConnection::sessionBus();
-    if (!c.isConnected())
-        return false;
-
     QDBusMessage message = QDBusMessage::createMethodCall(
                 QLatin1String("org.a11y.Bus"), QLatin1String("/org/a11y/bus"), QLatin1String("org.freedesktop.DBus.Properties"), QLatin1String("Get"));
     message.setArguments(QVariantList() << QLatin1String("org.a11y.Status") << QLatin1String("IsEnabled"));
-    QDBusReply<QVariant> reply  = c.call(message);
-    if (!reply.isValid()) {
-        qWarning() << "Could not get org.a11y.Status.isEnabled." << reply.error().message();
+    QDBusReply<QVariant> reply  = QDBusConnection::sessionBus().call(message);
+    if (!reply.isValid())
         return false;
-    }
-
-    bool enabled = reply.value().toBool();
-    return enabled;
+    return reply.value().toBool();
 }
 
 void RegistryPrivate::setEnabled(bool enable)
 {
-    if (conn.status() != DBusConnection::Connected)
-        return;
-
-    QDBusConnection c = QDBusConnection::sessionBus();
-    if (!c.isConnected())
-        return;
-
     QDBusMessage message = QDBusMessage::createMethodCall(
                 QLatin1String("org.a11y.Bus"), QLatin1String("/org/a11y/bus"), QLatin1String("org.freedesktop.DBus.Properties"), QLatin1String("Set"));
     message.setArguments(QVariantList() << QLatin1String("org.a11y.Status") << QLatin1String("IsEnabled") << QVariant::fromValue(QDBusVariant(enable)));
-    QDBusMessage reply = c.call(message);
+    QDBusMessage reply = QDBusConnection::sessionBus().call(message);
     if (reply.type() == QDBusMessage::ErrorMessage) {
         qWarning() << "Could not set org.a11y.Status.isEnabled." << reply.errorName() << reply.errorMessage();
+    }
+}
+
+bool RegistryPrivate::isScreenReaderEnabled() const
+{
+    if (conn.status() != DBusConnection::Connected)
+        return false;
+    QDBusMessage message = QDBusMessage::createMethodCall(
+                QLatin1String("org.a11y.Bus"), QLatin1String("/org/a11y/bus"), QLatin1String("org.freedesktop.DBus.Properties"), QLatin1String("Get"));
+    message.setArguments(QVariantList() << QLatin1String("org.a11y.Status") << QLatin1String("ScreenReaderEnabled"));
+    QDBusReply<QVariant> reply  = QDBusConnection::sessionBus().call(message);
+    if (!reply.isValid())
+        return false;
+    return reply.value().toBool();
+}
+
+void RegistryPrivate::setScreenReaderEnabled(bool enable)
+{
+    QDBusMessage message = QDBusMessage::createMethodCall(
+                QLatin1String("org.a11y.Bus"), QLatin1String("/org/a11y/bus"), QLatin1String("org.freedesktop.DBus.Properties"), QLatin1String("Set"));
+    message.setArguments(QVariantList() << QLatin1String("org.a11y.Status") << QLatin1String("ScreenReaderEnabled") << QVariant::fromValue(QDBusVariant(enable)));
+    QDBusMessage reply = QDBusConnection::sessionBus().call(message);
+    if (reply.type() == QDBusMessage::ErrorMessage) {
+        qWarning() << "Could not set org.a11y.Status.ScreenReaderEnabled." << reply.errorName() << reply.errorMessage();
     }
 }
 
@@ -460,16 +468,17 @@ void RegistryPrivate::a11yConnectionChanged(const QString &interface,const QVari
     if (conn.status() != DBusConnection::Connected)
         return;
     if (interface == QLatin1String("org.a11y.Status")) {
-        bool enabled = false;
-        QVariantMap::ConstIterator it = changedProperties.constFind(QLatin1String("IsEnabled"));
-        if (it != changedProperties.constEnd()) {
-            enabled = it.value().toBool();
-        } else if (invalidatedProperties.contains(QLatin1String("IsEnabled"))) {
-            enabled = isEnabled();
-        } else {
-            return;
-        }
-        emit q->enabledChanged(enabled);
+        QVariantMap::ConstIterator IsEnabledIt = changedProperties.constFind(QLatin1String("IsEnabled"));
+        if (IsEnabledIt != changedProperties.constEnd())
+            emit q->enabledChanged(IsEnabledIt.value().toBool());
+        else if (invalidatedProperties.contains(QLatin1String("IsEnabled")))
+            emit q->enabledChanged(isEnabled());
+
+        QVariantMap::ConstIterator ScreenReaderEnabledIt = changedProperties.constFind(QLatin1String("ScreenReaderEnabled"));
+        if (ScreenReaderEnabledIt != changedProperties.constEnd())
+            emit q->screenReaderEnabledChanged(ScreenReaderEnabledIt.value().toBool());
+        else if (invalidatedProperties.contains(QLatin1String("ScreenReaderEnabled")))
+            emit q->screenReaderEnabledChanged(isScreenReaderEnabled());
     }
 }
 

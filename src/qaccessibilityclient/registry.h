@@ -104,6 +104,16 @@ public slots:
     void setEnabled(bool enable);
 
     /**
+        Returns true if the screen reader is enabled.
+
+        This means that there is potentially a screen reader, if installed,
+        that is enabled or disabled. This allows to enable system wide a
+        screen reader with just one switch.
+    */
+    bool isScreenReaderEnabled() const;
+    void setScreenReaderEnabled(bool enable);
+
+    /**
         In order to get notified of changes in accessible applications
         it is neccessary to subscribe to the listeners that are relevant.
 
@@ -140,6 +150,14 @@ Q_SIGNALS:
         ny someone else then this signal is emitted.
     */
     void enabledChanged(bool enabled);
+
+    /**
+        Emitted if the \a isScreenReaderEnabled state changed.
+
+        If the screen reader enabled property got enabled or disabled either
+        by us or by someone else then this signal is emitted.
+    */
+    void screenReaderEnabledChanged(bool enabled);
 
     /**
         Emitted if a AccessibleObject is created.

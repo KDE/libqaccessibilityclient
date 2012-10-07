@@ -54,6 +54,8 @@ public:
 
     bool isEnabled() const;
     void setEnabled(bool enable);
+    bool isScreenReaderEnabled() const;
+    void setScreenReaderEnabled(bool enable);
 
     QUrl url(const AccessibleObject &object) const;
     AccessibleObject fromUrl(const QUrl &url) const;

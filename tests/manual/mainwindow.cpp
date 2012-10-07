@@ -130,6 +130,14 @@ void MainWindow::MainWindow::initActions()
     connect(m_registry, SIGNAL(enabledChanged(bool)), m_enableA11yAction, SLOT(setChecked(bool)));
     connect(m_enableA11yAction, SIGNAL(toggled(bool)), m_registry, SLOT(setEnabled(bool)));
 
+    m_enableScreenReaderAction = new QAction(this);
+    m_enableScreenReaderAction->setText(QString("Enable Screen Reader"));
+    m_enableScreenReaderAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_R));
+    m_enableScreenReaderAction->setCheckable(true);
+    m_enableScreenReaderAction->setChecked(m_registry->isScreenReaderEnabled());
+    connect(m_registry, SIGNAL(screenReaderEnabledChanged(bool)), m_enableScreenReaderAction, SLOT(setChecked(bool)));
+    connect(m_enableScreenReaderAction, SIGNAL(toggled(bool)), m_registry, SLOT(setScreenReaderEnabled(bool)));
+
     m_quitAction = new QAction(tr("&Quit"), this);
     m_quitAction->setShortcuts(QKeySequence::Quit);
     connect(m_quitAction, SIGNAL(triggered()), this, SLOT(close()));
@@ -151,6 +159,7 @@ void MainWindow::MainWindow::initMenu()
     settingsMenu->addAction(m_showClientCacheAction);
     settingsMenu->addSeparator();
     settingsMenu->addAction(m_enableA11yAction);
+    settingsMenu->addAction(m_enableScreenReaderAction);
 }
 
 void MainWindow::MainWindow::initUi()

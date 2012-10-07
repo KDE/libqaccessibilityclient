@@ -116,6 +116,7 @@ private:
     QAction *m_followFocusAction;
     QAction *m_showClientCacheAction;
     QAction *m_enableA11yAction;
+    QAction *m_enableScreenReaderAction;
     QAction *m_quitAction;
 };
 
