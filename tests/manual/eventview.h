@@ -31,9 +31,13 @@
 
 #include "ui_eventview.h"
 
+class EventsModel;
+
 class EventsWidget :public QWidget
 {
     Q_OBJECT
+    Q_ENUMS(EventType)
+    Q_ENUMS(EventTypes)
 public:
     enum EventType {
         NoEvents = 0x00,
@@ -56,7 +60,7 @@ public:
     Q_DECLARE_FLAGS(EventTypes, EventType)
 
     explicit EventsWidget(QAccessibleClient::Registry *registry, QWidget *parent = 0);
-    void addLog(const QAccessibleClient::AccessibleObject &object, EventTypes type, const QString &text = QString());
+    void addLog(const QAccessibleClient::AccessibleObject &object, EventType eventType, const QString &text = QString());
 
 Q_SIGNALS:
     void anchorClicked(const QUrl &);
@@ -65,10 +69,13 @@ public Q_SLOTS:
     void checkStateChanged();
 private Q_SLOTS:
     void installUpdateHandler();
+    void clearLog();
 private:
     QAccessibleClient::Registry *m_registry;
     Ui::EventViewWidget m_ui;
-    int m_selectedEvents;
+    EventsModel *m_model;
+
+//     int m_selectedEvents;
 
     // This is to avoid sending updates for the events view.
     // The reason is that we end up in endless loops with other accessible tools such as accerciser.
@@ -81,5 +88,8 @@ private:
     static QAccessible::UpdateHandler m_originalAccessibilityUpdateHandler;
     static QObject *m_textEditForAccessibilityUpdateHandler;
 };
+
+Q_DECLARE_METATYPE(EventsWidget::EventType)
+Q_DECLARE_METATYPE(EventsWidget::EventTypes)
 
 #endif
