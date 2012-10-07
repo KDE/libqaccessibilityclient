@@ -88,25 +88,16 @@ EventsWidget::EventsWidget(QAccessibleClient::Registry *registry, QWidget *paren
     filerModel->setColumnCount(2);
     filerModel->appendRow(new QStandardItem(QString("Event Filter")));
 
-    QVector< QPair<EventType, QString> > filterList;
-    filterList << QPair<EventType, QString>(StateChanged, "State");
-    filterList << QPair<EventType, QString>(NameChanged, "Name");
-    filterList << QPair<EventType, QString>(DescriptionChanged, "Description");
-    filterList << QPair<EventType, QString>(Window, "Window");
-    filterList << QPair<EventType, QString>(Focus, "Focus");
-    filterList << QPair<EventType, QString>(Document, "Document");
-    filterList << QPair<EventType, QString>(Object, "Object");
-    filterList << QPair<EventType, QString>(Text, "Text");
-    filterList << QPair<EventType, QString>(Table, "Table");
-    filterList << QPair<EventType, QString>(Others, "Others");
+    QVector< EventType > filterList;
+    filterList << StateChanged << NameChanged << DescriptionChanged << Window << Focus << Document << Object << Text << Table << Others;
     for(int i = 0; i < filterList.count(); ++i) {
-        QPair<EventType, QString> p = filterList[i];
-        QStandardItem* item = new QStandardItem(p.second);
+        EventType t = filterList[i];
+        QStandardItem* item = new QStandardItem(eventName(t));
         item->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
-        item->setData(QVariant::fromValue<EventType>(p.first), Qt::UserRole);
+        item->setData(QVariant::fromValue<EventType>(t), Qt::UserRole);
         //item->setData(Qt::Unchecked, Qt::CheckStateRole);
         item->setData(Qt::Checked, Qt::CheckStateRole);
-        filerModel->appendRow(QList<QStandardItem*>() << item << new QStandardItem());
+        filerModel->appendRow(QList<QStandardItem*>() << item);
     }
     m_ui.filterComboBox->setModel(filerModel);
 
@@ -162,6 +153,7 @@ QString EventsWidget::eventName(EventType eventType) const
         case EventsWidget::Object:             s = QLatin1String("Object"); break;
         case EventsWidget::Text:               s = QLatin1String("Text"); break;
         case EventsWidget::Table:              s = QLatin1String("Table"); break;
+        case EventsWidget::Others:             s = QLatin1String("Others"); break;
     }
     return s;
 }
