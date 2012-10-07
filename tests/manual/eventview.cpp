@@ -112,6 +112,7 @@ EventsWidget::EventsWidget(QAccessibleClient::Registry *registry, QWidget *paren
 
 //m_ui.eventListView->setOpenLinks(false);
 //connect(m_ui.eventTextBrowser, SIGNAL(anchorClicked(QUrl)), this, SIGNAL(anchorClicked(QUrl)));
+    m_ui.clearButton->setFixedHeight(m_ui.filterComboBox->sizeHint().height());
     connect(m_ui.clearButton, SIGNAL(clicked()), this, SLOT(clearLog()));
     connect(m_ui.filterComboBox->model(), SIGNAL(itemChanged(QStandardItem*)), this, SLOT(checkStateChanged()));
 
@@ -152,15 +153,15 @@ QString EventsWidget::eventName(EventType eventType) const
 {
     QString s;
     switch (eventType) {
-        case EventsWidget::Focus:              s = QLatin1String("Focus event"); break;
-        case EventsWidget::StateChanged:       s = QLatin1String("State changed"); break;
-        case EventsWidget::NameChanged:        s = QLatin1String("Name changed"); break;
-        case EventsWidget::DescriptionChanged: s = QLatin1String("Description changed"); break;
-        case EventsWidget::Window:             s = QLatin1String("Window event"); break;
-        case EventsWidget::Document:           s = QLatin1String("Document event"); break;
-        case EventsWidget::Object:             s = QLatin1String("Object event"); break;
-        case EventsWidget::Text:               s = QLatin1String("Text event"); break;
-        case EventsWidget::Table:              s = QLatin1String("Table event"); break;
+        case EventsWidget::Focus:              s = QLatin1String("Focus"); break;
+        case EventsWidget::StateChanged:       s = QLatin1String("State"); break;
+        case EventsWidget::NameChanged:        s = QLatin1String("Name"); break;
+        case EventsWidget::DescriptionChanged: s = QLatin1String("Description"); break;
+        case EventsWidget::Window:             s = QLatin1String("Window"); break;
+        case EventsWidget::Document:           s = QLatin1String("Document"); break;
+        case EventsWidget::Object:             s = QLatin1String("Object"); break;
+        case EventsWidget::Text:               s = QLatin1String("Text"); break;
+        case EventsWidget::Table:              s = QLatin1String("Table"); break;
     }
     return s;
 }
