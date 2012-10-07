@@ -92,7 +92,6 @@ RegistryPrivate::RegistryPrivate(Registry *qq)
     , m_cacheStrategy(new CacheWeakStrategy())
 {
     connect(&conn, SIGNAL(connectionFetched()), this, SLOT(connectionFetched()));
-    connect(&conn, SIGNAL(enabledChanged(bool)), q, SIGNAL(enabledChanged(bool)));
     connect(&m_actionMapper, SIGNAL(mapped(QString)), this, SLOT(actionTriggered(QString)));
     init();
 }
