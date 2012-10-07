@@ -140,7 +140,7 @@ bool RegistryPrivate::isEnabled() const
         return false;
     }
 
-    bool enabled = qdbus_cast< QVariant >(reply).toBool();
+    bool enabled = reply.value().toBool();
     return enabled;
 }
 
@@ -187,7 +187,7 @@ void RegistryPrivate::connectionFetched()
 
     QDBusConnection session = QDBusConnection::sessionBus();
     if (session.isConnected()) {
-        bool connected = session.connect(QLatin1String("org.a11y.Bus"), QLatin1String("/org/a11y/bus"), QLatin1String("org.freedesktop.DBus"), QLatin1String("PropertiesChanged"), this, SLOT(a11yConnectionChanged(QString,QVariantMap,QStringList)));
+        bool connected = session.connect(QLatin1String("org.a11y.Bus"), QLatin1String("/org/a11y/bus"), QLatin1String("org.freedesktop.DBus.Properties"), QLatin1String("PropertiesChanged"), this, SLOT(a11yConnectionChanged(QString,QVariantMap,QStringList)));
         if (!connected)
             qWarning() << Q_FUNC_INFO << "Failed to connect with signal org.a11y.Status.PropertiesChanged on org.a11y.Bus";
     }
