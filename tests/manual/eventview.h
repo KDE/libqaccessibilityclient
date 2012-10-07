@@ -21,8 +21,7 @@
 #ifndef EVENTVIEW_H
 #define EVENTVIEW_H
 
-#include <qtextbrowser.h>
-
+#include <QTimer>
 #include <qboxlayout.h>
 #include <qaccessible.h>
 
@@ -31,6 +30,7 @@
 
 #include "ui_eventview.h"
 
+class QStandardItem;
 class EventsModel;
 
 class EventsWidget :public QWidget
@@ -59,6 +59,8 @@ public:
     };
     Q_DECLARE_FLAGS(EventTypes, EventType)
 
+    QString eventName(EventType eventType) const;
+
     explicit EventsWidget(QAccessibleClient::Registry *registry, QWidget *parent = 0);
     void addLog(const QAccessibleClient::AccessibleObject &object, EventType eventType, const QString &text = QString());
 
@@ -70,10 +72,14 @@ public Q_SLOTS:
 private Q_SLOTS:
     void installUpdateHandler();
     void clearLog();
+    void processPending();
 private:
     QAccessibleClient::Registry *m_registry;
     Ui::EventViewWidget m_ui;
     EventsModel *m_model;
+
+    QTimer m_pendingTimer;
+    QVector< QList<QStandardItem*> > m_pendingLogs;
 
 //     int m_selectedEvents;
 

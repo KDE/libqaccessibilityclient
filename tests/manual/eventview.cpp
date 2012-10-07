@@ -36,31 +36,19 @@
 class EventsModel : public QStandardItemModel
 {
 public:
-    EventsModel(EventsWidget *view) : QStandardItemModel(view) {
+    EventsModel(EventsWidget *view) : QStandardItemModel(view), m_view(view) {
         setColumnCount(2);
         setHorizontalHeaderLabels( QStringList() << QString("Type") << QString("Text") );
     }
     ~EventsModel() {}
-    void addLog(const QAccessibleClient::AccessibleObject &object, EventsWidget::EventType eventType, const QString &text)
+
+    void addLog(QList<QStandardItem*> item)
     {
-        QString eventName;
-        switch (eventType) {
-            case EventsWidget::Focus:              eventName = QLatin1String("Focus event"); break;
-            case EventsWidget::StateChanged:       eventName = QLatin1String("State changed"); break;
-            case EventsWidget::NameChanged:        eventName = QLatin1String("Name changed"); break;
-            case EventsWidget::DescriptionChanged: eventName = QLatin1String("Description changed"); break;
-            case EventsWidget::Window:             eventName = QLatin1String("Window event"); break;
-            case EventsWidget::Document:           eventName = QLatin1String("Document event"); break;
-            case EventsWidget::Object:             eventName = QLatin1String("Object event"); break;
-            case EventsWidget::Text:               eventName = QLatin1String("Text event"); break;
-            case EventsWidget::Table:              eventName = QLatin1String("Table event"); break;
-        }
         QStandardItem *parentItem = invisibleRootItem();
-        QStandardItem *nameItem = new QStandardItem(eventName);
-        nameItem->setData(QVariant::fromValue<EventsWidget::EventType>(eventType), Qt::UserRole);
-        QStandardItem *textItem = new QStandardItem(text);
-        parentItem->appendRow(QList<QStandardItem*>() << nameItem << textItem);
+        parentItem->appendRow(item);
     }
+private:
+    EventsWidget *m_view;
 };
 
 class EventsProxyModel : public QSortFilterProxyModel
@@ -127,6 +115,11 @@ EventsWidget::EventsWidget(QAccessibleClient::Registry *registry, QWidget *paren
     connect(m_ui.clearButton, SIGNAL(clicked()), this, SLOT(clearLog()));
     connect(m_ui.filterComboBox->model(), SIGNAL(itemChanged(QStandardItem*)), this, SLOT(checkStateChanged()));
 
+    // Collect multiple addLog calls and process them after 500 ms earliest. This
+    // makes sure multiple calls to addLog will be compressed to one only one
+    // view refresh what improves performance.
+    m_pendingTimer.setInterval(500);
+    connect(&m_pendingTimer, SIGNAL(timeout()), this, SLOT(processPending()));
     m_textEditForAccessibilityUpdateHandler = m_ui.eventListView;
     checkStateChanged();
 
@@ -155,34 +148,55 @@ void EventsWidget::customUpdateHandler(QObject *object, int who, QAccessible::Ev
     //    m_originalAccessibilityUpdateHandler(object, who, reason);
 }
 
+QString EventsWidget::eventName(EventType eventType) const
+{
+    QString s;
+    switch (eventType) {
+        case EventsWidget::Focus:              s = QLatin1String("Focus event"); break;
+        case EventsWidget::StateChanged:       s = QLatin1String("State changed"); break;
+        case EventsWidget::NameChanged:        s = QLatin1String("Name changed"); break;
+        case EventsWidget::DescriptionChanged: s = QLatin1String("Description changed"); break;
+        case EventsWidget::Window:             s = QLatin1String("Window event"); break;
+        case EventsWidget::Document:           s = QLatin1String("Document event"); break;
+        case EventsWidget::Object:             s = QLatin1String("Object event"); break;
+        case EventsWidget::Text:               s = QLatin1String("Text event"); break;
+        case EventsWidget::Table:              s = QLatin1String("Table event"); break;
+    }
+    return s;
+}
+
 void EventsWidget::clearLog()
 {
     m_model->clear();
+}
+
+void EventsWidget::processPending()
+{
+    m_pendingTimer.stop();
+    QVector< QList<QStandardItem*> > pendingLogs = m_pendingLogs;
+    m_pendingLogs.clear();
+    for(int i = 0; i < pendingLogs.count(); ++i) {
+        m_model->addLog(pendingLogs[i]);
+    }
 }
 
 void EventsWidget::addLog(const QAccessibleClient::AccessibleObject &object, EventsWidget::EventType eventType, const QString &text)
 {
     if (!object.isValid())
         return;
+
 //     if (object.name() == m_ui.eventListView->accessibleName() && object.description() == m_ui.eventListView->accessibleDescription())
 //         return;
 
-    m_model->addLog(object, eventType, text);
-
-#if 0
-    QString eventName;
-    switch (eventType) {
-    case Focus:              eventName = QLatin1String("Focus event"); break;
-    case StateChanged:       eventName = QLatin1String("State changed"); break;
-    case NameChanged:        eventName = QLatin1String("Name changed"); break;
-    case DescriptionChanged: eventName = QLatin1String("Description changed"); break;
-    case Window:             eventName = QLatin1String("Window event"); break;
-    case Document:           eventName = QLatin1String("Document event"); break;
-    case Object:             eventName = QLatin1String("Object event"); break;
-    case Text:               eventName = QLatin1String("Text event"); break;
-    case Table:              eventName = QLatin1String("Table event"); break;
+    QStandardItem *nameItem = new QStandardItem(eventName(eventType));
+    nameItem->setData(QVariant::fromValue<EventType>(eventType), Qt::UserRole);
+    QStandardItem *textItem = new QStandardItem(text);
+    m_pendingLogs.append(QList<QStandardItem*>() << nameItem << textItem);
+    if (!m_pendingTimer.isActive()) {
+        m_pendingTimer.start();
     }
 
+#if 0
     bool wasMax = m_ui.eventListView->verticalScrollBar()->value() == m_ui.eventListView->verticalScrollBar()->maximum();
 
     QTextDocument *doc = m_ui.eventTextBrowser->document();
