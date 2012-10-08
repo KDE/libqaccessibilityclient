@@ -80,7 +80,7 @@ macro(MAKE_INSTALL_PATH_ABSOLUTE out in)
    if (IS_ABSOLUTE "${in}")    # IS_ABSOLUTE is new since cmake 2.4.8
       set(${out} "${in}")
    else()
-      set(${out} "\${KDEPIMLIBS_INSTALL_DIR}/${in}")
+      set(${out} "\${CMAKE_INSTALL_PREFIX}/${in}")
    endif()
 endmacro(MAKE_INSTALL_PATH_ABSOLUTE out in)
 
