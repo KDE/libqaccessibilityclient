@@ -47,6 +47,13 @@ MainWindow::MainWindow(QWidget *parent)
     initActions();
     initMenu();
 
+    QSettings settings("kde.org", "kdea11yapp");
+    m_registry->setCacheType(Registry::CacheType(settings.value("cacheStrategy", m_registry->cacheType()).toInt()));
+    restoreGeometry(settings.value("geometry").toByteArray());
+    restoreState(settings.value("windowState").toByteArray());
+
+    m_eventsWidget->loadSettings(settings);
+
     connect(m_registry, SIGNAL(added(QAccessibleClient::AccessibleObject)), this, SLOT(added(QAccessibleClient::AccessibleObject)));
     connect(m_registry, SIGNAL(removed(QAccessibleClient::AccessibleObject)), this, SLOT(removed(QAccessibleClient::AccessibleObject)));
     connect(m_registry, SIGNAL(defunct(QAccessibleClient::AccessibleObject)), this, SLOT(defunct(QAccessibleClient::AccessibleObject)));
@@ -84,11 +91,6 @@ MainWindow::MainWindow(QWidget *parent)
     connect(m_registry, SIGNAL(accessibleNameChanged(QAccessibleClient::AccessibleObject)), this, SLOT(accessibleNameChanged(QAccessibleClient::AccessibleObject)));
     connect(m_registry, SIGNAL(accessibleDescriptionChanged(QAccessibleClient::AccessibleObject)), this, SLOT(accessibleDescriptionChanged(QAccessibleClient::AccessibleObject)));
 
-    QSettings settings("kde.org", "kdea11yapp");
-    m_registry->setCacheType(Registry::CacheType(settings.value("cacheStrategy", m_registry->cacheType()).toInt()));
-    restoreGeometry(settings.value("geometry").toByteArray());
-    restoreState(settings.value("windowState").toByteArray());
-
     m_registry->subscribeEventListeners(QAccessibleClient::Registry::AllEventListeners);
 }
 
@@ -103,6 +105,11 @@ void MainWindow::MainWindow::closeEvent(QCloseEvent *event)
     settings.setValue("cacheStrategy", int(m_registry->cacheType()));
     settings.setValue("geometry", saveGeometry());
     settings.setValue("windowState", saveState());
+
+    m_eventsWidget->saveSettings(settings);
+
+    settings.sync();
+
     QMainWindow::closeEvent(event);
 }
 

@@ -25,6 +25,7 @@
 #include <qtextobject.h>
 #include <qtimer.h>
 #include <qscrollbar.h>
+#include <qsettings.h>
 #include <QPair>
 #include <QSortFilterProxyModel>
 #include <QStandardItemModel>
@@ -36,12 +37,14 @@
 class EventsModel : public QStandardItemModel
 {
 public:
-    EventsModel(EventsWidget *view) : QStandardItemModel(view), m_view(view) {
-        setColumnCount(2);
-        setHorizontalHeaderLabels( QStringList() << QString("Type") << QString("Text") );
-    }
+    EventsModel(EventsWidget *view) : QStandardItemModel(view), m_view(view) { clearLog(); }
     ~EventsModel() {}
-
+    void clearLog()
+    {
+        clear();
+        setColumnCount(4);
+        setHorizontalHeaderLabels( QStringList() << QString("Accessible") << QString("Role") << QString("Event") << QString("Action") );
+    }
     void addLog(QList<QStandardItem*> item)
     {
         QStandardItem *parentItem = invisibleRootItem();
@@ -55,7 +58,10 @@ class EventsProxyModel : public QSortFilterProxyModel
 {
 public:
     EventsProxyModel(QWidget *parent = 0) : QSortFilterProxyModel(parent), m_types(EventsWidget::AllEvents) {}
-    void setFiler(EventsWidget::EventTypes types) {
+    EventsWidget::EventTypes filter() const {
+        return m_types;
+    }
+    void setFilter(EventsWidget::EventTypes types) {
         m_types = types;
         invalidateFilter();
     }
@@ -74,19 +80,19 @@ QAccessible::UpdateHandler EventsWidget::m_originalAccessibilityUpdateHandler = 
 QObject *EventsWidget::m_textEditForAccessibilityUpdateHandler = 0;
 
 EventsWidget::EventsWidget(QAccessibleClient::Registry *registry, QWidget *parent)
-    : QWidget(parent), m_registry(registry), m_model(new EventsModel(this))/*, m_selectedEvents(AllEvents)*/ {
+    : QWidget(parent), m_registry(registry), m_model(new EventsModel(this)), m_proxyModel(new EventsProxyModel(this)) {
     m_ui.setupUi(this);
 
     m_ui.eventListView->setAccessibleName(QLatin1String("Events View"));
     m_ui.eventListView->setAccessibleDescription(QString("Displays all received events"));
 
-    EventsProxyModel *proxyModel = new EventsProxyModel();
-    proxyModel->setSourceModel(m_model);
-    m_ui.eventListView->setModel(proxyModel);
+    m_proxyModel->setSourceModel(m_model);
+    m_ui.eventListView->setModel(m_proxyModel);
 
     QStandardItemModel *filerModel = new QStandardItemModel();
-    filerModel->setColumnCount(2);
-    filerModel->appendRow(new QStandardItem(QString("Event Filter")));
+    QStandardItem *firstFilterItem = new QStandardItem(QString("Event Filter"));
+    firstFilterItem->setFlags(Qt::ItemIsEnabled);
+    filerModel->appendRow(firstFilterItem);
 
     QVector< EventType > filterList;
     filterList << StateChanged << NameChanged << DescriptionChanged << Window << Focus << Document << Object << Text << Table << Others;
@@ -95,7 +101,6 @@ EventsWidget::EventsWidget(QAccessibleClient::Registry *registry, QWidget *paren
         QStandardItem* item = new QStandardItem(eventName(t));
         item->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
         item->setData(QVariant::fromValue<EventType>(t), Qt::UserRole);
-        //item->setData(Qt::Unchecked, Qt::CheckStateRole);
         item->setData(Qt::Checked, Qt::CheckStateRole);
         filerModel->appendRow(QList<QStandardItem*>() << item);
     }
@@ -106,6 +111,7 @@ EventsWidget::EventsWidget(QAccessibleClient::Registry *registry, QWidget *paren
     m_ui.clearButton->setFixedHeight(m_ui.filterComboBox->sizeHint().height());
     connect(m_ui.clearButton, SIGNAL(clicked()), this, SLOT(clearLog()));
     connect(m_ui.filterComboBox->model(), SIGNAL(itemChanged(QStandardItem*)), this, SLOT(checkStateChanged()));
+    connect(m_ui.eventListView, SIGNAL(activated(QModelIndex)), this, SLOT(eventActivated(QModelIndex)));
 
     // Collect multiple addLog calls and process them after 500 ms earliest. This
     // makes sure multiple calls to addLog will be compressed to one only one
@@ -158,9 +164,41 @@ QString EventsWidget::eventName(EventType eventType) const
     return s;
 }
 
+void EventsWidget::loadSettings(QSettings &settings)
+{
+    settings.beginGroup("events");
+
+    bool eventsFilterOk;
+    EventTypes eventsFilter = EventTypes(settings.value("eventsFiler").toInt(&eventsFilterOk));
+    if (!eventsFilterOk)
+        eventsFilter = AllEvents;
+
+    QAbstractItemModel *model = m_ui.filterComboBox->model();
+    if (eventsFilter != m_proxyModel->filter()) {
+        for (int i = 1; i < model->rowCount(); ++i) {
+            QModelIndex index = model->index(i, 0);
+            EventType type = model->data(index, Qt::UserRole).value<EventType>();
+            if (eventsFilter.testFlag(type))
+                model->setData(index, Qt::Checked, Qt::CheckStateRole);
+            else
+                model->setData(index, Qt::Unchecked, Qt::CheckStateRole);
+        }
+        m_proxyModel->setFilter(eventsFilter);
+    }
+
+    settings.endGroup();
+}
+
+void EventsWidget::saveSettings(QSettings &settings)
+{
+    settings.beginGroup("events");
+    settings.setValue("eventsFiler", int(m_proxyModel->filter()));
+    settings.endGroup();
+}
+
 void EventsWidget::clearLog()
 {
-    m_model->clear();
+    m_model->clearLog();
 }
 
 void EventsWidget::processPending()
@@ -168,8 +206,15 @@ void EventsWidget::processPending()
     m_pendingTimer.stop();
     QVector< QList<QStandardItem*> > pendingLogs = m_pendingLogs;
     m_pendingLogs.clear();
+    bool wasMax = true;//m_ui.eventListView->verticalScrollBar()->value() - 10 >= m_ui.eventListView->verticalScrollBar()->maximum();
     for(int i = 0; i < pendingLogs.count(); ++i) {
         m_model->addLog(pendingLogs[i]);
+    }
+    if (wasMax) { // scroll down if we where before scrolled down too
+        //m_ui.eventListView->verticalScrollBar()->setValue(m_ui.eventListView->verticalScrollBar()->maximum());
+
+        QModelIndex index = m_proxyModel->index(m_proxyModel->rowCount()-1, 0);
+        m_ui.eventListView->scrollTo(index, QAbstractItemView::PositionAtBottom);
     }
 }
 
@@ -181,10 +226,15 @@ void EventsWidget::addLog(const QAccessibleClient::AccessibleObject &object, Eve
 //     if (object.name() == m_ui.eventListView->accessibleName() && object.description() == m_ui.eventListView->accessibleDescription())
 //         return;
 
-    QStandardItem *nameItem = new QStandardItem(eventName(eventType));
+    QStandardItem *nameItem = new QStandardItem(object.name());
     nameItem->setData(QVariant::fromValue<EventType>(eventType), Qt::UserRole);
+    nameItem->setData(m_registry->url(object).toString(), Qt::UserRole + 1);
+    QStandardItem *roleItem = new QStandardItem(object.roleName());
+    roleItem->setData(QVariant::fromValue<EventType>(eventType), Qt::UserRole);
+    roleItem->setData(m_registry->url(object).toString(), Qt::UserRole + 1);
+    QStandardItem *typeItem = new QStandardItem(eventName(eventType));
     QStandardItem *textItem = new QStandardItem(text);
-    m_pendingLogs.append(QList<QStandardItem*>() << nameItem << textItem);
+    m_pendingLogs.append(QList<QStandardItem*>() << nameItem << roleItem << typeItem << textItem);
     if (!m_pendingTimer.isActive()) {
         m_pendingTimer.start();
     }
@@ -240,7 +290,18 @@ void EventsWidget::checkStateChanged()
             allEvents = false;
         }
     }
+    m_proxyModel->setFilter(types);
+}
 
+void EventsWidget::eventActivated(const QModelIndex &index)
+{
+    Q_ASSERT(index.isValid());
     EventsProxyModel *proxyModel = dynamic_cast<EventsProxyModel*>(m_ui.eventListView->model());
-    proxyModel->setFiler(types);
+    Q_ASSERT(proxyModel);
+    QUrl url(proxyModel->data(index, Qt::UserRole+1).toString());
+    if (!url.isValid()) {
+        qWarning() << Q_FUNC_INFO << "Invalid url";
+        return;
+    }
+    emit anchorClicked(url);
 }

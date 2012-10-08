@@ -31,7 +31,10 @@
 #include "ui_eventview.h"
 
 class QStandardItem;
+class QSettings;
+
 class EventsModel;
+class EventsProxyModel;
 
 class EventsWidget :public QWidget
 {
@@ -62,6 +65,10 @@ public:
     QString eventName(EventType eventType) const;
 
     explicit EventsWidget(QAccessibleClient::Registry *registry, QWidget *parent = 0);
+
+    void loadSettings(QSettings &settings);
+    void saveSettings(QSettings &settings);
+
     void addLog(const QAccessibleClient::AccessibleObject &object, EventType eventType, const QString &text = QString());
 
 Q_SIGNALS:
@@ -73,10 +80,12 @@ private Q_SLOTS:
     void installUpdateHandler();
     void clearLog();
     void processPending();
+    void eventActivated(const QModelIndex &index);
 private:
     QAccessibleClient::Registry *m_registry;
     Ui::EventViewWidget m_ui;
     EventsModel *m_model;
+    EventsProxyModel *m_proxyModel;
 
     QTimer m_pendingTimer;
     QVector< QList<QStandardItem*> > m_pendingLogs;
