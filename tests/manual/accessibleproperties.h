@@ -31,6 +31,10 @@ namespace QAccessibleClient {
 class ObjectProperties : public QStandardItemModel
 {
 public:
+    enum Role {
+        NameRole,
+        ValueRole
+    };
     explicit ObjectProperties(QObject *parent = 0);
     virtual ~ObjectProperties();
 

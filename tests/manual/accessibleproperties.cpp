@@ -28,6 +28,10 @@ using namespace QAccessibleClient;
 ObjectProperties::ObjectProperties(QObject *parent)
     : QStandardItemModel(parent)
 {
+    QHash<int, QByteArray> roles;
+    roles[NameRole] = "name";
+    roles[ValueRole] = "value";
+    setRoleNames(roles);
 }
 
 ObjectProperties::~ObjectProperties()

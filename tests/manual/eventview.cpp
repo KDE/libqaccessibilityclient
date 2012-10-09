@@ -38,20 +38,45 @@ class EventsModel : public QStandardItemModel
 {
 public:
     enum Column {
-        AccessibleColumn = 0,
-        RoleColumn = 1,
-        EventColumn = 2,
-        ActionColumn = 3,
+        AccessibleRole = 0,
+        RoleRole = 1,
+        EventRole = 2,
+        ActionRole = 3,
         EventTypeRole = Qt::UserRole,
         UrlRole
     };
-    EventsModel(EventsWidget *view) : QStandardItemModel(view), m_view(view) { clearLog(); }
+    EventsModel(EventsWidget *view) : QStandardItemModel(view), m_view(view) {
+        QHash<int, QByteArray> roles;
+        roles[AccessibleRole] = "accessible";
+        roles[RoleRole] = "role";
+        roles[EventRole] = "event";
+        roles[EventTypeRole] = "eventType";
+        roles[UrlRole] = "url";
+        setRoleNames(roles);
+        clearLog();
+    }
     ~EventsModel() {}
+    QString roleLabel(Column c) const
+    {
+        switch (c) {
+            case AccessibleRole: return QString("Accessible");
+            case RoleRole: return QString("Role");
+            case EventRole: return QString("Event");
+            case ActionRole: return QString("Action");
+            case EventTypeRole:
+            case UrlRole:
+                break;
+        }
+        return QString();
+    }
     void clearLog()
     {
         clear();
         setColumnCount(4);
-        setHorizontalHeaderLabels( QStringList() << QString("Accessible") << QString("Role") << QString("Event") << QString("Action") );
+        QStringList headerLabels;
+        Q_FOREACH(Column c, QList<Column>() << AccessibleRole << RoleRole << EventRole << ActionRole)
+            headerLabels << roleLabel(c);
+        setHorizontalHeaderLabels(headerLabels);
     }
     void addLog(QList<QStandardItem*> item)
     {
@@ -96,13 +121,13 @@ protected:
                 return false;
         }
         if (!m_accessibleFilter.isEmpty()) {
-            QModelIndex index = sourceModel()->index(source_row, EventsModel::AccessibleColumn, source_parent);
+            QModelIndex index = sourceModel()->index(source_row, EventsModel::AccessibleRole, source_parent);
             QString accessibleName = index.data(Qt::DisplayRole).toString();
             if (!accessibleName.contains(m_accessibleFilter, Qt::CaseInsensitive))
                 return false;
         }
         if (!m_roleFilter.isEmpty()) {
-            QModelIndex index = sourceModel()->index(source_row, EventsModel::RoleColumn, source_parent);
+            QModelIndex index = sourceModel()->index(source_row, EventsModel::RoleRole, source_parent);
             QString roleName = index.data(Qt::DisplayRole).toString();
             if (!roleName.contains(m_roleFilter, Qt::CaseInsensitive))
                 return false;
