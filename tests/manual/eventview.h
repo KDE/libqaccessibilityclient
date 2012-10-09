@@ -88,7 +88,6 @@ private:
     Ui::EventViewWidget m_ui;
     EventsModel *m_model;
     EventsProxyModel *m_proxyModel;
-
     QTimer m_pendingTimer;
     QVector< QList<QStandardItem*> > m_pendingLogs;
 

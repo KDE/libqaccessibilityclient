@@ -43,7 +43,8 @@ public:
         EventRole = 2,
         ActionRole = 3,
         EventTypeRole = Qt::UserRole,
-        UrlRole
+        UrlRole,
+        AppNameRole
     };
     EventsModel(EventsWidget *view) : QStandardItemModel(view), m_view(view) {
         QHash<int, QByteArray> roles;
@@ -52,6 +53,7 @@ public:
         roles[EventRole] = "event";
         roles[EventTypeRole] = "eventType";
         roles[UrlRole] = "url";
+        roles[AppNameRole] = "appName";
         setRoleNames(roles);
         clearLog();
     }
@@ -65,6 +67,7 @@ public:
             case ActionRole: return QString("Action");
             case EventTypeRole:
             case UrlRole:
+            case AppNameRole:
                 break;
         }
         return QString();
@@ -78,44 +81,69 @@ public:
             headerLabels << roleLabel(c);
         setHorizontalHeaderLabels(headerLabels);
     }
-    void addLog(QList<QStandardItem*> item)
+    struct LogItem {
+        QStandardItem *appItem;
+        bool isNewAppItem;
+        LogItem(QStandardItem *appItem, bool isNewAppItem) : appItem(appItem), isNewAppItem(isNewAppItem) {}
+    };
+    LogItem addLog(QList<QStandardItem*> item)
     {
-        QStandardItem *parentItem = invisibleRootItem();
-        parentItem->appendRow(item);
+        QString appName = item.first()->data(AppNameRole).toString();
+        QStandardItem *appItem = 0;
+        QMap<QString, QStandardItem*>::ConstIterator it = m_apps.constFind(appName);
+        bool isNewAppItem = it == m_apps.constEnd();
+        if (isNewAppItem) {
+            m_apps[appName] = appItem = new QStandardItem(appName);
+            invisibleRootItem()->appendRow(appItem);
+        } else {
+            appItem = it.value();
+        }
+        appItem->appendRow(item);
+        return LogItem(appItem, isNewAppItem);
     }
 private:
     EventsWidget *m_view;
+    QMap<QString, QStandardItem*> m_apps;
 };
 
 class EventsProxyModel : public QSortFilterProxyModel
 {
 public:
     EventsProxyModel(QWidget *parent = 0) : QSortFilterProxyModel(parent), m_types(EventsWidget::AllEvents) {}
-    EventsWidget::EventTypes filter() const {
+    EventsWidget::EventTypes filter() const
+    {
         return m_types;
     }
-    QString accessibleFilter() const {
+    QString accessibleFilter() const
+    {
         return m_accessibleFilter;
     }
-    QString roleFilter() const {
+    QString roleFilter() const
+    {
         return m_roleFilter;
     }
-    void setFilter(EventsWidget::EventTypes types) {
+    void setFilter(EventsWidget::EventTypes types)
+    {
         m_types = types;
         invalidateFilter();
     }
-    void setAccessibleFilter(const QString &filter) {
+    void setAccessibleFilter(const QString &filter)
+    {
         m_accessibleFilter = filter;
         invalidateFilter();
     }
-    void setRoleFilter(const QString &filter) {
+    void setRoleFilter(const QString &filter)
+    {
         m_roleFilter = filter;
         invalidateFilter();
     }
 protected:
-    virtual bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const {
+    virtual bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
+    {
+        QModelIndex index = sourceModel()->index(source_row, 0, source_parent);
+        if (!index.parent().isValid())
+            return true;
         if (!m_types.testFlag(EventsWidget::AllEvents)) {
-            QModelIndex index = sourceModel()->index(source_row, 0, source_parent);
             EventsWidget::EventType type = index.data(EventsModel::EventTypeRole).value<EventsWidget::EventType>();
             if (!m_types.testFlag(type))
                 return false;
@@ -273,15 +301,37 @@ void EventsWidget::processPending()
     m_pendingTimer.stop();
     QVector< QList<QStandardItem*> > pendingLogs = m_pendingLogs;
     m_pendingLogs.clear();
-    bool wasMax = true;//m_ui.eventListView->verticalScrollBar()->value() - 10 >= m_ui.eventListView->verticalScrollBar()->maximum();
+    //bool wasMax = true;//m_ui.eventListView->verticalScrollBar()->value() - 10 >= m_ui.eventListView->verticalScrollBar()->maximum();
+    QStandardItem *lastItem = 0;
+    QStandardItem *lastAppItem = 0;
     for(int i = 0; i < pendingLogs.count(); ++i) {
-        m_model->addLog(pendingLogs[i]);
+        QList<QStandardItem*> item = pendingLogs[i];
+        EventsModel::LogItem logItem = m_model->addLog(item);
+
+        // Logic to scroll to the last added logItem of the last appItem that is expanded.
+        // For appItem's not expanded the logItem is added but no scrolling will happen.
+        if (lastItem && lastAppItem && lastAppItem != logItem.appItem)
+            lastItem = 0;
+        bool selected = lastItem;
+        if (lastAppItem != logItem.appItem) {
+            lastAppItem = logItem.appItem;
+            QModelIndex index = m_proxyModel->mapFromSource(m_model->indexFromItem(logItem.appItem));
+            if (logItem.isNewAppItem) {
+                m_ui.eventListView->setExpanded(index, true);
+                selected = true;
+            } else {
+                selected = m_ui.eventListView->isExpanded(index);
+            }
+        }
+        if (selected)
+            lastItem = item.first();
     }
-    if (wasMax) { // scroll down if we where before scrolled down too
+    if (lastItem) { // scroll down to the lastItem.
         //m_ui.eventListView->verticalScrollBar()->setValue(m_ui.eventListView->verticalScrollBar()->maximum());
 
-        QModelIndex index = m_proxyModel->index(m_proxyModel->rowCount()-1, 0);
+        QModelIndex index = m_proxyModel->mapFromSource(m_model->indexFromItem(lastItem));
         m_ui.eventListView->scrollTo(index, QAbstractItemView::PositionAtBottom);
+        //m_ui.eventListView->scrollTo(index, QAbstractItemView::EnsureVisible);
     }
 }
 
@@ -296,6 +346,10 @@ void EventsWidget::addLog(const QAccessibleClient::AccessibleObject &object, Eve
     QStandardItem *nameItem = new QStandardItem(object.name());
     nameItem->setData(QVariant::fromValue<EventType>(eventType), EventsModel::EventTypeRole);
     nameItem->setData(m_registry->url(object).toString(), EventsModel::UrlRole);
+
+    AccessibleObject app = object.application();
+    nameItem->setData(app.isValid() ? app.name() : QString(), EventsModel::AppNameRole);
+
     QStandardItem *roleItem = new QStandardItem(object.roleName());
     QStandardItem *typeItem = new QStandardItem(eventName(eventType));
     QStandardItem *textItem = new QStandardItem(text);
@@ -303,37 +357,6 @@ void EventsWidget::addLog(const QAccessibleClient::AccessibleObject &object, Eve
     if (!m_pendingTimer.isActive()) {
         m_pendingTimer.start();
     }
-
-#if 0
-    bool wasMax = m_ui.eventListView->verticalScrollBar()->value() == m_ui.eventListView->verticalScrollBar()->maximum();
-
-    QTextDocument *doc = m_ui.eventTextBrowser->document();
-    doc->blockSignals(true); // to prevent infinte TextCaretMoved events
-    QTextCursor cursor(doc->lastBlock());
-    cursor.movePosition(QTextCursor::EndOfBlock, QTextCursor::KeepAnchor);
-
-    cursor.insertText(eventName.trimmed() + QLatin1String(": "));
-    if (!text.isEmpty())
-        cursor.insertText(text + QLatin1Char(' '));
-    QString url = m_registry->url(object).toString();
-    QString objectString = object.name() + QString(" [%1]").arg(object.roleName());
-    cursor.insertHtml(QString("<a href=\"%1\">%2</a> ").arg(url).arg(objectString));
-
-    AccessibleObject app = object.application();
-    if (app.isValid()) {
-        cursor.insertText(" (" + app.name() + ")");
-    } else {
-        qDebug() << "Invalid parent: " << object;
-        cursor.insertText(" (invalid application)");
-    }
-
-    cursor.insertBlock();
-
-    doc->blockSignals(false);
-
-    if (wasMax) // scroll down if we where before scrolled down too
-        m_ui.eventTextBrowser->verticalScrollBar()->setValue(m_ui.eventTextBrowser->verticalScrollBar()->maximum());
-#endif
 }
 
 void EventsWidget::checkStateChanged()
