@@ -81,6 +81,8 @@ private Q_SLOTS:
     void clearLog();
     void processPending();
     void eventActivated(const QModelIndex &index);
+    void accessibleFilterChanged();
+    void roleFilterChanged();
 private:
     QAccessibleClient::Registry *m_registry;
     Ui::EventViewWidget m_ui;

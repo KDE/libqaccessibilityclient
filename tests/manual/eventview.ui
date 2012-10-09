@@ -26,7 +26,7 @@
       <number>0</number>
      </property>
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="1,0">
+      <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="1,1,1,0">
        <property name="spacing">
         <number>4</number>
        </property>
@@ -34,7 +34,30 @@
         <number>0</number>
        </property>
        <item>
+        <widget class="QLineEdit" name="accessibleFilterEdit">
+         <property name="placeholderText">
+          <string>Accessible Filter</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="roleFilterEdit">
+         <property name="accessibleName">
+          <string>Role Filter</string>
+         </property>
+         <property name="inputMask">
+          <string/>
+         </property>
+         <property name="placeholderText">
+          <string>Role Filter</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QComboBox" name="filterComboBox">
+         <property name="accessibleName">
+          <string>Event Filter</string>
+         </property>
          <property name="currentIndex">
           <number>-1</number>
          </property>
@@ -45,6 +68,9 @@
        </item>
        <item>
         <widget class="QPushButton" name="clearButton">
+         <property name="accessibleName">
+          <string>Clear Events</string>
+         </property>
          <property name="text">
           <string>&amp;Clear</string>
          </property>

@@ -37,6 +37,14 @@
 class EventsModel : public QStandardItemModel
 {
 public:
+    enum Column {
+        AccessibleColumn = 0,
+        RoleColumn = 1,
+        EventColumn = 2,
+        ActionColumn = 3,
+        EventTypeRole = Qt::UserRole,
+        UrlRole
+    };
     EventsModel(EventsWidget *view) : QStandardItemModel(view), m_view(view) { clearLog(); }
     ~EventsModel() {}
     void clearLog()
@@ -61,18 +69,50 @@ public:
     EventsWidget::EventTypes filter() const {
         return m_types;
     }
+    QString accessibleFilter() const {
+        return m_accessibleFilter;
+    }
+    QString roleFilter() const {
+        return m_roleFilter;
+    }
     void setFilter(EventsWidget::EventTypes types) {
         m_types = types;
         invalidateFilter();
     }
+    void setAccessibleFilter(const QString &filter) {
+        m_accessibleFilter = filter;
+        invalidateFilter();
+    }
+    void setRoleFilter(const QString &filter) {
+        m_roleFilter = filter;
+        invalidateFilter();
+    }
 protected:
     virtual bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const {
-        QModelIndex index = sourceModel()->index(source_row, 0, source_parent);
-        EventsWidget::EventType type = index.data(Qt::UserRole).value<EventsWidget::EventType>();
-        return m_types.testFlag(type);
+        if (!m_types.testFlag(EventsWidget::AllEvents)) {
+            QModelIndex index = sourceModel()->index(source_row, 0, source_parent);
+            EventsWidget::EventType type = index.data(EventsModel::EventTypeRole).value<EventsWidget::EventType>();
+            if (!m_types.testFlag(type))
+                return false;
+        }
+        if (!m_accessibleFilter.isEmpty()) {
+            QModelIndex index = sourceModel()->index(source_row, EventsModel::AccessibleColumn, source_parent);
+            QString accessibleName = index.data(Qt::DisplayRole).toString();
+            if (!accessibleName.contains(m_accessibleFilter, Qt::CaseInsensitive))
+                return false;
+        }
+        if (!m_roleFilter.isEmpty()) {
+            QModelIndex index = sourceModel()->index(source_row, EventsModel::RoleColumn, source_parent);
+            QString roleName = index.data(Qt::DisplayRole).toString();
+            if (!roleName.contains(m_roleFilter, Qt::CaseInsensitive))
+                return false;
+        }
+        return true;
     }
 private:
     EventsWidget::EventTypes m_types;
+    QString m_accessibleFilter;
+    QString m_roleFilter;
 };
 
 using namespace QAccessibleClient;
@@ -89,6 +129,9 @@ EventsWidget::EventsWidget(QAccessibleClient::Registry *registry, QWidget *paren
     m_proxyModel->setSourceModel(m_model);
     m_ui.eventListView->setModel(m_proxyModel);
 
+    connect(m_ui.accessibleFilterEdit, SIGNAL(textChanged(QString)), this, SLOT(accessibleFilterChanged()));
+    connect(m_ui.roleFilterEdit, SIGNAL(textChanged(QString)), this, SLOT(roleFilterChanged()));
+
     QStandardItemModel *filerModel = new QStandardItemModel();
     QStandardItem *firstFilterItem = new QStandardItem(QString("Event Filter"));
     firstFilterItem->setFlags(Qt::ItemIsEnabled);
@@ -100,14 +143,13 @@ EventsWidget::EventsWidget(QAccessibleClient::Registry *registry, QWidget *paren
         EventType t = filterList[i];
         QStandardItem* item = new QStandardItem(eventName(t));
         item->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
-        item->setData(QVariant::fromValue<EventType>(t), Qt::UserRole);
+        item->setData(QVariant::fromValue<EventType>(t), EventsModel::EventTypeRole);
         item->setData(Qt::Checked, Qt::CheckStateRole);
         filerModel->appendRow(QList<QStandardItem*>() << item);
     }
     m_ui.filterComboBox->setModel(filerModel);
 
-//m_ui.eventListView->setOpenLinks(false);
-//connect(m_ui.eventTextBrowser, SIGNAL(anchorClicked(QUrl)), this, SIGNAL(anchorClicked(QUrl)));
+    m_ui.clearButton->setFixedWidth(QFontMetrics(m_ui.clearButton->font()).boundingRect(m_ui.clearButton->text()).width() + 4);
     m_ui.clearButton->setFixedHeight(m_ui.filterComboBox->sizeHint().height());
     connect(m_ui.clearButton, SIGNAL(clicked()), this, SLOT(clearLog()));
     connect(m_ui.filterComboBox->model(), SIGNAL(itemChanged(QStandardItem*)), this, SLOT(checkStateChanged()));
@@ -177,7 +219,7 @@ void EventsWidget::loadSettings(QSettings &settings)
     if (eventsFilter != m_proxyModel->filter()) {
         for (int i = 1; i < model->rowCount(); ++i) {
             QModelIndex index = model->index(i, 0);
-            EventType type = model->data(index, Qt::UserRole).value<EventType>();
+            EventType type = model->data(index, EventsModel::EventTypeRole).value<EventType>();
             if (eventsFilter.testFlag(type))
                 model->setData(index, Qt::Checked, Qt::CheckStateRole);
             else
@@ -227,11 +269,9 @@ void EventsWidget::addLog(const QAccessibleClient::AccessibleObject &object, Eve
 //         return;
 
     QStandardItem *nameItem = new QStandardItem(object.name());
-    nameItem->setData(QVariant::fromValue<EventType>(eventType), Qt::UserRole);
-    nameItem->setData(m_registry->url(object).toString(), Qt::UserRole + 1);
+    nameItem->setData(QVariant::fromValue<EventType>(eventType), EventsModel::EventTypeRole);
+    nameItem->setData(m_registry->url(object).toString(), EventsModel::UrlRole);
     QStandardItem *roleItem = new QStandardItem(object.roleName());
-    roleItem->setData(QVariant::fromValue<EventType>(eventType), Qt::UserRole);
-    roleItem->setData(m_registry->url(object).toString(), Qt::UserRole + 1);
     QStandardItem *typeItem = new QStandardItem(eventName(eventType));
     QStandardItem *textItem = new QStandardItem(text);
     m_pendingLogs.append(QList<QStandardItem*>() << nameItem << roleItem << typeItem << textItem);
@@ -283,7 +323,7 @@ void EventsWidget::checkStateChanged()
         QModelIndex index = model->index(i, 0);
         bool checked = model->data(index, Qt::CheckStateRole).toBool();
         if (checked) {
-            EventType type = model->data(index, Qt::UserRole).value<EventType>();
+            EventType type = model->data(index, EventsModel::EventTypeRole).value<EventType>();
             types |= type;
             names.append(QString::fromLatin1(e.valueToKey(type)));
         } else {
@@ -298,10 +338,20 @@ void EventsWidget::eventActivated(const QModelIndex &index)
     Q_ASSERT(index.isValid());
     EventsProxyModel *proxyModel = dynamic_cast<EventsProxyModel*>(m_ui.eventListView->model());
     Q_ASSERT(proxyModel);
-    QUrl url(proxyModel->data(index, Qt::UserRole+1).toString());
+    QUrl url(proxyModel->data(index, EventsModel::UrlRole).toString());
     if (!url.isValid()) {
         qWarning() << Q_FUNC_INFO << "Invalid url";
         return;
     }
     emit anchorClicked(url);
+}
+
+void EventsWidget::accessibleFilterChanged()
+{
+    m_proxyModel->setAccessibleFilter(m_ui.accessibleFilterEdit->text());
+}
+
+void EventsWidget::roleFilterChanged()
+{
+    m_proxyModel->setRoleFilter(m_ui.roleFilterEdit->text());
 }
