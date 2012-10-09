@@ -306,7 +306,8 @@ void MainWindow::MainWindow::selectionChanged(const QModelIndex& current, const 
     }
     m_propertyModel->setAccessibleObject(acc);
     m_uiview->setAccessibleObject(acc);
-    m_propertyView->expandAll();
+    for(int r = m_propertyModel->rowCount() - 1; r >= 0; --r)
+        m_propertyView->setExpanded(m_propertyModel->indexFromItem(m_propertyModel->item(r, 0)), true);
     m_propertyView->resizeColumnToContents(0);
 }
 
