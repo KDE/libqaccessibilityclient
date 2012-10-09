@@ -338,9 +338,11 @@ void EventsWidget::eventActivated(const QModelIndex &index)
     Q_ASSERT(index.isValid());
     EventsProxyModel *proxyModel = dynamic_cast<EventsProxyModel*>(m_ui.eventListView->model());
     Q_ASSERT(proxyModel);
-    QUrl url(proxyModel->data(index, EventsModel::UrlRole).toString());
+    QModelIndex firstIndex = proxyModel->index(index.row(), 0, index.parent());
+    QString s = proxyModel->data(firstIndex, EventsModel::UrlRole).toString();
+    QUrl url(s);
     if (!url.isValid()) {
-        qWarning() << Q_FUNC_INFO << "Invalid url";
+        qWarning() << Q_FUNC_INFO << "Invalid url=" << s;
         return;
     }
     emit anchorClicked(url);
