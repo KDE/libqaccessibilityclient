@@ -226,6 +226,23 @@ public:
     QList<AccessibleObject> children() const;
 
     /**
+        \brief Returns this accessible's children according to there roles.
+        \param roles The list of roles to query.
+        \return A vector that contains the children of this object according
+        to there roles. The number of vector-items equals to the number and
+        sorting of the roles items. Example code demonstrating usage:
+        \code
+        QList<Role> roles;
+        roles << Label << CheckBox;
+        QVector< QList<AccessibleObject> > c = children(roles);
+        Q_ASSERT(c.count() == roles.count());
+        Q_ASSERT(c[0].isEmpty() || c[0].first().role() == Label);
+        Q_ASSERT(c[1].isEmpty() || c[1].first().role() == CheckBox);
+        \endcode
+     */
+    QVector< QList<AccessibleObject> > children(const QList<Role> &roles) const;
+
+    /**
         \brief Returns the number of children for this accessible.
         \return number of children
      */
@@ -340,6 +357,25 @@ public:
         \return Caret Offset as an integer
     */
     int caretOffset() const;
+
+    /**
+        \brief Returns the number of carets.
+
+        \return Number of characters.
+    */
+    int caretCount() const;
+
+    /**
+        \brief Returns the text of the TextInterface.
+
+        This function provides the current text as displayed by the
+        org.a11y.atspi.Text TextInterface component.
+
+        \param startOffset The start caret offset to return the text from.
+        \param endOffset The end caret offset to return the text from.
+        \return The text as displayed by the TextInterface.
+    */
+    QString text(int startOffset = 0, int endOffset = -1) const;
 
     /**
         \brief Returns focus-point of the object

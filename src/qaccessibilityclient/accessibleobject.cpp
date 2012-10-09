@@ -118,6 +118,19 @@ QList<AccessibleObject> AccessibleObject::children() const
     return d->registryPrivate->children(*this);
 }
 
+QVector< QList<AccessibleObject> > AccessibleObject::children(const QList<Role> &roles) const
+{
+    QVector< QList<AccessibleObject> > result(roles.count());
+    QList<AccessibleObject> all = children();
+    for(int i = 0; i < all.count(); ++i) {
+        const AccessibleObject &child = all[i];
+        int index = roles.indexOf(child.role());
+        if (index < 0) continue;
+        result[index].append(child);
+    }
+    return result;
+}
+
 int AccessibleObject::childCount() const
 {
     return d->registryPrivate->childCount(*this);
@@ -205,6 +218,26 @@ int AccessibleObject::caretOffset() const
     } else {
         qWarning() << "caretOffset called on accessible that does not implement text";
         return 0;
+    }
+}
+
+int AccessibleObject::caretCount() const
+{
+    if( supportedInterfaces() & AccessibleObject::TextInterface ){
+        return d->registryPrivate->caretCount(*this);
+    } else {
+        qWarning() << "caretCount called on accessible that does not implement text";
+        return 0;
+    }
+}
+
+QString AccessibleObject::text(int startOffset, int endOffset) const
+{
+    if( supportedInterfaces() & AccessibleObject::TextInterface ){
+        return d->registryPrivate->text(*this, startOffset, endOffset);
+    } else {
+        qWarning() << "text called on accessible that does not implement text";
+        return QString();
     }
 }
 

@@ -75,7 +75,10 @@ public:
     QRect boundingRect(const AccessibleObject &object) const;
     QRect characterRect(const AccessibleObject &object, int offset) const;
     AccessibleObject::Interfaces supportedInterfaces(const AccessibleObject &object) const;
+
     int caretOffset(const AccessibleObject &object) const;
+    int caretCount(const AccessibleObject &object) const;
+    QString text(const AccessibleObject &object, int startOffset = 0, int endOffset = -1) const;
 
     AccessibleObject application(const AccessibleObject &object) const;
     QString appToolkitName(const AccessibleObject &object) const;

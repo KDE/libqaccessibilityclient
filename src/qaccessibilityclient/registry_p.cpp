@@ -865,6 +865,29 @@ int RegistryPrivate::caretOffset(const AccessibleObject &object) const
     return offset.toInt();
 }
 
+int RegistryPrivate::caretCount(const AccessibleObject &object) const
+{
+    QVariant count = getProperty(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Text"), QLatin1String("CharacterCount"));
+    if (count.isNull()) qWarning() << "Could not get caret count";
+    return count.toInt();
+}
+
+QString RegistryPrivate::text(const AccessibleObject &object, int startOffset, int endOffset) const
+{
+    QDBusMessage message = QDBusMessage::createMethodCall(
+            object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Text"), QLatin1String("GetText"));
+    QVariantList args;
+    args.append(startOffset);
+    args.append(endOffset);
+    message.setArguments(args);
+    QDBusReply<QString> reply = conn.connection().call(message);
+    if (!reply.isValid()) {
+        qWarning() << "Could not access text." << reply.error().message();
+        return QString();
+    }
+    return reply.value();
+}
+
 AccessibleObject RegistryPrivate::application(const AccessibleObject &object) const
 {
     QDBusMessage message = QDBusMessage::createMethodCall(
