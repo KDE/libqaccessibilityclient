@@ -359,11 +359,11 @@ public:
     int caretOffset() const;
 
     /**
-        \brief Returns the number of carets.
+        \brief Returns the number of characters.
 
         \return Number of characters.
     */
-    int caretCount() const;
+    int characterCount() const;
 
     /**
         \brief Returns the text of the TextInterface.

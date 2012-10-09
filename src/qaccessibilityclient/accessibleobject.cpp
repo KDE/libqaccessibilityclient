@@ -221,12 +221,12 @@ int AccessibleObject::caretOffset() const
     }
 }
 
-int AccessibleObject::caretCount() const
+int AccessibleObject::characterCount() const
 {
     if( supportedInterfaces() & AccessibleObject::TextInterface ){
-        return d->registryPrivate->caretCount(*this);
+        return d->registryPrivate->characterCount(*this);
     } else {
-        qWarning() << "caretCount called on accessible that does not implement text";
+        qWarning() << "characterCount called on accessible that does not implement text";
         return 0;
     }
 }

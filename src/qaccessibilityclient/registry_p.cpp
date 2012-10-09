@@ -865,10 +865,10 @@ int RegistryPrivate::caretOffset(const AccessibleObject &object) const
     return offset.toInt();
 }
 
-int RegistryPrivate::caretCount(const AccessibleObject &object) const
+int RegistryPrivate::characterCount(const AccessibleObject &object) const
 {
     QVariant count = getProperty(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Text"), QLatin1String("CharacterCount"));
-    if (count.isNull()) qWarning() << "Could not get caret count";
+    if (count.isNull()) qWarning() << "Could not get character count";
     return count.toInt();
 }
 
