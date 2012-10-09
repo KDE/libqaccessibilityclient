@@ -80,6 +80,13 @@ public:
     int caretCount(const AccessibleObject &object) const;
     QString text(const AccessibleObject &object, int startOffset = 0, int endOffset = -1) const;
 
+    bool setText(const AccessibleObject &object, const QString &text);
+    bool insertText(const AccessibleObject &object, int position, const QString &text, int length = -1);
+    bool copyText(const AccessibleObject &object, int startPos, int endPos);
+    bool cutText(const AccessibleObject &object, int startPos, int endPos);
+    bool deleteText(const AccessibleObject &object, int startPos, int endPos);
+    bool pasteText(const AccessibleObject &object, int position);
+
     AccessibleObject application(const AccessibleObject &object) const;
     QString appToolkitName(const AccessibleObject &object) const;
     QString appVersion(const AccessibleObject &object) const;

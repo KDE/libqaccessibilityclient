@@ -874,16 +874,80 @@ int RegistryPrivate::caretCount(const AccessibleObject &object) const
 
 QString RegistryPrivate::text(const AccessibleObject &object, int startOffset, int endOffset) const
 {
-    QDBusMessage message = QDBusMessage::createMethodCall(
-            object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Text"), QLatin1String("GetText"));
-    QVariantList args;
-    args.append(startOffset);
-    args.append(endOffset);
-    message.setArguments(args);
+    QDBusMessage message = QDBusMessage::createMethodCall(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Text"), QLatin1String("GetText"));
+    message.setArguments(QVariantList() << startOffset << endOffset);
     QDBusReply<QString> reply = conn.connection().call(message);
     if (!reply.isValid()) {
         qWarning() << "Could not access text." << reply.error().message();
         return QString();
+    }
+    return reply.value();
+}
+
+bool RegistryPrivate::setText(const AccessibleObject &object, const QString &text)
+{
+    QDBusMessage message = QDBusMessage::createMethodCall(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.EditableText"), QLatin1String("SetTextContents"));
+    message.setArguments(QVariantList() << text);
+    QDBusReply<bool> reply = conn.connection().call(message);
+    if (!reply.isValid()) {
+        qWarning() << "Could not set text." << reply.error().message();
+        return false;
+    }
+    return reply.value();
+}
+
+bool RegistryPrivate::insertText(const AccessibleObject &object, int position, const QString &text, int length)
+{
+    QDBusMessage message = QDBusMessage::createMethodCall(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.EditableText"), QLatin1String("InsertText"));
+    message.setArguments(QVariantList() << position << text << length);
+    QDBusReply<bool> reply = conn.connection().call(message);
+    if (!reply.isValid()) {
+        qWarning() << "Could not insert text." << reply.error().message();
+        return false;
+    }
+    return reply.value();
+}
+
+bool RegistryPrivate::copyText(const AccessibleObject &object, int startPos, int endPos)
+{
+    QDBusMessage message = QDBusMessage::createMethodCall(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.EditableText"), QLatin1String("CopyText"));
+    message.setArguments(QVariantList() << startPos << endPos);
+    conn.connection().call(message);
+    return true;
+}
+
+bool RegistryPrivate::cutText(const AccessibleObject &object, int startPos, int endPos)
+{
+    QDBusMessage message = QDBusMessage::createMethodCall(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.EditableText"), QLatin1String("CutText"));
+    message.setArguments(QVariantList() << startPos << endPos);
+    QDBusReply<bool> reply = conn.connection().call(message);
+    if (!reply.isValid()) {
+        qWarning() << "Could not cut text." << reply.error().message();
+        return false;
+    }
+    return reply.value();
+}
+
+bool RegistryPrivate::deleteText(const AccessibleObject &object, int startPos, int endPos)
+{
+    QDBusMessage message = QDBusMessage::createMethodCall(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.EditableText"), QLatin1String("DeleteText"));
+    message.setArguments(QVariantList() << startPos << endPos);
+    QDBusReply<bool> reply = conn.connection().call(message);
+    if (!reply.isValid()) {
+        qWarning() << "Could not delete text." << reply.error().message();
+        return false;
+    }
+    return reply.value();
+}
+
+bool RegistryPrivate::pasteText(const AccessibleObject &object, int position)
+{
+    QDBusMessage message = QDBusMessage::createMethodCall(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.EditableText"), QLatin1String("PasteText"));
+    message.setArguments(QVariantList() << position);
+    QDBusReply<bool> reply = conn.connection().call(message);
+    if (!reply.isValid()) {
+        qWarning() << "Could not paste text." << reply.error().message();
+        return false;
     }
     return reply.value();
 }

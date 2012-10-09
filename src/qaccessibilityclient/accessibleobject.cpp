@@ -233,12 +233,58 @@ int AccessibleObject::caretCount() const
 
 QString AccessibleObject::text(int startOffset, int endOffset) const
 {
-    if( supportedInterfaces() & AccessibleObject::TextInterface ){
+    if( supportedInterfaces() & AccessibleObject::TextInterface )
         return d->registryPrivate->text(*this, startOffset, endOffset);
-    } else {
-        qWarning() << "text called on accessible that does not implement text";
-        return QString();
-    }
+    qWarning() << "text called on accessible that does not implement text";
+    return QString();
+}
+
+bool AccessibleObject::setText(const QString &text)
+{
+    if( supportedInterfaces() & AccessibleObject::EditableTextInterface )
+        return d->registryPrivate->setText(*this, text);
+    qWarning() << "setText called on accessible that does not implement editableText";
+    return false;
+}
+
+bool AccessibleObject::insertText(int position, const QString &text, int length)
+{
+    if( supportedInterfaces() & AccessibleObject::EditableTextInterface )
+        return d->registryPrivate->insertText(*this, position, text, length);
+    qWarning() << "insertText called on accessible that does not implement editableText";
+    return false;
+}
+
+bool AccessibleObject::copyText(int startPos, int endPos)
+{
+    if( supportedInterfaces() & AccessibleObject::EditableTextInterface )
+        return d->registryPrivate->copyText(*this, startPos, endPos);
+    qWarning() << "copyText called on accessible that does not implement editableText";
+    return false;
+}
+
+bool AccessibleObject::cutText(int startPos, int endPos)
+{
+    if( supportedInterfaces() & AccessibleObject::EditableTextInterface )
+        return d->registryPrivate->cutText(*this, startPos, endPos);
+    qWarning() << "cutText called on accessible that does not implement editableText";
+    return false;
+}
+
+bool AccessibleObject::deleteText(int startPos, int endPos)
+{
+    if( supportedInterfaces() & AccessibleObject::EditableTextInterface )
+        return d->registryPrivate->deleteText(*this, startPos, endPos);
+    qWarning() << "deleteText called on accessible that does not implement editableText";
+    return false;
+}
+
+bool AccessibleObject::pasteText(int position)
+{
+    if( supportedInterfaces() & AccessibleObject::EditableTextInterface )
+        return d->registryPrivate->pasteText(*this, position);
+    qWarning() << "pasteText called on accessible that does not implement editableText";
+    return false;
 }
 
 QPoint AccessibleObject::focusPoint() const

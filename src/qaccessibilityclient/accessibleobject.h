@@ -378,6 +378,59 @@ public:
     QString text(int startOffset = 0, int endOffset = -1) const;
 
     /**
+        \brief Set the text of the EditableTextInterface.
+
+        \param text The text to set.
+        \return true on success and false on error.
+    */
+    bool setText(const QString &text);
+
+    /**
+        \brief Insert the text into the EditableTextInterface.
+
+        \param position The caret position at which to insert the text.
+        \param text The text to insert.
+        \param length The length of the text to insert.
+        \return true on success and false on error.
+    */
+    bool insertText(int position, const QString &text, int length = -1);
+
+    /**
+        \brief Copy the text from the EditableTextInterface into the clipboard.
+
+        \param startPos The caret position from which to start to copy the text from.
+        \param endPos The caret position from which to end to copy the text from.
+        \return true on success and false on error.
+    */
+    bool copyText(int startPos, int endPos);
+
+    /**
+        \brief Cut the text from the EditableTextInterface into the clipboard.
+
+        \param startPos The caret position from which to start to cut the text from.
+        \param endPos The caret position from which to end to cut the text from.
+        \return true on success and false on error.
+    */
+    bool cutText(int startPos, int endPos);
+
+    /**
+        \brief Delete the text from the EditableTextInterface.
+
+        \param startPos The caret position from which to start to delete the text.
+        \param endPos The caret position from which to end to delete the text.
+        \return true on success and false on error.
+    */
+    bool deleteText(int startPos, int endPos);
+
+    /**
+        \brief Paste the text from the clipboard into the EditableTextInterface.
+
+        \param position The caret position at which to insert the text into.
+        \return true on success and false on error.
+    */
+    bool pasteText(int position);
+
+    /**
         \brief Returns focus-point of the object
 
         \return The Focus Point of the object
