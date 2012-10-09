@@ -75,6 +75,7 @@ public:
     void clearLog()
     {
         clear();
+        m_apps.clear();
         setColumnCount(4);
         QStringList headerLabels;
         Q_FOREACH(Column c, QList<Column>() << AccessibleRole << RoleRole << EventRole << ActionRole)
