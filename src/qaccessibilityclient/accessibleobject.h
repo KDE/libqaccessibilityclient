@@ -625,21 +625,6 @@ public:
     bool hasToolTip() const;
     bool supportsAutocompletion() const;
 
-public:
-
-    /**
-        \internal getter to fetch the \a RegistryPrivate instance that
-        created this AccessibleObject or NULL if this AccessibleObject
-        is invalid.
-     */
-    RegistryPrivate* registryPrivate() const;
-
-    /**
-        \internal getter to fetch the \a AccessibleObjectPrivate d-pointer
-        instance or NULL if this AccessibleObject is invalid.
-     */
-    QSharedPointer<AccessibleObjectPrivate> objectPrivate() const;
-
 private:
     AccessibleObject(RegistryPrivate *reg, const QString &service, const QString &path);
     AccessibleObject(const QSharedPointer<AccessibleObjectPrivate> &dd);
