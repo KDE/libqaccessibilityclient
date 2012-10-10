@@ -88,7 +88,10 @@ private Q_SLOTS:
     void focusChanged(const QAccessibleClient::AccessibleObject &object);
     void textCaretMoved(const QAccessibleClient::AccessibleObject &object, int pos);
     void textSelectionChanged(const QAccessibleClient::AccessibleObject &object);
-    void textChanged(const QAccessibleClient::AccessibleObject &object);
+
+    void textChanged(const QAccessibleClient::AccessibleObject &object, const QString& text, int startOffset, int endOffset);
+    void textInserted(const QAccessibleClient::AccessibleObject &object, const QString& text, int startOffset, int endOffset);
+    void textRemoved(const QAccessibleClient::AccessibleObject &object, const QString& text, int startOffset, int endOffset);
 
     void accessibleNameChanged(const QAccessibleClient::AccessibleObject &object);
     void accessibleDescriptionChanged(const QAccessibleClient::AccessibleObject &object);

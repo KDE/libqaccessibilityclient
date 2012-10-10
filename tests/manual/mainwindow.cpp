@@ -86,7 +86,10 @@ MainWindow::MainWindow(QWidget *parent)
     connect(m_registry, SIGNAL(focusChanged(QAccessibleClient::AccessibleObject)), this, SLOT(focusChanged(QAccessibleClient::AccessibleObject)));
     connect(m_registry, SIGNAL(textCaretMoved(QAccessibleClient::AccessibleObject,int)), this, SLOT(textCaretMoved(QAccessibleClient::AccessibleObject,int)));
     connect(m_registry, SIGNAL(textSelectionChanged(QAccessibleClient::AccessibleObject)), this, SLOT(textSelectionChanged(QAccessibleClient::AccessibleObject)));
-    connect(m_registry, SIGNAL(textChanged(QAccessibleClient::AccessibleObject)), this, SLOT(textChanged(QAccessibleClient::AccessibleObject)));
+
+    connect(m_registry, SIGNAL(textInserted(QAccessibleClient::AccessibleObject,QString,int,int)), this, SLOT(textInserted(QAccessibleClient::AccessibleObject,QString,int,int)));
+    connect(m_registry, SIGNAL(textRemoved(QAccessibleClient::AccessibleObject,QString,int,int)), this, SLOT(textRemoved(QAccessibleClient::AccessibleObject,QString,int,int)));
+    connect(m_registry, SIGNAL(textChanged(QAccessibleClient::AccessibleObject,QString,int,int)), this, SLOT(textChanged(QAccessibleClient::AccessibleObject,QString,int,int)));
 
     connect(m_registry, SIGNAL(accessibleNameChanged(QAccessibleClient::AccessibleObject)), this, SLOT(accessibleNameChanged(QAccessibleClient::AccessibleObject)));
     connect(m_registry, SIGNAL(accessibleDescriptionChanged(QAccessibleClient::AccessibleObject)), this, SLOT(accessibleDescriptionChanged(QAccessibleClient::AccessibleObject)));
@@ -456,9 +459,30 @@ void MainWindow::MainWindow::textSelectionChanged(const QAccessibleClient::Acces
     m_eventsWidget->addLog(object, EventsWidget::Text, QString("TextSelectionChanged"));
 }
 
-void MainWindow::textChanged(const QAccessibleClient::AccessibleObject &object)
+QString descriptionForText(const QString& type, const QString& text, int startOffset, int endOffset)
 {
-    m_eventsWidget->addLog(object, EventsWidget::Text, QString("TextChanged"));
+    QString shortText = text;
+    if (shortText.length() > 50) {
+        shortText.truncate(50);
+        shortText.append(QLatin1String("..."));
+    }
+    QString desc = QString("Text %1 (%2, %3): \"%4\"").arg(type).arg(QString::number(startOffset)).arg(QString::number(endOffset)).arg(shortText);
+    return desc;
+}
+
+void MainWindow::textChanged(const QAccessibleClient::AccessibleObject &object, const QString& text, int startOffset, int endOffset)
+{
+    m_eventsWidget->addLog(object, EventsWidget::Text, descriptionForText(QLatin1String("changed"), text, startOffset, endOffset));
+}
+
+void MainWindow::textInserted(const QAccessibleClient::AccessibleObject &object, const QString& text, int startOffset, int endOffset)
+{
+    m_eventsWidget->addLog(object, EventsWidget::Text, descriptionForText(QLatin1String("inserted"), text, startOffset, endOffset));
+}
+
+void MainWindow::textRemoved(const QAccessibleClient::AccessibleObject &object, const QString& text, int startOffset, int endOffset)
+{
+    m_eventsWidget->addLog(object, EventsWidget::Text, descriptionForText(QLatin1String("removed"), text, startOffset, endOffset));
 }
 
 void MainWindow::accessibleNameChanged(const QAccessibleClient::AccessibleObject &object)

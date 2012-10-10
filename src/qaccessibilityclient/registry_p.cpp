@@ -1367,9 +1367,18 @@ void RegistryPrivate::slotTextSelectionChanged(const QString &/*state*/, int /*d
     emit q->textSelectionChanged(accessibleFromContext());
 }
 
-void RegistryPrivate::slotTextChanged(const QString &/*state*/, int /*detail1*/, int /*detail2*/, const QDBusVariant &/*args*/, const QSpiObjectReference &reference)
+void RegistryPrivate::slotTextChanged(const QString &change, int start, int end, const QDBusVariant &textVariant, const QSpiObjectReference &reference)
 {
-    emit q->textChanged(accessibleFromContext());
+    AccessibleObject object(accessibleFromContext());
+    QString text = textVariant.variant().toString();
+
+    if (change == QLatin1String("insert")) {
+        emit q->textInserted(object, text, start, end);
+    } else if (change == QLatin1String("remove")) {
+        emit q->textRemoved(object, text, start, end);
+    } else {
+        emit q->textChanged(object, text, start, end);
+    }
 }
 
 #include "registry_p.moc"

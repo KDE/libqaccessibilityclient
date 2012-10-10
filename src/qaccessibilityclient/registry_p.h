@@ -159,7 +159,7 @@ private Q_SLOTS:
     void slotTextSelectionChanged(const QString &state, int detail1, int detail2, const QDBusVariant &/*args*/, const QAccessibleClient::QSpiObjectReference &reference);
 
     //void slotTextBoundsChanged(const QString &state, int detail1, int detail2, const QDBusVariant &args, const QAccessibleClient::QSpiObjectReference &reference);
-    void slotTextChanged(const QString &state, int detail1, int detail2, const QDBusVariant &args, const QAccessibleClient::QSpiObjectReference &reference);
+    void slotTextChanged(const QString &state, int start, int end, const QDBusVariant &text, const QAccessibleClient::QSpiObjectReference &reference);
     //void slotTextAttributesChanged(const QString &state, int detail1, int detail2, const QDBusVariant &args, const QAccessibleClient::QSpiObjectReference &reference);
     //void slotAttributesChanged(const QString &state, int detail1, int detail2, const QDBusVariant &args, const QAccessibleClient::QSpiObjectReference &reference);
 

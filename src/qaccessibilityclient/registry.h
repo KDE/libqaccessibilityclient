@@ -263,7 +263,7 @@ Q_SIGNALS:
         \brief Emitted when an accessible name changes
 
         When subscribed to the PropertyChanged EventListener, this signal is emitted
-	whenever the accessible-name property changes its value.
+        whenever the accessible-name property changes its value.
     */
     void accessibleNameChanged(const QAccessibleClient::AccessibleObject &object);
 
@@ -271,12 +271,39 @@ Q_SIGNALS:
         \brief Emitted when an accessible description changes
 
         When subscribed to the PropertyChanged EventListener, this signal is emitted
-	whenever the accessiblei-description property changes its value.
+        whenever the accessible-description property changes its value.
     */
     void accessibleDescriptionChanged(const QAccessibleClient::AccessibleObject &object);
 
+    /**
+        \brief Emitted when an object's text was changed.
+
+        The new text will be \a text. The change starts at \a startOffset and goes to \a endOffset.
+
+        \sa textInserted, textRemoved
+    */
+    void textChanged(const QAccessibleClient::AccessibleObject &object, const QString& text, int startOffset, int endOffset);
+
+    /**
+        \brief Emitted when text was inserted in an object's text.
+
+        The new text will be \a text. The change starts at \a startOffset and goes to \a endOffset.
+
+        \sa textInserted, textRemoved
+    */
+    void textInserted(const QAccessibleClient::AccessibleObject &object, const QString& text, int startOffset, int endOffset);
+
+    /**
+        \brief Emitted when an object's text was removed.
+
+        The removed text will be \a text, but this string may be emtpy for some implementations.
+        The removal starts at \a startOffset and goes to \a endOffset.
+
+        \sa textInserted, textRemoved
+    */
+    void textRemoved(const QAccessibleClient::AccessibleObject &object, const QString& text, int startOffset, int endOffset);
+
     //void textBoundsChanged(const QAccessibleClient::AccessibleObject &object);
-    void textChanged(const QAccessibleClient::AccessibleObject &object);
     //void textAttributesChanged(const QAccessibleClient::AccessibleObject &object);
     //void attributesChanged(const QAccessibleClient::AccessibleObject &object);
 
