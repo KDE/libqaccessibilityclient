@@ -44,7 +44,8 @@ public:
         ActionRole = 3,
         EventTypeRole = Qt::UserRole,
         UrlRole,
-        AppNameRole
+        AppNameRole,
+        AppUrlRole
     };
     explicit EventsModel(EventsWidget *view) : QStandardItemModel(view), m_view(view) {
         QHash<int, QByteArray> roles;
@@ -54,6 +55,7 @@ public:
         roles[EventTypeRole] = "eventType";
         roles[UrlRole] = "url";
         roles[AppNameRole] = "appName";
+        roles[AppUrlRole] = "appUrl";
         setRoleNames(roles);
         clearLog();
     }
@@ -68,6 +70,7 @@ public:
             case EventTypeRole:
             case UrlRole:
             case AppNameRole:
+            case AppUrlRole:
                 break;
         }
         return QString();
@@ -89,12 +92,14 @@ public:
     };
     LogItem addLog(QList<QStandardItem*> item)
     {
-        QString appName = item.first()->data(AppNameRole).toString();
+        QString appUrl = item.first()->data(AppUrlRole).toString();
         QStandardItem *appItem = 0;
-        QMap<QString, QStandardItem*>::ConstIterator it = m_apps.constFind(appName);
+        QMap<QString, QStandardItem*>::ConstIterator it = m_apps.constFind(appUrl);
         bool isNewAppItem = it == m_apps.constEnd();
         if (isNewAppItem) {
-            m_apps[appName] = appItem = new QStandardItem(appName);
+            QString appName = item.first()->data(AppNameRole).toString();
+            m_apps[appUrl] = appItem = new QStandardItem(appName);
+            appItem->setData(appUrl, EventsModel::AppUrlRole);
             invisibleRootItem()->appendRow(appItem);
         } else {
             appItem = it.value();
@@ -346,7 +351,10 @@ void EventsWidget::addLog(const QAccessibleClient::AccessibleObject &object, Eve
     nameItem->setData(m_registry->url(object).toString(), EventsModel::UrlRole);
 
     AccessibleObject app = object.application();
-    nameItem->setData(app.isValid() ? app.name() : QString(), EventsModel::AppNameRole);
+    if (app.isValid()) {
+        nameItem->setData(app.name(), EventsModel::AppNameRole);
+        nameItem->setData(app.url().toString(), EventsModel::AppUrlRole);
+    }
 
     QStandardItem *roleItem = new QStandardItem(object.roleName());
     QStandardItem *typeItem = new QStandardItem(eventName(eventType));
@@ -382,8 +390,9 @@ void EventsWidget::checkStateChanged()
 void EventsWidget::eventActivated(const QModelIndex &index)
 {
     Q_ASSERT(index.isValid());
-    QModelIndex firstIndex = m_proxyModel->index(index.row(), 0, index.parent());
-    QString s = m_proxyModel->data(firstIndex, EventsModel::UrlRole).toString();
+    QModelIndex parent = index.parent();
+    QModelIndex firstIndex = m_proxyModel->index(index.row(), 0, parent);
+    QString s = m_proxyModel->data(firstIndex, parent.isValid() ? EventsModel::UrlRole : EventsModel::AppUrlRole).toString();
     QUrl url(s);
     if (!url.isValid()) {
         qWarning() << Q_FUNC_INFO << "Invalid url=" << s;
