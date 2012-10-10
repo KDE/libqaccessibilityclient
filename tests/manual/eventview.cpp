@@ -37,7 +37,7 @@
 class EventsModel : public QStandardItemModel
 {
 public:
-    enum Column {
+    enum Role {
         AccessibleRole = 0,
         RoleRole = 1,
         EventRole = 2,
@@ -58,9 +58,9 @@ public:
         clearLog();
     }
     ~EventsModel() {}
-    QString roleLabel(Column c) const
+    QString roleLabel(Role role) const
     {
-        switch (c) {
+        switch (role) {
             case AccessibleRole: return QString("Accessible");
             case RoleRole: return QString("Role");
             case EventRole: return QString("Event");
@@ -78,8 +78,8 @@ public:
         m_apps.clear();
         setColumnCount(4);
         QStringList headerLabels;
-        Q_FOREACH(Column c, QList<Column>() << AccessibleRole << RoleRole << EventRole << ActionRole)
-            headerLabels << roleLabel(c);
+        Q_FOREACH(Role r, QList<Role>() << AccessibleRole << RoleRole << EventRole << ActionRole)
+            headerLabels << roleLabel(r);
         setHorizontalHeaderLabels(headerLabels);
     }
     struct LogItem {
