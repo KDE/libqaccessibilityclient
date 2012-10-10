@@ -194,7 +194,7 @@ public:
         to pass it around as string and restore the AccessibleObject
         later on.
 
-        The returned QUrl returns a scheme of "AccessibleObject", the
+        The returned QUrl returns a scheme of "accessibleobject", the
         dbus path as url path and the dbus service as url fragment.
      */
     QUrl url() const;

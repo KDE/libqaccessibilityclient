@@ -86,6 +86,8 @@
 
 using namespace QAccessibleClient;
 
+static QString ACCESSIBLE_OBJECT_SCHEME_STRING = QLatin1String("accessibleobject");
+
 RegistryPrivate::RegistryPrivate(Registry *qq)
     :q(qq)
     , m_subscriptions(Registry::NoEventListeners)
@@ -172,7 +174,7 @@ void RegistryPrivate::setScreenReaderEnabled(bool enable)
 QUrl RegistryPrivate::url(const AccessibleObject &object) const
 {
     QUrl u;
-    u.setScheme(QLatin1String("AccessibleObject"));
+    u.setScheme(ACCESSIBLE_OBJECT_SCHEME_STRING);
     u.setPath(object.d->path);
     u.setFragment(object.d->service);
     return u;
@@ -180,8 +182,8 @@ QUrl RegistryPrivate::url(const AccessibleObject &object) const
 
 AccessibleObject RegistryPrivate::fromUrl(const QUrl &url) const
 {
-    Q_ASSERT(url.scheme() == QLatin1String("AccessibleObject"));
-    if (url.scheme() != QLatin1String("AccessibleObject"))
+    Q_ASSERT(url.scheme() == ACCESSIBLE_OBJECT_SCHEME_STRING);
+    if (url.scheme() != ACCESSIBLE_OBJECT_SCHEME_STRING)
         return AccessibleObject();
     QString path = url.path();
     QString service = url.fragment();
