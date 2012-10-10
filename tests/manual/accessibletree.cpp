@@ -217,6 +217,10 @@ QModelIndex AccessibleTree::indexForAccessible(const AccessibleObject& object)
             if (m_apps.at(i)->acc == object)
                 return createIndex(i, 0, m_apps.at(i));
         }
+        int lastIndex = m_apps.size();
+        if (addAccessible(object) && m_apps.at(lastIndex)->acc == object)
+            return createIndex(lastIndex, 0, m_apps.at(lastIndex));
+
     } else {
         AccessibleObject parent = object.parent();
         if (parent.isValid()) {
