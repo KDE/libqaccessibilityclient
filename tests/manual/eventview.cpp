@@ -151,10 +151,10 @@ public:
 protected:
     virtual bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
     {
-        QModelIndex index = sourceModel()->index(source_row, 0, source_parent);
-        if (!index.parent().isValid())
+        if (!source_parent.isValid())
             return true;
         if (!m_types.testFlag(EventsWidget::AllEvents)) {
+            QModelIndex index = sourceModel()->index(source_row, 0, source_parent);
             EventsWidget::EventType type = index.data(EventsModel::EventTypeRole).value<EventsWidget::EventType>();
             if (!m_types.testFlag(type))
                 return false;
@@ -292,6 +292,10 @@ void EventsWidget::loadSettings(QSettings &settings)
         m_proxyModel->setFilter(eventsFilter);
     }
 
+    QByteArray eventListViewState = settings.value("listViewHeader").toByteArray();
+    if (!eventListViewState.isEmpty())
+        m_ui.eventListView->header()->restoreState(eventListViewState);
+
     settings.endGroup();
 }
 
@@ -299,6 +303,10 @@ void EventsWidget::saveSettings(QSettings &settings)
 {
     settings.beginGroup("events");
     settings.setValue("eventsFilter", int(m_proxyModel->filter()));
+
+    QByteArray eventListViewState = m_ui.eventListView->header()->saveState();
+    settings.setValue("listViewHeader", eventListViewState);
+
     settings.endGroup();
 }
 
