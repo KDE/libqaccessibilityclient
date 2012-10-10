@@ -388,12 +388,12 @@ public:
     /**
         \brief Insert the text into the EditableTextInterface.
 
-        \param position The caret position at which to insert the text.
         \param text The text to insert.
+        \param position The caret position at which to insert the text.
         \param length The length of the text to insert.
         \return true on success and false on error.
     */
-    bool insertText(int position, const QString &text, int length = -1);
+    bool insertText(const QString &text, int position = 0, int length = -1);
 
     /**
         \brief Copy the text from the EditableTextInterface into the clipboard.

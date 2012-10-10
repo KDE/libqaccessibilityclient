@@ -896,7 +896,7 @@ bool RegistryPrivate::setText(const AccessibleObject &object, const QString &tex
     return reply.value();
 }
 
-bool RegistryPrivate::insertText(const AccessibleObject &object, int position, const QString &text, int length)
+bool RegistryPrivate::insertText(const AccessibleObject &object, const QString &text, int position, int length)
 {
     QDBusMessage message = QDBusMessage::createMethodCall(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.EditableText"), QLatin1String("InsertText"));
     message.setArguments(QVariantList() << position << text << length);

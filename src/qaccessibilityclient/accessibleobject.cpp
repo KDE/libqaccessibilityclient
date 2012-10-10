@@ -247,10 +247,10 @@ bool AccessibleObject::setText(const QString &text)
     return false;
 }
 
-bool AccessibleObject::insertText(int position, const QString &text, int length)
+bool AccessibleObject::insertText(const QString &text, int position, int length)
 {
     if( supportedInterfaces() & AccessibleObject::EditableTextInterface )
-        return d->registryPrivate->insertText(*this, position, text, length);
+        return d->registryPrivate->insertText(*this, text, position, length);
     qWarning() << "insertText called on accessible that does not implement editableText";
     return false;
 }
