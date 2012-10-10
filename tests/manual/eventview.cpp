@@ -46,7 +46,7 @@ public:
         UrlRole,
         AppNameRole
     };
-    EventsModel(EventsWidget *view) : QStandardItemModel(view), m_view(view) {
+    explicit EventsModel(EventsWidget *view) : QStandardItemModel(view), m_view(view) {
         QHash<int, QByteArray> roles;
         roles[AccessibleRole] = "accessible";
         roles[RoleRole] = "role";
@@ -110,7 +110,7 @@ private:
 class EventsProxyModel : public QSortFilterProxyModel
 {
 public:
-    EventsProxyModel(QWidget *parent = 0) : QSortFilterProxyModel(parent), m_types(EventsWidget::AllEvents) {}
+    explicit EventsProxyModel(QWidget *parent = 0) : QSortFilterProxyModel(parent), m_types(EventsWidget::AllEvents) {}
     EventsWidget::EventTypes filter() const
     {
         return m_types;
@@ -341,9 +341,6 @@ void EventsWidget::addLog(const QAccessibleClient::AccessibleObject &object, Eve
     if (!object.isValid())
         return;
 
-//     if (object.name() == m_ui.eventListView->accessibleName() && object.description() == m_ui.eventListView->accessibleDescription())
-//         return;
-
     QStandardItem *nameItem = new QStandardItem(object.name());
     nameItem->setData(QVariant::fromValue<EventType>(eventType), EventsModel::EventTypeRole);
     nameItem->setData(m_registry->url(object).toString(), EventsModel::UrlRole);
@@ -385,10 +382,8 @@ void EventsWidget::checkStateChanged()
 void EventsWidget::eventActivated(const QModelIndex &index)
 {
     Q_ASSERT(index.isValid());
-    EventsProxyModel *proxyModel = dynamic_cast<EventsProxyModel*>(m_ui.eventListView->model());
-    Q_ASSERT(proxyModel);
-    QModelIndex firstIndex = proxyModel->index(index.row(), 0, index.parent());
-    QString s = proxyModel->data(firstIndex, EventsModel::UrlRole).toString();
+    QModelIndex firstIndex = m_proxyModel->index(index.row(), 0, index.parent());
+    QString s = m_proxyModel->data(firstIndex, EventsModel::UrlRole).toString();
     QUrl url(s);
     if (!url.isValid()) {
         qWarning() << Q_FUNC_INFO << "Invalid url=" << s;

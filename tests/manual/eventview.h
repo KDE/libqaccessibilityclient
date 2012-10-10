@@ -91,8 +91,6 @@ private:
     QTimer m_pendingTimer;
     QVector< QList<QStandardItem*> > m_pendingLogs;
 
-//     int m_selectedEvents;
-
     // This is to avoid sending updates for the events view.
     // The reason is that we end up in endless loops with other accessible tools such as accerciser.
     // No normal application should have to do this.
