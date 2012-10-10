@@ -38,6 +38,7 @@ public:
     explicit ObjectProperties(QObject *parent = 0);
     virtual ~ObjectProperties();
 
+    QHash<int,QByteArray> roleNames() const;
     void setAccessibleObject(const QAccessibleClient::AccessibleObject &acc);
 
 private:

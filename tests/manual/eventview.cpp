@@ -48,6 +48,12 @@ public:
         AppUrlRole
     };
     explicit EventsModel(EventsWidget *view) : QStandardItemModel(view), m_view(view) {
+        clearLog();
+    }
+    ~EventsModel() {}
+
+    QHash<int,QByteArray> roleNames() const
+    {
         QHash<int, QByteArray> roles;
         roles[AccessibleRole] = "accessible";
         roles[RoleRole] = "role";
@@ -56,10 +62,9 @@ public:
         roles[UrlRole] = "url";
         roles[AppNameRole] = "appName";
         roles[AppUrlRole] = "appUrl";
-        setRoleNames(roles);
-        clearLog();
+        return roles;
     }
-    ~EventsModel() {}
+
     QString roleLabel(Role role) const
     {
         switch (role) {
