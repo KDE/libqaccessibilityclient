@@ -233,7 +233,7 @@ void MainWindow::MainWindow::initUi()
 
 void MainWindow::anchorClicked(const QUrl &url)
 {
-    QAccessibleClient::AccessibleObject object = m_registry->fromUrl(url);
+    AccessibleObject object = m_registry->accessibleFromUrl(url);
     setCurrentObject(object);
 }
 

@@ -76,7 +76,13 @@ QString AccessibleObject::id() const
 
 QUrl AccessibleObject::url() const
 {
-    return d && d->registryPrivate ? d->registryPrivate->url(*this) : QUrl();
+    if (!d || !d->registryPrivate)
+        return QUrl();
+    QUrl u;
+    u.setScheme(d->registryPrivate->ACCESSIBLE_OBJECT_SCHEME_STRING);
+    u.setPath(d->path);
+    u.setFragment(d->service);
+    return u;
 }
 
 bool AccessibleObject::isValid() const

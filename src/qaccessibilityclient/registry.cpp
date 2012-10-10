@@ -71,12 +71,7 @@ QList<AccessibleObject> Registry::applications() const
     return d->topLevelAccessibles();
 }
 
-QUrl Registry::url(const AccessibleObject &object) const
-{
-    return d->url(object);
-}
-
-AccessibleObject Registry::fromUrl(const QUrl &url) const
+AccessibleObject Registry::accessibleFromUrl(const QUrl &url) const
 {
     return d->fromUrl(url);
 }

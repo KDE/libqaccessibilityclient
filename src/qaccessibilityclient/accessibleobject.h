@@ -192,7 +192,7 @@ public:
 
         This can be used to serialize/unserialize an AccessibleObject
         to pass it around as string and restore the AccessibleObject
-        later on.
+        by using Registry::accessibleFromUrl later on.
 
         The returned QUrl returns a scheme of "accessibleobject", the
         dbus path as url path and the dbus service as url fragment.

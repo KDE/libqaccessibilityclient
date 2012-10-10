@@ -115,6 +115,8 @@ public:
     AccessibleObject child(const AccessibleObject &object, int index) const;
     QList<AccessibleObject> children(const AccessibleObject &object) const;
 
+    static QString ACCESSIBLE_OBJECT_SCHEME_STRING;
+
 private Q_SLOTS:
     AccessibleObject accessibleFromPath(const QString &service, const QString &path) const;
     AccessibleObject accessibleFromReference(const QSpiObjectReference &reference) const;

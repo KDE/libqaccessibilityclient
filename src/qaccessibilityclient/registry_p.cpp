@@ -86,7 +86,7 @@
 
 using namespace QAccessibleClient;
 
-static QString ACCESSIBLE_OBJECT_SCHEME_STRING = QLatin1String("accessibleobject");
+QString RegistryPrivate::ACCESSIBLE_OBJECT_SCHEME_STRING = QLatin1String("accessibleobject");
 
 RegistryPrivate::RegistryPrivate(Registry *qq)
     :q(qq)
@@ -169,15 +169,6 @@ void RegistryPrivate::setScreenReaderEnabled(bool enable)
     if (reply.type() == QDBusMessage::ErrorMessage) {
         qWarning() << "Could not set org.a11y.Status.ScreenReaderEnabled." << reply.errorName() << reply.errorMessage();
     }
-}
-
-QUrl RegistryPrivate::url(const AccessibleObject &object) const
-{
-    QUrl u;
-    u.setScheme(ACCESSIBLE_OBJECT_SCHEME_STRING);
-    u.setPath(object.d->path);
-    u.setFragment(object.d->service);
-    return u;
 }
 
 AccessibleObject RegistryPrivate::fromUrl(const QUrl &url) const

@@ -353,7 +353,7 @@ void EventsWidget::addLog(const QAccessibleClient::AccessibleObject &object, Eve
 
     QStandardItem *nameItem = new QStandardItem(object.name());
     nameItem->setData(QVariant::fromValue<EventType>(eventType), EventsModel::EventTypeRole);
-    nameItem->setData(m_registry->url(object).toString(), EventsModel::UrlRole);
+    nameItem->setData(object.url().toString(), EventsModel::UrlRole);
 
     AccessibleObject app = object.application();
     if (app.isValid()) {
