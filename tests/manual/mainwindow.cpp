@@ -268,7 +268,7 @@ void MainWindow::setCurrentObject(const QAccessibleClient::AccessibleObject &obj
 
 void MainWindow::stateChanged(const QAccessibleClient::AccessibleObject &object, const QString &state, bool active)
 {
-    if (state == QLatin1String("focus")) {
+    if (state == QLatin1String("focused")) {
         m_eventsWidget->addLog(object, EventsWidget::Focus, (active ? QString("true") : QString("false")));
     } else {
         QString s = state + QString(": ") + (active ? QString("true") : QString("false"));
@@ -451,7 +451,7 @@ void MainWindow::focusChanged(const QAccessibleClient::AccessibleObject &object)
 
 void MainWindow::MainWindow::textCaretMoved(const QAccessibleClient::AccessibleObject &object, int pos)
 {
-    m_eventsWidget->addLog(object, EventsWidget::Text, QString("TextCaretMoved"));
+    m_eventsWidget->addLog(object, EventsWidget::Text, QString("Text caret moved (%1)").arg(pos));
 }
 
 void MainWindow::MainWindow::textSelectionChanged(const QAccessibleClient::AccessibleObject &object)
