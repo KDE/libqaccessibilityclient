@@ -275,7 +275,7 @@ void EventsWidget::loadSettings(QSettings &settings)
     settings.beginGroup("events");
 
     bool eventsFilterOk;
-    EventTypes eventsFilter = EventTypes(settings.value("eventsFiler").toInt(&eventsFilterOk));
+    EventTypes eventsFilter = EventTypes(settings.value("eventsFilter").toInt(&eventsFilterOk));
     if (!eventsFilterOk)
         eventsFilter = AllEvents;
 
@@ -298,7 +298,7 @@ void EventsWidget::loadSettings(QSettings &settings)
 void EventsWidget::saveSettings(QSettings &settings)
 {
     settings.beginGroup("events");
-    settings.setValue("eventsFiler", int(m_proxyModel->filter()));
+    settings.setValue("eventsFilter", int(m_proxyModel->filter()));
     settings.endGroup();
 }
 
