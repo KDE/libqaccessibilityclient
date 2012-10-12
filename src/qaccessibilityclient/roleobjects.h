@@ -62,13 +62,12 @@ public:
     QRect boundingRect() const;
 
     static ObjectRole* create(const AccessibleObject &acc);
-    static ObjectRole* create(const AccessibleObject &acc, AccessibleObject::Role role);
 
 protected:
     class Private;
     Private *d;
 
-    ObjectRole(const AccessibleObject &acc, AccessibleObject::Role role);
+    ObjectRole(const AccessibleObject &acc);
     ObjectRole(Private *dd);
 };
 
@@ -82,6 +81,8 @@ class CheckBoxRole : public ObjectRole
 public:
     explicit CheckBoxRole(const AccessibleObject &acc);
     QString text() const;
+    //bool isChecked() const;
+    //void setChecked(bool checked);
 };
 
 // CheckableMenuItem
@@ -97,6 +98,10 @@ class ComboBoxRole : public ObjectRole
 public:
     explicit ComboBoxRole(const AccessibleObject &acc);
     QString text() const;
+    //void setText(const QString &text);
+    //QStringList items() const;
+    //int currentIndex() const;
+    //void setCurrentIndex(int index);
 };
 
 // DesktopFrame
@@ -139,6 +144,7 @@ class ButtonRole : public ObjectRole
 public:
     explicit ButtonRole(const AccessibleObject &acc);
     QString text() const;
+    //void activate();
 };
 
 /**
@@ -151,6 +157,8 @@ class RadioButtonRole : public ObjectRole
 public:
     explicit RadioButtonRole(const AccessibleObject &acc);
     QString text() const;
+    //bool isChecked() const;
+    //void setChecked(bool checked);
 };
 
 // RadioMenuItem
@@ -195,6 +203,7 @@ class ToggleButtonRole : public ObjectRole
 public:
     explicit ToggleButtonRole(const AccessibleObject &acc);
     QString text() const;
+    //void toggle(bool toggled);
 };
 
 // ToolBar

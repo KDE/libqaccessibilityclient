@@ -28,15 +28,17 @@ class ObjectRole::Private
 {
 public:
     AccessibleObject m_acc;
-    AccessibleObject::Role m_role;
-    Private(const AccessibleObject &acc, AccessibleObject::Role role) : m_acc(acc), m_role(role) {}
+    explicit Private(const AccessibleObject &acc)
+        : m_acc(acc)
+    {
+    }
 };
 
 }
 
-ObjectRole::ObjectRole(const AccessibleObject &acc, AccessibleObject::Role role)
+ObjectRole::ObjectRole(const AccessibleObject &acc
     : QObject()
-    , d(new Private(acc, role))
+    , d(new Private(acc))
 {
 }
 
@@ -58,7 +60,7 @@ AccessibleObject ObjectRole::accessible() const
 
 AccessibleObject::Role ObjectRole::role() const
 {
-    return d->m_role;
+    return d->m_acc.role();
 }
 
 QString ObjectRole::roleName() const
@@ -93,12 +95,7 @@ QRect ObjectRole::boundingRect() const
 
 ObjectRole* ObjectRole::create(const AccessibleObject &acc)
 {
-    return create(acc, acc.role());
-}
-
-ObjectRole* ObjectRole::create(const AccessibleObject &acc, AccessibleObject::Role role)
-{
-    switch (role) {
+    switch (acc.role()) {
         case AccessibleObject::CheckBox: return new CheckBoxRole(acc);
         // case AccessibleObject::CheckableMenuItem:
         // case AccessibleObject::ColumnHeader:
@@ -149,7 +146,7 @@ ObjectRole* ObjectRole::create(const AccessibleObject &acc, AccessibleObject::Ro
 }
 
 CheckBoxRole::CheckBoxRole(const AccessibleObject &acc)
-    : ObjectRole(acc, AccessibleObject::CheckBox)
+    : ObjectRole(acc)
 {
 }
 
@@ -159,7 +156,7 @@ QString CheckBoxRole::text() const
 }
 
 ComboBoxRole::ComboBoxRole(const AccessibleObject &acc)
-    : ObjectRole(acc, AccessibleObject::ComboBox)
+    : ObjectRole(acc)
 {
 }
 
@@ -169,7 +166,7 @@ QString ComboBoxRole::text() const
 }
 
 LabelRole::LabelRole(const AccessibleObject &acc)
-    : ObjectRole(acc, AccessibleObject::Label)
+    : ObjectRole(acc)
 {
 }
 
@@ -179,7 +176,7 @@ QString LabelRole::text() const
 }
 
 ButtonRole::ButtonRole(const AccessibleObject &acc)
-    : ObjectRole(acc, AccessibleObject::Button)
+    : ObjectRole(acc)
 {
 }
 
@@ -189,7 +186,7 @@ QString ButtonRole::text() const
 }
 
 RadioButtonRole::RadioButtonRole(const AccessibleObject &acc)
-    : ObjectRole(acc, AccessibleObject::RadioButton)
+    : ObjectRole(acc)
 {
 }
 
@@ -199,7 +196,7 @@ QString RadioButtonRole::text() const
 }
 
 TextRole::TextRole(const AccessibleObject &acc)
-    : ObjectRole(acc, AccessibleObject::Textt)
+    : ObjectRole(acc)
 {
 }
 
@@ -224,7 +221,7 @@ bool TextRole::isEditable() const
 }
 
 ToggleButtonRole::ToggleButtonRole(const AccessibleObject &acc)
-    : ObjectRole(acc, AccessibleObject::ToggleButton)
+    : ObjectRole(acc)
 {
 }
 
