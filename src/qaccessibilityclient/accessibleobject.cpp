@@ -283,6 +283,21 @@ bool AccessibleObject::pasteText(int position)
     return false;
 }
 
+QList< QPair<int,int> > AccessibleObject::textSelections() const
+{
+    if( supportedInterfaces() & AccessibleObject::Text )
+        return d->registryPrivate->textSelections(*this);
+    qWarning() << "textSelections called on accessible that does not implement text";
+    return QList< QPair<int,int> >();
+}
+
+void AccessibleObject::setTextSelections(const QList< QPair<int,int> > &selections)
+{
+    if( supportedInterfaces() & AccessibleObject::Text )
+        return d->registryPrivate->setTextSelections(*this, selections);
+    qWarning() << "setTextSelections called on accessible that does not implement text";
+}
+
 QPoint AccessibleObject::focusPoint() const
 {
     Interfaces ifaces = supportedInterfaces();

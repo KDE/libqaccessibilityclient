@@ -366,13 +366,35 @@ public:
     int characterCount() const;
 
     /**
+        \brief Returns a list of selections the text has.
+
+        Code to demonstrate usage:
+        \code
+        QList< QPair<int,int> > sel = acc.textSelections();
+        int startOffset = sel[0].first;
+        int endOffset = sel[0].second;
+        QString allText = acc.text();
+        QString selText = allText.mid(startOffset, endOffset - startOffset);
+        \endcode
+
+        \return The list of selections where every item in that list
+        is a pair of integers representing startOffset and endOffset
+        of the selection.
+    */
+    QList< QPair<int,int> > textSelections() const;
+
+    void setTextSelections(const QList< QPair<int,int> > &selections);
+
+    /**
         \brief Returns the text of the TextInterface.
 
         This function provides the current text as displayed by the
         org.a11y.atspi.Text TextInterface component.
 
         \param startOffset The start caret offset to return the text from.
-        \param endOffset The end caret offset to return the text from.
+        \param endOffset The end caret offset to return the text from. If -1
+        then the endOffset is the end of the string what means all characters
+        are included.
         \return The text as displayed by the TextInterface.
     */
     QString text(int startOffset = 0, int endOffset = -1) const;

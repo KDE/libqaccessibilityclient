@@ -210,7 +210,7 @@ void MainWindow::MainWindow::initUi()
     m_propertyView->setModel(m_propertyModel);
 
     QDockWidget *uiDocker = new QDockWidget(QString("Boundaries"), this);
-    uiDocker->setObjectName("Boundaries");
+    uiDocker->setObjectName("boundaries");
     uiDocker->setFeatures(QDockWidget::AllDockWidgetFeatures);
     m_uiview = new UiView(uiDocker);
     m_uiview->setAccessibleName(QLatin1String("Boundaries"));

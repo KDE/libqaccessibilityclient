@@ -865,6 +865,79 @@ int RegistryPrivate::characterCount(const AccessibleObject &object) const
     return count.toInt();
 }
 
+QList< QPair<int,int> > RegistryPrivate::textSelections(const AccessibleObject &object) const
+{
+    QList< QPair<int,int> > result;
+    QDBusMessage message = QDBusMessage::createMethodCall(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Text"), QLatin1String("GetNSelections"));
+    QDBusReply<int> reply = conn.connection().call(message);
+    if (!reply.isValid()) {
+        qWarning() << "Could not access GetNSelections." << reply.error().message();
+        return result;
+    }
+    int count = reply.value();
+    for(int i = 0; i < count; ++i) {
+        QDBusMessage m = QDBusMessage::createMethodCall(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Text"), QLatin1String("GetSelection"));
+        m.setArguments(QVariantList() << i);
+        m = conn.connection().call(m);
+        QList<QVariant> args = m.arguments();
+        if (args.count() < 2) {
+            qWarning() << "Invalid number of arguments. Expected=2 Actual=" << args.count();
+            continue;
+        }
+        int startOffset = args[0].toInt();
+        int endOffset = args[1].toInt();
+        if (startOffset > endOffset)
+            qSwap(startOffset, endOffset);
+        result.append(qMakePair(startOffset, endOffset));
+    }
+    return result;
+}
+
+void RegistryPrivate::setTextSelections(const AccessibleObject &object, const QList< QPair<int,int> > &selections)
+{
+    QDBusMessage message = QDBusMessage::createMethodCall(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Text"), QLatin1String("GetNSelections"));
+    QDBusReply<int> reply = conn.connection().call(message);
+    if (!reply.isValid()) {
+        qWarning() << "Could not access GetNSelections." << reply.error().message();
+        return;
+    }
+    int count = reply.value();
+    int setSel = qMin(selections.count(), count);
+    for(int i = 0; i < setSel; ++i) {
+        Q_ASSERT(i < selections.count());
+        QPair<int,int> p = selections[i];
+        QDBusMessage m = QDBusMessage::createMethodCall(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Text"), QLatin1String("SetSelection"));
+        m.setArguments(QVariantList() << i << p.first << p.second);
+        QDBusReply<bool> r = conn.connection().call(m);
+        if (!r.isValid()) {
+            qWarning() << "Failed call text.SetSelection." << r.error().message();
+            continue;
+        }
+    }
+    int removeSel = qMax(0, count - selections.count());
+    for(int i = 0, k = selections.count(); i < removeSel; ++i, ++k) {
+        QDBusMessage m = QDBusMessage::createMethodCall(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Text"), QLatin1String("RemoveSelection"));
+        m.setArguments(QVariantList() << k);
+        QDBusReply<bool> r = conn.connection().call(m);
+        if (!r.isValid()) {
+            qWarning() << "Failed call text.RemoveSelection." << r.error().message();
+            continue;
+        }
+    }
+    int addSel = qMax(0, selections.count() - count);
+    for(int i = 0, k = count; i < addSel; ++i, ++k) {
+        Q_ASSERT(k < selections.count());
+        QPair<int,int> p = selections[k];
+        QDBusMessage m = QDBusMessage::createMethodCall(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Text"), QLatin1String("AddSelection"));
+        m.setArguments(QVariantList() << p.first << p.second);
+        QDBusReply<bool> r = conn.connection().call(m);
+        if (!r.isValid()) {
+            qWarning() << "Failed call text.AddSelection." << r.error().message();
+            continue;
+        }
+    }
+}
+
 QString RegistryPrivate::text(const AccessibleObject &object, int startOffset, int endOffset) const
 {
     QDBusMessage message = QDBusMessage::createMethodCall(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Text"), QLatin1String("GetText"));

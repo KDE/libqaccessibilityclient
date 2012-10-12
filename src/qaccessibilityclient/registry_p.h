@@ -78,6 +78,8 @@ public:
 
     int caretOffset(const AccessibleObject &object) const;
     int characterCount(const AccessibleObject &object) const;
+    QList< QPair<int,int> > textSelections(const AccessibleObject &object) const;
+    void setTextSelections(const AccessibleObject &object, const QList< QPair<int,int> > &selections);
     QString text(const AccessibleObject &object, int startOffset = 0, int endOffset = -1) const;
 
     bool setText(const AccessibleObject &object, const QString &text);

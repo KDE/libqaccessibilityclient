@@ -201,7 +201,21 @@ void ObjectProperties::setAccessibleObject(const QAccessibleClient::AccessibleOb
         append(QString("CaretOffset"), offset, item);
         append(QString("CharacterCount"), acc.characterCount(), item);
         append(QString("CharacterRect"), acc.characterRect(offset), item);
-        append(QString("Text"), acc.text(), item);
+
+        QString text = acc.text();
+        append(QString("Text"), text, item);
+
+        QList< QPair<int,int> > selections = acc.textSelections();
+        QStandardItem *selectionsItem = append(QString("Selections"), selections.count(), item);
+        for (int i = 0; i < selections.count(); ++i) {
+            QPair<int,int> sel = selections[i];
+            int startOffset = sel.first;
+            int endOffset = sel.second;
+            Q_ASSERT(startOffset <= endOffset);
+            append( QString("%1:%2").arg(startOffset).arg(endOffset),
+                    text.mid(startOffset, endOffset - startOffset),
+                    selectionsItem );
+        }
     }
     if (interfaces.testFlag(QAccessibleClient::AccessibleObject::ValueInterface)) {
         QStandardItem *item = append(QString("Value"));
