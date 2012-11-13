@@ -30,11 +30,10 @@
 #include <qstandarditemmodel.h>
 #include <qtreeview.h>
 
-using namespace QAccessibleClient;
-
 ClientCacheDialog::ClientCacheDialog(QAccessibleClient::Registry *registry, QWidget *parent)
 : QDialog(parent)
 , m_registry(registry)
+, m_cache(new QAccessibleClient::RegistryPrivateCacheApi(m_registry))
 {
     setModal(true);
     QVBoxLayout *lay = new QVBoxLayout(this);
@@ -65,11 +64,11 @@ ClientCacheDialog::ClientCacheDialog(QAccessibleClient::Registry *registry, QWid
     m_cacheCombo = new QComboBox(this);
     cacheLabel->setBuddy(m_cacheCombo);
     m_cacheCombo->setEditable(false);
-    m_cacheCombo->addItem(QString("Disable"), int(QAccessibleClient::Registry::NoCache));
-    m_cacheCombo->addItem(QString("Weak"), int(QAccessibleClient::Registry::WeakCache));
-    m_cacheCombo->addItem(QString("Strong"), int(QAccessibleClient::Registry::StrongCache));
+    m_cacheCombo->addItem(QString("Disable"), int(QAccessibleClient::RegistryPrivateCacheApi::NoCache));
+    m_cacheCombo->addItem(QString("Weak"), int(QAccessibleClient::RegistryPrivateCacheApi::WeakCache));
+    m_cacheCombo->addItem(QString("Strong"), int(QAccessibleClient::RegistryPrivateCacheApi::StrongCache));
     for(int i = 0; i < m_cacheCombo->count(); ++i) {
-        if (m_cacheCombo->itemData(i).toInt() == m_registry->cacheType()) {
+        if (m_cacheCombo->itemData(i).toInt() == m_cache->cacheType()) {
             m_cacheCombo->setCurrentIndex(i);
             break;
         }
@@ -96,14 +95,14 @@ ClientCacheDialog::ClientCacheDialog(QAccessibleClient::Registry *registry, QWid
 
 void ClientCacheDialog::clearCache()
 {
-    m_registry->clearClientCache();
+    m_cache->clearClientCache();
     updateView();
 }
 
 void ClientCacheDialog::cacheStrategyChanged()
 {
     int c = m_cacheCombo->itemData(m_cacheCombo->currentIndex()).toInt();
-    m_registry->setCacheType(Registry::CacheType(c));
+    m_cache->setCacheType(QAccessibleClient::RegistryPrivateCacheApi::CacheType(c));
     updateView();
 }
 
@@ -111,10 +110,10 @@ void ClientCacheDialog::updateView()
 {
     m_model->clear();
     m_model->setHorizontalHeaderLabels( QStringList() << QString("Name") << QString("Role") << QString("Identifier") );
-    QStringList cache = m_registry->clientCacheObjects();
+    QStringList cache = m_cache->clientCacheObjects();
     m_countLabel->setText(QString::number(cache.count()));
     Q_FOREACH(const QString &c, cache) {
-        AccessibleObject obj = m_registry->clientCacheObject(c);
+        QAccessibleClient::AccessibleObject obj = m_cache->clientCacheObject(c);
         if (obj.isValid())
             m_model->appendRow( QList<QStandardItem*>()
             << new QStandardItem(obj.name())

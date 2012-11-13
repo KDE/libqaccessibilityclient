@@ -48,7 +48,8 @@ MainWindow::MainWindow(QWidget *parent)
     initMenu();
 
     QSettings settings("kde.org", "kdea11yapp");
-    m_registry->setCacheType(Registry::CacheType(settings.value("cacheStrategy", m_registry->cacheType()).toInt()));
+    QAccessibleClient::RegistryPrivateCacheApi cache(m_registry);
+    cache.setCacheType(QAccessibleClient::RegistryPrivateCacheApi::CacheType(settings.value("cacheStrategy", cache.cacheType()).toInt()));
     restoreGeometry(settings.value("geometry").toByteArray());
     restoreState(settings.value("windowState").toByteArray());
 
@@ -105,7 +106,7 @@ MainWindow::~MainWindow()
 void MainWindow::MainWindow::closeEvent(QCloseEvent *event)
 {
     QSettings settings("kde.org", "kdea11yapp");
-    settings.setValue("cacheStrategy", int(m_registry->cacheType()));
+    settings.setValue("cacheStrategy", int(QAccessibleClient::RegistryPrivateCacheApi(m_registry).cacheType()));
     settings.setValue("geometry", saveGeometry());
     settings.setValue("windowState", saveState());
 

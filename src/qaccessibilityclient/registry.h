@@ -32,6 +32,7 @@
 namespace QAccessibleClient {
 
 class RegistryPrivate;
+class RegistryPrivateCacheApi;
 
 /**
     This class represents the global accessibility registry.
@@ -43,7 +44,6 @@ class QACCESSIBILITYCLIENT_EXPORT Registry : public QObject
 {
     Q_OBJECT
     Q_ENUMS(EventListener)
-    Q_ENUMS(CacheType)
 
 public:
 
@@ -72,19 +72,6 @@ public:
         AllEventListeners = 0xffffffff      /*!< All possible event listeners */
     };
     Q_DECLARE_FLAGS(EventListeners, EventListener)
-
-    enum CacheType {
-        NoCache, ///< Disable any caching.
-        WeakCache, ///< Cache only objects in use and free them as long as no-one holds a reference to them any longer.
-        StrongCache ///< Cache all objects forever and only free them once they got explicitly removed.
-    };
-
-    CacheType cacheType() const;
-    void setCacheType(CacheType type);
-
-    AccessibleObject clientCacheObject(const QString &id) const;
-    QStringList clientCacheObjects() const;
-    void clearClientCache();
 
     explicit Registry(QObject *parent = 0);
     virtual ~Registry();
@@ -311,9 +298,40 @@ private:
     Q_DISABLE_COPY(Registry)
     RegistryPrivate *d;
     friend class RegistryPrivate;
+    friend class RegistryPrivateCacheApi;
+
+    enum CacheType { NoCache, WeakCache, StrongCache };
+    CacheType cacheType() const;
+    void setCacheType(CacheType type);
+    AccessibleObject clientCacheObject(const QString &id) const;
+    QStringList clientCacheObjects() const;
+    void clearClientCache();
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(Registry::EventListeners)
+
+// Private API. May be gone or changed anytime soon.
+class QACCESSIBILITYCLIENT_EXPORT RegistryPrivateCacheApi
+{
+public:
+    enum CacheType {
+        NoCache, ///< Disable any caching.
+        WeakCache, ///< Cache only objects in use and free them as long as no-one holds a reference to them any longer.
+        StrongCache ///< Cache all objects forever and only free them once they got explicitly removed.
+    };
+
+    explicit RegistryPrivateCacheApi(Registry *registry) : m_registry(registry) {}
+
+    CacheType cacheType() const { return static_cast<CacheType>(m_registry->cacheType()); }
+    void setCacheType(CacheType type) { m_registry->setCacheType(static_cast<Registry::CacheType>(type)); }
+
+    AccessibleObject clientCacheObject(const QString &id) const { return m_registry->clientCacheObject(id); }
+    QStringList clientCacheObjects() const { return m_registry->clientCacheObjects(); }
+    void clearClientCache() { m_registry->clearClientCache(); }
+
+private:
+    Registry *m_registry;
+};
 
 }
 
