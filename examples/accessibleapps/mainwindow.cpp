@@ -186,6 +186,7 @@ void MainWindow::MainWindow::initUi()
     m_accessibleObjectTreeView->setAccessibleDescription(QString("Displays a hierachical tree of accessible objects"));
     m_accessibleObjectTreeView->setSelectionBehavior(QAbstractItemView::SelectRows);
     m_accessibleObjectTreeView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    m_accessibleObjectTreeView->setAlternatingRowColors(true);
     treeDocker->setWidget(m_accessibleObjectTreeView);
 
     m_accessibleObjectTreeModel = new AccessibleTree(this);
@@ -209,6 +210,7 @@ void MainWindow::MainWindow::initUi()
     m_propertyView->setEditTriggers(QAbstractItemView::NoEditTriggers);
     m_propertyModel = new ObjectProperties(this);
     m_propertyView->setModel(m_propertyModel);
+    m_propertyView->setAlternatingRowColors(true);
     connect(m_propertyView, SIGNAL(doubleClicked(QModelIndex)), m_propertyModel, SLOT(doubleClicked(QModelIndex)));
 
     QDockWidget *uiDocker = new QDockWidget(QString("Boundaries"), this);
