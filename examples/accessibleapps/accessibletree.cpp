@@ -288,13 +288,14 @@ bool AccessibleTree::addAccessible(const QAccessibleClient::AccessibleObject &ob
     QModelIndex objectIndex = index(idx, 0, parentIndex);
     if (objectIndex.isValid() && static_cast<AccessibleWrapper*>(objectIndex.internalPointer())->acc == object) {
         emit dataChanged(objectIndex, objectIndex);
-    } else {
-        beginInsertRows(parentIndex, idx, idx);
-        AccessibleWrapper *parentWrapper = static_cast<AccessibleWrapper*>(parentIndex.internalPointer());
-        Q_ASSERT(parentWrapper);
-        parentWrapper->m_children.insert(idx, new AccessibleWrapper(object, parentWrapper));
-        endInsertRows();
+        return false;
     }
+
+    beginInsertRows(parentIndex, idx, idx);
+    AccessibleWrapper *parentWrapper = static_cast<AccessibleWrapper*>(parentIndex.internalPointer());
+    Q_ASSERT(parentWrapper);
+    parentWrapper->m_children.insert(idx, new AccessibleWrapper(object, parentWrapper));
+    endInsertRows();
     return true;
 }
 
