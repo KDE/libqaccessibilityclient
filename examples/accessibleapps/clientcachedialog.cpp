@@ -22,6 +22,8 @@
 
 #include "clientcachedialog.h"
 
+#include "qaccessibilityclient/registrycache_p.h"
+
 #include <qboxlayout.h>
 #include <qcombobox.h>
 #include <qdialogbuttonbox.h>

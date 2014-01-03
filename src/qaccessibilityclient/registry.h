@@ -310,29 +310,6 @@ private:
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(Registry::EventListeners)
 
-// Private API. May be gone or changed anytime soon.
-class QACCESSIBILITYCLIENT_EXPORT RegistryPrivateCacheApi
-{
-public:
-    enum CacheType {
-        NoCache, ///< Disable any caching.
-        WeakCache, ///< Cache only objects in use and free them as long as no-one holds a reference to them any longer.
-        StrongCache ///< Cache all objects forever and only free them once they got explicitly removed.
-    };
-
-    explicit RegistryPrivateCacheApi(Registry *registry) : m_registry(registry) {}
-
-    CacheType cacheType() const { return static_cast<CacheType>(m_registry->cacheType()); }
-    void setCacheType(CacheType type) { m_registry->setCacheType(static_cast<Registry::CacheType>(type)); }
-
-    AccessibleObject clientCacheObject(const QString &id) const { return m_registry->clientCacheObject(id); }
-    QStringList clientCacheObjects() const { return m_registry->clientCacheObjects(); }
-    void clearClientCache() { m_registry->clearClientCache(); }
-
-private:
-    Registry *m_registry;
-};
-
 }
 
 #endif

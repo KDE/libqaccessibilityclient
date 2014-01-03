@@ -28,6 +28,7 @@
 #include <qurl.h>
 
 #include "qaccessibilityclient/registry.h"
+#include "qaccessibilityclient/registrycache_p.h"
 #include "qaccessibilityclient/accessibleobject.h"
 
 #include "accessibleproperties.h"
