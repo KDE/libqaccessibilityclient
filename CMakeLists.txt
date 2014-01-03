@@ -72,6 +72,7 @@ endif(APPLE)
 
 add_subdirectory(src)
 add_subdirectory(tests)
+add_subdirectory(examples)
 
 # we need the absolute directories where stuff will be installed too
 # but since the variables which contain the destinations can be relative
