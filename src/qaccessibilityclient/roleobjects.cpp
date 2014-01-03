@@ -18,7 +18,7 @@
     License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "roleobjects.h"
+#include "roleobjects_p.h"
 
 using namespace QAccessibleClient;
 
