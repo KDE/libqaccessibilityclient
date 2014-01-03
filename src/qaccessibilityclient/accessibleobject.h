@@ -54,6 +54,13 @@ class QACCESSIBILITYCLIENT_EXPORT AccessibleObject
 {
 public:
 
+    /**
+      This enum describes the different interfaces that an
+      AccessibleObject can implement.
+
+      If it implements for example the ActionInterface it
+      will have a list of actions that can be invoked.
+    */
     enum Interface {
         NoInterface = 0x0,
         CacheInterface = 0x1,
@@ -76,9 +83,7 @@ public:
         ValueInterface = 0x20000,
         SocketInterface = 0x40000,
         EventWindowInterface = 0x80000,
-        EventFocusInterface = 0x100000,
-
-        InvalidInterface = 0x80000000
+        EventFocusInterface = 0x100000
     };
     Q_DECLARE_FLAGS(Interfaces, Interface)
 

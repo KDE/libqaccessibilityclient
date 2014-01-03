@@ -835,7 +835,7 @@ AccessibleObject::Interfaces RegistryPrivate::supportedInterfaces(const Accessib
 {
     if (m_cache) {
         AccessibleObject::Interfaces interfaces = m_cache->interfaces(object);
-        if (!(interfaces & AccessibleObject::InvalidInterface))
+        if (!(interfaces & AccessibleObject::NoInterface))
             return interfaces;
     }
 
