@@ -268,6 +268,17 @@ void MainWindow::setCurrentObject(const QAccessibleClient::AccessibleObject &obj
     }
 }
 
+void MainWindow::updateDetails(const AccessibleObject &object, bool force)
+{
+    if (!force && object != m_propertyModel->currentObject())
+        return;
+
+    m_propertyModel->setAccessibleObject(object);
+    for(int r = m_propertyModel->rowCount() - 1; r >= 0; --r)
+        m_propertyView->setExpanded(m_propertyModel->indexFromItem(m_propertyModel->item(r, 0)), true);
+    m_propertyView->resizeColumnToContents(0);
+}
+
 void MainWindow::stateChanged(const QAccessibleClient::AccessibleObject &object, const QString &state, bool active)
 {
     if (state == QLatin1String("focused")) {
@@ -276,6 +287,7 @@ void MainWindow::stateChanged(const QAccessibleClient::AccessibleObject &object,
         QString s = state + QString(": ") + (active ? QString("true") : QString("false"));
         m_eventsWidget->addLog(object, EventsWidget::StateChanged, s);
     }
+    updateDetails(object);
 }
 
 void MainWindow::childAdded(const QAccessibleClient::AccessibleObject &object, int childIndex)
@@ -303,20 +315,17 @@ void MainWindow::modelChanged(const QAccessibleClient::AccessibleObject &object)
     m_eventsWidget->addLog(object, EventsWidget::Table, "ModelChanged");
 }
 
-void MainWindow::MainWindow::selectionChanged(const QModelIndex& current, const QModelIndex&)
+void MainWindow::selectionChanged(const QModelIndex& current, const QModelIndex&)
 {
     QAccessibleClient::AccessibleObject acc;
     if (current.isValid() && current.internalPointer()) {
         acc = static_cast<AccessibleWrapper*>(current.internalPointer())->acc;
     }
-    m_propertyModel->setAccessibleObject(acc);
     m_uiview->setAccessibleObject(acc);
-    for(int r = m_propertyModel->rowCount() - 1; r >= 0; --r)
-        m_propertyView->setExpanded(m_propertyModel->indexFromItem(m_propertyModel->item(r, 0)), true);
-    m_propertyView->resizeColumnToContents(0);
+    updateDetails(acc, true);
 }
 
-void MainWindow::MainWindow::treeCustomContextMenuRequested(const QPoint &pos)
+void MainWindow::treeCustomContextMenuRequested(const QPoint &pos)
 {
     QModelIndex current = m_accessibleObjectTreeView->currentIndex();
     if (!current.isValid())
@@ -453,11 +462,13 @@ void MainWindow::focusChanged(const QAccessibleClient::AccessibleObject &object)
 
 void MainWindow::MainWindow::textCaretMoved(const QAccessibleClient::AccessibleObject &object, int pos)
 {
+    updateDetails(object);
     m_eventsWidget->addLog(object, EventsWidget::Text, QString("Text caret moved (%1)").arg(pos));
 }
 
 void MainWindow::MainWindow::textSelectionChanged(const QAccessibleClient::AccessibleObject &object)
 {
+    updateDetails(object);
     m_eventsWidget->addLog(object, EventsWidget::Text, QString("TextSelectionChanged"));
 }
 
@@ -474,27 +485,32 @@ QString descriptionForText(const QString& type, const QString& text, int startOf
 
 void MainWindow::textChanged(const QAccessibleClient::AccessibleObject &object, const QString& text, int startOffset, int endOffset)
 {
+    updateDetails(object);
     m_eventsWidget->addLog(object, EventsWidget::Text, descriptionForText(QLatin1String("changed"), text, startOffset, endOffset));
 }
 
 void MainWindow::textInserted(const QAccessibleClient::AccessibleObject &object, const QString& text, int startOffset, int endOffset)
 {
+    updateDetails(object);
     m_eventsWidget->addLog(object, EventsWidget::Text, descriptionForText(QLatin1String("inserted"), text, startOffset, endOffset));
 }
 
 void MainWindow::textRemoved(const QAccessibleClient::AccessibleObject &object, const QString& text, int startOffset, int endOffset)
 {
+    updateDetails(object);
     m_eventsWidget->addLog(object, EventsWidget::Text, descriptionForText(QLatin1String("removed"), text, startOffset, endOffset));
 }
 
 void MainWindow::accessibleNameChanged(const QAccessibleClient::AccessibleObject &object)
 {
+    updateDetails(object);
     m_eventsWidget->addLog(object, EventsWidget::NameChanged);
     m_accessibleObjectTreeModel->updateAccessible(object);
 }
 
 void MainWindow::accessibleDescriptionChanged(const QAccessibleClient::AccessibleObject &object)
 {
+    updateDetails(object);
     m_eventsWidget->addLog(object, EventsWidget::DescriptionChanged);
     m_accessibleObjectTreeModel->updateAccessible(object);
 }

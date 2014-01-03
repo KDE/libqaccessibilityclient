@@ -38,6 +38,7 @@ public:
 
     QHash<int,QByteArray> roleNames() const;
     void setAccessibleObject(const QAccessibleClient::AccessibleObject &acc);
+    QAccessibleClient::AccessibleObject currentObject() const { return m_acc; }
 
 public slots:
     void doubleClicked(const QModelIndex &index);

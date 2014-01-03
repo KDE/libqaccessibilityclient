@@ -102,7 +102,9 @@ private:
     void initUi();
 
     void addLog(const QAccessibleClient::AccessibleObject &object, const QString &eventName, const QString &text = QString());
+
     void setCurrentObject(const QAccessibleClient::AccessibleObject &object);
+    void updateDetails(const QAccessibleClient::AccessibleObject &object, bool force = false);
 
     QAccessibleClient::Registry *m_registry;
 
