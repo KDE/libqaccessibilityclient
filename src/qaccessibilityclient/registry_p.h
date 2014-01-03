@@ -179,7 +179,7 @@ private:
     Registry::EventListeners m_pendingSubscriptions;
     QHash<QString, AccessibleObject::Interface> interfaceHash;
     QSignalMapper m_eventMapper;
-    CacheStrategy *m_cacheStrategy;
+    ObjectCache *m_cache;
 //     typedef QMap<QString, QSharedPointer<AccessibleObjectPrivate> >::Iterator AccessibleObjectsHashIterator;
 //     typedef QMap<QString, QSharedPointer<AccessibleObjectPrivate> >::ConstIterator AccessibleObjectsHashConstIterator;
 //     QMap<QString, QSharedPointer<AccessibleObjectPrivate> > accessibleObjectsHash;

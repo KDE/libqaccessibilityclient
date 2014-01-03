@@ -40,9 +40,9 @@ AccessibleObjectPrivate::~AccessibleObjectPrivate()
 {
     //qDebug() << Q_FUNC_INFO;
 
-    if (registryPrivate->m_cacheStrategy) {
+    if (registryPrivate->m_cache) {
         const QString id = path + service;
-        registryPrivate->m_cacheStrategy->remove(id);
+        registryPrivate->m_cache->remove(id);
     }
 }
 

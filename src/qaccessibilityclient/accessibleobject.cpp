@@ -41,12 +41,12 @@ AccessibleObject::AccessibleObject(RegistryPrivate *registryPrivate, const QStri
     Q_ASSERT(registryPrivate);
     Q_ASSERT(!service.isEmpty());
     Q_ASSERT(!path.isEmpty());
-    if (registryPrivate->m_cacheStrategy) {
+    if (registryPrivate->m_cache) {
         const QString id = path + service;
-        d = registryPrivate->m_cacheStrategy->get(id);
+        d = registryPrivate->m_cache->get(id);
         if (!d) {
             d = QSharedPointer<AccessibleObjectPrivate>(new AccessibleObjectPrivate(registryPrivate, service, path));
-            registryPrivate->m_cacheStrategy->add(id, d);
+            registryPrivate->m_cache->add(id, d);
         }
     } else {
         d = QSharedPointer<AccessibleObjectPrivate>(new AccessibleObjectPrivate(registryPrivate, service, path));

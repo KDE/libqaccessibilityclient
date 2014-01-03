@@ -23,7 +23,7 @@
 
 namespace QAccessibleClient {
 
-class CacheStrategy
+class ObjectCache
 {
 public:
     virtual QStringList ids() const = 0;
@@ -33,7 +33,7 @@ public:
     virtual void clear() = 0;
 };
 
-class CacheWeakStrategy : public CacheStrategy
+class CacheWeakStrategy : public ObjectCache
 {
 public:
     virtual QStringList ids() const
@@ -60,7 +60,7 @@ private:
     QHash<QString, QWeakPointer<AccessibleObjectPrivate> > accessibleObjectsHash;
 };
 
-class CacheStrongStrategy : public CacheStrategy
+class CacheStrongStrategy : public ObjectCache
 {
 public:
     virtual QStringList ids() const

@@ -78,9 +78,9 @@ AccessibleObject Registry::accessibleFromUrl(const QUrl &url) const
 
 Registry::CacheType Registry::cacheType() const
 {
-    if (dynamic_cast<CacheWeakStrategy*>(d->m_cacheStrategy))
+    if (dynamic_cast<CacheWeakStrategy*>(d->m_cache))
         return WeakCache;
-    if (dynamic_cast<CacheStrongStrategy*>(d->m_cacheStrategy))
+    if (dynamic_cast<CacheStrongStrategy*>(d->m_cache))
         return StrongCache;
     return NoCache;
 }
@@ -88,24 +88,24 @@ Registry::CacheType Registry::cacheType() const
 void Registry::setCacheType(Registry::CacheType type)
 {
     //if (cacheType() == type) return;
-    delete d->m_cacheStrategy;
-    d->m_cacheStrategy = 0;
+    delete d->m_cache;
+    d->m_cache = 0;
     switch (type) {
         case NoCache:
             break;
         case WeakCache:
-            d->m_cacheStrategy = new CacheWeakStrategy();
+            d->m_cache = new CacheWeakStrategy();
             break;
         case StrongCache:
-            d->m_cacheStrategy = new CacheStrongStrategy();
+            d->m_cache = new CacheStrongStrategy();
             break;
     }
 }
 
 AccessibleObject Registry::clientCacheObject(const QString &id) const
 {
-    if (d->m_cacheStrategy) {
-        QSharedPointer<AccessibleObjectPrivate> p = d->m_cacheStrategy->get(id);
+    if (d->m_cache) {
+        QSharedPointer<AccessibleObjectPrivate> p = d->m_cache->get(id);
         if (p)
             return AccessibleObject(p);
     }
@@ -115,15 +115,15 @@ AccessibleObject Registry::clientCacheObject(const QString &id) const
 QStringList Registry::clientCacheObjects() const
 {
     QStringList result;
-    if (d->m_cacheStrategy)
-        return d->m_cacheStrategy->ids();
+    if (d->m_cache)
+        return d->m_cache->ids();
     return QStringList();
 }
 
 void Registry::clearClientCache()
 {
-    if (d->m_cacheStrategy)
-        d->m_cacheStrategy->clear();
+    if (d->m_cache)
+        d->m_cache->clear();
 }
 
 #include "registry.moc"

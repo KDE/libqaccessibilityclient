@@ -91,7 +91,7 @@ QString RegistryPrivate::ACCESSIBLE_OBJECT_SCHEME_STRING = QLatin1String("access
 RegistryPrivate::RegistryPrivate(Registry *qq)
     :q(qq)
     , m_subscriptions(Registry::NoEventListeners)
-    , m_cacheStrategy(new CacheWeakStrategy())
+    , m_cache(new CacheWeakStrategy())
 {
     connect(&conn, SIGNAL(connectionFetched()), this, SLOT(connectionFetched()));
     connect(&m_actionMapper, SIGNAL(mapped(QString)), this, SLOT(actionTriggered(QString)));
@@ -1373,9 +1373,9 @@ void RegistryPrivate::slotStateChanged(const QString &state, int detail1, int de
 bool RegistryPrivate::removeAccessibleObject(const QAccessibleClient::AccessibleObject &accessible)
 {
     Q_ASSERT(accessible.isValid());
-    if (m_cacheStrategy) {
+    if (m_cache) {
         const QString id = accessible.id();
-        if (m_cacheStrategy->remove(id)) {
+        if (m_cache->remove(id)) {
             emit q->removed(accessible);
         }
     } else {
