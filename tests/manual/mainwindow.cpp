@@ -209,6 +209,7 @@ void MainWindow::MainWindow::initUi()
     m_propertyView->setEditTriggers(QAbstractItemView::NoEditTriggers);
     m_propertyModel = new ObjectProperties(this);
     m_propertyView->setModel(m_propertyModel);
+    connect(m_propertyView, SIGNAL(doubleClicked(QModelIndex)), m_propertyModel, SLOT(doubleClicked(QModelIndex)));
 
     QDockWidget *uiDocker = new QDockWidget(QString("Boundaries"), this);
     uiDocker->setObjectName("boundaries");

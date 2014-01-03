@@ -23,13 +23,11 @@
 
 #include <qobject.h>
 #include <qstandarditemmodel.h>
-
-namespace QAccessibleClient {
-    class AccessibleObject;
-}
+#include "qaccessibilityclient/accessibleobject.h"
 
 class ObjectProperties : public QStandardItemModel
 {
+    Q_OBJECT
 public:
     enum Role {
         NameRole,
@@ -41,9 +39,13 @@ public:
     QHash<int,QByteArray> roleNames() const;
     void setAccessibleObject(const QAccessibleClient::AccessibleObject &acc);
 
+public slots:
+    void doubleClicked(const QModelIndex &index);
+
 private:
     QStandardItem* append(const QString &name, const QVariant &value = QVariant(), QStandardItem *parentItem = 0);
     QString stateString(const QAccessibleClient::AccessibleObject &acc);
+    QAccessibleClient::AccessibleObject m_acc;
 };
 
 #endif

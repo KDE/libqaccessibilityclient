@@ -20,7 +20,6 @@
 
 #include "accessibleproperties.h"
 
-#include "qaccessibilityclient/accessibleobject.h"
 #include "qaccessibilityclient/registry.h"
 
 using namespace QAccessibleClient;
@@ -45,6 +44,7 @@ QHash<int,QByteArray> ObjectProperties::roleNames() const
 void ObjectProperties::setAccessibleObject(const QAccessibleClient::AccessibleObject &acc)
 {
     beginResetModel();
+    m_acc = acc;
 
     clear();
     setColumnCount(2);
@@ -260,6 +260,19 @@ void ObjectProperties::setAccessibleObject(const QAccessibleClient::AccessibleOb
     }
 
     endResetModel();
+}
+
+void ObjectProperties::doubleClicked(const QModelIndex &index)
+{
+    if (!index.isValid() || !index.parent().isValid() || index.parent().data().toString() != QLatin1String("Action"))
+        return;
+
+    foreach (const QSharedPointer<QAction> &action, m_acc.actions()) {
+        if (action->text() == data(index).toString()) {
+            action->trigger();
+            return;
+        }
+    }
 }
 
 QStandardItem* ObjectProperties::append(const QString &name, const QVariant &value, QStandardItem *parentItem)
