@@ -57,7 +57,7 @@ public:
         accessibleObjectsHash.clear();
     }
 private:
-    QMap<QString, QWeakPointer<AccessibleObjectPrivate> > accessibleObjectsHash;
+    QHash<QString, QWeakPointer<AccessibleObjectPrivate> > accessibleObjectsHash;
 };
 
 class CacheStrongStrategy : public CacheStrategy
@@ -84,7 +84,7 @@ public:
         accessibleObjectsHash.clear();
     }
 private:
-    QMap<QString, QSharedPointer<AccessibleObjectPrivate> > accessibleObjectsHash;
+    QHash<QString, QSharedPointer<AccessibleObjectPrivate> > accessibleObjectsHash;
 };
 
 }
