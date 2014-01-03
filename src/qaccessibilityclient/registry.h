@@ -47,6 +47,9 @@ class QACCESSIBILITYCLIENT_EXPORT Registry : public QObject
 
 public:
 
+    /**
+     This enum describes the different types of events that can be observed.
+     */
     enum EventListener {
         NoEventListeners = 0x0,             /*!< No event listeners registered or wanted */
         Window = 0x1,                       /*!< Window changes, such as new applications being started */
@@ -73,7 +76,13 @@ public:
     };
     Q_DECLARE_FLAGS(EventListeners, EventListener)
 
+    /**
+      Construct a Registry object with \a parent as QObject parent.
+     */
     explicit Registry(QObject *parent = 0);
+    /**
+      Destroys this Registry.
+     */
     virtual ~Registry();
 
 public slots:
@@ -88,6 +97,10 @@ public slots:
         of that org.a11y.Status.IsEnabled dbus property..
     */
     bool isEnabled() const;
+    /**
+      Activates accessibility when \a enabled and tells
+      toolkits to provide updates such as focus changes.
+     */
     void setEnabled(bool enable);
 
     /**
@@ -98,6 +111,9 @@ public slots:
         screen reader with just one switch.
     */
     bool isScreenReaderEnabled() const;
+    /**
+      Tells the system that a screen reader is \a enabled.
+     */
     void setScreenReaderEnabled(bool enable);
 
     /**
@@ -107,6 +123,9 @@ public slots:
         This will unsubscribe all previously subscribed event listeners.
     */
     void subscribeEventListeners(const EventListeners &listeners) const;
+    /**
+      Returns the active event listeners.
+     */
     EventListeners subscribedEventListeners() const;
 
     /**
@@ -167,22 +186,39 @@ Q_SIGNALS:
     */
     void defunct(const QAccessibleClient::AccessibleObject &object);
 
+    /// Emitted when a window is created
     void windowCreated(const QAccessibleClient::AccessibleObject &object);
+    /// Emitted when a window is destroyed
     void windowDestroyed(const QAccessibleClient::AccessibleObject &object);
+    /// Emitted when a window is closed
     void windowClosed(const QAccessibleClient::AccessibleObject &object);
+    /// Emitted when a window is reparented
     void windowReparented(const QAccessibleClient::AccessibleObject &object);
+    /// Emitted when a window is minimized
     void windowMinimized(const QAccessibleClient::AccessibleObject &object);
+    /// Emitted when a window is maximized
     void windowMaximized(const QAccessibleClient::AccessibleObject &object);
+    /// Emitted when a window is restored to normal size
     void windowRestored(const QAccessibleClient::AccessibleObject &object);
+    /// Emitted when a window is activated
     void windowActivated(const QAccessibleClient::AccessibleObject &object);
+    /// Emitted when a window is deactivated
     void windowDeactivated(const QAccessibleClient::AccessibleObject &object);
+    /// Emitted when a desktop window is created
     void windowDesktopCreated(const QAccessibleClient::AccessibleObject &object);
+    /// Emitted when a desktop window is destroyed
     void windowDesktopDestroyed(const QAccessibleClient::AccessibleObject &object);
+    /// Emitted when a window is raised
     void windowRaised(const QAccessibleClient::AccessibleObject &object);
+    /// Emitted when a window is lowered
     void windowLowered(const QAccessibleClient::AccessibleObject &object);
+    /// Emitted when a window is moved
     void windowMoved(const QAccessibleClient::AccessibleObject &object);
+    /// Emitted when a window is resized
     void windowResized(const QAccessibleClient::AccessibleObject &object);
+    /// Emitted when a window is shaded
     void windowShaded(const QAccessibleClient::AccessibleObject &object);
+    /// Emitted when a window is unshaded
     void windowUnshaded(const QAccessibleClient::AccessibleObject &object);
 
     //void boundsChanged(const QAccessibleClient::AccessibleObject &object);
@@ -214,8 +250,20 @@ Q_SIGNALS:
         \sa AccessibleObject::child(), childAdded()
      */
     void childRemoved(const QAccessibleClient::AccessibleObject &parent, int childIndex);
+
+    /**
+      \brief Notifies that the \a object's visible data changed.
+     */
     void visibleDataChanged(const QAccessibleClient::AccessibleObject &object);
+
+    /**
+      \brief Notifies that the \a object's selection changed.
+     */
     void selectionChanged(const QAccessibleClient::AccessibleObject &object);
+
+    /**
+      \brief Notifies that the \a object's table model changed.
+     */
     void modelChanged(const QAccessibleClient::AccessibleObject &object);
 
     /**

@@ -58,13 +58,16 @@ public:
       This enum describes the different interfaces that an
       AccessibleObject can implement.
 
-      If it implements for example the ActionInterface it
+      Each AccessibleObject must implement the AccessibleInterface, otherwise
+      it is invalid. All other interfaces are optional.
+
+      If the ActionInterface is implement the object
       will have a list of actions that can be invoked.
     */
     enum Interface {
         NoInterface = 0x0,
-        CacheInterface = 0x1,
-        AccessibleInterface = 0x2,
+        AccessibleInterface = 0x1,
+        CacheInterface = 0x2,
         ActionInterface = 0x4,
         ApplicationInterface = 0x8,
         CollectionInterface = 0x10,
@@ -87,6 +90,10 @@ public:
     };
     Q_DECLARE_FLAGS(Interfaces, Interface)
 
+    /**
+      The role indicates the type of UI element that an AccessibleObject
+      represents.
+     */
     enum Role {
         NoRole, /*!< The object is invalid and has no role set. This is generally a bug. */
         CheckBox,
@@ -182,9 +189,23 @@ public:
         \brief Copy constructor.
      */
     AccessibleObject(const AccessibleObject &other);
+
+    /**
+      Destroys the AccessibleObject
+     */
     ~AccessibleObject();
+
+    /**
+      Assignment operator
+     */
     AccessibleObject &operator=(const AccessibleObject &other);
+    /**
+      Comparison operator
+     */
     bool operator==(const AccessibleObject &other) const;
+    /**
+      Inequality operator
+     */
     inline bool operator!=(const AccessibleObject &other) const {
         return !operator==(other);
     }
@@ -390,6 +411,10 @@ public:
     */
     QList< QPair<int,int> > textSelections() const;
 
+    /**
+      Set text \a selections, usually only one selection will be set,
+      use a list containing one QPair with the start and end offsets for that.
+     */
     void setTextSelections(const QList< QPair<int,int> > &selections);
 
     /**
@@ -499,6 +524,9 @@ public:
     */
     int appId() const;
 
+    /**
+      The type of locale
+     */
     enum LocaleType {
         LocaleTypeMessages,
         LocaleTypeCollate,
@@ -608,20 +636,36 @@ public:
     QVector< QSharedPointer<QAction> > actions() const;
 
     // states
+    /// Returns if the AccessibleObject is currently active
     bool isActive() const;
+    /// Returns if the AccessibleObject is checkable (often indicates a check action)
     bool isCheckable() const;
+    /// Returns if the AccessibleObject is currently checked
     bool isChecked() const;
+    /// Returns if the AccessibleObject is defunct - that means it does not properly respont to requests
+    /// and should be ignored for accessibility purposes
     bool isDefunct() const;
+    /// Returns if the AccessibleObject is an editable text
     bool isEditable() const;
+    /// Returns if the AccessibleObject is currently enabled
     bool isEnabled() const;
+    /// Returns if the AccessibleObject can be expanded to show more information
     bool isExpandable() const;
+    /// Returns if the AccessibleObject is currently expanded
     bool isExpanded() const;
+    /// Returns if the AccessibleObject is focusable
     bool isFocusable() const;
+    /// Returns if the AccessibleObject is currently focused
     bool isFocused() const;
+    /// Returns if the AccessibleObject is a multi line text edit
     bool isMultiLine() const;
+    /// Returns if the AccessibleObject is selectable
     bool isSelectable() const;
+    /// Returns if the AccessibleObject is currently selected
     bool isSelected() const;
+    /// Returns if the AccessibleObject reacts to input events
     bool isSensitive() const;
+    /// Returns if the AccessibleObject is a single line text edit
     bool isSingleLine() const;
 
     /*
@@ -633,6 +677,8 @@ public:
      */
 //    bool isTransient() const;
 
+    /// Returns if the AccessibleObject is currently visible (it can still be off the screen,
+    /// but there is nothing preventing the user from seeing it in general)
     bool isVisible() const;
 
     /*
@@ -647,11 +693,15 @@ public:
 //    bool isRequired() const;
 //    bool isAnimated() const;
 //    bool isInvalidEntry() const;
+    /// Returns if the AccessibleObject is the default widget (e.g. a button in a dialog)
     bool isDefault() const;
 //    bool isVisited() const;
 
+    /// Returns if the AccessibleObject allows text selections
     bool hasSelectableText() const;
+    /// Returns if the AccessibleObject has a tool tip
     bool hasToolTip() const;
+    /// Returns if the AccessibleObject supports automatic text completion
     bool supportsAutocompletion() const;
 
 private:
