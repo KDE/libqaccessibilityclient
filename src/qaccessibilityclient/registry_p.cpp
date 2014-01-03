@@ -833,6 +833,12 @@ QRect RegistryPrivate::characterRect(const AccessibleObject &object, int offset)
 
 AccessibleObject::Interfaces RegistryPrivate::supportedInterfaces(const AccessibleObject &object) const
 {
+    if (m_cache) {
+        AccessibleObject::Interfaces interfaces = m_cache->interfaces(object);
+        if (!(interfaces & AccessibleObject::InvalidInterface))
+            return interfaces;
+    }
+
     QDBusMessage message = QDBusMessage::createMethodCall(
             object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Accessible"),
                     QLatin1String("GetInterfaces"));
@@ -847,6 +853,8 @@ AccessibleObject::Interfaces RegistryPrivate::supportedInterfaces(const Accessib
     Q_FOREACH(const QString &interface, reply.value()){
         interfaces |= interfaceHash[interface];
     }
+
+    m_cache->setInterfaces(object, interfaces);
 
     return interfaces;
 }

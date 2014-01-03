@@ -76,7 +76,9 @@ public:
         ValueInterface = 0x20000,
         SocketInterface = 0x40000,
         EventWindowInterface = 0x80000,
-        EventFocusInterface = 0x100000
+        EventFocusInterface = 0x100000,
+
+        InvalidInterface = 0x80000000
     };
     Q_DECLARE_FLAGS(Interfaces, Interface)
 
@@ -654,6 +656,8 @@ private:
 
     friend class Registry;
     friend class RegistryPrivate;
+    friend class CacheWeakStrategy;
+    friend class CacheStrongStrategy;
     friend QDebug QAccessibleClient::operator<<(QDebug, const AccessibleObject &);
     friend uint ::qHash(const AccessibleObject& object);
 };
