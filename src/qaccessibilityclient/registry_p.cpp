@@ -1059,6 +1059,10 @@ int RegistryPrivate::appId(const AccessibleObject &object) const
 
 QString RegistryPrivate::appLocale(const AccessibleObject &object, uint lctype) const
 {
+    // some apps misbehave and claim to be the service, but on :1.0 we have the atspi service which doesn't reply anything sensible here
+    if (object.d->service == QLatin1String(":1.0"))
+        return QString();
+
     QDBusMessage message = QDBusMessage::createMethodCall(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Application"), QLatin1String("GetLocale"));
 
     QVariantList args;
