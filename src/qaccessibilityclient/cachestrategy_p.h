@@ -65,7 +65,7 @@ public:
     virtual AccessibleObject::Interfaces interfaces(const AccessibleObject &object)
     {
         if (!interfaceHash.contains(object.d.data()))
-            return AccessibleObject::NoInterface;
+            return AccessibleObject::InvalidInterface;
         return interfaceHash.value(object.d.data());
     }
     void setInterfaces(const AccessibleObject &object, AccessibleObject::Interfaces interfaces)
@@ -106,7 +106,7 @@ public:
     virtual AccessibleObject::Interfaces interfaces(const AccessibleObject &object)
     {
         if (!interfaceHash.contains(object.d.data()))
-            return AccessibleObject::NoInterface;
+            return AccessibleObject::InvalidInterface;
         return interfaceHash.value(object.d.data());
     }
     void setInterfaces(const AccessibleObject &object, AccessibleObject::Interfaces interfaces)
