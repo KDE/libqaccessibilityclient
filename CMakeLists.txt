@@ -14,14 +14,17 @@ set(CMAKE_AUTOMOC TRUE)
 
 # override the KDE defaults and build tests unless explicitly disabled
 option(KDE4_BUILD_TESTS  "Build the tests" ON)
+option(QT4_BUILD "Force building with Qt4 even if Qt5 is found")
 
 include_directories(
     ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR}
 )
 
+if (NOT QT4_BUILD)
 find_package(Qt5Widgets QUIET)
 find_package(Qt5DBus QUIET)
+endif()
 
 
 if (${Qt5Widgets_FOUND} AND ${Qt5DBus_FOUND})
