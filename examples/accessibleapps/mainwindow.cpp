@@ -295,26 +295,31 @@ void MainWindow::stateChanged(const QAccessibleClient::AccessibleObject &object,
 
 void MainWindow::childAdded(const QAccessibleClient::AccessibleObject &object, int childIndex)
 {
+    updateDetails(object);
     m_eventsWidget->addLog(object, EventsWidget::Object, QLatin1String("ChildAdded ") + QString::number(childIndex));
 }
 
 void MainWindow::childRemoved(const QAccessibleClient::AccessibleObject &object, int childIndex)
 {
+    updateDetails(object);
     m_eventsWidget->addLog(object, EventsWidget::Object, QLatin1String("ChildRemoved ") + QString::number(childIndex));
 }
 
 void MainWindow::visibleDataChanged(const QAccessibleClient::AccessibleObject &object)
 {
+    updateDetails(object);
     m_eventsWidget->addLog(object, EventsWidget::Object, "VisibleDataChanged");
 }
 
 void MainWindow::selectionChanged(const QAccessibleClient::AccessibleObject &object)
 {
+    updateDetails(object);
     m_eventsWidget->addLog(object, EventsWidget::Table, "SelectionChanged");
 }
 
 void MainWindow::modelChanged(const QAccessibleClient::AccessibleObject &object)
 {
+    updateDetails(object);
     m_eventsWidget->addLog(object, EventsWidget::Table, "ModelChanged");
 }
 
@@ -460,6 +465,8 @@ void MainWindow::focusChanged(const QAccessibleClient::AccessibleObject &object)
         setCurrentObject(object);
 
         m_accessibleObjectTreeView->setFocusPolicy(prevFocusPolicy);
+    } else {
+        updateDetails(object);
     }
 }
 

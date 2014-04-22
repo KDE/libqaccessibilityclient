@@ -27,6 +27,8 @@ using namespace QAccessibleClient;
 ObjectProperties::ObjectProperties(QObject *parent)
     : QStandardItemModel(parent)
 {
+    setColumnCount(2);
+    setHorizontalHeaderLabels( QStringList() << QString("Property") << QString("Value") );
 }
 
 ObjectProperties::~ObjectProperties()
@@ -47,8 +49,6 @@ void ObjectProperties::setAccessibleObject(const QAccessibleClient::AccessibleOb
     m_acc = acc;
 
     clear();
-    setColumnCount(2);
-    setHorizontalHeaderLabels( QStringList() << QString("Property") << QString("Value") );
 
     if (!acc.isValid()) {
         endResetModel();
