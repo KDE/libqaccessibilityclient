@@ -1430,7 +1430,7 @@ bool RegistryPrivate::removeAccessibleObject(const QAccessibleClient::QSpiObject
 
 void RegistryPrivate::slotChildrenChanged(const QString &state, int detail1, int detail2, const QDBusVariant &args, const QAccessibleClient::QSpiObjectReference &reference)
 {
-    qDebug() << Q_FUNC_INFO << state << detail1 << detail2 << args.variant() << reference.path.path();
+//    qDebug() << Q_FUNC_INFO << state << detail1 << detail2 << args.variant() << reference.path.path();
     QAccessibleClient::AccessibleObject parentAccessible = accessibleFromContext();
     if (!parentAccessible.isValid()) {
         qWarning() << Q_FUNC_INFO << "Children change with invalid parent." << reference.path.path();
