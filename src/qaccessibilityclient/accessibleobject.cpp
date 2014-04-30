@@ -235,6 +235,14 @@ QString AccessibleObject::text(int startOffset, int endOffset) const
     return QString();
 }
 
+QString AccessibleObject::textWithBoundary(int offset, TextBoundary boundary, int *startOffset, int *endOffset) const
+{
+    if (supportedInterfaces() & AccessibleObject::TextInterface)
+        return d->registryPrivate->textWithBoundary(*this, offset, boundary, startOffset, endOffset);
+    qWarning() << "text called on accessible that does not implement text";
+    return QString();
+}
+
 bool AccessibleObject::setText(const QString &text)
 {
     if( supportedInterfaces() & AccessibleObject::EditableTextInterface )

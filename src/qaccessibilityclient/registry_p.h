@@ -81,6 +81,7 @@ public:
     QList< QPair<int,int> > textSelections(const AccessibleObject &object) const;
     void setTextSelections(const AccessibleObject &object, const QList< QPair<int,int> > &selections);
     QString text(const AccessibleObject &object, int startOffset = 0, int endOffset = -1) const;
+    QString textWithBoundary(const AccessibleObject &object, int offset, AccessibleObject::TextBoundary boundary, int *startOffset, int *endOffset) const;
 
     bool setText(const AccessibleObject &object, const QString &text);
     bool insertText(const AccessibleObject &object, const QString &text, int position, int length = -1);

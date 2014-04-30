@@ -467,8 +467,30 @@ void AccessibilityClientTest::tst_characterExtents()
     AccessibleObject textArea = app.child(0).child(0);
     QVERIFY(textArea.supportedInterfaces() & QAccessibleClient::AccessibleObject::TextInterface);
 
-    QCOMPARE(textArea.characterRect(0), QRect(20,40,0,14));
     textEdit->setText("This is useless text that is being used to test this text area.\n I \n hope \n this will get correct\n\t\t\tCharacterExtents!");
+    QPoint pos = w.pos();
+
+    int start;
+    int end;
+    QString textWord = textArea.textWithBoundary(0, AccessibleObject::WordStartBoundary, &start, &end);
+    QCOMPARE(textWord, QStringLiteral("This"));
+    QCOMPARE(start, 0);
+    QCOMPARE(end, 4);
+    textWord = textArea.textWithBoundary(6, AccessibleObject::WordStartBoundary, &start, &end);
+    QCOMPARE(textWord , QStringLiteral("is"));
+    QCOMPARE(start, 5);
+    QCOMPARE(end, 7);
+    textWord = textArea.textWithBoundary(3, AccessibleObject::WordEndBoundary);
+    QCOMPARE(textWord , QStringLiteral("This"));
+
+    QString textSentence = textArea.textWithBoundary(0, AccessibleObject::SentenceEndBoundary);
+    QCOMPARE(textSentence, QStringLiteral("This is useless text that is being used to test this text area."));
+    QString textLine = textArea.textWithBoundary(0, AccessibleObject::LineEndBoundary);
+    QCOMPARE(textLine, QStringLiteral("This is useless text that is being used to test this text area."));
+    textLine = textArea.textWithBoundary(0, AccessibleObject::LineEndBoundary);
+    QCOMPARE(textLine, QStringLiteral("This is useless text that is being used to test this text area."));
+
+    QCOMPARE(textArea.characterRect(0), QRect(20,40,7,14).translated(pos));
     QCOMPARE(textArea.characterRect(1), QRect(20,40,7,14));
 }
 

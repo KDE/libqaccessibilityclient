@@ -183,6 +183,20 @@ public:
     };
 
     /**
+        \brief The TextBoundaries enum represents the different boundaries when
+        asking for text at a certain offset.
+     */
+    enum TextBoundary {
+        CharBoundary,
+        WordStartBoundary,
+        WordEndBoundary,
+        SentenceStartBoundary,
+        SentenceEndBoundary,
+        LineStartBoundary,
+        LineEndBoundary
+    };
+
+    /**
         \brief Construct an invalid AccessibleObject.
      */
     AccessibleObject();
@@ -432,6 +446,23 @@ public:
         \return The text as displayed by the TextInterface.
     */
     QString text(int startOffset = 0, int endOffset = -1) const;
+
+    /**
+        \brief Returns the text of the TextInterface by boundary.
+
+        Especially for larger text fields it may be more performant and easier to
+        query the text at a certain position instead of the full text.
+
+        For example the line where the cursor is currently can be retrieved with this function
+        in a convenient way.
+
+        \param offset is the position of the requested text.
+        \param startOffset returns the beginning of the offset, for example the start of the line when
+            asking for line boundaries.
+        \param endOffset returns the end of the text section
+        \return the text at the offset.
+    */
+    QString textWithBoundary(int offset, TextBoundary boundary, int *startOffset = 0, int *endOffset = 0) const;
 
     /**
         \brief Set the text of the EditableTextInterface.

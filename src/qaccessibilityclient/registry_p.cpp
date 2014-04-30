@@ -958,6 +958,26 @@ QString RegistryPrivate::text(const AccessibleObject &object, int startOffset, i
     return reply.value();
 }
 
+QString RegistryPrivate::textWithBoundary(const AccessibleObject &object, int offset, AccessibleObject::TextBoundary boundary, int *startOffset, int *endOffset) const
+{
+    QDBusMessage message = QDBusMessage::createMethodCall(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Text"), QLatin1String("GetTextAtOffset"));
+    message.setArguments(QVariantList() << offset << (AtspiTextBoundaryType) boundary);
+    QDBusMessage reply = conn.connection().call(message);
+    if (reply.type() != QDBusMessage::ReplyMessage || reply.signature() != QStringLiteral("sii")) {
+        qWarning() << "Could not access text." << reply.errorMessage();
+        if (startOffset)
+            *startOffset = 0;
+        if (endOffset)
+            *endOffset = 0;
+        return QString();
+    }
+    if (startOffset)
+        *startOffset = reply.arguments().at(1).toInt();
+    if (endOffset)
+        *endOffset = reply.arguments().at(2).toInt();
+    return reply.arguments().first().toString();;
+}
+
 bool RegistryPrivate::setText(const AccessibleObject &object, const QString &text)
 {
     QDBusMessage message = QDBusMessage::createMethodCall(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.EditableText"), QLatin1String("SetTextContents"));
