@@ -543,7 +543,7 @@ QList<AccessibleObject> RegistryPrivate::children(const AccessibleObject &object
     QDBusMessage message = QDBusMessage::createMethodCall (
                 object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Accessible"), QLatin1String("GetChildren"));
 
-    QDBusReply<QSpiObjectReferenceList> reply = conn.connection().call(message);
+    QDBusReply<QSpiObjectReferenceList> reply = conn.connection().call(message, QDBus::Block, 500);
     if (!reply.isValid()) {
         qWarning() << "Could not access children." << reply.error().message();
         return accs;
@@ -1163,7 +1163,7 @@ QString RegistryPrivate::imageDescription(const AccessibleObject &object) const
 QString RegistryPrivate::imageLocale(const AccessibleObject &object) const
 {
     QDBusMessage message = QDBusMessage::createMethodCall(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Image"), QLatin1String("ImageLocale"));
-    QDBusReply<QString> reply = conn.connection().call(message);
+    QDBusReply<QString> reply = conn.connection().call(message, QDBus::Block, 500);
     if (!reply.isValid()) {
         qWarning() << "Could not access imageLocale." << reply.error().message();
         return QString();
@@ -1191,7 +1191,7 @@ QVector< QSharedPointer<QAction> > RegistryPrivate::actions(const AccessibleObje
     QDBusMessage message = QDBusMessage::createMethodCall (
                 object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Action"), QLatin1String("GetActions"));
 
-    QDBusReply<QSpiActionArray> reply = conn.connection().call(message);
+    QDBusReply<QSpiActionArray> reply = conn.connection().call(message, QDBus::Block, 500);
     if (!reply.isValid()) {
         qWarning() << "Could not access actions." << reply.error().message();
         return QVector< QSharedPointer<QAction> >();
@@ -1230,7 +1230,7 @@ void RegistryPrivate::actionTriggered(const QString &action)
     args << index;
     message.setArguments(args);
 
-    QDBusReply<bool> reply = conn.connection().call(message);
+    QDBusReply<bool> reply = conn.connection().call(message, QDBus::Block, 500);
     if (!reply.isValid()) {
         qWarning() << "Could not execute action=" << action << reply.error().message();
         return;
@@ -1253,7 +1253,7 @@ QVariant RegistryPrivate::getProperty(const QString &service, const QString &pat
                 service, path, QLatin1String("org.freedesktop.DBus.Properties"), QLatin1String("Get"));
 
     message.setArguments(args);
-    QDBusMessage reply = conn.connection().call(message);
+    QDBusMessage reply = conn.connection().call(message, QDBus::Block, 500);
     if (reply.arguments().isEmpty())
         return QVariant();
 
