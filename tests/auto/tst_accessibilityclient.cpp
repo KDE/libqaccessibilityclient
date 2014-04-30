@@ -178,10 +178,12 @@ void AccessibilityClientTest::tst_navigation()
     QString desc = "This is a button...";
     button->setAccessibleDescription(desc);
     w.show();
+    w.activateWindow();
     button->setFocus();
 
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
     QTest::qWaitForWindowExposed(&w);
+    QTest::qWaitForWindowActive(&w);
 #else
     QTest::qWaitForWindowShown(&w);
 #endif
@@ -253,7 +255,9 @@ void AccessibilityClientTest::tst_navigation()
     QVERIFY(!accLabel.isChecked());
     QVERIFY(!accLabel.isFocusable());
     QVERIFY(!accLabel.isFocused());
+#if (QT_VERSION < QT_VERSION_CHECK(5, 2, 1))
     QEXPECT_FAIL("", "Labels in Qt 4 report themselves as editable.", Continue);
+#endif
     QVERIFY(!accLabel.isEditable());
 
     AccessibleObject accLine = accW.child(2);
