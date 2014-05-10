@@ -39,20 +39,20 @@ class UiWidget : public QWidget
 {
 public:
     UiWidget(UiView *view);
-    void setAccessibleObject(const QAccessibleClient::AccessibleObject &acc);
+    void setAccessibleObject(QAccessibleClient::AccessibleObject *acc);
     virtual QSize sizeHint() const;
 protected:
     QImage *m_image;
     QPixmap m_screen;
     QRect m_bounds;
-    QAccessibleClient::AccessibleObject m_object;
+    QAccessibleClient::AccessibleObject *m_object;
     QMap<QAccessibleClient::AccessibleObject::Role, const char*> m_roleColors;
 
     virtual void paintEvent(QPaintEvent *event);
 private:
     QPixmap grabScreen() const;
-    QRect bounds(const QAccessibleClient::AccessibleObject &acc) const;
-    void drawObject(QPainter *painter, const QAccessibleClient::AccessibleObject &acc, int depth = 0);
+    QRect bounds(QAccessibleClient::AccessibleObject *acc) const;
+    void drawObject(QPainter *painter, QAccessibleClient::AccessibleObject *acc, int depth = 0);
 };
 
 class UiView :public QScrollArea
@@ -62,12 +62,12 @@ public:
     UiView(QWidget *parent = 0);
     ~UiView();
 
-    void setAccessibleObject(const QAccessibleClient::AccessibleObject &acc);
+    void setAccessibleObject(QAccessibleClient::AccessibleObject *acc);
 
 private:
     UiWidget *m_uiWidget;
 
-    QWidget* createWidget(const QAccessibleClient::AccessibleObject &acc, QRect &bounds);
+    QWidget* createWidget(QAccessibleClient::AccessibleObject *acc, QRect &bounds);
 };
 
 #endif

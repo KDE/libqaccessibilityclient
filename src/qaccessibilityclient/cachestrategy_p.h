@@ -29,12 +29,10 @@ class ObjectCache
 {
 public:
     virtual QStringList ids() const = 0;
-    virtual QSharedPointer<AccessibleObjectPrivate> get(const QString &id) const = 0;
-    virtual void add(const QString &id, const QSharedPointer<AccessibleObjectPrivate> &objectPrivate) = 0;
+    virtual AccessibleObject *get(const QString &id) const = 0;
+    virtual void add(const QString &id, AccessibleObject *object) = 0;
     virtual bool remove(const QString &id) = 0;
     virtual void clear() = 0;
-    virtual AccessibleObject::Interfaces interfaces(const AccessibleObject &object) = 0;
-    virtual void setInterfaces(const AccessibleObject &object, AccessibleObject::Interfaces interfaces) = 0;
 };
 
 class CacheWeakStrategy : public ObjectCache
@@ -44,80 +42,56 @@ public:
     {
         return accessibleObjectsHash.keys();
     }
-    virtual QSharedPointer<AccessibleObjectPrivate> get(const QString &id) const
+    virtual AccessibleObject *get(const QString &id) const
     {
         return accessibleObjectsHash.value(id);
     }
-    virtual void add(const QString &id, const QSharedPointer<AccessibleObjectPrivate> &objectPrivate)
+    virtual void add(const QString &id, AccessibleObject *object)
     {
-        accessibleObjectsHash[id] = objectPrivate;
+        accessibleObjectsHash[id] = object;
     }
     virtual bool remove(const QString &id)
     {
-        QSharedPointer<AccessibleObjectPrivate> obj = accessibleObjectsHash.take(id);
-        interfaceHash.remove(obj.data());
+        AccessibleObject *obj = accessibleObjectsHash.take(id);
+        delete obj;
     }
     virtual void clear()
     {
         accessibleObjectsHash.clear();
-        interfaceHash.clear();
-    }
-    virtual AccessibleObject::Interfaces interfaces(const AccessibleObject &object)
-    {
-        if (!interfaceHash.contains(object.d.data()))
-            return AccessibleObject::InvalidInterface;
-        return interfaceHash.value(object.d.data());
-    }
-    void setInterfaces(const AccessibleObject &object, AccessibleObject::Interfaces interfaces)
-    {
-        interfaceHash.insert(object.d.data(), interfaces);
     }
 
 private:
-    QHash<QString, QWeakPointer<AccessibleObjectPrivate> > accessibleObjectsHash;
-    QHash<AccessibleObjectPrivate*, AccessibleObject::Interfaces> interfaceHash;
+    QHash<QString, AccessibleObject *> accessibleObjectsHash;
 };
 
-class CacheStrongStrategy : public ObjectCache
-{
-public:
-    virtual QStringList ids() const
-    {
-        return accessibleObjectsHash.keys();
-    }
-    virtual QSharedPointer<AccessibleObjectPrivate> get(const QString &id) const
-    {
-        return accessibleObjectsHash.value(id);
-    }
-    virtual void add(const QString &id, const QSharedPointer<AccessibleObjectPrivate> &objectPrivate)
-    {
-        accessibleObjectsHash[id] = objectPrivate;
-    }
-    virtual bool remove(const QString &id)
-    {
-        QSharedPointer<AccessibleObjectPrivate> obj = accessibleObjectsHash.take(id);
-        interfaceHash.remove(obj.data());
-    }
-    virtual void clear()
-    {
-        accessibleObjectsHash.clear();
-        interfaceHash.clear();
-    }
-    virtual AccessibleObject::Interfaces interfaces(const AccessibleObject &object)
-    {
-        if (!interfaceHash.contains(object.d.data()))
-            return AccessibleObject::InvalidInterface;
-        return interfaceHash.value(object.d.data());
-    }
-    void setInterfaces(const AccessibleObject &object, AccessibleObject::Interfaces interfaces)
-    {
-        interfaceHash.insert(object.d.data(), interfaces);
-    }
+//class CacheStrongStrategy : public ObjectCache
+//{
+//public:
+//    virtual QStringList ids() const
+//    {
+//        return accessibleObjectsHash.keys();
+//    }
+//    virtual AccessibleObject *get(const QString &id) const
+//    {
+//        return accessibleObjectsHash.value(id);
+//    }
+//    virtual void add(const QString &id, AccessibleObject *object)
+//    {
+//        accessibleObjectsHash[id] = object;
+//    }
+//    virtual bool remove(const QString &id)
+//    {
+//        AccessibleObject *obj = accessibleObjectsHash.take(id);
+//        delete obj; // FIXME: delete obj?
+//    }
+//    virtual void clear()
+//    {
+//        accessibleObjectsHash.clear();
+//    }
 
-private:
-    QHash<QString, QSharedPointer<AccessibleObjectPrivate> > accessibleObjectsHash;
-    QHash<AccessibleObjectPrivate*, AccessibleObject::Interfaces> interfaceHash;
-};
+//private:
+//    QHash<QString, AccessibleObject *> accessibleObjectsHash;
+//};
 
 }
 

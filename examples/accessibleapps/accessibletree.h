@@ -30,11 +30,11 @@ class AccessibleTree;
 class AccessibleWrapper
 {
 public:
-    AccessibleWrapper(const QAccessibleClient::AccessibleObject &object, AccessibleWrapper *parent)
+    AccessibleWrapper(QAccessibleClient::AccessibleObject *object, AccessibleWrapper *parent)
     : acc(object), m_parent(parent)
     {}
 
-    QAccessibleClient::AccessibleObject acc;
+    QAccessibleClient::AccessibleObject *acc;
 
     ~AccessibleWrapper() {
         qDeleteAll(m_children);
@@ -60,11 +60,11 @@ public:
 
     void setRegistry(QAccessibleClient::Registry *registry);
 
-    QModelIndex indexForAccessible(const QAccessibleClient::AccessibleObject &object);
-    bool addAccessible(const QAccessibleClient::AccessibleObject &object);
-    bool removeAccessible(const QAccessibleClient::AccessibleObject &object);
+    QModelIndex indexForAccessible(QAccessibleClient::AccessibleObject *object);
+    bool addAccessible(QAccessibleClient::AccessibleObject *object);
+    bool removeAccessible(QAccessibleClient::AccessibleObject *object);
     bool removeAccessible(const QModelIndex &index);
-    bool updateAccessible(const QAccessibleClient::AccessibleObject &object);
+    bool updateAccessible(QAccessibleClient::AccessibleObject *object);
 
     QList<AccessibleWrapper*> apps() const { return m_apps; }
 

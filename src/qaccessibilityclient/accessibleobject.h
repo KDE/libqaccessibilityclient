@@ -50,8 +50,21 @@ class RegistryPrivate;
 
     It is implicitly shared and only created by the library.
 */
-class QACCESSIBILITYCLIENT_EXPORT AccessibleObject
+class QACCESSIBILITYCLIENT_EXPORT AccessibleObject : public QObject
 {
+    Q_OBJECT
+    Q_PROPERTY(bool valid READ isValid NOTIFY validChanged FINAL)
+    Q_PROPERTY(QString name READ name NOTIFY nameChanged FINAL)
+    Q_PROPERTY(QString description READ description NOTIFY descriptionChanged FINAL)
+    Q_PROPERTY(QString roleName READ roleName NOTIFY roleNameChanged FINAL)
+
+Q_SIGNALS:
+    void validChanged();
+
+    void nameChanged();
+    void descriptionChanged();
+    void roleNameChanged();
+
 public:
 
     /**
@@ -196,15 +209,7 @@ public:
         LineEndBoundary
     };
 
-    /**
-        \brief Construct an invalid AccessibleObject.
-     */
-    AccessibleObject();
-
-    /**
-        \brief Copy constructor.
-     */
-    AccessibleObject(const AccessibleObject &other);
+    Q_ENUMS(Interface Role TextBoundary)
 
     /**
       Destroys the AccessibleObject
@@ -212,24 +217,9 @@ public:
     ~AccessibleObject();
 
     /**
-      Assignment operator
-     */
-    AccessibleObject &operator=(const AccessibleObject &other);
-    /**
-      Comparison operator
-     */
-    bool operator==(const AccessibleObject &other) const;
-    /**
-      Inequality operator
-     */
-    inline bool operator!=(const AccessibleObject &other) const {
-        return !operator==(other);
-    }
-
-    /**
         \brief Returns a unique identifier for the object.
      */
-    QString id() const;
+    QString uniqueId() const;
 
     /**
         \brief Returns a QUrl that references the AccessibleObject.
@@ -255,7 +245,7 @@ public:
         \brief Returns this object's parent.
         \return The parent AccessibleObject
      */
-    AccessibleObject parent() const;
+    AccessibleObject *accessibleParent() const;
 
     /**
         \brief Returns this accessible's index in it's parent's list of children.
@@ -267,7 +257,7 @@ public:
         \brief Returns this accessible's children in a list.
         \return children
      */
-    QList<AccessibleObject> children() const;
+    QVector<AccessibleObject *> children() const;
 
     /**
         \brief Returns this accessible's children according to there roles.
@@ -278,13 +268,13 @@ public:
         \code
         QList<Role> roles;
         roles << Label << CheckBox;
-        QVector< QList<AccessibleObject> > c = children(roles);
+        QVector< QVector<AccessibleObject> > c = children(roles);
         Q_ASSERT(c.count() == roles.count());
         Q_ASSERT(c[0].isEmpty() || c[0].first().role() == Label);
         Q_ASSERT(c[1].isEmpty() || c[1].first().role() == CheckBox);
         \endcode
      */
-    QVector< QList<AccessibleObject> > children(const QList<Role> &roles) const;
+//    QVector<QVector<AccessibleObject *> > children(const QList<Role> &roles) const;
 
     /**
         \brief Returns the number of children for this accessible.
@@ -298,7 +288,7 @@ public:
         The list of children is 0-based.
         \return number of children
      */
-    AccessibleObject child(int index) const;
+    AccessibleObject *child(int index) const;
 
     /**
         \brief Returns the name of this accessible.
@@ -530,7 +520,7 @@ public:
         \return The top-level application object that expose an
         org.a11y.atspi.Application accessibility interface.
     */
-    AccessibleObject application() const;
+    AccessibleObject *application() const;
 
     /**
         \brief Returns the toolkit name.
@@ -621,7 +611,7 @@ public:
     /**
         \brief Returns the selection of accessible objects.
     */
-    QList<AccessibleObject> selection() const;
+    QVector<AccessibleObject *> selection() const;
 
     /**
         \brief A description text of the image.
@@ -738,24 +728,23 @@ public:
     bool supportsAutocompletion() const;
 
 private:
-    AccessibleObject(RegistryPrivate *reg, const QString &service, const QString &path);
-    AccessibleObject(const QSharedPointer<AccessibleObjectPrivate> &dd);
-    QSharedPointer<AccessibleObjectPrivate> d;
+    AccessibleObject(RegistryPrivate *reg, const QString &service, const QString &path, AccessibleObject *parent);
+    AccessibleObjectPrivate *d;
+    Q_DISABLE_COPY(AccessibleObject)
 
     friend class Registry;
     friend class RegistryPrivate;
     friend class CacheWeakStrategy;
     friend class CacheStrongStrategy;
-    friend QDebug QAccessibleClient::operator<<(QDebug, const AccessibleObject &);
-    friend uint ::qHash(const AccessibleObject& object);
+    friend QDebug QAccessibleClient::operator<<(QDebug, const AccessibleObject *const);
 };
 
 #ifndef QT_NO_DEBUG_STREAM
-QACCESSIBILITYCLIENT_EXPORT QDebug operator<<(QDebug, const AccessibleObject &);
+QACCESSIBILITYCLIENT_EXPORT QDebug operator<<(QDebug, const AccessibleObject *const);
 #endif
 
 }
 
-Q_DECLARE_METATYPE(QAccessibleClient::AccessibleObject)
+Q_DECLARE_METATYPE(QAccessibleClient::AccessibleObject*)
 
 #endif

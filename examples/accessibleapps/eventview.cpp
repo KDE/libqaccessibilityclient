@@ -354,22 +354,22 @@ void EventsWidget::processPending()
     }
 }
 
-void EventsWidget::addLog(const QAccessibleClient::AccessibleObject &object, EventsWidget::EventType eventType, const QString &text)
+void EventsWidget::addLog(QAccessibleClient::AccessibleObject *object, EventsWidget::EventType eventType, const QString &text)
 {
-    if (!object.isValid())
+    if (!object || !object->isValid())
         return;
 
-    QStandardItem *nameItem = new QStandardItem(object.name());
+    QStandardItem *nameItem = new QStandardItem(object->name());
     nameItem->setData(QVariant::fromValue<EventType>(eventType), EventsModel::EventTypeRole);
-    nameItem->setData(object.url().toString(), EventsModel::UrlRole);
+    nameItem->setData(object->url().toString(), EventsModel::UrlRole);
 
-    AccessibleObject app = object.application();
-    if (app.isValid()) {
-        nameItem->setData(app.name(), EventsModel::AppNameRole);
-        nameItem->setData(app.url().toString(), EventsModel::AppUrlRole);
+    AccessibleObject *app = object->application();
+    if (app && app->isValid()) {
+        nameItem->setData(app->name(), EventsModel::AppNameRole);
+        nameItem->setData(app->url().toString(), EventsModel::AppUrlRole);
     }
 
-    QStandardItem *roleItem = new QStandardItem(object.roleName());
+    QStandardItem *roleItem = new QStandardItem(object->roleName());
     QStandardItem *typeItem = new QStandardItem(eventName(eventType));
     QStandardItem *textItem = new QStandardItem(text);
     m_pendingLogs.append(QList<QStandardItem*>() << nameItem << roleItem << typeItem << textItem);

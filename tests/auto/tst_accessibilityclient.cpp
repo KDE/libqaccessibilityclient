@@ -30,6 +30,7 @@
 #include <qdebug.h>
 #include <qprocess.h>
 #include <qfileinfo.h>
+#include <qsignalspy.h>
 
 #include "qaccessibilityclient/qaccessibilityclient_export.h"
 #include "qaccessibilityclient/registry.h"
@@ -42,18 +43,18 @@ typedef QSharedPointer<QAccessibleInterface> QAIPointer;
 using namespace QAccessibleClient;
 
 struct Event {
-    Event(const AccessibleObject &obj)
+    Event(AccessibleObject *obj)
         : object(obj)
     {}
 
-    AccessibleObject object;
+    AccessibleObject *object;
 };
 
 class EventListener : public QObject
 {
     Q_OBJECT
 public Q_SLOTS:
-    void focus(const QAccessibleClient::AccessibleObject &object) {
+    void focus(QAccessibleClient::AccessibleObject *object) {
         focusEvents.append(Event(object));
     }
 
@@ -70,7 +71,6 @@ private Q_SLOTS:
     void cleanup();
 
     void tst_registry();
-    void tst_accessibleObject();
     void tst_application();
     void tst_navigation();
     void tst_focus();
@@ -88,20 +88,24 @@ private:
 
 void AccessibilityClientTest::initTestCase()
 {
-    qDebug() << "Starting test.";
     if (qgetenv("QT_ACCESSIBILITY") != QByteArray("1"))
         qWarning() << "QT_ACCESSIBILITY=1 not found, this leads to failing tests with Qt 4";
 }
 
-
-AccessibleObject getAppObject(const Registry &r, const QString &appName)
+AccessibleObject *getAppObject(Registry &registry, const QString &appName)
 {
-    AccessibleObject accApp;
+//    qDebug() << "Get app object: " << appName;
+    QTest::qWait(1000); // give the app time to register on DBus
+    QSignalSpy spy(&registry, SIGNAL(applicationsChanged()));
+    registry.updateApplications();
+    spy.wait();
+
+    AccessibleObject *accApp = 0;
 
     QApplication::processEvents();
-    QList<AccessibleObject> apps = r.applications();
-    foreach (const AccessibleObject &app, apps) {
-        if (app.name() == appName) {
+    QVector<AccessibleObject*> apps = registry.applications();
+    foreach (AccessibleObject *app, apps) {
+        if (app->name() == appName) {
             accApp = app;
             break;
         }
@@ -131,14 +135,6 @@ void AccessibilityClientTest::tst_registry()
     QVERIFY(registry.subscribedEventListeners() & Registry::Window);
 }
 
-void AccessibilityClientTest::tst_accessibleObject()
-{
-    AccessibleObject invalidObject;
-    QVERIFY(!invalidObject.isValid());
-    AccessibleObject invalid2(invalidObject);
-    QVERIFY(!invalid2.isValid());
-}
-
 void AccessibilityClientTest::tst_application()
 {
     QString appName = QLatin1String("Lib QAccessibleClient test");
@@ -146,20 +142,14 @@ void AccessibilityClientTest::tst_application()
     QWidget w;
     w.setAccessibleName("Foobar 99");
     w.show();
+    QVERIFY(QTest::qWaitForWindowExposed(&w));
 
-    AccessibleObject accApp;
-    QVERIFY(!accApp.isValid());
+    AccessibleObject *accApp = 0;
     accApp = getAppObject(registry, appName);
-    QVERIFY(accApp.isValid());
-    QCOMPARE(accApp.name(), appName);
-    QCOMPARE(accApp.childCount(), 1);
-
-    AccessibleObject copy1(accApp);
-    AccessibleObject copy2 = accApp;
-    QVERIFY(copy1.isValid());
-    QCOMPARE(copy1.name(), appName);
-    QVERIFY(copy2.isValid());
-    QCOMPARE(copy2.name(), appName);
+    QVERIFY(accApp);
+    QVERIFY(accApp->isValid());
+    QCOMPARE(accApp->name(), appName);
+    QCOMPARE(accApp->childCount(), 1);
 }
 
 void AccessibilityClientTest::tst_navigation()
@@ -189,50 +179,48 @@ void AccessibilityClientTest::tst_navigation()
 #endif
 
     // App
-    AccessibleObject accApp = getAppObject(registry, appName);
-    QVERIFY(accApp.isValid());
-    QCOMPARE(accApp.name(), appName);
-    QCOMPARE(accApp.childCount(), 1);
+    AccessibleObject *accApp = getAppObject(registry, appName);
+    QVERIFY(accApp->isValid());
+    QCOMPARE(accApp->name(), appName);
+    QCOMPARE(accApp->childCount(), 1);
 
     // What should this return?
-    QCOMPARE(accApp.indexInParent(), -1);
+    QCOMPARE(accApp->indexInParent(), -1);
 
     // Root widget
-    AccessibleObject accW = accApp.child(0);
-    QVERIFY(accW.isValid());
-    qDebug() << "NAME: " << accW.name();
-    QCOMPARE(accW.name(), w.accessibleName());
-    QCOMPARE(accW.description(), w.accessibleDescription());
-    QCOMPARE(accW.role(), AccessibleObject::Filler);
-    QCOMPARE(accW.roleName(), QLatin1String("filler"));
-    QCOMPARE(accW.childCount(), 1);
-    QCOMPARE(accW.indexInParent(), 0);
-    QVERIFY(accW.isActive());
+    AccessibleObject *accW = accApp->child(0);
+    QVERIFY(accW->isValid());
+    qDebug() << "NAME: " << accW->name();
+    QCOMPARE(accW->name(), w.accessibleName());
+    QCOMPARE(accW->description(), w.accessibleDescription());
+    QCOMPARE(accW->role(), AccessibleObject::Filler);
+    QCOMPARE(accW->roleName(), QLatin1String("filler"));
+    QCOMPARE(accW->childCount(), 1);
+    QCOMPARE(accW->indexInParent(), 0);
+    QVERIFY(accW->isActive());
 
     // Button
-    AccessibleObject accButton = accW.child(0);
-    QVERIFY(accButton.isValid());
-    QCOMPARE(accButton.name(), button->text());
-    QCOMPARE(accButton.description(), desc);
-    QCOMPARE(accButton.role(), AccessibleObject::Button);
-    QCOMPARE(accButton.roleName(), QLatin1String("push button"));
-    QVERIFY(!accButton.localizedRoleName().isEmpty());
-    QCOMPARE(accButton.indexInParent(), 0);
+    AccessibleObject *accButton = accW->child(0);
+    QVERIFY(accButton->isValid());
+    QCOMPARE(accButton->name(), button->text());
+    QCOMPARE(accButton->description(), desc);
+    QCOMPARE(accButton->role(), AccessibleObject::Button);
+    QCOMPARE(accButton->roleName(), QLatin1String("push button"));
+    QVERIFY(!accButton->localizedRoleName().isEmpty());
+    QCOMPARE(accButton->indexInParent(), 0);
 
-    AccessibleObject accButton2 = accW.children().first();
+    AccessibleObject *accButton2 = accW->children().first();
     QCOMPARE(accButton, accButton2);
-    AccessibleObject parent = accButton.parent();
+    AccessibleObject *parent = accButton->accessibleParent();
     QCOMPARE(parent, accW);
-    AccessibleObject parentParent = parent.parent();
+    AccessibleObject *parentParent = parent->accessibleParent();
     QCOMPARE(parentParent, accApp);
 
-    AccessibleObject invalidChild = accButton.child(0);
-    QVERIFY(!invalidChild.isValid());
-    QVERIFY(invalidChild.name().isEmpty());
+    AccessibleObject *invalidChild = accButton->child(0);
+    QVERIFY(!invalidChild);
 
-    AccessibleObject invalidParent = accApp.parent();
-    QVERIFY(!invalidParent.isValid());
-    QVERIFY(invalidParent.name().isEmpty());
+    AccessibleObject *invalidParent = accApp->accessibleParent();
+    QVERIFY(!invalidParent);
 
     // Add a label and line edit
     QLabel *label = new QLabel;
@@ -242,49 +230,49 @@ void AccessibilityClientTest::tst_navigation()
     layout->addWidget(line);
     label->setBuddy(line);
     QApplication::processEvents();
-    QCOMPARE(accW.childCount(), 3);
+    QCOMPARE(accW->childCount(), 3);
 
-    AccessibleObject accLabel = accW.child(1);
-    QVERIFY(accLabel.isValid());
-    QCOMPARE(accLabel.name(), label->text());
-    QCOMPARE(accLabel.role(), AccessibleObject::Label);
-    QCOMPARE(accLabel.roleName(), QLatin1String("label"));
-    QCOMPARE(accLabel.indexInParent(), 1);
-    QVERIFY(accLabel.isVisible());
-    QVERIFY(!accLabel.isCheckable());
-    QVERIFY(!accLabel.isChecked());
-    QVERIFY(!accLabel.isFocusable());
-    QVERIFY(!accLabel.isFocused());
+    AccessibleObject *accLabel = accW->child(1);
+    QVERIFY(accLabel->isValid());
+    QCOMPARE(accLabel->name(), label->text());
+    QCOMPARE(accLabel->role(), AccessibleObject::Label);
+    QCOMPARE(accLabel->roleName(), QLatin1String("label"));
+    QCOMPARE(accLabel->indexInParent(), 1);
+    QVERIFY(accLabel->isVisible());
+    QVERIFY(!accLabel->isCheckable());
+    QVERIFY(!accLabel->isChecked());
+    QVERIFY(!accLabel->isFocusable());
+    QVERIFY(!accLabel->isFocused());
 #if (QT_VERSION < QT_VERSION_CHECK(5, 2, 1))
     QEXPECT_FAIL("", "Labels in Qt 4 report themselves as editable.", Continue);
 #endif
-    QVERIFY(!accLabel.isEditable());
+    QVERIFY(!accLabel->isEditable());
 
-    AccessibleObject accLine = accW.child(2);
-    QVERIFY(accLine.isValid());
-    QCOMPARE(accLine.name(), label->text());
-    QCOMPARE(accLine.role(), AccessibleObject::Text);
-    QCOMPARE(accLine.roleName(), QLatin1String("text"));
-    QCOMPARE(accLine.indexInParent(), 2);
-    QVERIFY(accLine.isEditable());
-    AccessibleObject parent1 = accLine.parent();
+    AccessibleObject *accLine = accW->child(2);
+    QVERIFY(accLine->isValid());
+    QCOMPARE(accLine->name(), label->text());
+    QCOMPARE(accLine->role(), AccessibleObject::Text);
+    QCOMPARE(accLine->roleName(), QLatin1String("text"));
+    QCOMPARE(accLine->indexInParent(), 2);
+    QVERIFY(accLine->isEditable());
+    AccessibleObject *parent1 = accLine->accessibleParent();
     QCOMPARE(parent1, accW);
 
-    QVERIFY(accLine.isFocusable());
-    QVERIFY(accButton.isFocusable());
-    QVERIFY(accButton.isFocused());
-    QVERIFY(!accLine.isFocused());
+    QVERIFY(accLine->isFocusable());
+    QVERIFY(accButton->isFocusable());
+    QVERIFY(accButton->isFocused());
+    QVERIFY(!accLine->isFocused());
     line->setFocus();
     QApplication::processEvents();
-    QVERIFY(accLine.isFocused());
-    QVERIFY(!accButton.isFocused());
+    QVERIFY(accLine->isFocused());
+    QVERIFY(!accButton->isFocused());
 
     label->setVisible(false);
     line->setVisible(false);
     QApplication::processEvents();
     QTest::qWait(1000);
-    QVERIFY(!accLabel.isVisible());
-    QVERIFY(!accLine.isVisible());
+    QVERIFY(!accLabel->isVisible());
+    QVERIFY(!accLine->isVisible());
 }
 
 bool AccessibilityClientTest::startHelperProcess()
@@ -305,6 +293,7 @@ bool AccessibilityClientTest::startHelperProcess()
         qWarning() << "WARNING: Could not start helper executable. Test will not run.";
         return false;
     }
+    QTest::qWait(1000); // let the thing start and say hello to dbus
     return true;
 }
 
@@ -316,7 +305,7 @@ void AccessibilityClientTest::tst_focus()
 
     QVERIFY(startHelperProcess());
 
-    AccessibleObject remoteApp;
+    AccessibleObject *remoteApp;
     QString appName = QLatin1String("LibKdeAccessibilityClient Simple Widget App");
     // startup and init takes some time, give up to two seconds and a few dbus calls
     int attempts = 0;
@@ -324,7 +313,7 @@ void AccessibilityClientTest::tst_focus()
         ++attempts;
         QTest::qWait(100);
         remoteApp = getAppObject(registry, appName);
-        if (remoteApp.isValid())
+        if (remoteApp)
             break;
     }
 
@@ -335,17 +324,18 @@ void AccessibilityClientTest::tst_focus()
             break;
     }
 
-    QVERIFY(remoteApp.isValid());
-    QCOMPARE(remoteApp.name(), appName);
+    QVERIFY(remoteApp);
+    QVERIFY(remoteApp->isValid());
+    QCOMPARE(remoteApp->name(), appName);
 
-    AccessibleObject window = remoteApp.child(0);
-    AccessibleObject button1 = window.child(0);
-    AccessibleObject button2 = window.child(1);
+    AccessibleObject *window = remoteApp->child(0);
+    AccessibleObject *button1 = window->child(0);
+    AccessibleObject *button2 = window->child(1);
 
     // we can get other focus events, check that we only use the ones from our app
     for (int i = 0; i < listener->focusEvents.count(); ++i) {
-        AccessibleObject ev = listener->focusEvents.at(i).object;
-        if (ev.application() != remoteApp)
+        AccessibleObject *ev = listener->focusEvents.at(i).object;
+        if (ev->application() != remoteApp)
             listener->focusEvents.removeAt(i);;
     }
     QVERIFY(listener->focusEvents.size() == 2);
@@ -389,40 +379,40 @@ void AccessibilityClientTest::tst_states()
     QTest::qWaitForWindowShown(&w);
 #endif
 
-    AccessibleObject accApp = getAppObject(registry, appName);
-    QVERIFY(accApp.isValid());
+    AccessibleObject *accApp = getAppObject(registry, appName);
+    QVERIFY(accApp);
 
     // Root widget
-    AccessibleObject accW = accApp.child(0);
-    QVERIFY(accW.isValid());
+    AccessibleObject *accW = accApp->child(0);
+    QVERIFY(accW);
 
     // Buttons
-    AccessibleObject accButton1 = accW.child(0);
-    QVERIFY(accButton1.isValid());
-    QCOMPARE(accButton1.name(), button1->text());
+    AccessibleObject *accButton1 = accW->child(0);
+    QVERIFY(accButton1);
+    QCOMPARE(accButton1->name(), button1->text());
 
-    AccessibleObject accButton2 = accW.child(1);
-    QVERIFY(accButton2.isValid());
-    QCOMPARE(accButton2.name(), button2->text());
+    AccessibleObject *accButton2 = accW->child(1);
+    QVERIFY(accButton2);
+    QCOMPARE(accButton2->name(), button2->text());
 
-    QVERIFY(accButton1.isVisible());
+    QVERIFY(accButton1->isVisible());
     button1->setVisible(false);
-    QVERIFY(!accButton1.isVisible());
+    QVERIFY(!accButton1->isVisible());
     button1->setVisible(true);
-    QVERIFY(accButton1.isVisible());
+    QVERIFY(accButton1->isVisible());
 
-    QVERIFY(accButton1.isEnabled());
+    QVERIFY(accButton1->isEnabled());
     button1->setEnabled(false);
-    QVERIFY(!accButton1.isEnabled());
+    QVERIFY(!accButton1->isEnabled());
     button1->setEnabled(true);
-    QVERIFY(accButton1.isEnabled());
+    QVERIFY(accButton1->isEnabled());
 }
 
 void AccessibilityClientTest::tst_extents()
 {
     QVERIFY(startHelperProcess());
 
-    AccessibleObject remoteApp;
+    AccessibleObject *remoteApp;
     QString appName = QLatin1String("LibKdeAccessibilityClient Simple Widget App");
 
     int attempts = 0;
@@ -430,20 +420,20 @@ void AccessibilityClientTest::tst_extents()
         ++attempts;
         QTest::qWait(100);
         remoteApp = getAppObject(registry,appName);
-        if(remoteApp.isValid())
+        if(remoteApp)
             break;
     }
 
-    QVERIFY(remoteApp.isValid());
-    QCOMPARE(remoteApp.name(), appName);
+    QVERIFY(remoteApp->isValid());
+    QCOMPARE(remoteApp->name(), appName);
 
-    AccessibleObject window = remoteApp.child(0);
-    QVERIFY(window.supportedInterfaces() & QAccessibleClient::AccessibleObject::ComponentInterface);
-    QCOMPARE(window.boundingRect(),QRect(3,23,200,100));
+    AccessibleObject *window = remoteApp->child(0);
+    QVERIFY(window->supportedInterfaces() & QAccessibleClient::AccessibleObject::ComponentInterface);
+    QCOMPARE(window->boundingRect(),QRect(3,23,200,100));
 
-    AccessibleObject button1 = window.child(0);
-    QVERIFY(button1.name()=="Button 1");
-    QCOMPARE(button1.boundingRect(),QRect(13,33,100,20));
+    AccessibleObject *button1 = window->child(0);
+    QVERIFY(button1->name()=="Button 1");
+    QCOMPARE(button1->boundingRect(),QRect(13,33,100,20));
     helperProcess.terminate();
 }
 
@@ -461,41 +451,42 @@ void AccessibilityClientTest::tst_characterExtents()
 #else
     QTest::qWaitForWindowShown(&w);
 #endif
-    AccessibleObject app = getAppObject(registry, appName);
+    AccessibleObject *app = getAppObject(registry, appName);
 
     //Check if the widget is correct
-    QVERIFY(app.isValid());
-    QCOMPARE(app.name(), appName);
-    QCOMPARE(app.childCount(), 1);
+    QVERIFY(app);
+    QVERIFY(app->isValid());
+    QCOMPARE(app->name(), appName);
+    QCOMPARE(app->childCount(), 1);
 
-    AccessibleObject textArea = app.child(0).child(0);
-    QVERIFY(textArea.supportedInterfaces() & QAccessibleClient::AccessibleObject::TextInterface);
+    AccessibleObject *textArea = app->child(0)->child(0);
+    QVERIFY(textArea->supportedInterfaces() & QAccessibleClient::AccessibleObject::TextInterface);
 
     textEdit->setText("This is useless text that is being used to test this text area.\n I \n hope \n this will get correct\n\t\t\tCharacterExtents!");
     QPoint pos = w.pos();
 
     int start;
     int end;
-    QString textWord = textArea.textWithBoundary(0, AccessibleObject::WordStartBoundary, &start, &end);
+    QString textWord = textArea->textWithBoundary(0, AccessibleObject::WordStartBoundary, &start, &end);
     QCOMPARE(textWord, QStringLiteral("This"));
     QCOMPARE(start, 0);
     QCOMPARE(end, 4);
-    textWord = textArea.textWithBoundary(6, AccessibleObject::WordStartBoundary, &start, &end);
+    textWord = textArea->textWithBoundary(6, AccessibleObject::WordStartBoundary, &start, &end);
     QCOMPARE(textWord , QStringLiteral("is"));
     QCOMPARE(start, 5);
     QCOMPARE(end, 7);
-    textWord = textArea.textWithBoundary(3, AccessibleObject::WordEndBoundary);
+    textWord = textArea->textWithBoundary(3, AccessibleObject::WordEndBoundary);
     QCOMPARE(textWord , QStringLiteral("This"));
 
-    QString textSentence = textArea.textWithBoundary(0, AccessibleObject::SentenceEndBoundary);
+    QString textSentence = textArea->textWithBoundary(0, AccessibleObject::SentenceEndBoundary);
     QCOMPARE(textSentence, QStringLiteral("This is useless text that is being used to test this text area."));
-    QString textLine = textArea.textWithBoundary(0, AccessibleObject::LineEndBoundary);
+    QString textLine = textArea->textWithBoundary(0, AccessibleObject::LineEndBoundary);
     QCOMPARE(textLine, QStringLiteral("This is useless text that is being used to test this text area."));
-    textLine = textArea.textWithBoundary(0, AccessibleObject::LineEndBoundary);
+    textLine = textArea->textWithBoundary(0, AccessibleObject::LineEndBoundary);
     QCOMPARE(textLine, QStringLiteral("This is useless text that is being used to test this text area."));
 
-    QCOMPARE(textArea.characterRect(0), QRect(20,40,7,14).translated(pos));
-    QCOMPARE(textArea.characterRect(1), QRect(20,40,7,14));
+    QCOMPARE(textArea->characterRect(0), QRect(20,40,7,14).translated(pos));
+    QCOMPARE(textArea->characterRect(1), QRect(20,40,7,14));
 }
 
 

@@ -18,41 +18,17 @@
     License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef QACCESSIBILITYCLIENT_ACCESSIBLEOBJECT_P_H
-#define QACCESSIBILITYCLIENT_ACCESSIBLEOBJECT_P_H
+#include <QApplication>
 
-#include <qstring.h>
-#include <qlist.h>
-#include <qsharedpointer.h>
-#include <qaction.h>
+#include "mainwindow.h"
 
-#include "accessibleobject.h"
-
-namespace QAccessibleClient {
-
-class RegistryPrivate;
-
-class AccessibleObjectPrivate
+int main(int argc, char** argv)
 {
-public:
-    AccessibleObjectPrivate(RegistryPrivate *reg, const QString &service_, const QString &path_);
-    ~AccessibleObjectPrivate();
-    bool operator==(const AccessibleObjectPrivate &other) const;
+    QApplication app(argc, argv);
+    app.setApplicationName(QLatin1String("Randamizer"));
 
-    void setDefunct();
+    MainWindow window;
+    window.show();
 
-    RegistryPrivate *registryPrivate;
-    QString service;
-    QString path;
-    mutable QVector< QSharedPointer<QAction> > actions;
-    quint32 defunct: 1;
-    quint32 actionsFetched: 1;
-    quint32 interfacesFetched: 1;
-    quint32 childrenFetched: 1;
-    AccessibleObject::Interfaces interfaces;
-    Q_DISABLE_COPY(AccessibleObjectPrivate)
-};
-
+    return app.exec();
 }
-
-#endif

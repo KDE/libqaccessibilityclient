@@ -161,7 +161,7 @@ UiWidget::UiWidget(UiView *view)
     }
 }
 
-void UiWidget::setAccessibleObject(const QAccessibleClient::AccessibleObject &acc)
+void UiWidget::setAccessibleObject(QAccessibleClient::AccessibleObject *acc)
 {
     delete m_image; m_image = 0;
     m_object = acc;
@@ -209,41 +209,41 @@ QPixmap UiWidget::grabScreen() const
     return pm;
 }
 
-QRect UiWidget::bounds(const QAccessibleClient::AccessibleObject &acc) const
+QRect UiWidget::bounds(QAccessibleClient::AccessibleObject *acc) const
 {
-    if (!acc.isValid())
+    if (!acc || !acc->isValid())
         return QRect();
     QRect rect;
-    AccessibleObject::Interfaces ifaces = acc.supportedInterfaces();
+    AccessibleObject::Interfaces ifaces = acc->supportedInterfaces();
     if( !(ifaces & AccessibleObject::ApplicationInterface) ) {
-        QAccessibleClient::AccessibleObject parent = acc.parent();
+        QAccessibleClient::AccessibleObject *parent = acc->accessibleParent();
         rect = bounds(parent);
     }
     if( ifaces & AccessibleObject::ComponentInterface ) {
-        QRect r = acc.boundingRect();
+        QRect r = acc->boundingRect();
         if (!r.isNull())
             rect = rect.isNull() ? r : rect.united(r);
     }
     return rect;
 }
 
-void UiWidget::drawObject(QPainter *painter, const QAccessibleClient::AccessibleObject &acc, int depth)
+void UiWidget::drawObject(QPainter *painter, QAccessibleClient::AccessibleObject *acc, int depth)
 {
-    if (!acc.isValid())
+    if (!acc || !acc->isValid())
         return;
     ++depth;
-    AccessibleObject::Interfaces ifaces = acc.supportedInterfaces();
+    AccessibleObject::Interfaces ifaces = acc->supportedInterfaces();
     if( !(ifaces & AccessibleObject::ApplicationInterface) ) {
-        QAccessibleClient::AccessibleObject parent = acc.parent();
+        QAccessibleClient::AccessibleObject *parent = acc->accessibleParent();
         drawObject(painter, parent, depth);
     }
     if( ifaces & AccessibleObject::ComponentInterface ) {
-        QRect r = acc.boundingRect();
+        QRect r = acc->boundingRect();
         if (!r.isNull()) {
             r.moveTopLeft(r.topLeft() - m_bounds.topLeft());
 
             QColor color;
-            QMap<AccessibleObject::Role, const char*>::ConstIterator colorIt = m_roleColors.constFind(acc.role());
+            QMap<AccessibleObject::Role, const char*>::ConstIterator colorIt = m_roleColors.constFind(acc->role());
             if (colorIt != m_roleColors.constEnd()) {
                 color = QColor(colorIt.value());
             } else {
@@ -280,7 +280,7 @@ UiView::~UiView()
 {
 }
 
-void UiView::setAccessibleObject(const QAccessibleClient::AccessibleObject &acc)
+void UiView::setAccessibleObject(QAccessibleClient::AccessibleObject *acc)
 {
     m_uiWidget->setAccessibleObject(acc);
     widget()->resize(m_uiWidget->size());

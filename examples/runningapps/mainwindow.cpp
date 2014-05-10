@@ -18,41 +18,45 @@
     License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef QACCESSIBILITYCLIENT_ACCESSIBLEOBJECT_P_H
-#define QACCESSIBILITYCLIENT_ACCESSIBLEOBJECT_P_H
+#include "mainwindow.h"
 
-#include <qstring.h>
-#include <qlist.h>
-#include <qsharedpointer.h>
-#include <qaction.h>
+using namespace QAccessibleClient;
 
-#include "accessibleobject.h"
-
-namespace QAccessibleClient {
-
-class RegistryPrivate;
-
-class AccessibleObjectPrivate
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
 {
-public:
-    AccessibleObjectPrivate(RegistryPrivate *reg, const QString &service_, const QString &path_);
-    ~AccessibleObjectPrivate();
-    bool operator==(const AccessibleObjectPrivate &other) const;
-
-    void setDefunct();
-
-    RegistryPrivate *registryPrivate;
-    QString service;
-    QString path;
-    mutable QVector< QSharedPointer<QAction> > actions;
-    quint32 defunct: 1;
-    quint32 actionsFetched: 1;
-    quint32 interfacesFetched: 1;
-    quint32 childrenFetched: 1;
-    AccessibleObject::Interfaces interfaces;
-    Q_DISABLE_COPY(AccessibleObjectPrivate)
-};
-
+    setCentralWidget(new QWidget());
+    m_ui.setupUi(centralWidget());
+    m_ui.listView->setModel(&m_appList);
 }
 
-#endif
+AppList::AppList()
+    : m_registry(new Registry(this))
+{
+    connect(m_registry, &Registry::applicationsChanged, this, &AppList::appsChanged);
+    m_registry->updateApplications();
+}
+
+int AppList::rowCount(const QModelIndex &parent) const
+{
+    return m_apps.count();
+}
+
+QVariant AppList::data(const QModelIndex &index, int role) const
+{
+    if (role == Qt::DisplayRole) {
+        int row = index.row();
+        if (row < 0 || row >= m_apps.count())
+            return QVariant();
+        return m_apps.at(row)->name();
+    }
+    return QVariant();
+}
+
+void AppList::appsChanged()
+{
+    beginResetModel();
+    m_apps = m_registry->applications();
+    endResetModel();
+}
+

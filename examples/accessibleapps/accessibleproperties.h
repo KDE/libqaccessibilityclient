@@ -37,16 +37,16 @@ public:
     virtual ~ObjectProperties();
 
     QHash<int,QByteArray> roleNames() const;
-    void setAccessibleObject(const QAccessibleClient::AccessibleObject &acc);
-    QAccessibleClient::AccessibleObject currentObject() const { return m_acc; }
+    void setAccessibleObject(QAccessibleClient::AccessibleObject *acc);
+    QAccessibleClient::AccessibleObject *currentObject() const { return m_acc; }
 
 public slots:
     void doubleClicked(const QModelIndex &index);
 
 private:
     QStandardItem* append(const QString &name, const QVariant &value = QVariant(), QStandardItem *parentItem = 0);
-    QString stateString(const QAccessibleClient::AccessibleObject &acc);
-    QAccessibleClient::AccessibleObject m_acc;
+    QString stateString(QAccessibleClient::AccessibleObject *acc);
+    QAccessibleClient::AccessibleObject *m_acc;
 };
 
 #endif

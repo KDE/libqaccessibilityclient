@@ -66,12 +66,17 @@ Registry::EventListeners Registry::subscribedEventListeners() const
     return d->eventListeners();
 }
 
-QList<AccessibleObject> Registry::applications() const
+void Registry::updateApplications()
 {
-    return d->topLevelAccessibles();
+    d->updateTopLevelAccessibles();
 }
 
-AccessibleObject Registry::accessibleFromUrl(const QUrl &url) const
+QVector<AccessibleObject*> Registry::applications() const
+{
+    return d->m_topLevelAccessibles;
+}
+
+AccessibleObject* Registry::accessibleFromUrl(const QUrl &url) const
 {
     return d->fromUrl(url);
 }
@@ -80,8 +85,8 @@ Registry::CacheType Registry::cacheType() const
 {
     if (dynamic_cast<CacheWeakStrategy*>(d->m_cache))
         return WeakCache;
-    if (dynamic_cast<CacheStrongStrategy*>(d->m_cache))
-        return StrongCache;
+//    if (dynamic_cast<CacheStrongStrategy*>(d->m_cache))
+//        return StrongCache;
     return NoCache;
 }
 
@@ -96,20 +101,18 @@ void Registry::setCacheType(Registry::CacheType type)
         case WeakCache:
             d->m_cache = new CacheWeakStrategy();
             break;
-        case StrongCache:
-            d->m_cache = new CacheStrongStrategy();
-            break;
+//        case StrongCache:
+//            d->m_cache = new CacheStrongStrategy();
+//            break;
     }
 }
 
-AccessibleObject Registry::clientCacheObject(const QString &id) const
+AccessibleObject *Registry::clientCacheObject(const QString &id) const
 {
     if (d->m_cache) {
-        QSharedPointer<AccessibleObjectPrivate> p = d->m_cache->get(id);
-        if (p)
-            return AccessibleObject(p);
+        return d->m_cache->get(id);
     }
-    return AccessibleObject();
+    return 0;
 }
 
 QStringList Registry::clientCacheObjects() const

@@ -32,6 +32,9 @@ AccessibleObjectPrivate::AccessibleObjectPrivate(RegistryPrivate *reg, const QSt
     , path(path_)
     , defunct(false)
     , actionsFetched(false)
+    , interfacesFetched(false)
+    , childrenFetched(false)
+    , interfaces(AccessibleObject::NoInterface)
 {
     //qDebug() << Q_FUNC_INFO;
 }

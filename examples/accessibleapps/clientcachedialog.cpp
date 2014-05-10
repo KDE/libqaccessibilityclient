@@ -115,12 +115,12 @@ void ClientCacheDialog::updateView()
     QStringList cache = m_cache->clientCacheObjects();
     m_countLabel->setText(QString::number(cache.count()));
     Q_FOREACH(const QString &c, cache) {
-        QAccessibleClient::AccessibleObject obj = m_cache->clientCacheObject(c);
-        if (obj.isValid())
+        QAccessibleClient::AccessibleObject *obj = m_cache->clientCacheObject(c);
+        if (obj && obj->isValid())
             m_model->appendRow( QList<QStandardItem*>()
-            << new QStandardItem(obj.name())
-            << new QStandardItem(obj.roleName())
-            << new QStandardItem(obj.id()) );
+            << new QStandardItem(obj->name())
+            << new QStandardItem(obj->roleName())
+            << new QStandardItem(obj->uniqueId()) );
     }
     m_view->setColumnWidth(0, 180);
     m_view->resizeColumnToContents(1);

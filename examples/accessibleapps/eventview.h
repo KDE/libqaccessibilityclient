@@ -69,7 +69,7 @@ public:
     void loadSettings(QSettings &settings);
     void saveSettings(QSettings &settings);
 
-    void addLog(const QAccessibleClient::AccessibleObject &object, EventType eventType, const QString &text = QString());
+    void addLog(QAccessibleClient::AccessibleObject *object, EventType eventType, const QString &text = QString());
 
 Q_SIGNALS:
     void anchorClicked(const QUrl &);

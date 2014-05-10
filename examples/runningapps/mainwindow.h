@@ -18,41 +18,50 @@
     License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef QACCESSIBILITYCLIENT_ACCESSIBLEOBJECT_P_H
-#define QACCESSIBILITYCLIENT_ACCESSIBLEOBJECT_P_H
 
-#include <qstring.h>
-#include <qlist.h>
-#include <qsharedpointer.h>
+#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
+
+#include <qmainwindow.h>
+#include <qtreeview.h>
+#include <qtextbrowser.h>
 #include <qaction.h>
+#include <qdebug.h>
 
-#include "accessibleobject.h"
+#include "qaccessibilityclient/accessibleobject.h"
+#include "qaccessibilityclient/registry.h"
 
-namespace QAccessibleClient {
+#include "ui_mainwindow.h"
 
-class RegistryPrivate;
+#include <QAbstractListModel>
 
-class AccessibleObjectPrivate
+class AppList : public QAbstractListModel
 {
+    Q_OBJECT
 public:
-    AccessibleObjectPrivate(RegistryPrivate *reg, const QString &service_, const QString &path_);
-    ~AccessibleObjectPrivate();
-    bool operator==(const AccessibleObjectPrivate &other) const;
+    AppList();
 
-    void setDefunct();
+    int rowCount(const QModelIndex &parent) const;
+    QVariant data(const QModelIndex &index, int role) const;
 
-    RegistryPrivate *registryPrivate;
-    QString service;
-    QString path;
-    mutable QVector< QSharedPointer<QAction> > actions;
-    quint32 defunct: 1;
-    quint32 actionsFetched: 1;
-    quint32 interfacesFetched: 1;
-    quint32 childrenFetched: 1;
-    AccessibleObject::Interfaces interfaces;
-    Q_DISABLE_COPY(AccessibleObjectPrivate)
+public slots:
+    void appsChanged();
+
+private:
+    QAccessibleClient::Registry *m_registry;
+    QVector<QAccessibleClient::AccessibleObject*> m_apps;
 };
 
-}
+class MainWindow :public QMainWindow
+{
+    Q_OBJECT
+
+public:
+    MainWindow(QWidget *parent = 0);
+
+private:
+    AppList m_appList;
+    Ui::MainWindowUi m_ui;
+};
 
 #endif

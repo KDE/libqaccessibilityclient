@@ -45,6 +45,10 @@ class QACCESSIBILITYCLIENT_EXPORT Registry : public QObject
     Q_OBJECT
     Q_ENUMS(EventListener)
 
+    Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged FINAL)
+    Q_PROPERTY(bool screenReaderEnabled READ isScreenReaderEnabled WRITE setScreenReaderEnabled NOTIFY screenReaderEnabledChanged FINAL)
+    Q_PROPERTY(QVector<AccessibleObject *> applications READ applications NOTIFY applicationsChanged FINAL)
+
 public:
 
     /**
@@ -85,7 +89,7 @@ public:
      */
     virtual ~Registry();
 
-public slots:
+public Q_SLOTS:
 
     /**
         Returns true if the accessibility stack is enabled.
@@ -128,11 +132,13 @@ public slots:
      */
     EventListeners subscribedEventListeners() const;
 
+    void updateApplications();
+
     /**
         List of all currently running applications that
         expose an accessibility interface.
     */
-    QList<AccessibleObject> applications() const;
+    QVector<AccessibleObject *> applications() const;
 
     /**
         Creates the AccessibleObject for the \a url.
@@ -142,7 +148,7 @@ public slots:
 
         The returned QUrl returns a scheme of "accessibleobject".
     */
-    AccessibleObject accessibleFromUrl(const QUrl &url) const;
+    AccessibleObject *accessibleFromUrl(const QUrl &url) const;
 
 Q_SIGNALS:
 
@@ -163,20 +169,41 @@ Q_SIGNALS:
     void screenReaderEnabledChanged(bool enabled);
 
     /**
-        Emitted if a AccessibleObject is created.
+        Emitted when an application is added.
 
         This signal indicates that the \a AccessibleObject instance was
-        created and is going to be added/attached.
+        created and represents an application.
     */
-    void added(const QAccessibleClient::AccessibleObject &object);
+    void applicationAdded(QAccessibleClient::AccessibleObject *object);
 
     /**
-        Emitted if a AccessibleObject is destroyed.
+        Emitted when an application is removed.
 
         This signal indicates that the \a AccessibleObject instance was
         destroyed and ended its life-time.
     */
-    void removed(const QAccessibleClient::AccessibleObject &object);
+    void applicationRemoved(QAccessibleClient::AccessibleObject *object);
+
+    // FIXME should this contain lists of added/removed? bool added???
+    void applicationsChanged();
+
+    // FIXME: never emitted I think
+    /**
+        Emitted when an object is added.
+
+        This signal indicates that the \a AccessibleObject instance was
+        created.
+    */
+    void added(QAccessibleClient::AccessibleObject *object);
+
+    /**
+        Emitted when an object is removed.
+
+        This signal indicates that the \a AccessibleObject instance was
+        destroyed and ended its life-time.
+    */
+    void removed(QAccessibleClient::AccessibleObject *object);
+
 
     /**
         Emitted if a AccessibleObject is marked defunct.
@@ -184,45 +211,45 @@ Q_SIGNALS:
         This signal indicates that the \a AccessibleObject became invalid
         and does not point any longer to any valid accessible object.
     */
-    void defunct(const QAccessibleClient::AccessibleObject &object);
+    void defunct(QAccessibleClient::AccessibleObject *object);
 
     /// Emitted when a window is created
-    void windowCreated(const QAccessibleClient::AccessibleObject &object);
+    void windowCreated(QAccessibleClient::AccessibleObject *object);
     /// Emitted when a window is destroyed
-    void windowDestroyed(const QAccessibleClient::AccessibleObject &object);
+    void windowDestroyed(QAccessibleClient::AccessibleObject *object);
     /// Emitted when a window is closed
-    void windowClosed(const QAccessibleClient::AccessibleObject &object);
+    void windowClosed(QAccessibleClient::AccessibleObject *object);
     /// Emitted when a window is reparented
-    void windowReparented(const QAccessibleClient::AccessibleObject &object);
+    void windowReparented(QAccessibleClient::AccessibleObject *object);
     /// Emitted when a window is minimized
-    void windowMinimized(const QAccessibleClient::AccessibleObject &object);
+    void windowMinimized(QAccessibleClient::AccessibleObject *object);
     /// Emitted when a window is maximized
-    void windowMaximized(const QAccessibleClient::AccessibleObject &object);
+    void windowMaximized(QAccessibleClient::AccessibleObject *object);
     /// Emitted when a window is restored to normal size
-    void windowRestored(const QAccessibleClient::AccessibleObject &object);
+    void windowRestored(QAccessibleClient::AccessibleObject *object);
     /// Emitted when a window is activated
-    void windowActivated(const QAccessibleClient::AccessibleObject &object);
+    void windowActivated(QAccessibleClient::AccessibleObject *object);
     /// Emitted when a window is deactivated
-    void windowDeactivated(const QAccessibleClient::AccessibleObject &object);
+    void windowDeactivated(QAccessibleClient::AccessibleObject *object);
     /// Emitted when a desktop window is created
-    void windowDesktopCreated(const QAccessibleClient::AccessibleObject &object);
+    void windowDesktopCreated(QAccessibleClient::AccessibleObject *object);
     /// Emitted when a desktop window is destroyed
-    void windowDesktopDestroyed(const QAccessibleClient::AccessibleObject &object);
+    void windowDesktopDestroyed(QAccessibleClient::AccessibleObject *object);
     /// Emitted when a window is raised
-    void windowRaised(const QAccessibleClient::AccessibleObject &object);
+    void windowRaised(QAccessibleClient::AccessibleObject *object);
     /// Emitted when a window is lowered
-    void windowLowered(const QAccessibleClient::AccessibleObject &object);
+    void windowLowered(QAccessibleClient::AccessibleObject *object);
     /// Emitted when a window is moved
-    void windowMoved(const QAccessibleClient::AccessibleObject &object);
+    void windowMoved(QAccessibleClient::AccessibleObject *object);
     /// Emitted when a window is resized
-    void windowResized(const QAccessibleClient::AccessibleObject &object);
+    void windowResized(QAccessibleClient::AccessibleObject *object);
     /// Emitted when a window is shaded
-    void windowShaded(const QAccessibleClient::AccessibleObject &object);
+    void windowShaded(QAccessibleClient::AccessibleObject *object);
     /// Emitted when a window is unshaded
-    void windowUnshaded(const QAccessibleClient::AccessibleObject &object);
+    void windowUnshaded(QAccessibleClient::AccessibleObject *object);
 
-    //void boundsChanged(const QAccessibleClient::AccessibleObject &object);
-    //void linkSelected(const QAccessibleClient::AccessibleObject &object);
+    //void boundsChanged(QAccessibleClient::AccessibleObject *object);
+    //void linkSelected(QAccessibleClient::AccessibleObject *object);
 
     /**
         \brief Notifies about a state change in an object.
@@ -230,7 +257,7 @@ Q_SIGNALS:
         The \a state of \a object has change.
         If the state is now set \a active is true, otherwise the state was removed.
      */
-    void stateChanged(const QAccessibleClient::AccessibleObject &object, const QString &state, bool active);
+    void stateChanged(QAccessibleClient::AccessibleObject *object, const QString &state, bool active);
 
     /**
         \brief Notifies about a new AccessibleObject
@@ -241,7 +268,7 @@ Q_SIGNALS:
         The parameter \a childIndex is the index of the child that has been added.
         \sa AccessibleObject::child(), childRemoved()
      */
-    void childAdded(const QAccessibleClient::AccessibleObject &parent, int childIndex);
+    void childAdded(QAccessibleClient::AccessibleObject *parent, int childIndex);
 
     /**
         \brief Notifies that an AccessibleObject has been removed
@@ -249,22 +276,22 @@ Q_SIGNALS:
         The parameter \a childIndex is the index of the child that has been removed.
         \sa AccessibleObject::child(), childAdded()
      */
-    void childRemoved(const QAccessibleClient::AccessibleObject &parent, int childIndex);
+    void childRemoved(QAccessibleClient::AccessibleObject *parent, int childIndex);
 
     /**
       \brief Notifies that the \a object's visible data changed.
      */
-    void visibleDataChanged(const QAccessibleClient::AccessibleObject &object);
+    void visibleDataChanged(QAccessibleClient::AccessibleObject *object);
 
     /**
       \brief Notifies that the \a object's selection changed.
      */
-    void selectionChanged(const QAccessibleClient::AccessibleObject &object);
+    void selectionChanged(QAccessibleClient::AccessibleObject *object);
 
     /**
       \brief Notifies that the \a object's table model changed.
      */
-    void modelChanged(const QAccessibleClient::AccessibleObject &object);
+    void modelChanged(QAccessibleClient::AccessibleObject *object);
 
     /**
         \brief Emitted when the focus changed.
@@ -272,7 +299,7 @@ Q_SIGNALS:
         When subscribed to the Focus EventListener then this signal is emitted
         every time the focus changes. \a object is the newly focused AccessibleObject.
     */
-    void focusChanged(const QAccessibleClient::AccessibleObject &object);
+    void focusChanged(QAccessibleClient::AccessibleObject *object);
 
     /**
         \brief Emitted when the text cared moved.
@@ -282,7 +309,7 @@ Q_SIGNALS:
         a text-interface (like QLineEdit, QTextArea and QComboBox) moved to
         another position.
     */
-    void textCaretMoved(const QAccessibleClient::AccessibleObject &object, int pos);
+    void textCaretMoved(QAccessibleClient::AccessibleObject *object, int pos);
 
     /**
         \brief Emitted when the text selection changed.
@@ -291,7 +318,7 @@ Q_SIGNALS:
         is emitted every time the selection in an accessible object that implements
         a text-interface (like QLineEdit, QTextArea and QComboBox) changed.
     */
-    void textSelectionChanged(const QAccessibleClient::AccessibleObject &object);
+    void textSelectionChanged(QAccessibleClient::AccessibleObject *object);
 
 
     /**
@@ -300,7 +327,7 @@ Q_SIGNALS:
         When subscribed to the PropertyChanged EventListener, this signal is emitted
         whenever the accessible-name property changes its value.
     */
-    void accessibleNameChanged(const QAccessibleClient::AccessibleObject &object);
+    void accessibleNameChanged(QAccessibleClient::AccessibleObject *object);
 
     /**
         \brief Emitted when an accessible description changes
@@ -308,7 +335,7 @@ Q_SIGNALS:
         When subscribed to the PropertyChanged EventListener, this signal is emitted
         whenever the accessible-description property changes its value.
     */
-    void accessibleDescriptionChanged(const QAccessibleClient::AccessibleObject &object);
+    void accessibleDescriptionChanged(QAccessibleClient::AccessibleObject *object);
 
     /**
         \brief Emitted when an object's text was changed.
@@ -317,7 +344,7 @@ Q_SIGNALS:
 
         \sa textInserted, textRemoved
     */
-    void textChanged(const QAccessibleClient::AccessibleObject &object, const QString& text, int startOffset, int endOffset);
+    void textChanged(QAccessibleClient::AccessibleObject *object, const QString& text, int startOffset, int endOffset);
 
     /**
         \brief Emitted when text was inserted in an object's text.
@@ -326,7 +353,7 @@ Q_SIGNALS:
 
         \sa textInserted, textRemoved
     */
-    void textInserted(const QAccessibleClient::AccessibleObject &object, const QString& text, int startOffset, int endOffset);
+    void textInserted(QAccessibleClient::AccessibleObject *object, const QString& text, int startOffset, int endOffset);
 
     /**
         \brief Emitted when an object's text was removed.
@@ -336,11 +363,11 @@ Q_SIGNALS:
 
         \sa textInserted, textRemoved
     */
-    void textRemoved(const QAccessibleClient::AccessibleObject &object, const QString& text, int startOffset, int endOffset);
+    void textRemoved(QAccessibleClient::AccessibleObject *object, const QString& text, int startOffset, int endOffset);
 
-    //void textBoundsChanged(const QAccessibleClient::AccessibleObject &object);
-    //void textAttributesChanged(const QAccessibleClient::AccessibleObject &object);
-    //void attributesChanged(const QAccessibleClient::AccessibleObject &object);
+    //void textBoundsChanged(QAccessibleClient::AccessibleObject *object);
+    //void textAttributesChanged(QAccessibleClient::AccessibleObject *object);
+    //void attributesChanged(QAccessibleClient::AccessibleObject *object);
 
 private:
     Q_DISABLE_COPY(Registry)
@@ -351,7 +378,7 @@ private:
     enum CacheType { NoCache, WeakCache, StrongCache };
     CacheType cacheType() const;
     void setCacheType(CacheType type);
-    AccessibleObject clientCacheObject(const QString &id) const;
+    AccessibleObject *clientCacheObject(const QString &id) const;
     QStringList clientCacheObjects() const;
     void clearClientCache();
 };

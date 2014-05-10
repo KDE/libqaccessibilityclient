@@ -38,7 +38,7 @@ public:
     CacheType cacheType() const { return static_cast<CacheType>(m_registry->cacheType()); }
     void setCacheType(CacheType type) { m_registry->setCacheType(static_cast<Registry::CacheType>(type)); }
 
-    AccessibleObject clientCacheObject(const QString &id) const { return m_registry->clientCacheObject(id); }
+    AccessibleObject *clientCacheObject(const QString &id) const { return m_registry->clientCacheObject(id); }
     QStringList clientCacheObjects() const { return m_registry->clientCacheObjects(); }
     void clearClientCache() { m_registry->clearClientCache(); }
 
