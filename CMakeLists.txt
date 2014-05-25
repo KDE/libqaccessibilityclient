@@ -91,7 +91,14 @@ endmacro(MAKE_INSTALL_PATH_ABSOLUTE out in)
 make_install_path_absolute(QACCESSIBILITYCLIENT_INCLUDE_DIR ${INCLUDE_INSTALL_DIR})
 make_install_path_absolute(QACCESSIBILITYCLIENT_LIB_DIR     ${LIB_INSTALL_DIR})
 
-configure_file( "${QAccessibilityClient_SOURCE_DIR}/QAccessibilityClientConfig.cmake.in" "${QAccessibilityClient_BINARY_DIR}/QAccessibilityClientConfig.cmake" @ONLY )
+configure_file(
+        "${QAccessibilityClient_SOURCE_DIR}/QAccessibilityClientConfig.cmake.in"
+        "${QAccessibilityClient_BINARY_DIR}/QAccessibilityClientConfig.cmake" @ONLY )
+configure_file(
+        "${QAccessibilityClient_SOURCE_DIR}/QAccessibilityClientConfigVersion.cmake.in"
+        "${QAccessibilityClient_BINARY_DIR}/QAccessibilityClientConfigVersion.cmake" @ONLY )
+
 install( FILES
          "${QAccessibilityClient_BINARY_DIR}/QAccessibilityClientConfig.cmake"
+         "${QAccessibilityClient_BINARY_DIR}/QAccessibilityClientConfigVersion.cmake"
          DESTINATION "${_QAccessibilityClient_CONFIG_DEST}" )
