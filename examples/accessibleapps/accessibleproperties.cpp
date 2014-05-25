@@ -27,8 +27,6 @@ using namespace QAccessibleClient;
 ObjectProperties::ObjectProperties(QObject *parent)
     : QStandardItemModel(parent)
 {
-    setColumnCount(2);
-    setHorizontalHeaderLabels( QStringList() << QString("Property") << QString("Value") );
 }
 
 ObjectProperties::~ObjectProperties()
@@ -50,6 +48,9 @@ void ObjectProperties::setAccessibleObject(QAccessibleClient::AccessibleObject *
 
     clear();
 
+    setColumnCount(2);
+    setHorizontalHeaderLabels(QStringList() << QString("Property") << QString("Value"));
+
     if (!acc || !acc->isValid()) {
         endResetModel();
         return;
@@ -60,10 +61,14 @@ void ObjectProperties::setAccessibleObject(QAccessibleClient::AccessibleObject *
         QStandardItem *item = append(QString("Accessible"));
         append(QString("Name"), acc->name(), item);
         append(QString("Description"), acc->description(), item);
-        append(QString("Role"), acc->roleName(), item);
-        append(QString("LocalizedRole"), acc->localizedRoleName(), item);
+
+        QString roleString = acc->roleName();
+        if (acc->localizedRoleName() != roleString)
+            roleString.append(" (" + acc->localizedRoleName() + ')');
+        if (acc->isDefault())
+            roleString.append(QString(" Default Button"));
+        append(QString("Role"), roleString, item);
         append(QString("Visible"), acc->isVisible(), item);
-        append(QString("Default"), acc->isDefault(), item);
         append(QString("State"), stateString(acc), item);
         append(tr("Url"), acc->url(), item);
         AccessibleObject *parent = acc->accessibleParent();
@@ -323,5 +328,5 @@ QString ObjectProperties::stateString(AccessibleObject *acc)
     if (acc->isSelected()) s << "Selected";
     if (acc->isSensitive()) s << "Sensitive";
     if (acc->isSingleLine()) s << "SingleLine";
-    return s.join(",");
+    return s.join(", ");
 }
