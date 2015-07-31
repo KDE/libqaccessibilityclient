@@ -522,10 +522,11 @@ bool AccessibleObject::supportsAutocompletion() const
 QACCESSIBILITYCLIENT_EXPORT QDebug QAccessibleClient::operator<<(QDebug d, const AccessibleObject &object)
 {
     d.nospace();
-    d << "AccessibleObject("; //d:" << hex << (void *) object.d << dec;
+    d << "AccessibleObject(";
     if (object.d) {
         d << "service=" << object.d->service;
         d << " path=" << object.d->path;
+        d << " name=" << object.name();
     } else {
         d << "invalid";
     }
