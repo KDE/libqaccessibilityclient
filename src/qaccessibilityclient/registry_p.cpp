@@ -40,6 +40,10 @@
 #include <qstring.h>
 #include <qhash.h>
 
+#ifdef QT4_BUILD
+#define QStringLiteral(x) QLatin1String(x)
+#endif
+
 // interface names from at-spi2-core/atspi/atspi-misc-private.h
 #define ATSPI_DBUS_NAME_REGISTRY "org.a11y.atspi.Registry"
 #define ATSPI_DBUS_PATH_REGISTRY "/org/a11y/atspi/registry"

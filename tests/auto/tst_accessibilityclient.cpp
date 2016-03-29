@@ -37,6 +37,10 @@
 
 #include "atspi/dbusconnection.h"
 
+#ifdef QT4_BUILD
+#define QStringLiteral(x) QLatin1String(x)
+#endif
+
 typedef QSharedPointer<QAccessibleInterface> QAIPointer;
 
 using namespace QAccessibleClient;
