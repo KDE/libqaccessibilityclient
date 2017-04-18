@@ -55,7 +55,7 @@ public:
     virtual bool remove(const QString &id)
     {
         QSharedPointer<AccessibleObjectPrivate> obj = accessibleObjectsHash.take(id);
-        interfaceHash.remove(obj.data());
+        return (interfaceHash.remove(obj.data()) >= 1);
     }
     virtual void clear()
     {
@@ -96,7 +96,7 @@ public:
     virtual bool remove(const QString &id)
     {
         QSharedPointer<AccessibleObjectPrivate> obj = accessibleObjectsHash.take(id);
-        interfaceHash.remove(obj.data());
+        return (interfaceHash.remove(obj.data()) >= 1);
     }
     virtual void clear()
     {

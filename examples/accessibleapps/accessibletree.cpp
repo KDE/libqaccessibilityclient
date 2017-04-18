@@ -315,11 +315,13 @@ bool AccessibleTree::removeAccessible(const QModelIndex &index)
     Q_ASSERT(index.model() == this);
     QModelIndex parent = index.parent();
     int row = index.row();
+    bool removed = false;
     beginRemoveRows(parent, row, row);
     if (parent.isValid()) {
         AccessibleWrapper *wraper = static_cast<AccessibleWrapper*>(parent.internalPointer());
         Q_ASSERT(wraper);
         delete wraper->m_children.takeAt(row);
+        removed = true;
     } else {
         AccessibleWrapper *wraper = static_cast<AccessibleWrapper*>(index.internalPointer());
         Q_ASSERT(wraper);
@@ -327,12 +329,14 @@ bool AccessibleTree::removeAccessible(const QModelIndex &index)
         if (m_apps[row] == wraper) {
             qDebug() << Q_FUNC_INFO << "Delete application accessible object! indexRow=" << row;
             delete m_apps.takeAt(row);
+            removed = true;
         }
     }
     endRemoveRows();
+    return removed;
 }
 
-bool AccessibleTree::updateAccessible(const QAccessibleClient::AccessibleObject &object)
+void AccessibleTree::updateAccessible(const QAccessibleClient::AccessibleObject &object)
 {
     QModelIndex index = indexForAccessible(object);
     emit dataChanged(index, index);
