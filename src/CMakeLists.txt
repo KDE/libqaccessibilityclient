@@ -19,22 +19,22 @@ set(QAccessibilityClientPrivate_SRCS
     atspi/qt-atspi.cpp
 )
 
-add_library(qaccessibilityclient SHARED ${QAccessibilityClient_SRCS} ${QAccessibilityClientPrivate_SRCS})
+add_library(${QACCESSIBILITYCLIENT_LIB_NAME} SHARED ${QAccessibilityClient_SRCS} ${QAccessibilityClientPrivate_SRCS})
 
 if (QT5_BUILD)
-    target_link_libraries(qaccessibilityclient ${Qt5Core_LIBRARIES} ${Qt5Widgets_LIBRARIES} ${Qt5DBus_LIBRARIES})
+    target_link_libraries(${QACCESSIBILITYCLIENT_LIB_NAME} ${Qt5Core_LIBRARIES} ${Qt5Widgets_LIBRARIES} ${Qt5DBus_LIBRARIES})
 else (QT5_BUILD)
-    target_link_libraries(qaccessibilityclient ${QT_QTCORE_LIBRARY} ${QT_QTDBUS_LIBRARY} ${QT_QTGUI_LIBRARY})
+    target_link_libraries(${QACCESSIBILITYCLIENT_LIB_NAME} ${QT_QTCORE_LIBRARY} ${QT_QTDBUS_LIBRARY} ${QT_QTGUI_LIBRARY})
 endif(QT5_BUILD)
 
 set(QACCESSIBILITYCLIENT_SOVERSION ${QACCESSIBILITYCLIENT_VERSION_MAJOR})
-set_target_properties(qaccessibilityclient
+set_target_properties(${QACCESSIBILITYCLIENT_LIB_NAME}
     PROPERTIES VERSION ${QACCESSIBILITYCLIENT_VERSION}
     SOVERSION ${QACCESSIBILITYCLIENT_SOVERSION}
 )
 
 
-install(TARGETS qaccessibilityclient EXPORT QAccessibilityClient ${INSTALL_TARGETS_DEFAULT_ARGS})
+install(TARGETS ${QACCESSIBILITYCLIENT_LIB_NAME} EXPORT QAccessibilityClient ${INSTALL_TARGETS_DEFAULT_ARGS})
 install(EXPORT QAccessibilityClient DESTINATION ${_QAccessibilityClient_CONFIG_DEST})
 
 ########### install files ###############

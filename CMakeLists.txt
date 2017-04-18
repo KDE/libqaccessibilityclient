@@ -35,6 +35,7 @@ if (QT5_BUILD)
     message("Using Qt 5")
     add_definitions(${Qt5Core_DEFINITIONS} ${Qt5Widgets_DEFINITIONS} ${Qt5DBus_DEFINITIONS})
     include_directories(${Qt5Core_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS} ${Qt5DBus_INCLUDE_DIRS})
+    set(LIBNAME_SUFFIX "-qt5")
 else (QT5_BUILD)
     find_package(Qt4 REQUIRED)
     if (${QT4_FOUND})
@@ -45,6 +46,7 @@ else (QT5_BUILD)
     endif (${QT4_FOUND})
 endif (QT5_BUILD)
 
+set(QACCESSIBILITYCLIENT_LIB_NAME "qaccessibilityclient${LIBNAME_SUFFIX}")
 
 set(CMAKE_INSTALL_NAME_DIR ${LIB_INSTALL_DIR})
 

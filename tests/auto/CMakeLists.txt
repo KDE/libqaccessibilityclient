@@ -21,9 +21,9 @@ set(tst_accessibilityclient_SRCS
 add_executable(tst_accessibilityclient ${tst_accessibilityclient_SRCS})
 
 if (QT5_BUILD)
-    target_link_libraries(tst_accessibilityclient ${Qt5Widgets_LIBRARIES} ${Qt5Test_LIBRARIES} qaccessibilityclient)
+    target_link_libraries(tst_accessibilityclient ${Qt5Widgets_LIBRARIES} ${Qt5Test_LIBRARIES} ${QACCESSIBILITYCLIENT_LIB_NAME})
 else (QT5_BUILD)
-    target_link_libraries(tst_accessibilityclient ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} ${QT_QTTEST_LIBRARY} ${QT_QTDBUS_LIBRARY} qaccessibilityclient)
+    target_link_libraries(tst_accessibilityclient ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} ${QT_QTTEST_LIBRARY} ${QT_QTDBUS_LIBRARY} ${QACCESSIBILITYCLIENT_LIB_NAME})
 endif (QT5_BUILD)
 
 add_test(libkdeaccessibilityclient-tst_accessibilityclient tst_accessibilityclient)
@@ -36,7 +36,7 @@ add_executable(simplewidgetapp ${simplewidgetapp_SRCS})
 
 
 if (QT5_BUILD)
-    target_link_libraries(simplewidgetapp ${Qt5Widgets_LIBRARIES} ${Qt5Test_LIBRARIES} qaccessibilityclient)
+    target_link_libraries(simplewidgetapp ${Qt5Widgets_LIBRARIES} ${Qt5Test_LIBRARIES} ${QACCESSIBILITYCLIENT_LIB_NAME})
 else (QT5_BUILD)
-    target_link_libraries(simplewidgetapp ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} ${QT_QTTEST_LIBRARY} ${QT_QTDBUS_LIBRARY} qaccessibilityclient)
+    target_link_libraries(simplewidgetapp ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} ${QT_QTTEST_LIBRARY} ${QT_QTDBUS_LIBRARY} ${QACCESSIBILITYCLIENT_LIB_NAME})
 endif (QT5_BUILD)
