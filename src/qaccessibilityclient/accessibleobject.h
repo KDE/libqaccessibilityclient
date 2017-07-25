@@ -27,8 +27,6 @@ namespace QAccessibleClient {
     class AccessibleObject;
 }
 
-uint qHash(const QAccessibleClient::AccessibleObject& object);
-
 #include <qlist.h>
 #include <QSharedPointer>
 #include <qaction.h>
@@ -39,6 +37,11 @@ namespace QAccessibleClient {
 
 class AccessibleObjectPrivate;
 class RegistryPrivate;
+
+
+#ifndef QT_NO_DEBUG_STREAM
+    QACCESSIBILITYCLIENT_EXPORT QDebug operator<<(QDebug, const AccessibleObject &);
+#endif
 
 /**
     This class represents an accessible object.
@@ -746,13 +749,13 @@ private:
     friend class RegistryPrivate;
     friend class CacheWeakStrategy;
     friend class CacheStrongStrategy;
-    friend QDebug QAccessibleClient::operator<<(QDebug, const AccessibleObject &);
-    friend uint ::qHash(const AccessibleObject& object);
-};
-
 #ifndef QT_NO_DEBUG_STREAM
-QACCESSIBILITYCLIENT_EXPORT QDebug operator<<(QDebug, const AccessibleObject &);
+    friend QDebug QAccessibleClient::operator<<(QDebug, const AccessibleObject &);
 #endif
+    friend uint qHash(const QAccessibleClient::AccessibleObject& object) {
+        return qHash(object.d);
+    }
+};
 
 }
 

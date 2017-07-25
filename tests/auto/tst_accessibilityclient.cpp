@@ -75,6 +75,7 @@ private Q_SLOTS:
 
     void tst_registry();
     void tst_accessibleObject();
+    void tst_hashable();
     void tst_application();
     void tst_navigation();
     void tst_focus();
@@ -143,6 +144,14 @@ void AccessibilityClientTest::tst_accessibleObject()
     QVERIFY(!invalidObject.isValid());
     AccessibleObject invalid2(invalidObject);
     QVERIFY(!invalid2.isValid());
+}
+
+void AccessibilityClientTest::tst_hashable()
+{
+    AccessibleObject testObject;
+    QHash<AccessibleObject, int> testHash;
+    testHash[testObject] = 1;
+    QCOMPARE(testHash[testObject], 1);
 }
 
 void AccessibilityClientTest::tst_application()
