@@ -35,6 +35,19 @@ ObjectProperties::~ObjectProperties()
 {
 }
 
+QVariant ObjectProperties::headerData(int section, Qt::Orientation orientation, int role) const
+{
+    if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
+        if (section == 0) {
+            return QStringLiteral("Property");
+        }
+        if (section == 1) {
+            return QStringLiteral("Value");
+        }
+    }
+    return QVariant();
+}
+
 QHash<int,QByteArray> ObjectProperties::roleNames() const
 {
     QHash<int, QByteArray> roles;

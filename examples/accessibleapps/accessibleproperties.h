@@ -36,7 +36,9 @@ public:
     explicit ObjectProperties(QObject *parent = 0);
     virtual ~ObjectProperties();
 
-    QHash<int,QByteArray> roleNames() const;
+    QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
+
+    QHash<int,QByteArray> roleNames() const override;
     void setAccessibleObject(const QAccessibleClient::AccessibleObject &acc);
     QAccessibleClient::AccessibleObject currentObject() const { return m_acc; }
 
