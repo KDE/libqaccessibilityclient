@@ -126,7 +126,7 @@ void AccessibilityClientTest::tst_registry()
     registry.subscribeEventListeners(Registry::Focus);
     QVERIFY(registry.subscribedEventListeners() == Registry::Focus);
     registry.subscribeEventListeners(Registry::Focus | Registry::Window);
-    QVERIFY(registry.subscribedEventListeners() == Registry::Focus | Registry::Window);
+    QVERIFY(registry.subscribedEventListeners() == (Registry::Focus | Registry::Window));
 
     registry.subscribeEventListeners(Registry::NoEventListeners);
     QVERIFY(registry.subscribedEventListeners() == Registry::NoEventListeners);
