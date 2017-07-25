@@ -35,6 +35,7 @@ public:
     virtual void clear() = 0;
     virtual AccessibleObject::Interfaces interfaces(const AccessibleObject &object) = 0;
     virtual void setInterfaces(const AccessibleObject &object, AccessibleObject::Interfaces interfaces) = 0;
+    virtual ~ObjectCache() {}
 };
 
 class CacheWeakStrategy : public ObjectCache
