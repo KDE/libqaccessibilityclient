@@ -93,8 +93,10 @@ private:
 void AccessibilityClientTest::initTestCase()
 {
     qDebug() << "Starting test.";
+#if (QT_VERSION < QT_VERSION_CHECK(5, 0, 0))
     if (qgetenv("QT_ACCESSIBILITY") != QByteArray("1"))
         qWarning() << "QT_ACCESSIBILITY=1 not found, this leads to failing tests with Qt 4";
+#endif
 }
 
 
