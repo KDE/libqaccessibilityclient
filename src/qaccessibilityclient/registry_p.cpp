@@ -745,6 +745,10 @@ quint64 RegistryPrivate::state(const AccessibleObject &object) const
         qWarning() << "Could not access state." << reply.error().message();
         return 0;
     }
+    if (reply.value().size() < 2) {
+        qWarning() << "Did not receive expected reply.";
+        return 0;
+    }
     int low = reply.value().at(0);
     int high = reply.value().at(1);
     quint64 state = low + ((quint64)high << 32);
