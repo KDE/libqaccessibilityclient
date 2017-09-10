@@ -208,7 +208,7 @@ void MainWindow::MainWindow::initUi()
     m_propertyView->setRootIsDecorated(false);
     m_propertyView->setItemsExpandable(true);
     m_propertyView->setExpandsOnDoubleClick(false);
-    m_propertyView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    m_propertyView->setEditTriggers(QAbstractItemView::DoubleClicked | QAbstractItemView::AnyKeyPressed | QAbstractItemView::EditKeyPressed);
     m_propertyModel = new ObjectProperties(this);
     m_propertyView->setModel(m_propertyModel);
     m_propertyView->setAlternatingRowColors(true);

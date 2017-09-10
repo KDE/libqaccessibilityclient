@@ -29,10 +29,20 @@ ObjectProperties::ObjectProperties(QObject *parent)
 {
     setColumnCount(2);
     setHorizontalHeaderLabels( QStringList() << QString("Property") << QString("Value") );
+
+    connect(this, SIGNAL(itemChanged(QStandardItem *)), this, SLOT(slotDataChanged(QStandardItem *)));
 }
 
 ObjectProperties::~ObjectProperties()
 {
+}
+
+void ObjectProperties::slotDataChanged(QStandardItem *item) {
+    if (item != m_textItem)
+        return;
+
+    QString newText = item->data(Qt::EditRole).toString();
+    m_acc.setText(newText);
 }
 
 QVariant ObjectProperties::headerData(int section, Qt::Orientation orientation, int role) const
@@ -60,6 +70,7 @@ void ObjectProperties::setAccessibleObject(const QAccessibleClient::AccessibleOb
 {
     beginResetModel();
     m_acc = acc;
+    m_textItem = 0;
 
     clear();
 
@@ -216,7 +227,7 @@ void ObjectProperties::setAccessibleObject(const QAccessibleClient::AccessibleOb
         append(QString("CharacterRect"), acc.characterRect(offset), item);
 
         QString text = acc.text();
-        append(QString("Text"), text, item);
+        append(QString("Text"), text, item, &m_textItem);
 
         QList< QPair<int,int> > selections = acc.textSelections();
         QStandardItem *selectionsItem = append(QString("Selections"), selections.count(), item);
