@@ -288,7 +288,7 @@ void ObjectProperties::doubleClicked(const QModelIndex &index)
     }
 }
 
-QStandardItem* ObjectProperties::append(const QString &name, const QVariant &value, QStandardItem *parentItem)
+QStandardItem* ObjectProperties::append(const QString &name, const QVariant &value, QStandardItem *parentItem, QStandardItem **changeHandler)
 {
     if (!parentItem)
         parentItem = invisibleRootItem();
@@ -317,6 +317,15 @@ QStandardItem* ObjectProperties::append(const QString &name, const QVariant &val
     }
     QStandardItem *valueItem = new QStandardItem(text);
     parentItem->appendRow(QList<QStandardItem*>() << nameItem << valueItem);
+    nameItem->setEditable(false);
+
+    if (changeHandler) {
+        *changeHandler = valueItem;
+        valueItem->setEditable(true);
+    } else {
+        valueItem->setEditable(false);
+    }
+
     return nameItem;
 }
 

@@ -46,7 +46,7 @@ public slots:
     void doubleClicked(const QModelIndex &index);
 
 private:
-    QStandardItem* append(const QString &name, const QVariant &value = QVariant(), QStandardItem *parentItem = 0);
+    QStandardItem* append(const QString &name, const QVariant &value = QVariant(), QStandardItem *parentItem = 0, QStandardItem **changeHandler = 0);
     QString stateString(const QAccessibleClient::AccessibleObject &acc);
     QAccessibleClient::AccessibleObject m_acc;
 };
