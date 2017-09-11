@@ -862,7 +862,9 @@ AccessibleObject::Interfaces RegistryPrivate::supportedInterfaces(const Accessib
         interfaces |= interfaceHash[interface];
     }
 
-    m_cache->setInterfaces(object, interfaces);
+    if (m_cache) {
+        m_cache->setInterfaces(object, interfaces);
+    }
 
     return interfaces;
 }
