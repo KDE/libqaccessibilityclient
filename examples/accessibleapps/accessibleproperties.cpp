@@ -38,11 +38,20 @@ ObjectProperties::~ObjectProperties()
 }
 
 void ObjectProperties::slotDataChanged(QStandardItem *item) {
-    if (item != m_textItem)
-        return;
+    if (item == m_textItem) {
+        QString newText = item->data(Qt::EditRole).toString();
+        m_acc.setText(newText);
+    } else if (item == m_valueItem) {
+        bool couldConvert;
+        double value = item->data(Qt::EditRole).toDouble(&couldConvert);
+        if (couldConvert) {
+            m_acc.setCurrentValue(value);
+        }
 
-    QString newText = item->data(Qt::EditRole).toString();
-    m_acc.setText(newText);
+        m_valueItem = 0; //Prevent recursion
+        item->setData(m_acc.currentValue(), Qt::DisplayRole);
+        m_valueItem = item;
+    }
 }
 
 QVariant ObjectProperties::headerData(int section, Qt::Orientation orientation, int role) const
@@ -71,6 +80,7 @@ void ObjectProperties::setAccessibleObject(const QAccessibleClient::AccessibleOb
     beginResetModel();
     m_acc = acc;
     m_textItem = 0;
+    m_valueItem = 0;
 
     clear();
 
@@ -247,7 +257,7 @@ void ObjectProperties::setAccessibleObject(const QAccessibleClient::AccessibleOb
     }
     if (interfaces.testFlag(QAccessibleClient::AccessibleObject::ValueInterface)) {
         QStandardItem *item = append(QString("Value"));
-        append(QString("Current"), acc.currentValue(), item);
+        append(QString("Current"), acc.currentValue(), item, &m_valueItem);
         append(QString("Minimum"), acc.minimumValue(), item);
         append(QString("Maximum"), acc.maximumValue(), item);
         append(QString("Increment"), acc.minimumValueIncrement(), item);

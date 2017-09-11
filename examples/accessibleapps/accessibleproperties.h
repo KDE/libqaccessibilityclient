@@ -51,6 +51,7 @@ private:
     QString stateString(const QAccessibleClient::AccessibleObject &acc);
     QAccessibleClient::AccessibleObject m_acc;
     QStandardItem* m_textItem;
+    QStandardItem* m_valueItem;
 };
 
 #endif
