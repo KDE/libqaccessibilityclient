@@ -376,6 +376,11 @@ double AccessibleObject::currentValue() const
     return d->registryPrivate->currentValue(*this);
 }
 
+bool AccessibleObject::setCurrentValue(double value)
+{
+    return d->registryPrivate->setCurrentValue(*this, value);
+}
+
 QList<AccessibleObject> AccessibleObject::selection() const
 {
     return d->registryPrivate->selection(*this);

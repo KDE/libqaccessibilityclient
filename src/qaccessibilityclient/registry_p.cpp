@@ -1142,6 +1142,23 @@ double RegistryPrivate::currentValue(const AccessibleObject &object) const
     return v.toDouble();
 }
 
+bool RegistryPrivate::setCurrentValue(const AccessibleObject &object, double value)
+{
+    QDBusMessage message = QDBusMessage::createMethodCall(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Value"), QLatin1String("SetCurrentValue"));
+
+    QVariantList arguments;
+    arguments << QLatin1String("org.a11y.atspi.Value") <<  QLatin1String("CurrentValue");
+    arguments << QVariant::fromValue(QDBusVariant(value));
+    message.setArguments(arguments);
+
+    QDBusReply<bool> reply = conn.connection().call(message);
+    if (!reply.isValid()) {
+        qWarning() << "Could not set text." << reply.error().message();
+        return false;
+    }
+    return reply.value();
+}
+
 QList<AccessibleObject> RegistryPrivate::selection(const AccessibleObject &object) const
 {
     QList<AccessibleObject> result;

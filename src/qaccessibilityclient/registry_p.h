@@ -101,6 +101,7 @@ public:
     double maximumValue(const AccessibleObject &object) const;
     double minimumValueIncrement(const AccessibleObject &object) const;
     double currentValue(const AccessibleObject &object) const;
+    bool setCurrentValue(const AccessibleObject &object, double value);
 
     QList<AccessibleObject> selection(const AccessibleObject &object) const;
 

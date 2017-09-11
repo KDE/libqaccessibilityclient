@@ -622,6 +622,14 @@ public:
     double currentValue() const;
 
     /**
+        \brief Set the value of the valuator.
+
+        \param value the value to set.
+        \return true on success and false on error.
+    */
+    bool setCurrentValue(const double value);
+
+    /**
         \brief Returns the selection of accessible objects.
     */
     QList<AccessibleObject> selection() const;
