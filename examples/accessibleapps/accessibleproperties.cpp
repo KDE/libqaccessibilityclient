@@ -268,6 +268,8 @@ void ObjectProperties::setAccessibleObject(const QAccessibleClient::AccessibleOb
         Q_FOREACH(const QSharedPointer<QAction> &a, acc.actions()) {
             QStandardItem *nameItem = new QStandardItem(a->text());
             QStandardItem *valueItem = new QStandardItem(a->whatsThis());
+            nameItem->setEditable(false);
+            valueItem->setEditable(false);
             item->appendRow(QList<QStandardItem*>() << nameItem << valueItem);
         }
     }
