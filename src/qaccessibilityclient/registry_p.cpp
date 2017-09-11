@@ -95,7 +95,7 @@ QString RegistryPrivate::ACCESSIBLE_OBJECT_SCHEME_STRING = QLatin1String("access
 RegistryPrivate::RegistryPrivate(Registry *qq)
     :q(qq)
     , m_subscriptions(Registry::NoEventListeners)
-    , m_cache(new CacheWeakStrategy())
+    , m_cache(0)
 {
     connect(&conn, SIGNAL(connectionFetched()), this, SLOT(connectionFetched()));
     connect(&m_actionMapper, SIGNAL(mapped(QString)), this, SLOT(actionTriggered(QString)));
