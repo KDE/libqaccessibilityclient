@@ -227,7 +227,11 @@ void ObjectProperties::setAccessibleObject(const QAccessibleClient::AccessibleOb
         append(QString("CharacterRect"), acc.characterRect(offset), item);
 
         QString text = acc.text();
-        append(QString("Text"), text, item, &m_textItem);
+        if (interfaces.testFlag(QAccessibleClient::AccessibleObject::EditableTextInterface)) {
+            append(QString("Text"), text, item, &m_textItem);
+        } else {
+            append(QString("Text"), text, item);
+        }
 
         QList< QPair<int,int> > selections = acc.textSelections();
         QStandardItem *selectionsItem = append(QString("Selections"), selections.count(), item);
