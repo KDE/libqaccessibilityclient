@@ -23,6 +23,8 @@
 
 #include "accessibleobject.h"
 
+#include <QPair>
+
 namespace QAccessibleClient {
 
 class ObjectCache
@@ -47,16 +49,16 @@ public:
     }
     virtual QSharedPointer<AccessibleObjectPrivate> get(const QString &id) const
     {
-        return accessibleObjectsHash.value(id);
+        return accessibleObjectsHash[id].first;
     }
     virtual void add(const QString &id, const QSharedPointer<AccessibleObjectPrivate> &objectPrivate)
     {
-        accessibleObjectsHash[id] = objectPrivate;
+        accessibleObjectsHash[id] = QPair<QWeakPointer<AccessibleObjectPrivate>, AccessibleObjectPrivate*>(objectPrivate, objectPrivate.data());
     }
     virtual bool remove(const QString &id)
     {
-        QSharedPointer<AccessibleObjectPrivate> obj = accessibleObjectsHash.take(id);
-        return (interfaceHash.remove(obj.data()) >= 1);
+        QPair<QWeakPointer<AccessibleObjectPrivate>, AccessibleObjectPrivate*> data = accessibleObjectsHash.take(id);
+        return (interfaceHash.remove(data.second) >= 1);
     }
     virtual void clear()
     {
@@ -75,7 +77,7 @@ public:
     }
 
 private:
-    QHash<QString, QWeakPointer<AccessibleObjectPrivate> > accessibleObjectsHash;
+    QHash<QString, QPair<QWeakPointer<AccessibleObjectPrivate>, AccessibleObjectPrivate*> > accessibleObjectsHash;
     QHash<AccessibleObjectPrivate*, AccessibleObject::Interfaces> interfaceHash;
 };
 
