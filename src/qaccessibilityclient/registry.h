@@ -348,7 +348,7 @@ private:
     friend class RegistryPrivate;
     friend class RegistryPrivateCacheApi;
 
-    enum CacheType { NoCache, WeakCache, StrongCache };
+    enum CacheType { NoCache, WeakCache};
     CacheType cacheType() const;
     void setCacheType(CacheType type);
     AccessibleObject clientCacheObject(const QString &id) const;

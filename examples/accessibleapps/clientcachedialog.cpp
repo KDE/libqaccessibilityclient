@@ -68,7 +68,6 @@ ClientCacheDialog::ClientCacheDialog(QAccessibleClient::Registry *registry, QWid
     m_cacheCombo->setEditable(false);
     m_cacheCombo->addItem(QString("Disable"), int(QAccessibleClient::RegistryPrivateCacheApi::NoCache));
     m_cacheCombo->addItem(QString("Weak"), int(QAccessibleClient::RegistryPrivateCacheApi::WeakCache));
-    m_cacheCombo->addItem(QString("Strong"), int(QAccessibleClient::RegistryPrivateCacheApi::StrongCache));
     for(int i = 0; i < m_cacheCombo->count(); ++i) {
         if (m_cacheCombo->itemData(i).toInt() == m_cache->cacheType()) {
             m_cacheCombo->setCurrentIndex(i);

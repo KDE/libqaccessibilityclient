@@ -79,47 +79,6 @@ private:
     QHash<AccessibleObjectPrivate*, AccessibleObject::Interfaces> interfaceHash;
 };
 
-class CacheStrongStrategy : public ObjectCache
-{
-public:
-    virtual QStringList ids() const
-    {
-        return accessibleObjectsHash.keys();
-    }
-    virtual QSharedPointer<AccessibleObjectPrivate> get(const QString &id) const
-    {
-        return accessibleObjectsHash.value(id);
-    }
-    virtual void add(const QString &id, const QSharedPointer<AccessibleObjectPrivate> &objectPrivate)
-    {
-        accessibleObjectsHash[id] = objectPrivate;
-    }
-    virtual bool remove(const QString &id)
-    {
-        QSharedPointer<AccessibleObjectPrivate> obj = accessibleObjectsHash.take(id);
-        return (interfaceHash.remove(obj.data()) >= 1);
-    }
-    virtual void clear()
-    {
-        accessibleObjectsHash.clear();
-        interfaceHash.clear();
-    }
-    virtual AccessibleObject::Interfaces interfaces(const AccessibleObject &object)
-    {
-        if (!interfaceHash.contains(object.d.data()))
-            return AccessibleObject::InvalidInterface;
-        return interfaceHash.value(object.d.data());
-    }
-    void setInterfaces(const AccessibleObject &object, AccessibleObject::Interfaces interfaces)
-    {
-        interfaceHash.insert(object.d.data(), interfaces);
-    }
-
-private:
-    QHash<QString, QSharedPointer<AccessibleObjectPrivate> > accessibleObjectsHash;
-    QHash<AccessibleObjectPrivate*, AccessibleObject::Interfaces> interfaceHash;
-};
-
 }
 
 #endif

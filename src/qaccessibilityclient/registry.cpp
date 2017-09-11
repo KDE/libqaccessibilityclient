@@ -80,8 +80,6 @@ Registry::CacheType Registry::cacheType() const
 {
     if (dynamic_cast<CacheWeakStrategy*>(d->m_cache))
         return WeakCache;
-    if (dynamic_cast<CacheStrongStrategy*>(d->m_cache))
-        return StrongCache;
     return NoCache;
 }
 
@@ -95,9 +93,6 @@ void Registry::setCacheType(Registry::CacheType type)
             break;
         case WeakCache:
             d->m_cache = new CacheWeakStrategy();
-            break;
-        case StrongCache:
-            d->m_cache = new CacheStrongStrategy();
             break;
     }
 }
