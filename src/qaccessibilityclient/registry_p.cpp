@@ -1099,7 +1099,7 @@ QString RegistryPrivate::appLocale(const AccessibleObject &object, uint lctype) 
     args.append(lctype);
     message.setArguments(args);
 
-    QDBusReply<QString> reply = conn.connection().call(message);
+    QDBusReply<QString> reply = conn.connection().call(message, QDBus::Block, 500);
     if (!reply.isValid()) {
         qWarning() << "Could not access appLocale." << reply.error().message();
         return QString();
