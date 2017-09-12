@@ -12,9 +12,9 @@ add_definitions(-DQT_USE_FAST_CONCATENATION -DQT_USE_FAST_OPERATOR_PLUS)
 
 set(CMAKE_AUTOMOC TRUE)
 
-# override the KDE defaults and build tests unless explicitly disabled
-option(KDE4_BUILD_TESTS  "Build the tests" ON)
 option(QT4_BUILD "Force building with Qt4 even if Qt5 is found")
+
+option(BUILD_TESTS "Build the tests")
 
 include_directories(
     ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}
@@ -24,11 +24,13 @@ include_directories(
 if (NOT QT4_BUILD)
 find_package(Qt5Widgets QUIET)
 find_package(Qt5DBus QUIET)
+find_package(Qt5Test QUIET)
 endif()
 
 
 if (${Qt5Widgets_FOUND} AND ${Qt5DBus_FOUND})
     set(QT5_BUILD True)
+    set(BUILD_TESTS ${Qt5Test_FOUND})
 endif (${Qt5Widgets_FOUND} AND ${Qt5DBus_FOUND})
 
 if (QT5_BUILD)
@@ -76,7 +78,11 @@ if(APPLE)
 endif(APPLE)
 
 add_subdirectory(src)
-add_subdirectory(tests)
+
+if (BUILD_TESTS)
+    add_subdirectory(tests)
+endif (BUILD_TESTS)
+
 add_subdirectory(examples)
 
 # we need the absolute directories where stuff will be installed too
