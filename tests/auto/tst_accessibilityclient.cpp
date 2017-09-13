@@ -484,8 +484,9 @@ void AccessibilityClientTest::tst_characterExtents()
     textLine = textArea.textWithBoundary(0, AccessibleObject::LineEndBoundary);
     QCOMPARE(textLine, QStringLiteral("This is useless text that is being used to test this text area."));
 
-    QCOMPARE(textArea.characterRect(0), QRect(20,40,7,14).translated(pos));
-    QCOMPARE(textArea.characterRect(1), QRect(20,40,7,14));
+    QAccessibleInterface *textEditInterface = QAccessible::queryAccessibleInterface(textEdit);
+    QCOMPARE(textArea.characterRect(0), textEditInterface->textInterface()->characterRect(0));
+    QCOMPARE(textArea.characterRect(1), textEditInterface->textInterface()->characterRect(1));
 }
 
 
