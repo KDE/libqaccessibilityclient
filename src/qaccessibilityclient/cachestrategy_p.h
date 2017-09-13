@@ -37,7 +37,10 @@ public:
     virtual void clear() = 0;
     virtual AccessibleObject::Interfaces interfaces(const AccessibleObject &object) = 0;
     virtual void setInterfaces(const AccessibleObject &object, AccessibleObject::Interfaces interfaces) = 0;
+    virtual quint64 state(const AccessibleObject &object) = 0;
+    virtual void setState(const AccessibleObject &object, quint64 state) = 0;
     virtual ~ObjectCache() {}
+    static const quint64 StateNotFound = ~0;
 };
 
 class CacheWeakStrategy : public ObjectCache
@@ -58,11 +61,12 @@ public:
     virtual bool remove(const QString &id)
     {
         QPair<QWeakPointer<AccessibleObjectPrivate>, AccessibleObjectPrivate*> data = accessibleObjectsHash.take(id);
-        return (interfaceHash.remove(data.second) >= 1);
+        return (interfaceHash.remove(data.second) >= 1) || (stateHash.remove(data.second) >= 1);
     }
     virtual void clear()
     {
         accessibleObjectsHash.clear();
+        stateHash.clear();
         interfaceHash.clear();
     }
     virtual AccessibleObject::Interfaces interfaces(const AccessibleObject &object)
@@ -71,14 +75,26 @@ public:
             return AccessibleObject::InvalidInterface;
         return interfaceHash.value(object.d.data());
     }
-    void setInterfaces(const AccessibleObject &object, AccessibleObject::Interfaces interfaces)
+    virtual void setInterfaces(const AccessibleObject &object, AccessibleObject::Interfaces interfaces)
     {
         interfaceHash.insert(object.d.data(), interfaces);
+    }
+    virtual quint64 state(const AccessibleObject &object)
+    {
+        if (!stateHash.contains(object.d.data()))
+            return ObjectCache::StateNotFound;
+
+        return stateHash.value(object.d.data());
+    }
+    virtual void setState(const AccessibleObject &object, quint64 state)
+    {
+        stateHash[object.d.data()] = state;
     }
 
 private:
     QHash<QString, QPair<QWeakPointer<AccessibleObjectPrivate>, AccessibleObjectPrivate*> > accessibleObjectsHash;
     QHash<AccessibleObjectPrivate*, AccessibleObject::Interfaces> interfaceHash;
+    QHash<AccessibleObjectPrivate*, qint64> stateHash;
 };
 
 }

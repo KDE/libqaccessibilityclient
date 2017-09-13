@@ -736,6 +736,12 @@ QString RegistryPrivate::localizedRoleName(const AccessibleObject &object) const
 
 quint64 RegistryPrivate::state(const AccessibleObject &object) const
 {
+    if (m_cache) {
+        quint64 cachedValue = m_cache->state(object);
+        if (cachedValue != QAccessibleClient::ObjectCache::StateNotFound)
+            return cachedValue;
+    }
+
     QDBusMessage message = QDBusMessage::createMethodCall (
                 object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Accessible"), QLatin1String("GetState"));
 
@@ -751,6 +757,11 @@ quint64 RegistryPrivate::state(const AccessibleObject &object) const
     int low = reply.value().at(0);
     int high = reply.value().at(1);
     quint64 state = low + ((quint64)high << 32);
+
+    if (m_cache) {
+        m_cache->setState(object, state);
+    }
+
     return state;
 }
 
