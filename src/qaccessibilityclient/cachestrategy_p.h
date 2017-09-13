@@ -39,6 +39,7 @@ public:
     virtual void setInterfaces(const AccessibleObject &object, AccessibleObject::Interfaces interfaces) = 0;
     virtual quint64 state(const AccessibleObject &object) = 0;
     virtual void setState(const AccessibleObject &object, quint64 state) = 0;
+    virtual void cleanState(const AccessibleObject &object) = 0;
     virtual ~ObjectCache() {}
     static const quint64 StateNotFound = ~0;
 };
@@ -89,6 +90,10 @@ public:
     virtual void setState(const AccessibleObject &object, quint64 state)
     {
         stateHash[object.d.data()] = state;
+    }
+    virtual void cleanState(const AccessibleObject &object)
+    {
+        stateHash.remove(object.d.data());
     }
 
 private:

@@ -1422,14 +1422,17 @@ void RegistryPrivate::slotStateChanged(const QString &state, int detail1, int de
         return;
     }
 
+    AccessibleObject accessible = accessibleFromContext();
+    if (m_cache) {
+        m_cache->cleanState(accessible);
+    }
+
     if (state == QLatin1String("focused") && (detail1 == 1) &&
             (q->subscribedEventListeners().testFlag(Registry::Focus))) {
-        QAccessibleClient::AccessibleObject accessible = accessibleFromContext();
         emit q->focusChanged(accessible);
     }
 
     if (q->subscribedEventListeners().testFlag(Registry::StateChanged)) {
-        AccessibleObject accessible = accessibleFromContext();
         emit q->stateChanged(accessible, state, detail1 == 1);
     }
 }
