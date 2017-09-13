@@ -433,11 +433,11 @@ void AccessibilityClientTest::tst_extents()
 
     AccessibleObject window = remoteApp.child(0);
     QVERIFY(window.supportedInterfaces() & QAccessibleClient::AccessibleObject::ComponentInterface);
-    QCOMPARE(window.boundingRect(),QRect(3,23,200,100));
+    QCOMPARE(window.boundingRect().size(), QSize(200,100));
 
     AccessibleObject button1 = window.child(0);
     QVERIFY(button1.name()=="Button 1");
-    QCOMPARE(button1.boundingRect(),QRect(13,33,100,20));
+    QCOMPARE(button1.boundingRect().size(), QSize(100,20));
     helperProcess.terminate();
 }
 
