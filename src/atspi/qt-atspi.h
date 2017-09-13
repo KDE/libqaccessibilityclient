@@ -28,8 +28,6 @@
 #include <QtDBus/QDBusConnection>
 #include <QtDBus/QDBusArgument>
 
-typedef QList<uint> QSpiUIntList;
-Q_DECLARE_METATYPE(QSpiUIntList);
 
 namespace QAccessibleClient {
 
