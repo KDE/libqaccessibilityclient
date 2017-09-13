@@ -12,7 +12,7 @@ add_definitions(-DQT_USE_FAST_CONCATENATION -DQT_USE_FAST_OPERATOR_PLUS)
 
 set(CMAKE_AUTOMOC TRUE)
 
-option(BUILD_TESTS "Build the tests")
+enable_testing()
 
 include_directories(
     ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}
@@ -57,11 +57,7 @@ if(APPLE)
 endif(APPLE)
 
 add_subdirectory(src)
-
-if (BUILD_TESTS)
-    add_subdirectory(tests)
-endif (BUILD_TESTS)
-
+add_subdirectory(tests)
 add_subdirectory(examples)
 
 # we need the absolute directories where stuff will be installed too
