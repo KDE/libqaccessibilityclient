@@ -12,8 +12,6 @@ add_definitions(-DQT_USE_FAST_CONCATENATION -DQT_USE_FAST_OPERATOR_PLUS)
 
 set(CMAKE_AUTOMOC TRUE)
 
-option(QT4_BUILD "Force building with Qt4 even if Qt5 is found")
-
 option(BUILD_TESTS "Build the tests")
 
 include_directories(
@@ -21,32 +19,13 @@ include_directories(
     ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR}
 )
 
-if (NOT QT4_BUILD)
 find_package(Qt5Widgets QUIET)
 find_package(Qt5DBus QUIET)
 find_package(Qt5Test QUIET)
-endif()
-
-
-if (${Qt5Widgets_FOUND} AND ${Qt5DBus_FOUND})
-    set(QT5_BUILD True)
     set(BUILD_TESTS ${Qt5Test_FOUND})
-endif (${Qt5Widgets_FOUND} AND ${Qt5DBus_FOUND})
-
-if (QT5_BUILD)
-    message("Using Qt 5")
-    add_definitions(${Qt5Core_DEFINITIONS} ${Qt5Widgets_DEFINITIONS} ${Qt5DBus_DEFINITIONS})
-    include_directories(${Qt5Core_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS} ${Qt5DBus_INCLUDE_DIRS})
-    set(LIBNAME_SUFFIX "-qt5")
-else (QT5_BUILD)
-    find_package(Qt4 REQUIRED)
-    if (${QT4_FOUND})
-        message("Using Qt 4")
-        include(${QT_USE_FILE})
-        add_definitions(${QT_DEFINITIONS} -DQT4_BUILD)
-        include_directories(${QT4_INCLUDES} ${QT_INCLUDE_DIR} ${QT_QT_INCLUDE_DIR} ${QT_QTDBUS_INCLUDE_DIR})
-    endif (${QT4_FOUND})
-endif (QT5_BUILD)
+add_definitions(${Qt5Core_DEFINITIONS} ${Qt5Widgets_DEFINITIONS} ${Qt5DBus_DEFINITIONS})
+include_directories(${Qt5Core_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS} ${Qt5DBus_INCLUDE_DIRS})
+set(LIBNAME_SUFFIX "-qt5")
 
 set(QACCESSIBILITYCLIENT_LIB_NAME "qaccessibilityclient${LIBNAME_SUFFIX}")
 

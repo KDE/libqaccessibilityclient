@@ -37,10 +37,6 @@
 
 #include "atspi/dbusconnection.h"
 
-#ifdef QT4_BUILD
-#define QStringLiteral(x) QLatin1String(x)
-#endif
-
 typedef QSharedPointer<QAccessibleInterface> QAIPointer;
 
 using namespace QAccessibleClient;
@@ -93,11 +89,6 @@ private:
 
 void AccessibilityClientTest::initTestCase()
 {
-    qDebug() << "Starting test.";
-#if (QT_VERSION < QT_VERSION_CHECK(5, 0, 0))
-    if (qgetenv("QT_ACCESSIBILITY") != QByteArray("1"))
-        qWarning() << "QT_ACCESSIBILITY=1 not found, this leads to failing tests with Qt 4";
-#endif
 }
 
 
@@ -196,12 +187,8 @@ void AccessibilityClientTest::tst_navigation()
     w.activateWindow();
     button->setFocus();
 
-#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
     QTest::qWaitForWindowExposed(&w);
     QTest::qWaitForWindowActive(&w);
-#else
-    QTest::qWaitForWindowShown(&w);
-#endif
 
     // App
     AccessibleObject accApp = getAppObject(registry, appName);
@@ -270,9 +257,6 @@ void AccessibilityClientTest::tst_navigation()
     QVERIFY(!accLabel.isChecked());
     QVERIFY(!accLabel.isFocusable());
     QVERIFY(!accLabel.isFocused());
-#if (QT_VERSION < QT_VERSION_CHECK(5, 2, 1))
-    QEXPECT_FAIL("", "Labels in Qt 4 report themselves as editable.", Continue);
-#endif
     QVERIFY(!accLabel.isEditable());
 
     AccessibleObject accLine = accW.child(2);
@@ -398,12 +382,7 @@ void AccessibilityClientTest::tst_states()
     w.show();
     button1->setFocus();
 
-#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
     QTest::qWaitForWindowExposed(&w);
-#else
-    QTest::qWaitForWindowShown(&w);
-#endif
-
     AccessibleObject accApp = getAppObject(registry, appName);
     QVERIFY(accApp.isValid());
 
@@ -471,11 +450,7 @@ void AccessibilityClientTest::tst_characterExtents()
     QTextEdit *textEdit = new QTextEdit(&w);
     textEdit->setGeometry(10,10,600,400);
     w.show();
-#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
     QTest::qWaitForWindowExposed(&w);
-#else
-    QTest::qWaitForWindowShown(&w);
-#endif
     AccessibleObject app = getAppObject(registry, appName);
 
     //Check if the widget is correct
