@@ -28,7 +28,6 @@
 #include <QtDBus/QDBusConnection>
 #include <QtDBus/QDBusArgument>
 
-
 namespace QAccessibleClient {
 
 /**

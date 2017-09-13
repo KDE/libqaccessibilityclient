@@ -27,6 +27,7 @@
 #include <qdbuspendingcall.h>
 #include <qdbusinterface.h>
 #include <qdbusargument.h>
+#include <qdbusmetatype.h>
 
 #include <qdebug.h>
 #include <qdbusmessage.h>
@@ -97,6 +98,8 @@ RegistryPrivate::RegistryPrivate(Registry *qq)
     , m_subscriptions(Registry::NoEventListeners)
     , m_cache(0)
 {
+    qDBusRegisterMetaType<QVector<quint32> >();
+
     connect(&conn, SIGNAL(connectionFetched()), this, SLOT(connectionFetched()));
     connect(&m_actionMapper, SIGNAL(mapped(QString)), this, SLOT(actionTriggered(QString)));
     init();
@@ -740,7 +743,7 @@ quint64 RegistryPrivate::state(const AccessibleObject &object) const
     QDBusMessage message = QDBusMessage::createMethodCall (
                 object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Accessible"), QLatin1String("GetState"));
 
-    QDBusReply<QList<quint32> > reply = conn.connection().call(message);
+    QDBusReply<QVector<quint32> > reply = conn.connection().call(message);
     if (!reply.isValid()) {
         qWarning() << "Could not access state." << reply.error().message();
         return 0;
