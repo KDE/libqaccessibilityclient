@@ -284,7 +284,10 @@ bool AccessibleTree::addAccessible(const QAccessibleClient::AccessibleObject &ob
 
     // Add this item (or emit dataChanged, if it's there already).
     int idx = object.indexInParent();
-    Q_ASSERT(idx >= 0);
+    if (idx < 0) {
+            qWarning() << Q_FUNC_INFO << "Could not add accessible (invalid index in parent): " << object;
+            return false;
+    }
     QModelIndex objectIndex = index(idx, 0, parentIndex);
     if (objectIndex.isValid() && static_cast<AccessibleWrapper*>(objectIndex.internalPointer())->acc == object) {
         emit dataChanged(objectIndex, objectIndex);
