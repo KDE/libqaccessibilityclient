@@ -157,13 +157,13 @@ void MainWindow::MainWindow::initActions()
 
 void MainWindow::MainWindow::initMenu()
 {
-    QMenu *fileMenu = menuBar()->addMenu(QString("Tree"));
+    QMenu *fileMenu = menuBar()->addMenu(QString("&Tree"));
     fileMenu->addAction(m_resetTreeAction);
     fileMenu->addAction(m_followFocusAction);
     fileMenu->addSeparator();
     fileMenu->addAction(m_quitAction);
 
-    QMenu *settingsMenu = menuBar()->addMenu(QString("Settings"));
+    QMenu *settingsMenu = menuBar()->addMenu(QString("&Settings"));
     QMenu *dockerMenu = settingsMenu->addMenu(QString("Docker"));
     Q_FOREACH(const QDockWidget *docker, findChildren<QDockWidget*>()) {
         dockerMenu->addAction(docker->toggleViewAction());
