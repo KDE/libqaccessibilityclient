@@ -26,6 +26,7 @@
 #include <qpointer.h>
 #include <qsettings.h>
 #include <qurl.h>
+#include <QClipboard>
 
 #include "qaccessibilityclient/registry.h"
 #include "qaccessibilityclient/registrycache_p.h"
@@ -153,6 +154,26 @@ void MainWindow::MainWindow::initActions()
     m_quitAction = new QAction(tr("&Quit"), this);
     m_quitAction->setShortcuts(QKeySequence::Quit);
     connect(m_quitAction, SIGNAL(triggered()), this, SLOT(close()));
+
+    m_copyValueAction = new QAction(tr("&Copy property value"), this);
+    m_copyValueAction->setShortcuts(QKeySequence::Copy);
+    connect(m_copyValueAction, SIGNAL(triggered()), this, SLOT(copyValue()));
+}
+
+void MainWindow::copyValue()
+{
+    QModelIndex selected = m_propertyView->currentIndex();
+
+    if (!selected.isValid())
+        return;
+
+    if (selected.column() == 0) {
+        selected = m_propertyView->model()->index(selected.row(), 1, selected.parent());
+        if (!selected.isValid())
+            return;
+    }
+
+    QGuiApplication::clipboard()->setText(selected.data(Qt::DisplayRole).toString());
 }
 
 void MainWindow::MainWindow::initMenu()
@@ -162,6 +183,9 @@ void MainWindow::MainWindow::initMenu()
     fileMenu->addAction(m_followFocusAction);
     fileMenu->addSeparator();
     fileMenu->addAction(m_quitAction);
+
+    QMenu *editMenu = menuBar()->addMenu(QString("&Edit"));
+    editMenu->addAction(m_copyValueAction);
 
     QMenu *settingsMenu = menuBar()->addMenu(QString("&Settings"));
     QMenu *dockerMenu = settingsMenu->addMenu(QString("Docker"));
@@ -222,7 +246,7 @@ void MainWindow::MainWindow::initUi()
     m_uiview->setAccessibleDescription(QString("Visualize the component boundaries"));
     uiDocker->setWidget(m_uiview);
 
-    QDockWidget *eventsDocker = new QDockWidget(QString("&Events"), this);
+    QDockWidget *eventsDocker = new QDockWidget(QString("E&vents"), this);
     eventsDocker->setObjectName("events");
     eventsDocker->setFeatures(QDockWidget::AllDockWidgetFeatures);
     m_eventsWidget = new EventsWidget(m_registry, eventsDocker);

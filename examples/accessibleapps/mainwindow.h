@@ -55,6 +55,7 @@ private Q_SLOTS:
     void treeCustomContextMenuRequested(const QPoint &pos);
     void anchorClicked(const QUrl &url);
     void showClientCache();
+    void copyValue();
 
     void added(const QAccessibleClient::AccessibleObject &object);
     void removed(const QAccessibleClient::AccessibleObject &object);
@@ -123,6 +124,7 @@ private:
     QAction *m_enableA11yAction;
     QAction *m_enableScreenReaderAction;
     QAction *m_quitAction;
+    QAction *m_copyValueAction;
 };
 
 #endif
