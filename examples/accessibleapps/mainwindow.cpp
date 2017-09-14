@@ -198,7 +198,7 @@ void MainWindow::MainWindow::initUi()
     connect(m_accessibleObjectTreeView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(selectionChanged(QModelIndex,QModelIndex)));
     connect(m_accessibleObjectTreeView, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(treeCustomContextMenuRequested(QPoint)));
 
-    QDockWidget *propertyDocker = new QDockWidget(QString("Properties"), this);
+    QDockWidget *propertyDocker = new QDockWidget(QString("&Properties"), this);
     propertyDocker->setObjectName("properties");
     propertyDocker->setFeatures(QDockWidget::AllDockWidgetFeatures);
     m_propertyView = new QTreeView(propertyDocker);
@@ -214,7 +214,7 @@ void MainWindow::MainWindow::initUi()
     m_propertyView->setAlternatingRowColors(true);
     connect(m_propertyView, SIGNAL(doubleClicked(QModelIndex)), m_propertyModel, SLOT(doubleClicked(QModelIndex)));
 
-    QDockWidget *uiDocker = new QDockWidget(QString("Boundaries"), this);
+    QDockWidget *uiDocker = new QDockWidget(QString("&Boundaries"), this);
     uiDocker->setObjectName("boundaries");
     uiDocker->setFeatures(QDockWidget::AllDockWidgetFeatures);
     m_uiview = new UiView(uiDocker);
@@ -222,7 +222,7 @@ void MainWindow::MainWindow::initUi()
     m_uiview->setAccessibleDescription(QString("Visualize the component boundaries"));
     uiDocker->setWidget(m_uiview);
 
-    QDockWidget *eventsDocker = new QDockWidget(QString("Events"), this);
+    QDockWidget *eventsDocker = new QDockWidget(QString("&Events"), this);
     eventsDocker->setObjectName("events");
     eventsDocker->setFeatures(QDockWidget::AllDockWidgetFeatures);
     m_eventsWidget = new EventsWidget(m_registry, eventsDocker);
