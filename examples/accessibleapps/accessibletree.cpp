@@ -226,7 +226,9 @@ QModelIndex AccessibleTree::indexForAccessible(const AccessibleObject& object)
         if (parent.isValid()) {
             QModelIndex parentIndex = indexForAccessible(parent);
             if (!parentIndex.isValid()) {
-                qWarning() << Q_FUNC_INFO << object.application().name() << object.name() << object.roleName() << "Parent model index is invalid: " << object;
+                if (object.isValid() && object.application().isValid())
+                    qWarning() << Q_FUNC_INFO << object.application().name() << object.name() << object.roleName() << "Parent model index is invalid: " << object;
+
                 return QModelIndex();
             }
             int indexInParent = object.indexInParent();
