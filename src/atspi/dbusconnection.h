@@ -91,7 +91,7 @@ public:
      */
     Status status() const;
 
-signals:
+Q_SIGNALS:
 
     /**
         \brief Emitted when the \a connection was fetched.
@@ -102,7 +102,7 @@ signals:
      */
     void connectionFetched();
 
-private slots:
+private Q_SLOTS:
     void initFinished();
 
 private:

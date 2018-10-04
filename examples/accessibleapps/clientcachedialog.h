@@ -38,7 +38,7 @@ class ClientCacheDialog : public QDialog
     Q_OBJECT
 public:
     ClientCacheDialog(QAccessibleClient::Registry *registry, QWidget *parent = 0);
-private slots:
+private Q_SLOTS:
     void clearCache();
     void cacheStrategyChanged();
     void updateView();

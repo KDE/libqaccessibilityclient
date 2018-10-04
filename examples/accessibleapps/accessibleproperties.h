@@ -42,7 +42,7 @@ public:
     void setAccessibleObject(const QAccessibleClient::AccessibleObject &acc);
     QAccessibleClient::AccessibleObject currentObject() const { return m_acc; }
 
-public slots:
+public Q_SLOTS:
     void doubleClicked(const QModelIndex &index);
     void slotDataChanged(QStandardItem *item);
 

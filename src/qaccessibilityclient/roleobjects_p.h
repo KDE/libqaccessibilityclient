@@ -189,7 +189,7 @@ public:
     explicit TextRole(const AccessibleObject &acc);
     QString text() const;
     bool isEditable() const;
-public slots:
+public Q_SLOTS:
     void setText(const QString &text);
 };
 

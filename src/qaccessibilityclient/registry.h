@@ -85,7 +85,7 @@ public:
      */
     virtual ~Registry();
 
-public slots:
+public Q_SLOTS:
 
     /**
         Returns true if the accessibility stack is enabled.
