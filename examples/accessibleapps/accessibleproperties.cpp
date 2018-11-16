@@ -98,7 +98,7 @@ void ObjectProperties::setAccessibleObject(const QAccessibleClient::AccessibleOb
         append(QString("LocalizedRole"), acc.localizedRoleName(), item);
         append(QString("Visible"), acc.isVisible(), item);
         append(QString("Default"), acc.isDefault(), item);
-        append(QString("State"), stateString(acc), item);
+        append(QString("State"), acc.stateString(), item);
         append(tr("Url"), acc.url(), item);
         AccessibleObject parent = acc.parent();
         if (parent.isValid())
@@ -354,23 +354,4 @@ QStandardItem* ObjectProperties::append(const QString &name, const QVariant &val
     }
 
     return nameItem;
-}
-
-QString ObjectProperties::stateString(const QAccessibleClient::AccessibleObject &acc)
-{
-    QStringList s;
-    if (acc.isActive()) s << "Active";
-    if (acc.isCheckable()) s << "Checkable";
-    if (acc.isChecked()) s << "Checked";
-    if (acc.isEditable()) s << "Editable";
-    if (acc.isExpandable()) s << "Expandable";
-    if (acc.isExpanded()) s << "Expanded";
-    if (acc.isFocusable()) s << "Focusable";
-    if (acc.isFocused()) s << "Focused";
-    if (acc.isMultiLine()) s << "MultiLine";
-    if (acc.isSelectable()) s << "Selectable";
-    if (acc.isSelected()) s << "Selected";
-    if (acc.isSensitive()) s << "Sensitive";
-    if (acc.isSingleLine()) s << "SingleLine";
-    return s.join(",");
 }

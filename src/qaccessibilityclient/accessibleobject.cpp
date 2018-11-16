@@ -513,6 +513,25 @@ bool AccessibleObject::isSingleLine() const
     return d->registryPrivate->state(*this) & (quint64(1) << ATSPI_STATE_SINGLE_LINE);
 }
 
+QString AccessibleObject::stateString() const
+{
+    QStringList s;
+    if (isActive()) s << QStringLiteral("Active");
+    if (isCheckable()) s << QStringLiteral("Checkable");
+    if (isChecked()) s << QStringLiteral("Checked");
+    if (isEditable()) s << QStringLiteral("Editable");
+    if (isExpandable()) s << QStringLiteral("Expandable");
+    if (isExpanded()) s << QStringLiteral("Expanded");
+    if (isFocusable()) s << QStringLiteral("Focusable");
+    if (isFocused()) s << QStringLiteral("Focused");
+    if (isMultiLine()) s << QStringLiteral("MultiLine");
+    if (isSelectable()) s << QStringLiteral("Selectable");
+    if (isSelected()) s << QStringLiteral("Selected");
+    if (isSensitive()) s << QStringLiteral("Sensitive");
+    if (isSingleLine()) s << QStringLiteral("SingleLine");
+    return s.join(QLatin1String(", "));
+}
+
 bool AccessibleObject::isVisible() const
 {
     return d->registryPrivate->state(*this) & (quint64(1) << ATSPI_STATE_VISIBLE);

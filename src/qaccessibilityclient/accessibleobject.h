@@ -712,6 +712,13 @@ public:
     /// Returns if the AccessibleObject is a single line text edit
     bool isSingleLine() const;
 
+    /**
+      \brief Return a string representing states of this object.
+
+      This is useful for debugging applications.
+    */
+    QString stateString() const;
+
     /*
      * \internal
      * \brief isTransient marks an object as being unreliable in that it can quickly disappear or change
