@@ -33,7 +33,7 @@ set(CMAKE_INSTALL_NAME_DIR ${LIB_INSTALL_DIR})
 
 if (WIN32)
    set(EXEC_INSTALL_PREFIX  "")
-   set(LIB_INSTALL_DIR "lib${LIB_SUFFIX}")
+   set(LIB_INSTALL_DIR "lib${LIB_SUFFIX}" CACHE STRING "Directory where lib will install")
    set(BIN_INSTALL_DIR "bin")
    set(INCLUDE_INSTALL_DIR  "include")
 else (WIN32)
@@ -42,7 +42,8 @@ else (WIN32)
    endif(APPLE)
    set(EXEC_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
    set(BIN_INSTALL_DIR "${EXEC_INSTALL_PREFIX}/bin")
-   set(LIB_INSTALL_DIR "${EXEC_INSTALL_PREFIX}/lib${LIB_SUFFIX}")
+   set(LIB_INSTALL_DIR "${EXEC_INSTALL_PREFIX}/lib${LIB_SUFFIX}" CACHE STRING
+       "Directory where lib will install")
    set(INCLUDE_INSTALL_DIR  "${CMAKE_INSTALL_PREFIX}/include")
 endif (WIN32)
 
