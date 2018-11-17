@@ -31,12 +31,12 @@
 using namespace QAccessibleClient;
 
 AccessibleObject::AccessibleObject()
-    :d(0)
+    :d(nullptr)
 {
 }
 
 AccessibleObject::AccessibleObject(RegistryPrivate *registryPrivate, const QString &service, const QString &path)
-    :d(0)
+    :d(nullptr)
 {
     Q_ASSERT(registryPrivate);
     Q_ASSERT(!service.isEmpty());

@@ -92,7 +92,7 @@ QString RegistryPrivate::ACCESSIBLE_OBJECT_SCHEME_STRING = QLatin1String("access
 RegistryPrivate::RegistryPrivate(Registry *qq)
     :q(qq)
     , m_subscriptions(Registry::NoEventListeners)
-    , m_cache(0)
+    , m_cache(nullptr)
 {
     qDBusRegisterMetaType<QVector<quint32> >();
 
@@ -197,7 +197,7 @@ void RegistryPrivate::connectionFetched()
 
     if (m_pendingSubscriptions > 0) {
         subscribeEventListeners(m_pendingSubscriptions);
-        m_pendingSubscriptions = 0;
+        m_pendingSubscriptions = nullptr;
     }
 }
 
@@ -1238,7 +1238,7 @@ QVector< QSharedPointer<QAction> > RegistryPrivate::actions(const AccessibleObje
     QVector< QSharedPointer<QAction> > list;
     for(int i = 0; i < actionArray.count(); ++i) {
         const QSpiAction &a = actionArray[i];
-        QAction *action = new QAction(0);
+        QAction *action = new QAction();
         QString id = QString(QLatin1String("%1;%2;%3")).arg(object.d->service).arg(object.d->path).arg(i);
         action->setObjectName(id);
         action->setText(a.name);

@@ -79,7 +79,7 @@ public:
     /**
       Construct a Registry object with \a parent as QObject parent.
      */
-    explicit Registry(QObject *parent = 0);
+    explicit Registry(QObject *parent = nullptr);
     /**
       Destroys this Registry.
      */

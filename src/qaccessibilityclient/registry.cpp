@@ -87,7 +87,7 @@ void Registry::setCacheType(Registry::CacheType type)
 {
     //if (cacheType() == type) return;
     delete d->m_cache;
-    d->m_cache = 0;
+    d->m_cache = nullptr;
     switch (type) {
         case NoCache:
             break;
