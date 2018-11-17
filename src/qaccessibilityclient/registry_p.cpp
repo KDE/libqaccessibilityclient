@@ -594,7 +594,7 @@ AccessibleObject::Role RegistryPrivate::role(const AccessibleObject &object) con
         qWarning() << "Could not access role." << reply.error().message();
         return AccessibleObject::NoRole;
     }
-    return atspiRoleToRole((AtspiRole)reply.value());
+    return atspiRoleToRole(static_cast<AtspiRole>(reply.value()));
 }
 
 AccessibleObject::Role RegistryPrivate::atspiRoleToRole(AtspiRole role)
@@ -754,9 +754,9 @@ quint64 RegistryPrivate::state(const AccessibleObject &object) const
         qWarning() << "Did not receive expected reply.";
         return 0;
     }
-    int low = reply.value().at(0);
-    int high = reply.value().at(1);
-    quint64 state = low + ((quint64)high << 32);
+    quint32 low = reply.value().at(0);
+    quint32 high = reply.value().at(1);
+    quint64 state = low + (static_cast<quint64>(high) << 32);
 
     if (m_cache) {
         m_cache->setState(object, state);
@@ -981,7 +981,7 @@ QString RegistryPrivate::text(const AccessibleObject &object, int startOffset, i
 QString RegistryPrivate::textWithBoundary(const AccessibleObject &object, int offset, AccessibleObject::TextBoundary boundary, int *startOffset, int *endOffset) const
 {
     QDBusMessage message = QDBusMessage::createMethodCall(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Text"), QLatin1String("GetTextAtOffset"));
-    message.setArguments(QVariantList() << offset << (AtspiTextBoundaryType) boundary);
+    message.setArguments(QVariantList() << offset << static_cast<AtspiTextBoundaryType>(boundary));
     QDBusMessage reply = conn.connection().call(message);
     if (reply.type() != QDBusMessage::ReplyMessage || reply.signature() != QStringLiteral("sii")) {
         qWarning() << "Could not access text." << reply.errorMessage();
