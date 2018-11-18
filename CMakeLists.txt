@@ -25,9 +25,8 @@ find_package(Qt5Test QUIET)
     set(BUILD_TESTS ${Qt5Test_FOUND})
 add_definitions(${Qt5Core_DEFINITIONS} ${Qt5Widgets_DEFINITIONS} ${Qt5DBus_DEFINITIONS})
 include_directories(${Qt5Core_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS} ${Qt5DBus_INCLUDE_DIRS})
-set(LIBNAME_SUFFIX "-qt5")
 
-set(QACCESSIBILITYCLIENT_LIB_NAME "qaccessibilityclient${LIBNAME_SUFFIX}")
+set(QACCESSIBILITYCLIENT_LIB_NAME "qaccessibilityclient-qt5")
 
 set(CMAKE_INSTALL_NAME_DIR ${LIB_INSTALL_DIR})
 
