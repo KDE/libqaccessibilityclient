@@ -43,3 +43,19 @@ target_link_libraries(targetname ${QACCESSIBILITYCLIENT_LIBRARY})
 ```
 
 In your code `#include <qaccessibilityclient/accessibleobject.h>` etc.
+
+Creating releases
+-----------------
+
+There are no translations for QAccessibilityClient since the library does not contain any strings that should be shown to users.
+The examples are not translated, that could potentially be considered.
+Follow <https://community.kde.org/ReleasingSoftware>, skip the translation parts.
+
+* Set the project version in the top-level CMakeLists.txt, push.
+* `./tarme.rb --version 0.3.0 --origin stable libqaccessibilityclient`
+* tarme.rb has nice output that gives instructions.
+* `./tagme.rb --version 0.3.0 libqaccessibilityclient`
+* upload
+* create changelog
+* file sysadmin ticket
+* blog/send mail
