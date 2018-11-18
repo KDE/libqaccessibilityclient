@@ -22,9 +22,8 @@ set(QAccessibilityClientPrivate_SRCS
 add_library(${QACCESSIBILITYCLIENT_LIB_NAME} SHARED ${QAccessibilityClient_SRCS} ${QAccessibilityClientPrivate_SRCS})
 target_link_libraries(${QACCESSIBILITYCLIENT_LIB_NAME} ${Qt5Core_LIBRARIES} ${Qt5Widgets_LIBRARIES} ${Qt5DBus_LIBRARIES})
 
-set(QACCESSIBILITYCLIENT_SOVERSION ${QACCESSIBILITYCLIENT_VERSION_MAJOR})
 set_target_properties(${QACCESSIBILITYCLIENT_LIB_NAME}
-    PROPERTIES VERSION ${QACCESSIBILITYCLIENT_VERSION}
+    PROPERTIES VERSION ${PROJECT_VERSION}
     SOVERSION ${QACCESSIBILITYCLIENT_SOVERSION}
 )
 
@@ -38,5 +37,6 @@ install(FILES
     qaccessibilityclient/qaccessibilityclient_export.h
     qaccessibilityclient/accessibleobject.h
     qaccessibilityclient/registry.h
+    ${CMAKE_CURRENT_BINARY_DIR}/libqaccessibilityclient-version.h
     DESTINATION ${INCLUDE_INSTALL_DIR}/qaccessibilityclient COMPONENT Devel
 )

@@ -1,9 +1,21 @@
-project(QAccessibilityClient)
+cmake_minimum_required(VERSION 3.0.0)
 
-set(QACCESSIBILITYCLIENT_VERSION_MAJOR 0)
-set(QACCESSIBILITYCLIENT_VERSION_MINOR 1)
-set(QACCESSIBILITYCLIENT_VERSION_PATCH 0)
-set(QACCESSIBILITYCLIENT_VERSION ${QACCESSIBILITYCLIENT_VERSION_MAJOR}.${QACCESSIBILITYCLIENT_VERSION_MINOR}.${QACCESSIBILITYCLIENT_VERSION_PATCH})
+include(FeatureSummary)
+find_package(ECM REQUIRED NO_MODULE)
+set_package_properties(ECM PROPERTIES TYPE REQUIRED DESCRIPTION "Extra CMake Modules." URL "https://projects.kde.org/projects/kdesupport/extra-cmake-modules")
+feature_summary(WHAT REQUIRED_PACKAGES_NOT_FOUND FATAL_ON_MISSING_REQUIRED_PACKAGES)
+set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
+
+include(ECMSetupVersion)
+
+cmake_policy(SET CMP0048 NEW)
+project(QAccessibilityClient VERSION "0.3.0")
+
+ecm_setup_version(${PROJECT_VERSION}
+    VARIABLE_PREFIX QACCESSIBILITYCLIENT
+    SOVERSION ${PROJECT_VERSION_MAJOR}
+    VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/src/libqaccessibilityclient-version.h"
+)
 
 # minimum required cmake is 2.8.6 for automoc-support
 cmake_minimum_required(VERSION 2.8.6)
@@ -22,7 +34,8 @@ include_directories(
 find_package(Qt5Widgets QUIET)
 find_package(Qt5DBus QUIET)
 find_package(Qt5Test QUIET)
-    set(BUILD_TESTS ${Qt5Test_FOUND})
+set(BUILD_TESTS ${Qt5Test_FOUND})
+
 add_definitions(${Qt5Core_DEFINITIONS} ${Qt5Widgets_DEFINITIONS} ${Qt5DBus_DEFINITIONS})
 include_directories(${Qt5Core_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS} ${Qt5DBus_INCLUDE_DIRS})
 

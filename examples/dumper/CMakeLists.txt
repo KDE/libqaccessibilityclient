@@ -1,4 +1,5 @@
-project(dumper)
+cmake_policy(SET CMP0048 NEW)
+project(dumper VERSION "")
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++0x")
 add_definitions(${Qt5Core_EXECUTABLE_COMPILE_FLAGS})
