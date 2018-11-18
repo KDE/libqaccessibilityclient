@@ -1526,4 +1526,4 @@ void RegistryPrivate::slotTextChanged(const QString &change, int start, int end,
     }
 }
 
-#include "registry_p.moc"
+#include "moc_registry_p.cpp"

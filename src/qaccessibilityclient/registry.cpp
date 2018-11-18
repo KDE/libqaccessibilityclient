@@ -121,4 +121,4 @@ void Registry::clearClientCache()
         d->m_cache->clear();
 }
 
-#include "registry.moc"
+#include "moc_registry.cpp"
