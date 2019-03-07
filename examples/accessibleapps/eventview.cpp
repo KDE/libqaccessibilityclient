@@ -50,9 +50,9 @@ public:
     explicit EventsModel(EventsWidget *view) : QStandardItemModel(view), m_view(view) {
         clearLog();
     }
-    ~EventsModel() {}
+    ~EventsModel() override {}
 
-    QHash<int,QByteArray> roleNames() const
+    QHash<int,QByteArray> roleNames() const override
     {
         QHash<int, QByteArray> roles;
         roles[AccessibleRole] = "accessible";
@@ -149,7 +149,7 @@ public:
         invalidateFilter();
     }
 protected:
-    virtual bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
+    bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const override
     {
         if (!source_parent.isValid())
             return true;

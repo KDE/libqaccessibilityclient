@@ -83,7 +83,7 @@ public:
     /**
       Destroys this Registry.
      */
-    virtual ~Registry();
+    ~Registry() override;
 
 public Q_SLOTS:
 

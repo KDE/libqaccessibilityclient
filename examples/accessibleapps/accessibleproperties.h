@@ -34,7 +34,7 @@ public:
         ValueRole
     };
     explicit ObjectProperties(QObject *parent = nullptr);
-    virtual ~ObjectProperties();
+    ~ObjectProperties() override;
 
     QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
 

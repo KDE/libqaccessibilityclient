@@ -40,7 +40,7 @@ class UiWidget : public QWidget
 public:
     UiWidget(UiView *view);
     void setAccessibleObject(const QAccessibleClient::AccessibleObject &acc);
-    virtual QSize sizeHint() const;
+    QSize sizeHint() const override;
 protected:
     QImage *m_image;
     QPixmap m_screen;
@@ -48,7 +48,7 @@ protected:
     QAccessibleClient::AccessibleObject m_object;
     QMap<QAccessibleClient::AccessibleObject::Role, const char*> m_roleColors;
 
-    virtual void paintEvent(QPaintEvent *event);
+    void paintEvent(QPaintEvent *event) override;
 private:
     QPixmap grabScreen() const;
     QRect bounds(const QAccessibleClient::AccessibleObject &acc) const;
@@ -60,7 +60,7 @@ class UiView :public QScrollArea
     Q_OBJECT
 public:
     UiView(QWidget *parent = nullptr);
-    ~UiView();
+    ~UiView() override;
 
     void setAccessibleObject(const QAccessibleClient::AccessibleObject &acc);
 

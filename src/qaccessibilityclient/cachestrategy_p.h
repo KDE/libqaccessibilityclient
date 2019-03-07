@@ -47,51 +47,51 @@ public:
 class CacheWeakStrategy : public ObjectCache
 {
 public:
-    virtual QStringList ids() const
+    QStringList ids() const override
     {
         return accessibleObjectsHash.keys();
     }
-    virtual QSharedPointer<AccessibleObjectPrivate> get(const QString &id) const
+    QSharedPointer<AccessibleObjectPrivate> get(const QString &id) const override
     {
         return accessibleObjectsHash[id].first;
     }
-    virtual void add(const QString &id, const QSharedPointer<AccessibleObjectPrivate> &objectPrivate)
+    void add(const QString &id, const QSharedPointer<AccessibleObjectPrivate> &objectPrivate) override
     {
         accessibleObjectsHash[id] = QPair<QWeakPointer<AccessibleObjectPrivate>, AccessibleObjectPrivate*>(objectPrivate, objectPrivate.data());
     }
-    virtual bool remove(const QString &id)
+    bool remove(const QString &id) override
     {
         QPair<QWeakPointer<AccessibleObjectPrivate>, AccessibleObjectPrivate*> data = accessibleObjectsHash.take(id);
         return (interfaceHash.remove(data.second) >= 1) || (stateHash.remove(data.second) >= 1);
     }
-    virtual void clear()
+    void clear() override
     {
         accessibleObjectsHash.clear();
         stateHash.clear();
         interfaceHash.clear();
     }
-    virtual AccessibleObject::Interfaces interfaces(const AccessibleObject &object)
+    AccessibleObject::Interfaces interfaces(const AccessibleObject &object) override
     {
         if (!interfaceHash.contains(object.d.data()))
             return AccessibleObject::InvalidInterface;
         return interfaceHash.value(object.d.data());
     }
-    virtual void setInterfaces(const AccessibleObject &object, AccessibleObject::Interfaces interfaces)
+    void setInterfaces(const AccessibleObject &object, AccessibleObject::Interfaces interfaces) override
     {
         interfaceHash.insert(object.d.data(), interfaces);
     }
-    virtual quint64 state(const AccessibleObject &object)
+    quint64 state(const AccessibleObject &object) override
     {
         if (!stateHash.contains(object.d.data()))
             return ObjectCache::StateNotFound;
 
         return stateHash.value(object.d.data());
     }
-    virtual void setState(const AccessibleObject &object, quint64 state)
+    void setState(const AccessibleObject &object, quint64 state) override
     {
         stateHash[object.d.data()] = state;
     }
-    virtual void cleanState(const AccessibleObject &object)
+    void cleanState(const AccessibleObject &object) override
     {
         stateHash.remove(object.d.data());
     }

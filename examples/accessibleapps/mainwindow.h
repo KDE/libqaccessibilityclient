@@ -45,10 +45,10 @@ class MainWindow :public QMainWindow
 
 public:
     MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
+    ~MainWindow() override;
 
 protected:
-    void closeEvent(QCloseEvent *event);
+    void closeEvent(QCloseEvent *event) override;
 
 private Q_SLOTS:
     void selectionChanged(const QModelIndex &current, const QModelIndex &);
