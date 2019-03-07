@@ -18,7 +18,7 @@ add_executable(tst_accessibilityclient ${tst_accessibilityclient_SRCS})
 
 target_link_libraries(tst_accessibilityclient ${Qt5Widgets_LIBRARIES} ${Qt5Test_LIBRARIES} ${QACCESSIBILITYCLIENT_LIB_NAME})
 
-add_test(libkdeaccessibilityclient-tst_accessibilityclient tst_accessibilityclient)
+add_test(NAME libkdeaccessibilityclient-tst_accessibilityclient COMMAND tst_accessibilityclient)
 
 # A test app that can run in a QProcess
 set(simplewidgetapp_SRCS
