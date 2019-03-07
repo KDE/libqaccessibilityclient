@@ -55,7 +55,8 @@ Follow <https://community.kde.org/ReleasingSoftware>, skip the translation parts
 * `./tarme.rb --version 0.3.0 --origin stable libqaccessibilityclient`
 * tarme.rb has nice output that gives instructions.
 * `./tagme.rb --version 0.3.0 libqaccessibilityclient`
-* upload
-* create changelog
+* upload as directed
 * file sysadmin ticket
+* `./logme.rb` to create changelog
+* `./tagme --version 0.3.0` to push tag
 * blog/send mail
