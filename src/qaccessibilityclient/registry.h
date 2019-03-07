@@ -43,7 +43,6 @@ class RegistryPrivateCacheApi;
 class QACCESSIBILITYCLIENT_EXPORT Registry : public QObject
 {
     Q_OBJECT
-    Q_ENUMS(EventListener)
 
 public:
 
@@ -74,6 +73,7 @@ public:
 
         AllEventListeners = 0xffffffff      /*!< All possible event listeners */
     };
+    Q_ENUM(EventListener)
     Q_DECLARE_FLAGS(EventListeners, EventListener)
 
     /**

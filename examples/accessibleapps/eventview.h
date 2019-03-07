@@ -39,8 +39,6 @@ class EventsProxyModel;
 class EventsWidget :public QWidget
 {
     Q_OBJECT
-    Q_ENUMS(EventType)
-    Q_ENUMS(EventTypes)
 public:
     enum EventType {
         NoEvents = 0x00,
@@ -61,6 +59,8 @@ public:
         AllEvents = 0xffff
     };
     Q_DECLARE_FLAGS(EventTypes, EventType)
+    Q_ENUM(EventType)
+    Q_ENUM(EventTypes)
 
     QString eventName(EventType eventType) const;
 
