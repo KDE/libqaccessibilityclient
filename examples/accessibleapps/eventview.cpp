@@ -98,7 +98,7 @@ public:
     LogItem addLog(QList<QStandardItem*> item)
     {
         QString appUrl = item.first()->data(AppUrlRole).toString();
-        QStandardItem *appItem = 0;
+        QStandardItem *appItem = nullptr;
         QMap<QString, QStandardItem*>::ConstIterator it = m_apps.constFind(appUrl);
         bool isNewAppItem = it == m_apps.constEnd();
         if (isNewAppItem) {
@@ -120,7 +120,7 @@ private:
 class EventsProxyModel : public QSortFilterProxyModel
 {
 public:
-    explicit EventsProxyModel(QWidget *parent = 0) : QSortFilterProxyModel(parent), m_types(EventsWidget::AllEvents) {}
+    explicit EventsProxyModel(QWidget *parent = nullptr) : QSortFilterProxyModel(parent), m_types(EventsWidget::AllEvents) {}
     EventsWidget::EventTypes filter() const
     {
         return m_types;
@@ -180,8 +180,8 @@ private:
 };
 
 using namespace QAccessibleClient;
-QAccessible::UpdateHandler EventsWidget::m_originalAccessibilityUpdateHandler = 0;
-QObject *EventsWidget::m_textEditForAccessibilityUpdateHandler = 0;
+QAccessible::UpdateHandler EventsWidget::m_originalAccessibilityUpdateHandler = nullptr;
+QObject *EventsWidget::m_textEditForAccessibilityUpdateHandler = nullptr;
 
 EventsWidget::EventsWidget(QAccessibleClient::Registry *registry, QWidget *parent)
     : QWidget(parent), m_registry(registry), m_model(new EventsModel(this)), m_proxyModel(new EventsProxyModel(this)) {
@@ -321,8 +321,8 @@ void EventsWidget::processPending()
     QVector< QList<QStandardItem*> > pendingLogs = m_pendingLogs;
     m_pendingLogs.clear();
     //bool wasMax = true;//m_ui.eventListView->verticalScrollBar()->value() - 10 >= m_ui.eventListView->verticalScrollBar()->maximum();
-    QStandardItem *lastItem = 0;
-    QStandardItem *lastAppItem = 0;
+    QStandardItem *lastItem = nullptr;
+    QStandardItem *lastAppItem = nullptr;
     for(int i = 0; i < pendingLogs.count(); ++i) {
         QList<QStandardItem*> item = pendingLogs[i];
         EventsModel::LogItem logItem = m_model->addLog(item);
@@ -330,7 +330,7 @@ void EventsWidget::processPending()
         // Logic to scroll to the last added logItem of the last appItem that is expanded.
         // For appItem's not expanded the logItem is added but no scrolling will happen.
         if (lastItem && lastAppItem && lastAppItem != logItem.appItem)
-            lastItem = 0;
+            lastItem = nullptr;
         bool selected = lastItem;
         if (lastAppItem != logItem.appItem) {
             lastAppItem = logItem.appItem;

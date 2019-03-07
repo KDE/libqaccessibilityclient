@@ -55,7 +55,7 @@ class AccessibleTree :public QAbstractItemModel
 {
     Q_OBJECT
 public:
-    explicit AccessibleTree(QObject* parent = 0);
+    explicit AccessibleTree(QObject* parent = nullptr);
     ~AccessibleTree();
 
     void setRegistry(QAccessibleClient::Registry *registry);

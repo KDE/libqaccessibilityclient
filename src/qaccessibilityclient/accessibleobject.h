@@ -465,7 +465,7 @@ public:
         \param endOffset returns the end of the text section
         \return the text at the offset.
     */
-    QString textWithBoundary(int offset, TextBoundary boundary, int *startOffset = 0, int *endOffset = 0) const;
+    QString textWithBoundary(int offset, TextBoundary boundary, int *startOffset = nullptr, int *endOffset = nullptr) const;
 
     /**
         \brief Set the text of the EditableTextInterface.

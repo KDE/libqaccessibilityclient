@@ -33,7 +33,7 @@ public:
         NameRole,
         ValueRole
     };
-    explicit ObjectProperties(QObject *parent = 0);
+    explicit ObjectProperties(QObject *parent = nullptr);
     virtual ~ObjectProperties();
 
     QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
@@ -47,7 +47,7 @@ public Q_SLOTS:
     void slotDataChanged(QStandardItem *item);
 
 private:
-    QStandardItem* append(const QString &name, const QVariant &value = QVariant(), QStandardItem *parentItem = 0, QStandardItem **changeHandler = 0);
+    QStandardItem* append(const QString &name, const QVariant &value = QVariant(), QStandardItem *parentItem = nullptr, QStandardItem **changeHandler = nullptr);
     QString stateString(const QAccessibleClient::AccessibleObject &acc);
     QAccessibleClient::AccessibleObject m_acc;
     QStandardItem* m_textItem;

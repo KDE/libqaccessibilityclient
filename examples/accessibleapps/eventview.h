@@ -64,7 +64,7 @@ public:
 
     QString eventName(EventType eventType) const;
 
-    explicit EventsWidget(QAccessibleClient::Registry *registry, QWidget *parent = 0);
+    explicit EventsWidget(QAccessibleClient::Registry *registry, QWidget *parent = nullptr);
 
     void loadSettings(QSettings &settings);
     void saveSettings(QSettings &settings);

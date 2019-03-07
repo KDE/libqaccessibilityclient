@@ -59,7 +59,7 @@ class UiView :public QScrollArea
 {
     Q_OBJECT
 public:
-    UiView(QWidget *parent = 0);
+    UiView(QWidget *parent = nullptr);
     ~UiView();
 
     void setAccessibleObject(const QAccessibleClient::AccessibleObject &acc);

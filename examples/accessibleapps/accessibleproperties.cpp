@@ -48,7 +48,7 @@ void ObjectProperties::slotDataChanged(QStandardItem *item) {
             m_acc.setCurrentValue(value);
         }
 
-        m_valueItem = 0; //Prevent recursion
+        m_valueItem = nullptr; //Prevent recursion
         item->setData(m_acc.currentValue(), Qt::DisplayRole);
         m_valueItem = item;
     }
@@ -79,8 +79,8 @@ void ObjectProperties::setAccessibleObject(const QAccessibleClient::AccessibleOb
 {
     beginResetModel();
     m_acc = acc;
-    m_textItem = 0;
-    m_valueItem = 0;
+    m_textItem = nullptr;
+    m_valueItem = nullptr;
 
     clear();
 

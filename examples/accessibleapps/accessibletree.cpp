@@ -41,7 +41,7 @@ AccessibleWrapper* AccessibleWrapper::child(int index)
     if (index >= 0 && index < m_children.count()) {
         return m_children.at(index);
     }
-    return 0;
+    return nullptr;
 }
 
 int AccessibleWrapper::childCount()
@@ -52,7 +52,7 @@ int AccessibleWrapper::childCount()
 }
 
 AccessibleTree::AccessibleTree(QObject* parent)
-    : QAbstractItemModel(parent), m_registry(0)
+    : QAbstractItemModel(parent), m_registry(nullptr)
 {
 }
 
@@ -182,7 +182,7 @@ void AccessibleTree::resetModel()
     if (m_registry) {
         QList<AccessibleObject> children = m_registry->applications();
         foreach (const AccessibleObject &c, children) {
-            m_apps.append(new AccessibleWrapper(c, 0));
+            m_apps.append(new AccessibleWrapper(c, nullptr));
         }
     }
     endResetModel();
@@ -268,7 +268,7 @@ bool AccessibleTree::addAccessible(const QAccessibleClient::AccessibleObject &ob
             qWarning() << Q_FUNC_INFO << "Found top level accessible that does not implement the application interface" << object;
 
         beginInsertRows(QModelIndex(), m_apps.count(), m_apps.count());
-        m_apps.append(new AccessibleWrapper(object, 0));
+        m_apps.append(new AccessibleWrapper(object, nullptr));
         endInsertRows();
         return true;
     }

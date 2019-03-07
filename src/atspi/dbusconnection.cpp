@@ -30,7 +30,7 @@ using namespace QAccessibleClient;
 DBusConnection::DBusConnection()
     : QObject()
     , m_connection(QDBusConnection::sessionBus())
-    , m_initWatcher(0)
+    , m_initWatcher(nullptr)
     , m_status(Disconnected)
 {
     init();
@@ -74,7 +74,7 @@ void DBusConnection::initFinished()
         }
     }
     m_initWatcher->deleteLater();
-    m_initWatcher = 0;
+    m_initWatcher = nullptr;
     emit connectionFetched();
 }
 

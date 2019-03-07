@@ -148,7 +148,7 @@ static RoleColor roleColors[] = {
 
 UiWidget::UiWidget(UiView *view)
     : QWidget(view)
-    , m_image(0)
+    , m_image(nullptr)
 {
     QPalette p = view->palette();
     p.setColor(QPalette::Window, Qt::white);
@@ -163,7 +163,7 @@ UiWidget::UiWidget(UiView *view)
 
 void UiWidget::setAccessibleObject(const QAccessibleClient::AccessibleObject &acc)
 {
-    delete m_image; m_image = 0;
+    delete m_image; m_image = nullptr;
     m_object = acc;
     m_screen = QPixmap();
     m_bounds = bounds(acc);
