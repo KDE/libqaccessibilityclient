@@ -9,7 +9,7 @@ set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
 include(ECMSetupVersion)
 
 cmake_policy(SET CMP0048 NEW)
-project(QAccessibilityClient VERSION "0.3.0")
+project(QAccessibilityClient VERSION "0.4.0")
 
 ecm_setup_version(${PROJECT_VERSION}
     VARIABLE_PREFIX QACCESSIBILITYCLIENT
