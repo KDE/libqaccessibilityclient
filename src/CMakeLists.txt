@@ -1,7 +1,6 @@
 include_directories(
     ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR}
-    ${CMAKE_SOURCE_DIR}/src
 )
 
 add_definitions(-DQT_NO_CAST_FROM_ASCII -DQT_NO_CAST_TO_ASCII)
@@ -20,7 +19,13 @@ set(QAccessibilityClientPrivate_SRCS
 )
 
 add_library(${QACCESSIBILITYCLIENT_LIB_NAME} SHARED ${QAccessibilityClient_SRCS} ${QAccessibilityClientPrivate_SRCS})
-target_link_libraries(${QACCESSIBILITYCLIENT_LIB_NAME} ${Qt5Core_LIBRARIES} ${Qt5Widgets_LIBRARIES} ${Qt5DBus_LIBRARIES})
+target_link_libraries(${QACCESSIBILITYCLIENT_LIB_NAME}
+    PUBLIC
+        Qt5::Widgets
+        Qt5::Core
+    PRIVATE
+        Qt5::DBus
+)
 
 set_target_properties(${QACCESSIBILITYCLIENT_LIB_NAME}
     PROPERTIES VERSION ${PROJECT_VERSION}

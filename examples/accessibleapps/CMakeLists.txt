@@ -2,7 +2,6 @@ cmake_policy(SET CMP0048 NEW)
 project(accessibleapps VERSION "")
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++0x")
-add_definitions(${Qt5Core_EXECUTABLE_COMPILE_FLAGS})
 
 include_directories(
     ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR}
@@ -34,6 +33,9 @@ qt5_wrap_ui(accessibleapps_UI_HDRS ${accessibleapps_UIS})
 
 add_executable(accessibleapps ${accessibleapps_SRCS} ${accessibleapps_MOC} ${accessibleapps_UI_HDRS})
 
-target_link_libraries(accessibleapps ${Qt5Widgets_LIBRARIES} ${Qt5Test_LIBRARIES} ${QACCESSIBILITYCLIENT_LIB_NAME})
+target_link_libraries(accessibleapps
+    Qt5::Widgets
+    ${QACCESSIBILITYCLIENT_LIB_NAME}
+)
 
 install(TARGETS accessibleapps DESTINATION bin)

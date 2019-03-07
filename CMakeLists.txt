@@ -21,20 +21,23 @@ add_definitions(-DQT_USE_FAST_OPERATOR_PLUS)
 
 set(CMAKE_AUTOMOC TRUE)
 
-enable_testing()
+option(BUILD_TESTING "Build the testing tree." ON)
+if(BUILD_TESTING)
+    enable_testing()
+    set(QT_OTHER_COMPONENTS Test)
+endif()
 
 include_directories(
     ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR}
 )
 
-find_package(Qt5Widgets QUIET)
-find_package(Qt5DBus QUIET)
-find_package(Qt5Test QUIET)
-set(BUILD_TESTS ${Qt5Test_FOUND})
 
-add_definitions(${Qt5Core_DEFINITIONS} ${Qt5Widgets_DEFINITIONS} ${Qt5DBus_DEFINITIONS})
-include_directories(${Qt5Core_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS} ${Qt5DBus_INCLUDE_DIRS})
+find_package(Qt5 "5.6.0" CONFIG REQUIRED COMPONENTS
+    Widgets
+    DBus
+    ${QT_OTHER_COMPONENTS}
+)
 
 set(QACCESSIBILITYCLIENT_LIB_NAME "qaccessibilityclient-qt5")
 
@@ -67,8 +70,11 @@ if(APPLE)
 endif(APPLE)
 
 add_subdirectory(src)
-add_subdirectory(tests)
-add_subdirectory(examples)
+
+if(BUILD_TESTING)
+    add_subdirectory(tests)
+    add_subdirectory(examples)
+endif()
 
 # we need the absolute directories where stuff will be installed too
 # but since the variables which contain the destinations can be relative
