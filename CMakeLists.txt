@@ -13,6 +13,7 @@ project(QAccessibilityClient VERSION "0.3.0")
 
 ecm_setup_version(${PROJECT_VERSION}
     VARIABLE_PREFIX QACCESSIBILITYCLIENT
+    PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/QAccessibilityClientConfigVersion.cmake"
     SOVERSION ${PROJECT_VERSION_MAJOR}
     VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/src/libqaccessibilityclient-version.h"
 )
@@ -100,4 +101,5 @@ configure_package_config_file(
 
 install( FILES
          "${QAccessibilityClient_BINARY_DIR}/QAccessibilityClientConfig.cmake"
+         "${QAccessibilityClient_BINARY_DIR}/QAccessibilityClientConfigVersion.cmake"
          DESTINATION "${_QAccessibilityClient_CONFIG_DEST}" )
