@@ -17,9 +17,6 @@ ecm_setup_version(${PROJECT_VERSION}
     VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/src/libqaccessibilityclient-version.h"
 )
 
-# minimum required cmake is 2.8.6 for automoc-support
-cmake_minimum_required(VERSION 2.8.6)
-
 add_definitions(-DQT_USE_FAST_CONCATENATION -DQT_USE_FAST_OPERATOR_PLUS)
 
 set(CMAKE_AUTOMOC TRUE)
