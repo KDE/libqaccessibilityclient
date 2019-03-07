@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.0.0)
 
 include(FeatureSummary)
-find_package(ECM REQUIRED NO_MODULE)
+find_package(ECM "5.18.0" REQUIRED NO_MODULE)
 set_package_properties(ECM PROPERTIES TYPE REQUIRED DESCRIPTION "Extra CMake Modules." URL "https://projects.kde.org/projects/kdesupport/extra-cmake-modules")
 feature_summary(WHAT REQUIRED_PACKAGES_NOT_FOUND FATAL_ON_MISSING_REQUIRED_PACKAGES)
 set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
@@ -32,8 +32,8 @@ include_directories(
     ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR}
 )
 
-
-find_package(Qt5 "5.6.0" CONFIG REQUIRED COMPONENTS
+set(QT_MIN_VERSION "5.6.0")
+find_package(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS
     Widgets
     DBus
     ${QT_OTHER_COMPONENTS}
@@ -90,7 +90,14 @@ endmacro(MAKE_INSTALL_PATH_ABSOLUTE out in)
 make_install_path_absolute(QACCESSIBILITYCLIENT_INCLUDE_DIR ${INCLUDE_INSTALL_DIR})
 make_install_path_absolute(QACCESSIBILITYCLIENT_LIB_DIR     ${LIB_INSTALL_DIR})
 
-configure_file( "${QAccessibilityClient_SOURCE_DIR}/QAccessibilityClientConfig.cmake.in" "${QAccessibilityClient_BINARY_DIR}/QAccessibilityClientConfig.cmake" @ONLY )
+include(CMakePackageConfigHelpers)
+
+configure_package_config_file(
+    "${CMAKE_CURRENT_SOURCE_DIR}/QAccessibilityClientConfig.cmake.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/QAccessibilityClientConfig.cmake"
+    INSTALL_DESTINATION  ${_QAccessibilityClient_CONFIG_DEST}
+)
+
 install( FILES
          "${QAccessibilityClient_BINARY_DIR}/QAccessibilityClientConfig.cmake"
          DESTINATION "${_QAccessibilityClient_CONFIG_DEST}" )
