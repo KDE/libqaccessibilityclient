@@ -31,7 +31,7 @@ set_target_properties(${QACCESSIBILITYCLIENT_LIB_NAME}
     PROPERTIES VERSION ${PROJECT_VERSION}
     SOVERSION ${QACCESSIBILITYCLIENT_SOVERSION}
 )
-target_include_directories(${QACCESSIBILITYCLIENT_LIB_NAME} INTERFACE "$<INSTALL_INTERFACE:${KDE_INCLUDE_INSTALL_DIR}>" )
+target_include_directories(${QACCESSIBILITYCLIENT_LIB_NAME} INTERFACE "$<INSTALL_INTERFACE:${KDE_INSTALL_INCLUDEDIR}>" )
 
 
 install(TARGETS ${QACCESSIBILITYCLIENT_LIB_NAME} EXPORT QAccessibilityClient ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
@@ -44,5 +44,5 @@ install(FILES
     qaccessibilityclient/accessibleobject.h
     qaccessibilityclient/registry.h
     ${CMAKE_CURRENT_BINARY_DIR}/libqaccessibilityclient-version.h
-    DESTINATION ${INCLUDE_INSTALL_DIR}/qaccessibilityclient COMPONENT Devel
+    DESTINATION ${KDE_INSTALL_INCLUDEDIR}/qaccessibilityclient COMPONENT Devel
 )
