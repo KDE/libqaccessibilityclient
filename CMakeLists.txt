@@ -20,9 +20,6 @@ ecm_setup_version(${PROJECT_VERSION}
 
 add_definitions(-DQT_USE_FAST_OPERATOR_PLUS)
 
-set(CMAKE_AUTOMOC TRUE)
-
-option(BUILD_TESTING "Build the testing tree." ON)
 if(BUILD_TESTING)
     enable_testing()
     set(QT_OTHER_COMPONENTS Test)
