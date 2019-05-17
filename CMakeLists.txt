@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.0)
-project(QAccessibilityClient VERSION "0.4.0")
+project(QAccessibilityClient VERSION "0.4.1")
 
 include(FeatureSummary)
 find_package(ECM "5.18.0" REQUIRED NO_MODULE)
