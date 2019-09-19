@@ -53,7 +53,7 @@ ClientCacheDialog::ClientCacheDialog(QAccessibleClient::Registry *registry, QWid
     lay->addWidget(m_view);
     
     QHBoxLayout *buttonsLay = new QHBoxLayout(this);
-    buttonsLay->setMargin(0);
+    buttonsLay->setContentsMargins(0, 0, 0, 0);
     buttonsLay->setSpacing(lay->margin());
     QPushButton *updateButton = new QPushButton(QString("Refresh"), this);
     buttonsLay->addWidget(updateButton);
