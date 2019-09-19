@@ -983,7 +983,7 @@ QString RegistryPrivate::textWithBoundary(const AccessibleObject &object, int of
     QDBusMessage message = QDBusMessage::createMethodCall(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Text"), QLatin1String("GetTextAtOffset"));
     message.setArguments(QVariantList() << offset << static_cast<AtspiTextBoundaryType>(boundary));
     QDBusMessage reply = conn.connection().call(message);
-    if (reply.type() != QDBusMessage::ReplyMessage || reply.signature() != QStringLiteral("sii")) {
+    if (reply.type() != QDBusMessage::ReplyMessage || reply.signature() != QLatin1String("sii")) {
         qWarning() << "Could not access text." << reply.errorMessage();
         if (startOffset)
             *startOffset = 0;
