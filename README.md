@@ -34,8 +34,8 @@ or, if you use feature logging:
 ```cmake
 macro_optional_find_package(QAccessibilityClient)
 macro_log_feature(QAccessibilityClient_FOUND "qaccessibilityclient"
-    "KDE client-side accessibility library"
-    "https://projects.kde.org/libkdeaccessibilityclient"
+    "Client-side accessibility library for Qt"
+    "https://commits.kde.org/libqaccessibilityclient"
     FALSE "" "Required to enable accessibility features.")
 
 include_directories(${QACCESSIBILITYCLIENT_INCLUDE_DIR})
