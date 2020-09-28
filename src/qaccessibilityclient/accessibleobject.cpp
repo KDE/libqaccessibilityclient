@@ -142,6 +142,11 @@ int AccessibleObject::indexInParent() const
     return d->registryPrivate->indexInParent(*this);
 }
 
+QString AccessibleObject::accessibleId() const
+{
+    return d->registryPrivate->accessibleId(*this);
+}
+
 QString AccessibleObject::name() const
 {
     return d->registryPrivate->name(*this);

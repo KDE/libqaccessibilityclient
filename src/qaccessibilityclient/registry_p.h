@@ -63,6 +63,7 @@ public:
     void subscribeEventListeners(const Registry::EventListeners & listeners);
     Registry::EventListeners eventListeners() const;
 
+    QString accessibleId(const AccessibleObject &object) const;
     QString name(const AccessibleObject &object) const;
     QString description(const AccessibleObject &object) const;
     AccessibleObject::Role role(const AccessibleObject &object) const;

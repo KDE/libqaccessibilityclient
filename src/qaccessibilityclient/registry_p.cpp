@@ -567,6 +567,13 @@ QList<AccessibleObject> RegistryPrivate::topLevelAccessibles() const
     return children(AccessibleObject(const_cast<RegistryPrivate*>(this), service, path));
 }
 
+QString RegistryPrivate::accessibleId(const AccessibleObject &object) const
+{
+    if (!object.isValid())
+        return QString();
+    return getProperty(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Accessible"), QLatin1String("AccessibleId")).toString();
+}
+
 QString RegistryPrivate::name(const AccessibleObject &object) const
 {
     if (!object.isValid())

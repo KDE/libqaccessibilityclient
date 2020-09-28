@@ -303,6 +303,14 @@ public:
      */
     AccessibleObject child(int index) const;
 
+   /**
+        \brief Returns the accessible id of this accessible.
+
+        This is an id which is stable over application development.
+        It may be empty.
+     */
+    QString accessibleId() const;
+
     /**
         \brief Returns the name of this accessible.
 

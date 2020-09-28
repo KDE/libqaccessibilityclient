@@ -99,6 +99,7 @@ void ObjectProperties::setAccessibleObject(const QAccessibleClient::AccessibleOb
         append(QString("Visible"), acc.isVisible(), item);
         append(QString("Default"), acc.isDefault(), item);
         append(QString("State"), acc.stateString(), item);
+        append(QString("AccessibleId"), acc.accessibleId(), item);
         append(tr("Url"), acc.url(), item);
         AccessibleObject parent = acc.parent();
         if (parent.isValid())
