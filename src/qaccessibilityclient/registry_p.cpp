@@ -183,7 +183,7 @@ void RegistryPrivate::connectionFetched()
 
     if (m_pendingSubscriptions > 0) {
         subscribeEventListeners(m_pendingSubscriptions);
-        m_pendingSubscriptions = nullptr;
+        m_pendingSubscriptions = {};
     }
 }
 
