@@ -7,10 +7,10 @@
 #ifndef DBUSCONNECTION_H
 #define DBUSCONNECTION_H
 
-#include <QtCore/QString>
-#include <QtCore/QObject>
-#include <QtDBus/QDBusConnection>
-#include <QtDBus/QDBusPendingCallWatcher>
+#include <QString>
+#include <QObject>
+#include <QDBusConnection>
+#include <QDBusPendingCallWatcher>
 
 namespace QAccessibleClient {
 

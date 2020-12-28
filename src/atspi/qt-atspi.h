@@ -11,8 +11,8 @@
 
 #include <QList>
 #include <QString>
-#include <QtDBus/QDBusConnection>
-#include <QtDBus/QDBusArgument>
+#include <QDBusConnection>
+#include <QDBusArgument>
 
 namespace QAccessibleClient {
 

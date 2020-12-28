@@ -7,9 +7,9 @@
 
 #include "dbusconnection.h"
 
-#include <QtDBus/QDBusMessage>
-#include <QtDBus/QDBusPendingReply>
-#include <QtCore/QDebug>
+#include <QDBusMessage>
+#include <QDBusPendingReply>
+#include <QDebug>
 
 using namespace QAccessibleClient;
 
