@@ -16,8 +16,8 @@ using namespace QAccessibleClient;
 DBusConnection::DBusConnection()
     : QObject()
     , m_connection(QDBusConnection::sessionBus())
-    , m_initWatcher(nullptr)
     , m_status(Disconnected)
+    , m_initWatcher(nullptr)
 {
     init();
 }
