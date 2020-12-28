@@ -10,6 +10,7 @@ include(KDEInstallDirs)
 include(KDECompilerSettings NO_POLICY_SCOPE)
 include(KDECMakeSettings)
 include(ECMSetupVersion)
+include(GenerateExportHeader)
 
 ecm_setup_version(${PROJECT_VERSION}
     VARIABLE_PREFIX QACCESSIBILITYCLIENT

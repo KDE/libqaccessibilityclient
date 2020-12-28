@@ -14,6 +14,9 @@ set(QAccessibilityClientPrivate_SRCS
 )
 
 add_library(${QACCESSIBILITYCLIENT_LIB_NAME} SHARED ${QAccessibilityClient_SRCS} ${QAccessibilityClientPrivate_SRCS})
+generate_export_header(${QACCESSIBILITYCLIENT_LIB_NAME}
+    BASE_NAME qaccessibilityclient
+)
 target_link_libraries(${QACCESSIBILITYCLIENT_LIB_NAME}
     PUBLIC
         Qt5::Widgets
@@ -37,7 +40,7 @@ install(EXPORT QAccessibilityClient DESTINATION ${_QAccessibilityClient_CONFIG_D
 ########### install files ###############
 
 install(FILES
-    qaccessibilityclient/qaccessibilityclient_export.h
+    ${CMAKE_CURRENT_BINARY_DIR}/qaccessibilityclient_export.h
     qaccessibilityclient/accessibleobject.h
     qaccessibilityclient/registry.h
     ${CMAKE_CURRENT_BINARY_DIR}/libqaccessibilityclient-version.h

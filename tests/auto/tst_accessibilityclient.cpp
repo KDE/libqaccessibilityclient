@@ -17,7 +17,6 @@
 #include <qprocess.h>
 #include <qfileinfo.h>
 
-#include "qaccessibilityclient/qaccessibilityclient_export.h"
 #include "qaccessibilityclient/registry.h"
 #include "qaccessibilityclient/accessibleobject.h"
 
