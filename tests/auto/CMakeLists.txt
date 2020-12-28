@@ -1,8 +1,3 @@
-include_directories(
-    ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_SOURCE_DIR}/src
-)
-
 # The unittest app
 set(tst_accessibilityclient_SRCS
     tst_accessibilityclient.cpp
@@ -15,6 +10,9 @@ target_link_libraries(tst_accessibilityclient
     Qt5::DBus
     Qt5::Test
     ${QACCESSIBILITYCLIENT_LIB_NAME}
+)
+target_include_directories(tst_accessibilityclient
+    INTERFACE ${CMAKE_SOURCE_DIR}/src
 )
 
 add_test(NAME libkdeaccessibilityclient-tst_accessibilityclient COMMAND tst_accessibilityclient)

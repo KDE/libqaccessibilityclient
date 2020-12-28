@@ -3,12 +3,6 @@ project(accessibleapps VERSION "")
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++0x")
 
-include_directories(
-    ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR}
-    ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_SOURCE_DIR}/src
-)
-
 #To find the installed library:
 #set(LibKdeAccessibilityClient_DIR /usr/local/lib/cmake/)
 #find_package(LibKdeAccessibilityClient REQUIRED)
