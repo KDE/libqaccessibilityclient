@@ -1,7 +1,6 @@
-cmake_policy(SET CMP0048 NEW)
-project(accessibleapps VERSION "")
+cmake_minimum_required(VERSION 3.16.0)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++0x")
+project(accessibleapps)
 
 #To find the installed library:
 #set(LibKdeAccessibilityClient_DIR /usr/local/lib/cmake/)
@@ -9,7 +8,13 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++0x")
 
 #Instead we just use the one in the build directory since that's what we want to test.
 
-set(accessibleapps_SRCS
+add_executable(accessibleapps)
+
+qt5_wrap_ui(accessibleapps_UI_HDRS
+    eventview.ui
+)
+
+target_sources(accessibleapps PRIVATE
     main.cpp
     mainwindow.cpp
     accessibletree.cpp
@@ -17,19 +22,13 @@ set(accessibleapps_SRCS
     clientcachedialog.cpp
     eventview.cpp
     uiview.cpp
+
+    ${accessibleapps_UI_HDRS}
 )
-
-set(accessibleapps_UIS
-    eventview.ui
-)
-
-qt5_wrap_ui(accessibleapps_UI_HDRS ${accessibleapps_UIS})
-
-add_executable(accessibleapps ${accessibleapps_SRCS} ${accessibleapps_MOC} ${accessibleapps_UI_HDRS})
 
 target_link_libraries(accessibleapps
-    Qt5::Widgets
     ${QACCESSIBILITYCLIENT_LIB_NAME}
+    Qt5::Widgets
 )
 
 install(TARGETS accessibleapps DESTINATION bin)

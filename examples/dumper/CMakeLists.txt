@@ -1,7 +1,6 @@
-cmake_policy(SET CMP0048 NEW)
-project(dumper VERSION "")
+cmake_minimum_required(VERSION 3.16.0)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++0x")
+project(dumper)
 
 #To find the installed library:
 #set(LibKdeAccessibilityClient_DIR /usr/local/lib/cmake/)
@@ -9,21 +8,16 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++0x")
 
 #Instead we just use the one in the build directory since that's what we want to test.
 
-set(accessibleapps_SRCS
+add_executable(dumper)
+
+target_sources(dumper PRIVATE
     main.cpp
     dumper.cpp
 )
 
-set(accessibleapps_UIS
-)
-
-qt5_wrap_ui(accessibleapps_UI_HDRS ${accessibleapps_UIS})
-
-add_executable(dumper ${accessibleapps_SRCS} ${accessibleapps_MOC} ${accessibleapps_UI_HDRS})
-
 target_link_libraries(dumper
-    Qt5::Widgets
     ${QACCESSIBILITYCLIENT_LIB_NAME}
+    Qt5::Widgets
 )
 
 install(TARGETS dumper DESTINATION bin)

@@ -1,4 +1,5 @@
-cmake_minimum_required(VERSION 3.0.0)
+cmake_minimum_required(VERSION 3.16.0)
+
 project(QAccessibilityClient VERSION "0.4.1")
 
 include(FeatureSummary)
@@ -7,8 +8,9 @@ set_package_properties(ECM PROPERTIES TYPE REQUIRED DESCRIPTION "Extra CMake Mod
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH})
 
 include(KDEInstallDirs)
-include(KDECompilerSettings NO_POLICY_SCOPE)
 include(KDECMakeSettings)
+include(KDECompilerSettings NO_POLICY_SCOPE)
+
 include(ECMSetupVersion)
 include(GenerateExportHeader)
 

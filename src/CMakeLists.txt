@@ -1,19 +1,18 @@
 add_definitions(-DQT_NO_CAST_FROM_ASCII -DQT_NO_CAST_TO_ASCII)
 add_definitions(-DQACCESSIBILITYCLIENT_LIBRARY)
 
-set(QAccessibilityClient_SRCS
+add_library(${QACCESSIBILITYCLIENT_LIB_NAME} SHARED)
+
+target_sources(${QACCESSIBILITYCLIENT_LIB_NAME} PRIVATE
     qaccessibilityclient/accessibleobject_p.cpp
     qaccessibilityclient/accessibleobject.cpp
     qaccessibilityclient/registry.cpp
     qaccessibilityclient/registry_p.cpp
-)
 
-set(QAccessibilityClientPrivate_SRCS
     atspi/dbusconnection.cpp
     atspi/qt-atspi.cpp
 )
 
-add_library(${QACCESSIBILITYCLIENT_LIB_NAME} SHARED ${QAccessibilityClient_SRCS} ${QAccessibilityClientPrivate_SRCS})
 generate_export_header(${QACCESSIBILITYCLIENT_LIB_NAME}
     BASE_NAME qaccessibilityclient
 )
