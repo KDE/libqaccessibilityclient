@@ -3,7 +3,10 @@ cmake_minimum_required(VERSION 3.16.0)
 project(QAccessibilityClient VERSION "0.4.1")
 
 include(FeatureSummary)
-find_package(ECM "5.18.0" REQUIRED NO_MODULE)
+set(KF5_MIN_VERSION "5.84.0")
+set(REQUIRED_QT_VERSION "5.15.0")
+
+find_package(ECM ${KF5_MIN_VERSION} REQUIRED NO_MODULE)
 set_package_properties(ECM PROPERTIES TYPE REQUIRED DESCRIPTION "Extra CMake Modules." URL "https://commits.kde.org/extra-cmake-modules")
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH})
 
@@ -28,8 +31,7 @@ if(BUILD_TESTING)
     set(QT_OTHER_COMPONENTS Test)
 endif()
 
-set(QT_MIN_VERSION "5.6.0")
-find_package(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS
+find_package(Qt5 ${REQUIRED_QT_VERSION} CONFIG REQUIRED COMPONENTS
     Widgets
     DBus
     ${QT_OTHER_COMPONENTS}
