@@ -32,16 +32,16 @@ void Dumper::printChild(const AccessibleObject &object, int indent) const
 {
     auto spaces = QStringLiteral("  ");
     if (!object.isValid()) {
-        out << spaces.repeated(indent) << "INVALID CHILD" << endl;
+        out << spaces.repeated(indent) << "INVALID CHILD" << Qt::endl;
         return;
     }
 
     auto name = object.name().isEmpty() ? QStringLiteral("[unnamed]") : object.name();
-    QString info = QString("%1 [%2 - %3] '%4'").arg(name, QString::number(object.role()), object.roleName(), object.description());
+    QString info = QStringLiteral("%1 [%2 - %3] '%4'").arg(name, QString::number(object.role()), object.roleName(), object.description());
     if (m_showStates) {
-        info += QString(" [%1]").arg(object.stateString());
+        info += QStringLiteral(" [%1]").arg(object.stateString());
     }
-    out << spaces.repeated(indent) << info << endl;
+    out << spaces.repeated(indent) << info << Qt::endl;
     int childCount = object.childCount();
     for (int i = 0; i < childCount; ++i) {
         AccessibleObject child = object.child(i);

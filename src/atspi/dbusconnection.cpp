@@ -30,9 +30,9 @@ void DBusConnection::init()
         return;
     }
 
-    QDBusMessage m = QDBusMessage::createMethodCall(QLatin1String("org.a11y.Bus"),
-                                                    QLatin1String("/org/a11y/bus"),
-                                                    QLatin1String("org.a11y.Bus"), QLatin1String("GetAddress"));
+    QDBusMessage m = QDBusMessage::createMethodCall(QStringLiteral("org.a11y.Bus"),
+                                                    QStringLiteral("/org/a11y/bus"),
+                                                    QStringLiteral("org.a11y.Bus"), QStringLiteral("GetAddress"));
 
     QDBusPendingCall async = c.asyncCall(m);
     m_initWatcher = new QDBusPendingCallWatcher(async, this);
@@ -50,7 +50,7 @@ void DBusConnection::initFinished()
     } else {
         QString busAddress = reply.value();
         qDebug() << "Got Accessibility DBus address:" << busAddress;
-        QDBusConnection c = QDBusConnection::connectToBus(busAddress, QLatin1String("a11y"));
+        QDBusConnection c = QDBusConnection::connectToBus(busAddress, QStringLiteral("a11y"));
         if (c.isConnected()) {
             qDebug() << "Connected to Accessibility DBus at address=" << busAddress;
             m_connection = c;

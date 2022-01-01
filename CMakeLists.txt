@@ -23,7 +23,8 @@ ecm_setup_version(${PROJECT_VERSION}
     SOVERSION ${PROJECT_VERSION_MAJOR}
     VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/src/libqaccessibilityclient-version.h"
 )
-
+#add_definitions(-DQT_DISABLE_DEPRECATED_BEFORE=0x050f02)
+add_definitions(-DKF_DISABLE_DEPRECATED_BEFORE_AND_AT=0x055900)
 add_definitions(-DQT_USE_FAST_OPERATOR_PLUS)
 
 if(BUILD_TESTING)
