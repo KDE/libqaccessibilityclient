@@ -83,7 +83,7 @@ RegistryPrivate::RegistryPrivate(Registry *qq)
     qDBusRegisterMetaType<QVector<quint32> >();
 
     connect(&conn, SIGNAL(connectionFetched()), this, SLOT(connectionFetched()));
-    connect(&m_actionMapper, SIGNAL(mapped(QString)), this, SLOT(actionTriggered(QString)));
+    connect(&m_actionMapper, SIGNAL(mappedString(QString)), this, SLOT(actionTriggered(QString)));
     init();
 }
 
