@@ -8,7 +8,7 @@
 
 #include <QPainter>
 #include <QApplication>
-#include <QDesktopWidget>
+#include <QScreen>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QDebug>

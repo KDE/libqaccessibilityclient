@@ -17,7 +17,7 @@ target_sources(dumper PRIVATE
 
 target_link_libraries(dumper
     ${QACCESSIBILITYCLIENT_LIB_NAME}
-    Qt5::Widgets
+    Qt${QT_MAJOR_VERSION}::Widgets
 )
 
 install(TARGETS dumper DESTINATION bin)

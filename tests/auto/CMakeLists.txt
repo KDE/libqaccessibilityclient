@@ -8,9 +8,9 @@ target_sources(tst_accessibilityclient PRIVATE
 
 target_link_libraries(tst_accessibilityclient
     ${QACCESSIBILITYCLIENT_LIB_NAME}
-    Qt5::Widgets
-    Qt5::DBus
-    Qt5::Test
+    Qt${QT_MAJOR_VERSION}::Widgets
+    Qt${QT_MAJOR_VERSION}::DBus
+    Qt${QT_MAJOR_VERSION}::Test
 )
 
 add_test(NAME libkdeaccessibilityclient-tst_accessibilityclient COMMAND tst_accessibilityclient)
@@ -23,7 +23,7 @@ target_sources(simplewidgetapp PRIVATE
 )
 
 target_link_libraries(simplewidgetapp
-    Qt5::Widgets
-    Qt5::Test
+    Qt${QT_MAJOR_VERSION}::Widgets
+    Qt${QT_MAJOR_VERSION}::Test
     ${QACCESSIBILITYCLIENT_LIB_NAME}
 )

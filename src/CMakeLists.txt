@@ -18,10 +18,10 @@ generate_export_header(${QACCESSIBILITYCLIENT_LIB_NAME}
 )
 target_link_libraries(${QACCESSIBILITYCLIENT_LIB_NAME}
     PUBLIC
-        Qt5::Widgets
-        Qt5::Core
+        Qt${QT_MAJOR_VERSION}::Widgets
+        Qt${QT_MAJOR_VERSION}::Core
     PRIVATE
-        Qt5::DBus
+        Qt${QT_MAJOR_VERSION}::DBus
 )
 
 set_target_properties(${QACCESSIBILITYCLIENT_LIB_NAME}

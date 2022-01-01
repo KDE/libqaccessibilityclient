@@ -10,7 +10,7 @@ project(accessibleapps)
 
 add_executable(accessibleapps)
 
-qt5_wrap_ui(accessibleapps_UI_HDRS
+qt_wrap_ui(accessibleapps_UI_HDRS
     eventview.ui
 )
 
@@ -28,7 +28,7 @@ target_sources(accessibleapps PRIVATE
 
 target_link_libraries(accessibleapps
     ${QACCESSIBILITYCLIENT_LIB_NAME}
-    Qt5::Widgets
+    Qt${QT_MAJOR_VERSION}::Widgets
 )
 
 install(TARGETS accessibleapps DESTINATION bin)
