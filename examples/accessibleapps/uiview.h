@@ -36,7 +36,7 @@ protected:
 
     void paintEvent(QPaintEvent *event) override;
 private:
-    QPixmap grabScreen() const;
+    QPixmap grabScreen();
     QRect bounds(const QAccessibleClient::AccessibleObject &acc) const;
     void drawObject(QPainter *painter, const QAccessibleClient::AccessibleObject &acc, int depth = 0);
 };

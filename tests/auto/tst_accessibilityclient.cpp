@@ -281,10 +281,11 @@ bool AccessibilityClientTest::startHelperProcess()
 
     // start peer server
 #ifdef Q_OS_WIN
-    proc.start("simplewidgetapp");
+    helperProcess.setProgram("simplewidgetapp");
 #else
-    helperProcess.start("./simplewidgetapp");
+    helperProcess.setProgram("./simplewidgetapp");
 #endif
+    helperProcess.start();
     if (!helperProcess.waitForStarted()) {
         qWarning() << "WARNING: Could not start helper executable. Test will not run.";
         return false;

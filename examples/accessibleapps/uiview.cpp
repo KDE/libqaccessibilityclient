@@ -186,12 +186,12 @@ void UiWidget::paintEvent(QPaintEvent *event)
     painter.end();
 }
 
-QPixmap UiWidget::grabScreen() const
+QPixmap UiWidget::grabScreen()
 {
     if (m_bounds.isNull())
         return QPixmap();
     Q_ASSERT(m_bounds.left() < m_bounds.right() && m_bounds.top() < m_bounds.bottom());
-    QPixmap pm = QPixmap::grabWindow(QApplication::desktop()->winId(), m_bounds.x(), m_bounds.y(), m_bounds.width(), m_bounds.height());
+    QPixmap pm =  grab(QRect(m_bounds.x(), m_bounds.y(), m_bounds.width(), m_bounds.height()));
     return pm;
 }
 

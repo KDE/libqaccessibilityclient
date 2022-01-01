@@ -191,7 +191,7 @@ void MainWindow::MainWindow::initUi()
 
     QDockWidget *treeDocker = new QDockWidget(QString("Tree"), this);
     treeDocker->setObjectName("tree");
-    treeDocker->setFeatures(QDockWidget::AllDockWidgetFeatures);
+    treeDocker->setFeatures(QDockWidget::DockWidgetClosable|QDockWidget::DockWidgetMovable|QDockWidget::DockWidgetFloatable);
     m_accessibleObjectTreeView = new QTreeView(treeDocker);
     m_accessibleObjectTreeView->setAccessibleName(QString("Tree of accessibles"));
     m_accessibleObjectTreeView->setAccessibleDescription(QString("Displays a hierachical tree of accessible objects"));
@@ -210,7 +210,7 @@ void MainWindow::MainWindow::initUi()
 
     QDockWidget *propertyDocker = new QDockWidget(QString("&Properties"), this);
     propertyDocker->setObjectName("properties");
-    propertyDocker->setFeatures(QDockWidget::AllDockWidgetFeatures);
+    propertyDocker->setFeatures(QDockWidget::DockWidgetClosable|QDockWidget::DockWidgetMovable|QDockWidget::DockWidgetFloatable);
     m_propertyView = new QTreeView(propertyDocker);
     propertyDocker->setWidget(m_propertyView);
     m_propertyView->setAccessibleName(QString("List of properties"));
@@ -226,7 +226,7 @@ void MainWindow::MainWindow::initUi()
 
     QDockWidget *uiDocker = new QDockWidget(QString("&Boundaries"), this);
     uiDocker->setObjectName("boundaries");
-    uiDocker->setFeatures(QDockWidget::AllDockWidgetFeatures);
+    uiDocker->setFeatures(QDockWidget::DockWidgetClosable|QDockWidget::DockWidgetMovable|QDockWidget::DockWidgetFloatable);
     m_uiview = new UiView(uiDocker);
     m_uiview->setAccessibleName(QLatin1String("Boundaries"));
     m_uiview->setAccessibleDescription(QString("Visualize the component boundaries"));
@@ -234,7 +234,7 @@ void MainWindow::MainWindow::initUi()
 
     QDockWidget *eventsDocker = new QDockWidget(QString("E&vents"), this);
     eventsDocker->setObjectName("events");
-    eventsDocker->setFeatures(QDockWidget::AllDockWidgetFeatures);
+    eventsDocker->setFeatures(QDockWidget::DockWidgetClosable|QDockWidget::DockWidgetMovable|QDockWidget::DockWidgetFloatable);
     m_eventsWidget = new EventsWidget(m_registry, eventsDocker);
     connect(m_eventsWidget, SIGNAL(anchorClicked(QUrl)), this, SLOT(anchorClicked(QUrl)));
     eventsDocker->setWidget(m_eventsWidget);
