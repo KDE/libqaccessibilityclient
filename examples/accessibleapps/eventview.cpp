@@ -54,10 +54,10 @@ public:
     QString roleLabel(Role role) const
     {
         switch (role) {
-            case AccessibleRole: return QString("Accessible");
-            case RoleRole: return QString("Role");
-            case EventRole: return QString("Event");
-            case ActionRole: return QString("Action");
+            case AccessibleRole: return QStringLiteral("Accessible");
+            case RoleRole: return QStringLiteral("Role");
+            case EventRole: return QStringLiteral("Event");
+            case ActionRole: return QStringLiteral("Action");
             case EventTypeRole:
             case UrlRole:
             case AppNameRole:
@@ -72,7 +72,7 @@ public:
         m_apps.clear();
         setColumnCount(4);
         QStringList headerLabels;
-        Q_FOREACH(Role r, QList<Role>() << AccessibleRole << RoleRole << EventRole << ActionRole)
+        for (Role r : QList<Role>() << AccessibleRole << RoleRole << EventRole << ActionRole)
             headerLabels << roleLabel(r);
         setHorizontalHeaderLabels(headerLabels);
     }
@@ -174,7 +174,7 @@ EventsWidget::EventsWidget(QAccessibleClient::Registry *registry, QWidget *paren
     m_ui.setupUi(this);
 
     m_ui.eventListView->setAccessibleName(QLatin1String("Events View"));
-    m_ui.eventListView->setAccessibleDescription(QString("Displays all received events"));
+    m_ui.eventListView->setAccessibleDescription(QStringLiteral("Displays all received events"));
 
     m_proxyModel->setSourceModel(m_model);
     m_ui.eventListView->setModel(m_proxyModel);
@@ -183,7 +183,7 @@ EventsWidget::EventsWidget(QAccessibleClient::Registry *registry, QWidget *paren
     connect(m_ui.roleFilterEdit, SIGNAL(textChanged(QString)), this, SLOT(roleFilterChanged()));
 
     QStandardItemModel *filerModel = new QStandardItemModel();
-    QStandardItem *firstFilterItem = new QStandardItem(QString("Event Filter"));
+    QStandardItem *firstFilterItem = new QStandardItem(QStringLiteral("Event Filter"));
     firstFilterItem->setFlags(Qt::ItemIsEnabled);
     filerModel->appendRow(firstFilterItem);
 
@@ -258,10 +258,10 @@ QString EventsWidget::eventName(EventType eventType) const
 
 void EventsWidget::loadSettings(QSettings &settings)
 {
-    settings.beginGroup("events");
+    settings.beginGroup(QStringLiteral("events"));
 
     bool eventsFilterOk;
-    EventTypes eventsFilter = EventTypes(settings.value("eventsFilter").toInt(&eventsFilterOk));
+    EventTypes eventsFilter = EventTypes(settings.value(QStringLiteral("eventsFilter")).toInt(&eventsFilterOk));
     if (!eventsFilterOk)
         eventsFilter = AllEvents;
 
@@ -278,7 +278,7 @@ void EventsWidget::loadSettings(QSettings &settings)
         m_proxyModel->setFilter(eventsFilter);
     }
 
-    QByteArray eventListViewState = settings.value("listViewHeader").toByteArray();
+    QByteArray eventListViewState = settings.value(QStringLiteral("listViewHeader")).toByteArray();
     if (!eventListViewState.isEmpty())
         m_ui.eventListView->header()->restoreState(eventListViewState);
 
@@ -287,11 +287,11 @@ void EventsWidget::loadSettings(QSettings &settings)
 
 void EventsWidget::saveSettings(QSettings &settings)
 {
-    settings.beginGroup("events");
-    settings.setValue("eventsFilter", int(m_proxyModel->filter()));
+    settings.beginGroup(QStringLiteral("events"));
+    settings.setValue(QStringLiteral("eventsFilter"), int(m_proxyModel->filter()));
 
     QByteArray eventListViewState = m_ui.eventListView->header()->saveState();
-    settings.setValue("listViewHeader", eventListViewState);
+    settings.setValue(QStringLiteral("listViewHeader"), eventListViewState);
 
     settings.endGroup();
 }
@@ -397,7 +397,7 @@ void EventsWidget::eventActivated(const QModelIndex &index)
         qWarning() << Q_FUNC_INFO << "Invalid url=" << s;
         return;
     }
-    emit anchorClicked(url);
+    Q_EMIT anchorClicked(url);
 }
 
 void EventsWidget::accessibleFilterChanged()

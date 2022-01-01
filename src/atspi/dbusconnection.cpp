@@ -61,7 +61,7 @@ void DBusConnection::initFinished()
     }
     m_initWatcher->deleteLater();
     m_initWatcher = nullptr;
-    emit connectionFetched();
+    Q_EMIT connectionFetched();
 }
 
 bool DBusConnection::isFetchingConnection() const

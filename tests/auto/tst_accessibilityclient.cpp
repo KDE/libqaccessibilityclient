@@ -82,8 +82,8 @@ AccessibleObject getAppObject(const Registry &r, const QString &appName)
     AccessibleObject accApp;
 
     QApplication::processEvents();
-    QList<AccessibleObject> apps = r.applications();
-    foreach (const AccessibleObject &app, apps) {
+    const QList<AccessibleObject> apps = r.applications();
+    for (const AccessibleObject &app : apps) {
         if (app.name() == appName) {
             accApp = app;
             break;
@@ -135,7 +135,7 @@ void AccessibilityClientTest::tst_application()
     QString appName = QLatin1String("Lib QAccessibleClient test");
     qApp->setApplicationName(appName);
     QWidget w;
-    w.setAccessibleName("Foobar 99");
+    w.setAccessibleName(QStringLiteral("Foobar 99"));
     w.show();
 
     AccessibleObject accApp;
@@ -158,15 +158,15 @@ void AccessibilityClientTest::tst_navigation()
     QString appName = QLatin1String("Lib QAccessibleClient test");
     qApp->setApplicationName(appName);
     QWidget w;
-    w.setAccessibleName("Root Widget");
-    w.setAccessibleDescription("This is a useless widget");
+    w.setAccessibleName(QStringLiteral("Root Widget"));
+    w.setAccessibleDescription(QStringLiteral("This is a useless widget"));
     QVBoxLayout *layout = new QVBoxLayout;
     w.setLayout(layout);
 
     QPushButton *button = new QPushButton;
     layout->addWidget(button);
     button->setText(QLatin1String("Hello a11y"));
-    QString desc = "This is a button...";
+    QString desc = QStringLiteral("This is a button...");
     button->setAccessibleDescription(desc);
     w.show();
     w.activateWindow();
@@ -223,7 +223,7 @@ void AccessibilityClientTest::tst_navigation()
 
     // Add a label and line edit
     QLabel *label = new QLabel;
-    label->setText("Name:");
+    label->setText(QStringLiteral("Name:"));
     layout->addWidget(label);
     QLineEdit *line = new QLineEdit;
     layout->addWidget(line);
@@ -273,7 +273,7 @@ void AccessibilityClientTest::tst_navigation()
 
 bool AccessibilityClientTest::startHelperProcess()
 {
-    if (!QFileInfo("./simplewidgetapp").exists()) {
+    if (!QFileInfo(QStringLiteral("./simplewidgetapp")).exists()) {
         qWarning() << "WARNING: Could not find test case helper executable."
             " Please run this test in the path where the executable is located.";
         return false;
@@ -281,9 +281,9 @@ bool AccessibilityClientTest::startHelperProcess()
 
     // start peer server
 #ifdef Q_OS_WIN
-    helperProcess.setProgram("simplewidgetapp");
+    helperProcess.setProgram(QStringLiteral("simplewidgetapp"));
 #else
-    helperProcess.setProgram("./simplewidgetapp");
+    helperProcess.setProgram(QStringLiteral("./simplewidgetapp"));
 #endif
     helperProcess.start();
     if (!helperProcess.waitForStarted()) {
@@ -350,15 +350,15 @@ void AccessibilityClientTest::tst_states()
     QString appName = QLatin1String("Lib QAccessibleClient test");
     qApp->setApplicationName(appName);
     QWidget w;
-    w.setAccessibleName("Root Widget");
-    w.setAccessibleDescription("This is a useless widget");
+    w.setAccessibleName(QStringLiteral("Root Widget"));
+    w.setAccessibleDescription(QStringLiteral("This is a useless widget"));
     QVBoxLayout *layout = new QVBoxLayout;
     w.setLayout(layout);
 
     QPushButton *button1 = new QPushButton;
     layout->addWidget(button1);
     button1->setText(QLatin1String("Hello a11y"));
-    QString desc = "This is a button...";
+    QString desc = QStringLiteral("This is a button...");
     button1->setAccessibleDescription(desc);
 
     QPushButton *button2 = new QPushButton;
@@ -422,7 +422,7 @@ void AccessibilityClientTest::tst_extents()
     QCOMPARE(window.boundingRect().size(), QSize(200,100));
 
     AccessibleObject button1 = window.child(0);
-    QVERIFY(button1.name()=="Button 1");
+    QVERIFY(button1.name()==QStringLiteral("Button 1"));
     QCOMPARE(button1.boundingRect().size(), QSize(100,20));
     helperProcess.terminate();
 }
@@ -432,7 +432,7 @@ void AccessibilityClientTest::tst_characterExtents()
     QString appName = QLatin1String("Lib QAccessibleClient test");
 
     QWidget w;
-    w.setAccessibleName("Root Widget");
+    w.setAccessibleName(QStringLiteral("Root Widget"));
     QTextEdit *textEdit = new QTextEdit(&w);
     textEdit->setGeometry(10,10,600,400);
     w.show();
@@ -447,7 +447,7 @@ void AccessibilityClientTest::tst_characterExtents()
     AccessibleObject textArea = app.child(0).child(0);
     QVERIFY(textArea.supportedInterfaces() & QAccessibleClient::AccessibleObject::TextInterface);
 
-    textEdit->setText("This is useless text that is being used to test this text area.\n I \n hope \n this will get correct\n\t\t\tCharacterExtents!");
+    textEdit->setText(QStringLiteral("This is useless text that is being used to test this text area.\n I \n hope \n this will get correct\n\t\t\tCharacterExtents!"));
     QPoint pos = w.pos();
 
     int start;

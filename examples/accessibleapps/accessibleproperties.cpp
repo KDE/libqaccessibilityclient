@@ -14,7 +14,7 @@ ObjectProperties::ObjectProperties(QObject *parent)
     : QStandardItemModel(parent)
 {
     setColumnCount(2);
-    setHorizontalHeaderLabels( QStringList() << QString("Property") << QString("Value") );
+    setHorizontalHeaderLabels( QStringList() << QStringLiteral("Property") << QStringLiteral("Value") );
 
     connect(this, SIGNAL(itemChanged(QStandardItem *)), this, SLOT(slotDataChanged(QStandardItem *)));
 }
@@ -77,21 +77,21 @@ void ObjectProperties::setAccessibleObject(const QAccessibleClient::AccessibleOb
 
     QAccessibleClient::AccessibleObject::Interfaces interfaces = acc.supportedInterfaces();
     if (interfaces.testFlag(QAccessibleClient::AccessibleObject::AccessibleInterface)) {
-        QStandardItem *item = append(QString("Accessible"));
-        append(QString("Name"), acc.name(), item);
-        append(QString("Description"), acc.description(), item);
-        append(QString("Role"), acc.roleName(), item);
-        append(QString("LocalizedRole"), acc.localizedRoleName(), item);
-        append(QString("Visible"), acc.isVisible(), item);
-        append(QString("Default"), acc.isDefault(), item);
-        append(QString("State"), acc.stateString(), item);
-        append(QString("AccessibleId"), acc.accessibleId(), item);
+        QStandardItem *item = append(QStringLiteral("Accessible"));
+        append(QStringLiteral("Name"), acc.name(), item);
+        append(QStringLiteral("Description"), acc.description(), item);
+        append(QStringLiteral("Role"), acc.roleName(), item);
+        append(QStringLiteral("LocalizedRole"), acc.localizedRoleName(), item);
+        append(QStringLiteral("Visible"), acc.isVisible(), item);
+        append(QStringLiteral("Default"), acc.isDefault(), item);
+        append(QStringLiteral("State"), acc.stateString(), item);
+        append(QStringLiteral("AccessibleId"), acc.accessibleId(), item);
         append(tr("Url"), acc.url(), item);
         AccessibleObject parent = acc.parent();
         if (parent.isValid())
             append(tr("Parent"), parent.url(), item);
         int childCount = acc.childCount();
-        QStandardItem *children = append(QString("Children"), acc.childCount(), item);
+        QStandardItem *children = append(QStringLiteral("Children"), acc.childCount(), item);
         for (int i = 0; i < childCount; ++i) {
             AccessibleObject child = acc.child(i);
             if (!child.isValid()) {
@@ -103,26 +103,26 @@ void ObjectProperties::setAccessibleObject(const QAccessibleClient::AccessibleOb
         //GetAttributes
     }
     if (interfaces.testFlag(QAccessibleClient::AccessibleObject::ComponentInterface)) {
-        QStandardItem *item = append(QString("Component"));
-        append(QString("BoundingRect"), acc.boundingRect(), item);
-        append(QString("Layer"), acc.layer(), item);
-        append(QString("MDIZOrder"), acc.mdiZOrder(), item);
-        append(QString("Alpha"), acc.alpha(), item);
+        QStandardItem *item = append(QStringLiteral("Component"));
+        append(QStringLiteral("BoundingRect"), acc.boundingRect(), item);
+        append(QStringLiteral("Layer"), acc.layer(), item);
+        append(QStringLiteral("MDIZOrder"), acc.mdiZOrder(), item);
+        append(QStringLiteral("Alpha"), acc.alpha(), item);
     }
     if (interfaces.testFlag(QAccessibleClient::AccessibleObject::CollectionInterface)) {
-        QStandardItem *item = append(QString("Collection"));
+        QStandardItem *item = append(QStringLiteral("Collection"));
         Q_UNUSED(item);
     }
     if (interfaces.testFlag(QAccessibleClient::AccessibleObject::ApplicationInterface)) {
-        QStandardItem *item = append(QString("Application"));
-        append(QString("ToolkitName"), acc.appToolkitName(), item);
-        append(QString("Version"), acc.appVersion(), item);
-        append(QString("Id"), acc.appId(), item);
-        append(QString("Locale"), acc.appLocale(), item);
-        append(QString("BusAddress"), acc.appBusAddress(), item);
+        QStandardItem *item = append(QStringLiteral("Application"));
+        append(QStringLiteral("ToolkitName"), acc.appToolkitName(), item);
+        append(QStringLiteral("Version"), acc.appVersion(), item);
+        append(QStringLiteral("Id"), acc.appId(), item);
+        append(QStringLiteral("Locale"), acc.appLocale(), item);
+        append(QStringLiteral("BusAddress"), acc.appBusAddress(), item);
     }
     if (interfaces.testFlag(QAccessibleClient::AccessibleObject::DocumentInterface)) {
-        QStandardItem *item = append(QString("Document"));
+        QStandardItem *item = append(QStringLiteral("Document"));
         Q_UNUSED(item);
         //GetLocale
         //GetAttributeValue
@@ -130,11 +130,11 @@ void ObjectProperties::setAccessibleObject(const QAccessibleClient::AccessibleOb
     }
 
     if (interfaces.testFlag(QAccessibleClient::AccessibleObject::EditableTextInterface)) {
-        QStandardItem *item = append(QString("EditableText"));
+        QStandardItem *item = append(QStringLiteral("EditableText"));
         Q_UNUSED(item);
     }
     if (interfaces.testFlag(QAccessibleClient::AccessibleObject::HyperlinkInterface)) {
-        QStandardItem *item = append(QString("Hyperlink"));
+        QStandardItem *item = append(QStringLiteral("Hyperlink"));
         Q_UNUSED(item);
         /*
         <property name="NAnchors" type="n" access="read"/>
@@ -155,7 +155,7 @@ void ObjectProperties::setAccessibleObject(const QAccessibleClient::AccessibleOb
         */
     }
     if (interfaces.testFlag(QAccessibleClient::AccessibleObject::HypertextInterface)) {
-        QStandardItem *item = append(QString("Hypertext"));
+        QStandardItem *item = append(QStringLiteral("Hypertext"));
         Q_UNUSED(item);
         /*
         <method name="GetNLinks">
@@ -173,19 +173,19 @@ void ObjectProperties::setAccessibleObject(const QAccessibleClient::AccessibleOb
         */
     }
     if (interfaces.testFlag(QAccessibleClient::AccessibleObject::ImageInterface)) {
-        QStandardItem *item = append(QString("Image"));
-        append(QString("Description"), acc.imageDescription(), item);
-        append(QString("Locale"), acc.imageLocale(), item);
-        append(QString("Rect"), acc.imageRect(), item);
+        QStandardItem *item = append(QStringLiteral("Image"));
+        append(QStringLiteral("Description"), acc.imageDescription(), item);
+        append(QStringLiteral("Locale"), acc.imageLocale(), item);
+        append(QStringLiteral("Rect"), acc.imageRect(), item);
     }
     if (interfaces.testFlag(QAccessibleClient::AccessibleObject::SelectionInterface)) {
-        QStandardItem *item = append(QString("Selection"));
-        Q_FOREACH(const QAccessibleClient::AccessibleObject &s, acc.selection()) {
+        QStandardItem *item = append(QStringLiteral("Selection"));
+        for (const QAccessibleClient::AccessibleObject &s : acc.selection()) {
             append(s.name(), s.role(), item);
         }
     }
     if (interfaces.testFlag(QAccessibleClient::AccessibleObject::TableInterface)) {
-        QStandardItem *item = append(QString("Table"));
+        QStandardItem *item = append(QStringLiteral("Table"));
         Q_UNUSED(item);
         /*
         <property name="NRows" type="i" access="read"/>
@@ -217,67 +217,67 @@ void ObjectProperties::setAccessibleObject(const QAccessibleClient::AccessibleOb
         */
     }
     if (interfaces.testFlag(QAccessibleClient::AccessibleObject::TextInterface)) {
-        QStandardItem *item = append(QString("Text"));
+        QStandardItem *item = append(QStringLiteral("Text"));
         int offset = acc.caretOffset();
-        append(QString("CaretOffset"), offset, item);
-        append(QString("CharacterCount"), acc.characterCount(), item);
-        append(QString("CharacterRect"), acc.characterRect(offset), item);
+        append(QStringLiteral("CaretOffset"), offset, item);
+        append(QStringLiteral("CharacterCount"), acc.characterCount(), item);
+        append(QStringLiteral("CharacterRect"), acc.characterRect(offset), item);
 
         QString text = acc.text();
         if (interfaces.testFlag(QAccessibleClient::AccessibleObject::EditableTextInterface)) {
-            append(QString("Text"), text, item, &m_textItem);
+            append(QStringLiteral("Text"), text, item, &m_textItem);
         } else {
-            append(QString("Text"), text, item);
+            append(QStringLiteral("Text"), text, item);
         }
 
         QList< QPair<int,int> > selections = acc.textSelections();
-        QStandardItem *selectionsItem = append(QString("Selections"), selections.count(), item);
+        QStandardItem *selectionsItem = append(QStringLiteral("Selections"), selections.count(), item);
         for (int i = 0; i < selections.count(); ++i) {
             QPair<int,int> sel = selections[i];
             int startOffset = sel.first;
             int endOffset = sel.second;
             Q_ASSERT(startOffset <= endOffset);
-            append( QString("%1:%2").arg(startOffset).arg(endOffset),
+            append( QStringLiteral("%1:%2").arg(startOffset).arg(endOffset),
                     text.mid(startOffset, endOffset - startOffset),
                     selectionsItem );
         }
     }
     if (interfaces.testFlag(QAccessibleClient::AccessibleObject::ValueInterface)) {
-        QStandardItem *item = append(QString("Value"));
-        append(QString("Current"), acc.currentValue(), item, &m_valueItem);
-        append(QString("Minimum"), acc.minimumValue(), item);
-        append(QString("Maximum"), acc.maximumValue(), item);
-        append(QString("Increment"), acc.minimumValueIncrement(), item);
+        QStandardItem *item = append(QStringLiteral("Value"));
+        append(QStringLiteral("Current"), acc.currentValue(), item, &m_valueItem);
+        append(QStringLiteral("Minimum"), acc.minimumValue(), item);
+        append(QStringLiteral("Maximum"), acc.maximumValue(), item);
+        append(QStringLiteral("Increment"), acc.minimumValueIncrement(), item);
     }
     if (interfaces.testFlag(QAccessibleClient::AccessibleObject::SocketInterface)) {
-        QStandardItem *item = append(QString("Socket"));
+        QStandardItem *item = append(QStringLiteral("Socket"));
         Q_UNUSED(item);
     }
 
     if (interfaces.testFlag(QAccessibleClient::AccessibleObject::EventKeyboardInterface)) {
-        QStandardItem *item = append(QString("EventKeyboard"));
+        QStandardItem *item = append(QStringLiteral("EventKeyboard"));
         Q_UNUSED(item);
     }
     if (interfaces.testFlag(QAccessibleClient::AccessibleObject::EventMouseInterface)) {
-        QStandardItem *item = append(QString("EventMouse"));
+        QStandardItem *item = append(QStringLiteral("EventMouse"));
         Q_UNUSED(item);
     }
     if (interfaces.testFlag(QAccessibleClient::AccessibleObject::EventObjectInterface)) {
-        QStandardItem *item = append(QString("EventObject"));
+        QStandardItem *item = append(QStringLiteral("EventObject"));
         Q_UNUSED(item);
     }
     if (interfaces.testFlag(QAccessibleClient::AccessibleObject::EventWindowInterface)) {
-        QStandardItem *item = append(QString("EventWindow"));
+        QStandardItem *item = append(QStringLiteral("EventWindow"));
         Q_UNUSED(item);
     }
     if (interfaces.testFlag(QAccessibleClient::AccessibleObject::EventFocusInterface)) {
-        QStandardItem *item = append(QString("EventFocus"));
+        QStandardItem *item = append(QStringLiteral("EventFocus"));
         Q_UNUSED(item);
     }
 
     if (interfaces.testFlag(QAccessibleClient::AccessibleObject::ActionInterface)) {
-        QStandardItem *item = append(QString("Action"));
-        Q_FOREACH(const QSharedPointer<QAction> &a, acc.actions()) {
+        QStandardItem *item = append(QStringLiteral("Action"));
+        for (const QSharedPointer<QAction> &a : acc.actions()) {
             QStandardItem *nameItem = new QStandardItem(a->text());
             QStandardItem *valueItem = new QStandardItem(a->whatsThis());
             nameItem->setEditable(false);
@@ -294,7 +294,8 @@ void ObjectProperties::doubleClicked(const QModelIndex &index)
     if (!index.isValid() || !index.parent().isValid() || index.parent().data().toString() != QLatin1String("Action"))
         return;
 
-    foreach (const QSharedPointer<QAction> &action, m_acc.actions()) {
+    const auto actions{m_acc.actions()};
+    for (const QSharedPointer<QAction> &action : actions) {
         if (action->text() == data(index).toString()) {
             action->trigger();
             return;
@@ -311,19 +312,19 @@ QStandardItem* ObjectProperties::append(const QString &name, const QVariant &val
     switch (value.type()) {
         case QVariant::Point: {
             QPoint p = value.toPoint();
-            text = QString("%1:%2").arg(p.x()).arg(p.y());
+            text = QStringLiteral("%1:%2").arg(p.x()).arg(p.y());
         } break;
         case QVariant::PointF: {
             QPointF p = value.toPointF();
-            text = QString("%1:%2").arg(p.x()).arg(p.y());
+            text = QStringLiteral("%1:%2").arg(p.x()).arg(p.y());
         } break;
         case QVariant::Rect: {
             QRect r = value.toRect();
-            text = QString("%1:%2 %3x%4").arg(r.left()).arg(r.top()).arg(r.width()).arg(r.height());
+            text = QStringLiteral("%1:%2 %3x%4").arg(r.left()).arg(r.top()).arg(r.width()).arg(r.height());
         } break;
         case QVariant::RectF: {
             QRectF r = value.toRectF();
-            text = QString("%1:%2 %3x%4").arg(r.left()).arg(r.top()).arg(r.width()).arg(r.height());
+            text = QStringLiteral("%1:%2 %3x%4").arg(r.left()).arg(r.top()).arg(r.width()).arg(r.height());
         } break;
         default:
             text = value.toString();

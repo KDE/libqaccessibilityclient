@@ -16,9 +16,9 @@ public:
     SimpleWidgetApp()
     {
         QPushButton *button = new QPushButton(this);
-        button->setText("Button 1");
+        button->setText(QStringLiteral("Button 1"));
         QPushButton *button2 = new QPushButton(this);
-        button2->setText("Button 2");
+        button2->setText(QStringLiteral("Button 2"));
 
         this->setGeometry(0,0,200,100);
 
@@ -36,7 +36,7 @@ public:
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
-    app.setApplicationName("LibKdeAccessibilityClient Simple Widget App");
+    app.setApplicationName(QStringLiteral("LibKdeAccessibilityClient Simple Widget App"));
 
     SimpleWidgetApp simple;
     simple.show();

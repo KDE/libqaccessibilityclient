@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.16.0)
 project(QAccessibilityClient VERSION "0.4.1")
 
 include(FeatureSummary)
-set(KF5_MIN_VERSION "5.84.0")
+set(KF5_MIN_VERSION "5.89.0")
 set(REQUIRED_QT_VERSION "5.15.0")
 
 find_package(ECM ${KF5_MIN_VERSION} REQUIRED NO_MODULE)
