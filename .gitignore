@@ -1,7 +1,7 @@
 # Ignore generated files
 CMakeLists.txt.user*
 *.kdev4
-build/
+build*/
 
 callgrind.out.*
 pcviewer.cfg
