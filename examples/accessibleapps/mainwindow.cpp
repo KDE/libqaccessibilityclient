@@ -14,9 +14,7 @@
 #include <qurl.h>
 #include <QClipboard>
 
-#include "qaccessibilityclient/registry.h"
 #include "qaccessibilityclient/registrycache_p.h"
-#include "qaccessibilityclient/accessibleobject.h"
 
 #include "accessibleproperties.h"
 #include "accessibletree.h"

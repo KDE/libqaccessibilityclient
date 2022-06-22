@@ -5,7 +5,6 @@
 */
 
 #include "qt-atspi.h"
-#include <QDBusArgument>
 #include <QDBusMetaType>
 
 namespace QAccessibleClient {

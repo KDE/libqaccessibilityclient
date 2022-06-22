@@ -21,8 +21,6 @@
 #include <qurl.h>
 
 #include "atspi/atspi-constants.h"
-#include "atspi/qt-atspi.h"
-#include "atspi/dbusconnection.h"
 
 #include <qstring.h>
 #include <qhash.h>
