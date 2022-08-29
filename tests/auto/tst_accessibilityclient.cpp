@@ -273,18 +273,14 @@ void AccessibilityClientTest::tst_navigation()
 
 bool AccessibilityClientTest::startHelperProcess()
 {
-    if (!QFileInfo(QStringLiteral("./simplewidgetapp")).exists()) {
+    if (!QFileInfo(QCoreApplication::applicationDirPath() + QStringLiteral("/simplewidgetapp")).exists()) {
         qWarning() << "WARNING: Could not find test case helper executable."
             " Please run this test in the path where the executable is located.";
         return false;
     }
 
     // start peer server
-#ifdef Q_OS_WIN
-    helperProcess.setProgram(QStringLiteral("simplewidgetapp"));
-#else
-    helperProcess.setProgram(QStringLiteral("./simplewidgetapp"));
-#endif
+    helperProcess.setProgram(QCoreApplication::applicationDirPath() + QStringLiteral("/simplewidgetapp"));
     helperProcess.start();
     if (!helperProcess.waitForStarted()) {
         qWarning() << "WARNING: Could not start helper executable. Test will not run.";
