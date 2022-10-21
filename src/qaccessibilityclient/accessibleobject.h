@@ -13,9 +13,9 @@ namespace QAccessibleClient {
     class AccessibleObject;
 }
 
-#include <qlist.h>
+#include <QList>
 #include <QSharedPointer>
-#include <qaction.h>
+#include <QAction>
 
 #include "qaccessibilityclient_export.h"
 

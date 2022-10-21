@@ -8,11 +8,11 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <qmainwindow.h>
-#include <qtreeview.h>
-#include <qtextbrowser.h>
-#include <qaction.h>
-#include <qdebug.h>
+#include <QMainWindow>
+#include <QTreeView>
+#include <QTextBrowser>
+#include <QAction>
+#include <QDebug>
 
 #include "qaccessibilityclient/accessibleobject.h"
 #include "qaccessibilityclient/registry.h"

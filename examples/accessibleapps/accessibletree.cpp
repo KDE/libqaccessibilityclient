@@ -6,8 +6,8 @@
 
 #include "accessibletree.h"
 
-#include <qdebug.h>
-#include <qstack.h>
+#include <QDebug>
+#include <QStack>
 
 using namespace QAccessibleClient;
 

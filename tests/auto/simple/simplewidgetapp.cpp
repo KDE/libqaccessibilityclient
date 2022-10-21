@@ -4,10 +4,10 @@
     SPDX-License-Identifier: LGPL-2.1-only OR LGPL-3.0-only OR LicenseRef-KDE-Accepted-LGPL
 */
 
-#include <qapplication.h>
-#include <qpushbutton.h>
-#include <qboxlayout.h>
-#include <qtimer.h>
+#include <QApplication>
+#include <QPushButton>
+#include <QBoxLayout>
+#include <QTimer>
 
 class SimpleWidgetApp : public QWidget
 {

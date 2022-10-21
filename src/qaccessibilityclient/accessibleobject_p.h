@@ -7,10 +7,10 @@
 #ifndef QACCESSIBILITYCLIENT_ACCESSIBLEOBJECT_P_H
 #define QACCESSIBILITYCLIENT_ACCESSIBLEOBJECT_P_H
 
-#include <qstring.h>
-#include <qlist.h>
-#include <qsharedpointer.h>
-#include <qaction.h>
+#include <QString>
+#include <QList>
+#include <QSharedPointer>
+#include <QAction>
 
 namespace QAccessibleClient {
 

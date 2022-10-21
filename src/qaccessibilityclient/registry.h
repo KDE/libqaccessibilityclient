@@ -7,7 +7,7 @@
 #ifndef QACCESSIBILITYCLIENT_REGISTRY_H
 #define QACCESSIBILITYCLIENT_REGISTRY_H
 
-#include <qobject.h>
+#include <QObject>
 
 #include "qaccessibilityclient_export.h"
 #include "accessibleobject.h"

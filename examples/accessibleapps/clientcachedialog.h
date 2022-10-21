@@ -9,7 +9,7 @@
 #ifndef CLIENTCACHEDIALOG_H
 #define CLIENTCACHEDIALOG_H
 
-#include <qdialog.h>
+#include <QDialog>
 
 #include "qaccessibilityclient/accessibleobject.h"
 #include "qaccessibilityclient/registry.h"

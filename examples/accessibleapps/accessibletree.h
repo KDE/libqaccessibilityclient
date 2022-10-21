@@ -7,7 +7,7 @@
 #ifndef ACCESSIBLETREE_H
 #define ACCESSIBLETREE_H
 
-#include <qabstractitemmodel.h>
+#include <QAbstractItemModel>
 
 #include <qaccessibilityclient/registry.h>
 

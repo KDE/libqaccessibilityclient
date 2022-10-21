@@ -6,8 +6,8 @@
 
 #include "accessibleobject.h"
 
-#include <qstring.h>
-#include <qdebug.h>
+#include <QString>
+#include <QDebug>
 
 #include "accessibleobject_p.h"
 #include "registry_p.h"

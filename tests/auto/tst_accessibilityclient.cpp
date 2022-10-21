@@ -4,18 +4,18 @@
     SPDX-License-Identifier: LGPL-2.1-only OR LGPL-3.0-only OR LicenseRef-KDE-Accepted-LGPL
 */
 
-#include <qtest.h>
+#include <QTest>
 
-#include <qmainwindow.h>
-#include <qpushbutton.h>
-#include <qtextedit.h>
-#include <qlabel.h>
-#include <qlineedit.h>
-#include <qboxlayout.h>
-#include <qaccessible.h>
-#include <qdebug.h>
-#include <qprocess.h>
-#include <qfileinfo.h>
+#include <QMainWindow>
+#include <QPushButton>
+#include <QTextEdit>
+#include <QLabel>
+#include <QLineEdit>
+#include <QBoxLayout>
+#include <QAccessible>
+#include <QDebug>
+#include <QProcess>
+#include <QFileInfo>
 
 #include "qaccessibilityclient/registry.h"
 #include "qaccessibilityclient/accessibleobject.h"

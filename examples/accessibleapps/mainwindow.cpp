@@ -6,11 +6,11 @@
 
 #include "mainwindow.h"
 
-#include <qdialog.h>
-#include <qdockwidget.h>
-#include <qmenubar.h>
-#include <qpointer.h>
-#include <qsettings.h>
+#include <QDialog>
+#include <QDockWidget>
+#include <QMenuBar>
+#include <QPointer>
+#include <QSettings>
 #include <qurl.h>
 #include <QClipboard>
 

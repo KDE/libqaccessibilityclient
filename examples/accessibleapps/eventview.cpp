@@ -6,19 +6,19 @@
 
 #include "eventview.h"
 
-#include <qtextdocument.h>
-#include <qtextcursor.h>
-#include <qtextobject.h>
-#include <qtimer.h>
-#include <qscrollbar.h>
-#include <qsettings.h>
+#include <QTextDocument>
+#include <QTextCursor>
+#include <QTextObject>
+#include <QTimer>
+#include <QScrollBar>
+#include <QSettings>
 #include <QPair>
 #include <QSortFilterProxyModel>
 #include <QStandardItemModel>
 #include <QStandardItem>
 #include <QMetaObject>
 #include <QMetaEnum>
-#include <qdebug.h>
+#include <QDebug>
 
 class EventsModel : public QStandardItemModel
 {

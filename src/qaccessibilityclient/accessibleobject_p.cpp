@@ -7,7 +7,7 @@
 #include "accessibleobject_p.h"
 #include "registry_p.h"
 
-#include <qdebug.h>
+#include <QDebug>
 
 using namespace QAccessibleClient;
 

@@ -7,23 +7,23 @@
 #include "registry_p.h"
 #include "registry.h"
 
-#include <qdbusmessage.h>
-#include <qdbusargument.h>
-#include <qdbusreply.h>
-#include <qdbuspendingcall.h>
-#include <qdbusinterface.h>
-#include <qdbusargument.h>
-#include <qdbusmetatype.h>
+#include <QDBusMessage>
+#include <QDBusArgument>
+#include <QDBusReply>
+#include <QDBusPendingCall>
+#include <QDBusInterface>
+#include <QDBusArgument>
+#include <QDBusMetaType>
 
-#include <qdebug.h>
-#include <qdbusmessage.h>
-#include <qstringlist.h>
+#include <QDebug>
+#include <QDBusMessage>
+#include <QStringList>
 #include <qurl.h>
 
 #include "atspi/atspi-constants.h"
 
-#include <qstring.h>
-#include <qhash.h>
+#include <QString>
+#include <QHash>
 
 // interface names from at-spi2-core/atspi/atspi-misc-private.h
 #define ATSPI_DBUS_NAME_REGISTRY "org.a11y.atspi.Registry"

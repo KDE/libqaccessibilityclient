@@ -10,13 +10,13 @@
 
 #include "qaccessibilityclient/registrycache_p.h"
 
-#include <qboxlayout.h>
-#include <qcombobox.h>
-#include <qdialogbuttonbox.h>
-#include <qlabel.h>
-#include <qpushbutton.h>
-#include <qstandarditemmodel.h>
-#include <qtreeview.h>
+#include <QBoxLayout>
+#include <QComboBox>
+#include <QDialogButtonBox>
+#include <QLabel>
+#include <QPushButton>
+#include <QStandardItemModel>
+#include <QTreeView>
 
 ClientCacheDialog::ClientCacheDialog(QAccessibleClient::Registry *registry, QWidget *parent)
 : QDialog(parent)

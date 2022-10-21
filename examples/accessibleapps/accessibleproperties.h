@@ -7,8 +7,8 @@
 #ifndef ACCESSIBLEPROPERTIES_H
 #define ACCESSIBLEPROPERTIES_H
 
-#include <qobject.h>
-#include <qstandarditemmodel.h>
+#include <QObject>
+#include <QStandardItemModel>
 #include "qaccessibilityclient/accessibleobject.h"
 
 class ObjectProperties : public QStandardItemModel

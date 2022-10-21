@@ -8,8 +8,8 @@
 #define EVENTVIEW_H
 
 #include <QTimer>
-#include <qboxlayout.h>
-#include <qaccessible.h>
+#include <QBoxLayout>
+#include <QAccessible>
 
 #include "qaccessibilityclient/registry.h"
 #include "qaccessibilityclient/accessibleobject.h"

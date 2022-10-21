@@ -9,12 +9,12 @@
 
 #include <atspi/atspi-constants.h>
 
-#include <qobject.h>
-#include <qmap.h>
-#include <qdbuscontext.h>
-#include <qdbusargument.h>
-#include <qsignalmapper.h>
-#include <qsharedpointer.h>
+#include <QObject>
+#include <QMap>
+#include <QDBusContext>
+#include <QDBusArgument>
+#include <QSignalMapper>
+#include <QSharedPointer>
 
 #include "atspi/dbusconnection.h"
 #include "qaccessibilityclient/registry.h"
