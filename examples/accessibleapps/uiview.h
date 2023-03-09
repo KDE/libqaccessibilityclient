@@ -53,7 +53,6 @@ public:
 private:
     UiWidget *m_uiWidget;
 
-    QWidget* createWidget(const QAccessibleClient::AccessibleObject &acc, QRect &bounds);
 };
 
 #endif

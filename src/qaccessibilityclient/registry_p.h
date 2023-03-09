@@ -158,7 +158,6 @@ private Q_SLOTS:
 
 private:
     QVariant getProperty ( const QString &service, const QString &path, const QString &interface, const QString &name ) const;
-    bool subscribeEvent(const QLatin1String &iface, const QLatin1String &signal);
     static AccessibleObject::Role atspiRoleToRole(AtspiRole role);
 
     DBusConnection conn;
