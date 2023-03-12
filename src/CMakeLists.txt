@@ -1,14 +1,18 @@
+set(QACCESSIBILITYCLIENT_LIB_NAME "qaccessibilityclient-qt${QT_MAJOR_VERSION}")
+
 add_definitions(-DQT_NO_CAST_FROM_ASCII -DQT_NO_CAST_TO_ASCII)
 add_definitions(-DQACCESSIBILITYCLIENT_LIBRARY)
 
-add_library(${QACCESSIBILITYCLIENT_LIB_NAME} SHARED)
+add_library(QAccessibilityClient SHARED)
 
-set_target_properties(${QACCESSIBILITYCLIENT_LIB_NAME} PROPERTIES
+set_target_properties(QAccessibilityClient PROPERTIES
+    OUTPUT_NAME ${QACCESSIBILITYCLIENT_LIB_NAME}
+    EXPORT_NAME ${QACCESSIBILITYCLIENT_LIB_NAME}
     VERSION   ${QACCESSIBILITYCLIENT_VERSION}
     SOVERSION ${QACCESSIBILITYCLIENT_SOVERSION}
 )
 
-target_sources(${QACCESSIBILITYCLIENT_LIB_NAME} PRIVATE
+target_sources(QAccessibilityClient PRIVATE
     qaccessibilityclient/accessibleobject_p.cpp
     qaccessibilityclient/accessibleobject.cpp
     qaccessibilityclient/registry.cpp
@@ -18,10 +22,10 @@ target_sources(${QACCESSIBILITYCLIENT_LIB_NAME} PRIVATE
     atspi/qt-atspi.cpp
 )
 
-generate_export_header(${QACCESSIBILITYCLIENT_LIB_NAME}
+generate_export_header(QAccessibilityClient
     BASE_NAME qaccessibilityclient
 )
-target_link_libraries(${QACCESSIBILITYCLIENT_LIB_NAME}
+target_link_libraries(QAccessibilityClient
     PUBLIC
         Qt${QT_MAJOR_VERSION}::Widgets
         Qt${QT_MAJOR_VERSION}::Core
@@ -29,14 +33,12 @@ target_link_libraries(${QACCESSIBILITYCLIENT_LIB_NAME}
         Qt${QT_MAJOR_VERSION}::DBus
 )
 
-target_include_directories(${QACCESSIBILITYCLIENT_LIB_NAME}
+target_include_directories(QAccessibilityClient
     INTERFACE "$<INSTALL_INTERFACE:${KDE_INSTALL_INCLUDEDIR}>"
 )
 
 
-install(TARGETS ${QACCESSIBILITYCLIENT_LIB_NAME} EXPORT QAccessibilityClient ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
-
-########### install files ###############
+install(TARGETS QAccessibilityClient EXPORT QAccessibilityClient ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
 
 install(FILES
     ${CMAKE_CURRENT_BINARY_DIR}/qaccessibilityclient_export.h

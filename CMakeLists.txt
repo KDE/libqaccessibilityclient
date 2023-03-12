@@ -38,8 +38,6 @@ find_package(Qt${QT_MAJOR_VERSION} ${REQUIRED_QT_VERSION} CONFIG REQUIRED COMPON
     ${QT_OTHER_COMPONENTS}
 )
 
-set(QACCESSIBILITYCLIENT_LIB_NAME "qaccessibilityclient-qt${QT_MAJOR_VERSION}")
-
 add_subdirectory(src)
 
 if(BUILD_TESTING)

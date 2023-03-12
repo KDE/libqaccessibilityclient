@@ -27,7 +27,7 @@ target_sources(accessibleapps PRIVATE
 )
 
 target_link_libraries(accessibleapps
-    ${QACCESSIBILITYCLIENT_LIB_NAME}
+    QAccessibilityClient
     Qt${QT_MAJOR_VERSION}::Widgets
 )
 

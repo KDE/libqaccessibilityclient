@@ -16,7 +16,7 @@ target_sources(dumper PRIVATE
 )
 
 target_link_libraries(dumper
-    ${QACCESSIBILITYCLIENT_LIB_NAME}
+    QAccessibilityClient
     Qt${QT_MAJOR_VERSION}::Widgets
 )
 

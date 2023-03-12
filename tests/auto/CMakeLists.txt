@@ -7,7 +7,7 @@ target_sources(tst_accessibilityclient PRIVATE
 )
 
 target_link_libraries(tst_accessibilityclient
-    ${QACCESSIBILITYCLIENT_LIB_NAME}
+    QAccessibilityClient
     Qt${QT_MAJOR_VERSION}::Widgets
     Qt${QT_MAJOR_VERSION}::DBus
     Qt${QT_MAJOR_VERSION}::Test
@@ -23,7 +23,7 @@ target_sources(simplewidgetapp PRIVATE
 )
 
 target_link_libraries(simplewidgetapp
+    QAccessibilityClient
     Qt${QT_MAJOR_VERSION}::Widgets
     Qt${QT_MAJOR_VERSION}::Test
-    ${QACCESSIBILITYCLIENT_LIB_NAME}
 )
