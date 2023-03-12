@@ -16,6 +16,7 @@ include(KDECompilerSettings NO_POLICY_SCOPE)
 
 include(ECMSetupVersion)
 include(GenerateExportHeader)
+include(CMakePackageConfigHelpers)
 
 ecm_setup_version(${PROJECT_VERSION}
     VARIABLE_PREFIX QACCESSIBILITYCLIENT
@@ -39,26 +40,11 @@ find_package(Qt${QT_MAJOR_VERSION} ${REQUIRED_QT_VERSION} CONFIG REQUIRED COMPON
 
 set(QACCESSIBILITYCLIENT_LIB_NAME "qaccessibilityclient-qt${QT_MAJOR_VERSION}")
 
-set(_QAccessibilityClient_CONFIG_DEST "${KDE_INSTALL_CMAKEPACKAGEDIR}/${PROJECT_NAME}")
-
 add_subdirectory(src)
 
 if(BUILD_TESTING)
     add_subdirectory(tests)
     add_subdirectory(examples)
 endif()
-
-include(CMakePackageConfigHelpers)
-
-configure_package_config_file(
-    "${CMAKE_CURRENT_SOURCE_DIR}/QAccessibilityClientConfig.cmake.in"
-    "${CMAKE_CURRENT_BINARY_DIR}/QAccessibilityClientConfig.cmake"
-    INSTALL_DESTINATION  ${_QAccessibilityClient_CONFIG_DEST}
-)
-
-install( FILES
-         "${QAccessibilityClient_BINARY_DIR}/QAccessibilityClientConfig.cmake"
-         "${QAccessibilityClient_BINARY_DIR}/QAccessibilityClientConfigVersion.cmake"
-         DESTINATION "${_QAccessibilityClient_CONFIG_DEST}" )
 
 feature_summary(WHAT REQUIRED_PACKAGES_NOT_FOUND FATAL_ON_MISSING_REQUIRED_PACKAGES)

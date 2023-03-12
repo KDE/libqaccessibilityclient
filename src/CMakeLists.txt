@@ -34,7 +34,6 @@ target_include_directories(${QACCESSIBILITYCLIENT_LIB_NAME}
 
 
 install(TARGETS ${QACCESSIBILITYCLIENT_LIB_NAME} EXPORT QAccessibilityClient ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
-install(EXPORT QAccessibilityClient DESTINATION ${_QAccessibilityClient_CONFIG_DEST})
 
 ########### install files ###############
 
@@ -45,3 +44,18 @@ install(FILES
     ${CMAKE_CURRENT_BINARY_DIR}/libqaccessibilityclient-version.h
     DESTINATION ${KDE_INSTALL_INCLUDEDIR}/qaccessibilityclient COMPONENT Devel
 )
+
+set(_QAccessibilityClient_CONFIG_DEST "${KDE_INSTALL_CMAKEPACKAGEDIR}/${PROJECT_NAME}")
+
+install(EXPORT QAccessibilityClient DESTINATION ${_QAccessibilityClient_CONFIG_DEST})
+
+configure_package_config_file(
+    "${CMAKE_CURRENT_SOURCE_DIR}/QAccessibilityClientConfig.cmake.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/QAccessibilityClientConfig.cmake"
+    INSTALL_DESTINATION  ${_QAccessibilityClient_CONFIG_DEST}
+)
+
+install( FILES
+         "${CMAKE_CURRENT_BINARY_DIR}/QAccessibilityClientConfig.cmake"
+         "${QAccessibilityClient_BINARY_DIR}/QAccessibilityClientConfigVersion.cmake"
+         DESTINATION "${_QAccessibilityClient_CONFIG_DEST}" )
