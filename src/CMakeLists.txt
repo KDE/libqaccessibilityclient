@@ -3,6 +3,13 @@ set(QACCESSIBILITYCLIENT_LIB_NAME "qaccessibilityclient-qt${QT_MAJOR_VERSION}")
 add_definitions(-DQT_NO_CAST_FROM_ASCII -DQT_NO_CAST_TO_ASCII)
 add_definitions(-DQACCESSIBILITYCLIENT_LIBRARY)
 
+ecm_setup_version(${PROJECT_VERSION}
+    VARIABLE_PREFIX QACCESSIBILITYCLIENT
+    PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/QAccessibilityClientConfigVersion.cmake"
+    SOVERSION ${PROJECT_VERSION_MAJOR}
+    VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/libqaccessibilityclient-version.h"
+)
+
 add_library(QAccessibilityClient SHARED)
 
 set_target_properties(QAccessibilityClient PROPERTIES
@@ -60,5 +67,5 @@ configure_package_config_file(
 
 install( FILES
          "${CMAKE_CURRENT_BINARY_DIR}/QAccessibilityClientConfig.cmake"
-         "${QAccessibilityClient_BINARY_DIR}/QAccessibilityClientConfigVersion.cmake"
+         "${CMAKE_CURRENT_BINARY_DIR}/QAccessibilityClientConfigVersion.cmake"
          DESTINATION "${_QAccessibilityClient_CONFIG_DEST}" )
