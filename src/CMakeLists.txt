@@ -1,4 +1,5 @@
 set(QACCESSIBILITYCLIENT_LIB_NAME "qaccessibilityclient-qt${QT_MAJOR_VERSION}")
+set(QACCESSIBILITYCLIENT_INSTALL_INCLUDEDIR "${KDE_INSTALL_INCLUDEDIR}/QAccessibilityClient")
 
 add_definitions(-DQT_NO_CAST_FROM_ASCII -DQT_NO_CAST_TO_ASCII)
 add_definitions(-DQACCESSIBILITYCLIENT_LIBRARY)
@@ -41,7 +42,7 @@ target_link_libraries(QAccessibilityClient
 )
 
 target_include_directories(QAccessibilityClient
-    INTERFACE "$<INSTALL_INTERFACE:${KDE_INSTALL_INCLUDEDIR}>"
+    INTERFACE "$<INSTALL_INTERFACE:${QACCESSIBILITYCLIENT_INSTALL_INCLUDEDIR}>"
 )
 
 
@@ -52,7 +53,8 @@ install(FILES
     qaccessibilityclient/accessibleobject.h
     qaccessibilityclient/registry.h
     ${CMAKE_CURRENT_BINARY_DIR}/libqaccessibilityclient-version.h
-    DESTINATION ${KDE_INSTALL_INCLUDEDIR}/qaccessibilityclient COMPONENT Devel
+    DESTINATION ${QACCESSIBILITYCLIENT_INSTALL_INCLUDEDIR}/qaccessibilityclient
+    COMPONENT Devel
 )
 
 set(_QAccessibilityClient_CONFIG_DEST "${KDE_INSTALL_CMAKEPACKAGEDIR}/${PROJECT_NAME}")
