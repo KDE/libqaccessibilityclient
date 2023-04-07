@@ -15,7 +15,7 @@ include(KDECMakeSettings)
 include(KDECompilerSettings NO_POLICY_SCOPE)
 
 include(ECMSetupVersion)
-include(GenerateExportHeader)
+include(ECMGenerateExportHeader)
 include(CMakePackageConfigHelpers)
 
 add_definitions(-DQT_DISABLE_DEPRECATED_BEFORE=0x050f02)
