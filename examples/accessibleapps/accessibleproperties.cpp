@@ -343,3 +343,5 @@ QStandardItem* ObjectProperties::append(const QString &name, const QVariant &val
 
     return nameItem;
 }
+
+#include "moc_accessibleproperties.cpp"

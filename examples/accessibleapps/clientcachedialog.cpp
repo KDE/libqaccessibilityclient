@@ -111,3 +111,5 @@ void ClientCacheDialog::updateView()
     m_view->resizeColumnToContents(1);
     m_view->resizeColumnToContents(2);
 }
+
+#include "moc_clientcachedialog.cpp"

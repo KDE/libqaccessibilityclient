@@ -55,3 +55,5 @@ void Dumper::printChild(const AccessibleObject &object, int indent) const
         printChild(child, indent + 1);
     }
 }
+
+#include "moc_dumper.cpp"

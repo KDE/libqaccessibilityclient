@@ -271,3 +271,5 @@ void UiView::setAccessibleObject(const QAccessibleClient::AccessibleObject &acc)
     m_uiWidget->setAccessibleObject(acc);
     widget()->resize(m_uiWidget->size());
 }
+
+#include "moc_uiview.cpp"

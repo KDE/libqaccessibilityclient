@@ -333,3 +333,4 @@ void AccessibleTree::updateAccessible(const QAccessibleClient::AccessibleObject 
     Q_EMIT dataChanged(index, index);
 }
 
+#include "moc_accessibletree.cpp"

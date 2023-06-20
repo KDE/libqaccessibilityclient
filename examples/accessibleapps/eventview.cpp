@@ -404,3 +404,5 @@ void EventsWidget::roleFilterChanged()
 {
     m_proxyModel->setRoleFilter(m_ui.roleFilterEdit->text());
 }
+
+#include "moc_eventview.cpp"

@@ -82,3 +82,5 @@ DBusConnection::Status DBusConnection::status() const
 {
     return m_status;
 }
+
+#include "moc_dbusconnection.cpp"

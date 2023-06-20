@@ -215,3 +215,5 @@ QString ToggleButtonRole::text() const
 {
     return accessible().name();
 }
+
+#include "moc_roleobjects_p.cpp"

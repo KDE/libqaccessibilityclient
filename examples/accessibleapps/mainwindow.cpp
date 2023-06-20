@@ -533,3 +533,4 @@ void MainWindow::accessibleDescriptionChanged(const QAccessibleClient::Accessibl
     m_accessibleObjectTreeModel->updateAccessible(object);
 }
 
+#include "moc_mainwindow.cpp"
