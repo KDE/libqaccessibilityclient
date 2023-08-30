@@ -24,15 +24,25 @@ if(BUILD_TESTING)
     set(QT_OTHER_COMPONENTS Test)
 endif()
 
+if (QT_MAJOR_VERSION STREQUAL "6")
+    set(REQUIRED_QT_VERSION "6.5.0")
+endif()
+
 find_package(Qt${QT_MAJOR_VERSION} ${REQUIRED_QT_VERSION} CONFIG REQUIRED COMPONENTS
     Widgets
     DBus
     ${QT_OTHER_COMPONENTS}
 )
 
-ecm_set_disabled_deprecation_versions(
-    QT 5.15.2
-)
+if (QT_MAJOR_VERSION STREQUAL "6")
+    ecm_set_disabled_deprecation_versions(
+        QT 6.5
+    )
+else()
+    ecm_set_disabled_deprecation_versions(
+        QT 5.15.2
+    )
+endif()
 
 add_subdirectory(src)
 
