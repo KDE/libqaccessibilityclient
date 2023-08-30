@@ -113,7 +113,7 @@ void MainWindow::MainWindow::initActions()
     m_followFocusAction = new QAction(this);
     m_followFocusAction->setText(QStringLiteral("Follow Focus"));
     m_followFocusAction->setCheckable(true);
-    m_followFocusAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_F));
+    m_followFocusAction->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_F));
 
     m_showClientCacheAction = new QAction(this);
     m_showClientCacheAction->setText(QStringLiteral("Cache..."));
@@ -121,7 +121,7 @@ void MainWindow::MainWindow::initActions()
 
     m_enableA11yAction = new QAction(this);
     m_enableA11yAction->setText(QStringLiteral("Enable Accessibility"));
-    m_enableA11yAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_E));
+    m_enableA11yAction->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_E));
     m_enableA11yAction->setCheckable(true);
     m_enableA11yAction->setChecked(m_registry->isEnabled());
     connect(m_registry, SIGNAL(enabledChanged(bool)), m_enableA11yAction, SLOT(setChecked(bool)));
@@ -129,7 +129,7 @@ void MainWindow::MainWindow::initActions()
 
     m_enableScreenReaderAction = new QAction(this);
     m_enableScreenReaderAction->setText(QStringLiteral("Enable Screen Reader"));
-    m_enableScreenReaderAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_R));
+    m_enableScreenReaderAction->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_R));
     m_enableScreenReaderAction->setCheckable(true);
     m_enableScreenReaderAction->setChecked(m_registry->isScreenReaderEnabled());
     connect(m_registry, SIGNAL(screenReaderEnabledChanged(bool)), m_enableScreenReaderAction, SLOT(setChecked(bool)));
