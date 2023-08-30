@@ -309,20 +309,24 @@ QStandardItem* ObjectProperties::append(const QString &name, const QVariant &val
         parentItem = invisibleRootItem();
     QStandardItem *nameItem = new QStandardItem(name);
     QString text;
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    switch (value.metaType().id()) {
+#else
     switch (value.type()) {
-        case QVariant::Point: {
+#endif
+        case QMetaType::QPoint: {
             QPoint p = value.toPoint();
             text = QStringLiteral("%1:%2").arg(p.x()).arg(p.y());
         } break;
-        case QVariant::PointF: {
+        case QMetaType::QPointF: {
             QPointF p = value.toPointF();
             text = QStringLiteral("%1:%2").arg(p.x()).arg(p.y());
         } break;
-        case QVariant::Rect: {
+        case QMetaType::QRect: {
             QRect r = value.toRect();
             text = QStringLiteral("%1:%2 %3x%4").arg(r.left()).arg(r.top()).arg(r.width()).arg(r.height());
         } break;
-        case QVariant::RectF: {
+        case QMetaType::QRectF: {
             QRectF r = value.toRectF();
             text = QStringLiteral("%1:%2 %3x%4").arg(r.left()).arg(r.top()).arg(r.width()).arg(r.height());
         } break;
