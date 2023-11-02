@@ -1,13 +1,13 @@
 cmake_minimum_required(VERSION 3.16.0)
 
-project(QAccessibilityClient VERSION "0.4.2")
+project(QAccessibilityClient VERSION "0.5.0")
 
 include(FeatureSummary)
 set(KF5_MIN_VERSION "5.91.0")
 set(REQUIRED_QT_VERSION "5.15.2")
 
 find_package(ECM ${KF5_MIN_VERSION} REQUIRED NO_MODULE)
-set_package_properties(ECM PROPERTIES TYPE REQUIRED DESCRIPTION "Extra CMake Modules." URL "https://commits.kde.org/extra-cmake-modules")
+set_package_properties(ECM PROPERTIES TYPE REQUIRED DESCRIPTION "Extra CMake Modules." URL "https://api.kde.org/frameworks/extra-cmake-modules/html/index.html")
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH})
 
 include(KDEInstallDirs)
