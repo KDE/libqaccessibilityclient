@@ -79,6 +79,7 @@ install(FILES
     ${CMAKE_CURRENT_BINARY_DIR}/qaccessibilityclient_export.h
     qaccessibilityclient/accessibleobject.h
     qaccessibilityclient/registry.h
+    qaccessibilityclient/registrycache_p.h
     ${CMAKE_CURRENT_BINARY_DIR}/libqaccessibilityclient-version.h
     DESTINATION ${QACCESSIBILITYCLIENT_INSTALL_INCLUDEDIR}/qaccessibilityclient
     COMPONENT Devel
