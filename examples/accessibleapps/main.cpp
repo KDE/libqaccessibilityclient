@@ -11,7 +11,7 @@
 int main(int argc, char** argv)
 {
     QApplication app(argc, argv);
-    app.setApplicationName(QLatin1String("Randamizer"));
+    app.setApplicationName(QLatin1String("Accessibility Inspector"));
 
     MainWindow window;
     window.show();
