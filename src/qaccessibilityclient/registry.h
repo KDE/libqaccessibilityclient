@@ -335,11 +335,11 @@ private:
     friend class RegistryPrivateCacheApi;
 
     enum CacheType { NoCache, WeakCache};
-    CacheType cacheType() const;
-    void setCacheType(CacheType type);
-    AccessibleObject clientCacheObject(const QString &id) const;
-    QStringList clientCacheObjects() const;
-    void clearClientCache();
+    QACCESSIBILITYCLIENT_NO_EXPORT CacheType cacheType() const;
+    QACCESSIBILITYCLIENT_NO_EXPORT void setCacheType(CacheType type);
+    QACCESSIBILITYCLIENT_NO_EXPORT AccessibleObject clientCacheObject(const QString &id) const;
+    QACCESSIBILITYCLIENT_NO_EXPORT QStringList clientCacheObjects() const;
+    QACCESSIBILITYCLIENT_NO_EXPORT void clearClientCache();
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(Registry::EventListeners)
