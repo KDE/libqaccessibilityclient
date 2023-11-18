@@ -103,7 +103,7 @@ QList<AccessibleObject> AccessibleObject::children() const
 QVector< QList<AccessibleObject> > AccessibleObject::children(const QList<Role> &roles) const
 {
     QVector< QList<AccessibleObject> > result(roles.count());
-    QList<AccessibleObject> all = children();
+    const QList<AccessibleObject> all = children();
     for(int i = 0; i < all.count(); ++i) {
         const AccessibleObject &child = all[i];
         int index = roles.indexOf(child.role());
@@ -301,13 +301,13 @@ QPoint AccessibleObject::focusPoint() const
 {
     Interfaces ifaces = supportedInterfaces();
     if (ifaces & TextInterface) {
-        int offset = caretOffset();
-        QRect r = characterRect(offset);
+        const int offset = caretOffset();
+        const QRect r = characterRect(offset);
         if (r.x() != 0 || r.y() != 0)
             return r.center();
     }
     if (ifaces & ComponentInterface) {
-        QRect r = boundingRect();
+        const QRect r = boundingRect();
         if (!r.isNull())
             return r.center();
     }
