@@ -39,6 +39,8 @@ target_sources(QAccessibilityClient PRIVATE
     qaccessibilityclient/registry.h
     qaccessibilityclient/registry_p.cpp
     qaccessibilityclient/registry_p.h
+    qaccessibilityclient/registrycache.cpp
+    qaccessibilityclient/registrycache_p.h
 
     atspi/dbusconnection.cpp
     atspi/dbusconnection.h

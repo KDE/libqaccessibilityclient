@@ -7,7 +7,12 @@
 #ifndef QACCESSIBILITYCLIENT_REGISTRYCACHE_P_H
 #define QACCESSIBILITYCLIENT_REGISTRYCACHE_P_H
 
+#include "qaccessibilityclient_export.h"
+#include "accessibleobject.h"
+
 namespace QAccessibleClient {
+
+class Registry;
 
 // Private API. May be gone or changed anytime soon.
 class QACCESSIBILITYCLIENT_EXPORT RegistryPrivateCacheApi
@@ -18,14 +23,14 @@ public:
         WeakCache, ///< Cache only objects in use and free them as long as no-one holds a reference to them any longer.
     };
 
-    explicit RegistryPrivateCacheApi(Registry *registry) : m_registry(registry) {}
+    explicit RegistryPrivateCacheApi(Registry *registry);
 
-    CacheType cacheType() const { return static_cast<CacheType>(m_registry->cacheType()); }
-    void setCacheType(CacheType type) { m_registry->setCacheType(static_cast<Registry::CacheType>(type)); }
+    CacheType cacheType() const;
+    void setCacheType(CacheType type);
 
-    AccessibleObject clientCacheObject(const QString &id) const { return m_registry->clientCacheObject(id); }
-    QStringList clientCacheObjects() const { return m_registry->clientCacheObjects(); }
-    void clearClientCache() { m_registry->clearClientCache(); }
+    AccessibleObject clientCacheObject(const QString &id) const;
+    QStringList clientCacheObjects() const;
+    void clearClientCache();
 
 private:
     Registry *m_registry;
