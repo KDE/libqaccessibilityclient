@@ -14,7 +14,7 @@ class Dumper : public QObject
 {
     Q_OBJECT
 public:
-    Dumper(QObject *parent = nullptr);
+    explicit Dumper(QObject *parent = nullptr);
     void run(const QString &appname) const;
     void printChild(const QAccessibleClient::AccessibleObject &object, int indent = 0) const;
     void showStates(bool show) { m_showStates = show; }
