@@ -34,11 +34,16 @@ set_target_properties(QAccessibilityClient PROPERTIES
 target_sources(QAccessibilityClient PRIVATE
     qaccessibilityclient/accessibleobject_p.cpp
     qaccessibilityclient/accessibleobject.cpp
+    qaccessibilityclient/accessibleobject.h
     qaccessibilityclient/registry.cpp
+    qaccessibilityclient/registry.h
     qaccessibilityclient/registry_p.cpp
+    qaccessibilityclient/registry_p.h
 
     atspi/dbusconnection.cpp
+    atspi/dbusconnection.h
     atspi/qt-atspi.cpp
+    atspi/qt-atspi.h
 )
 
 if (QT_MAJOR_VERSION STREQUAL "5")

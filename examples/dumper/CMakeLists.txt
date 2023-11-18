@@ -13,6 +13,7 @@ add_executable(dumper)
 target_sources(dumper PRIVATE
     main.cpp
     dumper.cpp
+    dumper.h
 )
 
 target_link_libraries(dumper
