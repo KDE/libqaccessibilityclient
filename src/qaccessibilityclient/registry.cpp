@@ -19,6 +19,7 @@ Registry::Registry(QObject *parent)
 
 Registry::~Registry()
 {
+    delete d->m_cache;
     delete d;
 }
 
