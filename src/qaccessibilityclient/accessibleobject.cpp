@@ -520,6 +520,7 @@ QString AccessibleObject::stateString() const
     if (isSelected()) s << QStringLiteral("Selected");
     if (isSensitive()) s << QStringLiteral("Sensitive");
     if (isSingleLine()) s << QStringLiteral("SingleLine");
+    if (isEnabled()) s << QStringLiteral("Enabled");
     return s.join(QLatin1String(", "));
 }
 
