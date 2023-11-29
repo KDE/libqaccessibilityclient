@@ -35,6 +35,7 @@ class RegistryPrivate :public QObject, public QDBusContext
     Q_OBJECT
 public:
     RegistryPrivate(Registry *qq);
+    ~RegistryPrivate() override;
 
     void init();
 
@@ -162,12 +163,12 @@ private:
 
     DBusConnection conn;
     QSignalMapper m_actionMapper;
-    Registry *q;
+    Registry *const q;
     Registry::EventListeners m_subscriptions;
     Registry::EventListeners m_pendingSubscriptions;
     QHash<QString, AccessibleObject::Interface> interfaceHash;
     QSignalMapper m_eventMapper;
-    ObjectCache *m_cache;
+    ObjectCache *m_cache = nullptr;
 //     typedef QMap<QString, QSharedPointer<AccessibleObjectPrivate> >::Iterator AccessibleObjectsHashIterator;
 //     typedef QMap<QString, QSharedPointer<AccessibleObjectPrivate> >::ConstIterator AccessibleObjectsHashConstIterator;
 //     QMap<QString, QSharedPointer<AccessibleObjectPrivate> > accessibleObjectsHash;

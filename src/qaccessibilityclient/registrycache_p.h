@@ -33,7 +33,7 @@ public:
     void clearClientCache();
 
 private:
-    Registry *m_registry;
+    Registry *const m_registry;
 };
 
 }
