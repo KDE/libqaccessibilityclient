@@ -2,57 +2,145 @@
     "version": 3,
     "configurePresets": [
         {
+            "name": "base",
+            "displayName": "base preset",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build-${presetName}",
+            "installDir": "$env{KF5}",
+            "hidden": true
+        },
+        {
+            "name": "base-qt6",
+            "displayName": "base preset",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build-${presetName}",
+            "installDir": "$env{KF6}",
+            "hidden": true
+        },	
+	{
+            "name": "dev-mold",
+            "displayName": "Build as debug + using mold linker",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+		"CMAKE_SHARED_LINKER_FLAGS": "-fuse-ld=mold"
+            },
+            "inherits": [
+                "base"
+            ]
+        },
+        {
             "name": "dev",
             "displayName": "Build as debug",
-            "generator": "Ninja",
-            "binaryDir": "${sourceDir}/build",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Debug",
                 "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
             },
-            "installDir": "$env{KF5}"
+            "inherits": [
+                "base"
+            ]
         },
         {
-            "name": "dev-disable-deprecated",
-            "displayName": "Build as without deprecated methods",
-            "generator": "Ninja",
-            "binaryDir": "${sourceDir}/build-disable-deprecated",
+            "name": "dev-qt6",
+            "displayName": "Build against qt6",
+            "binaryDir": "${sourceDir}/build-qt6",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Debug",
-                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
-                "CMAKE_CXX_FLAGS_INIT": "-DQT_DISABLE_DEPRECATED_BEFORE=0x060000 -DKF_DISABLE_DEPRECATED_BEFORE_AND_AT=0x060000"
+                "BUILD_WITH_QT6": "ON",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
             },
-	    "installDir": "$env{KF5}"
+            "inherits": [
+                "base-qt6"
+            ]
+        },
+        {
+            "name": "release-qt6",
+            "displayName": "Build as release mode.",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "BUILD_WITH_QT6": "ON",
+		"BUILD_TESTING": "OFF"
+            },
+            "inherits": [
+                "base-qt6"
+            ]
+        },
+        {
+            "name": "dev-mold-qt6",
+            "displayName": "Build as debug + using mold linker",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+		"BUILD_WITH_QT6": "ON",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+                "CMAKE_SHARED_LINKER_FLAGS": "-fuse-ld=mold"
+            },
+            "inherits": [
+                "base-qt6"
+            ]
         },
         {
             "name": "asan",
             "displayName": "Build with Asan support.",
-            "generator": "Ninja",
-            "binaryDir": "${sourceDir}/build-asan",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "ECM_ENABLE_SANITIZERS" : "'address;undefined'"
+            },
+            "inherits": [
+                "base"
+            ]
+        },
+        {   
+            "name": "asan-qt6",
+            "displayName": "Build with Asan support (qt6).",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Debug",
                 "ECM_ENABLE_SANITIZERS" : "'address;undefined'",
-                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
-            },
-            "installDir": "$env{KF5}"
-        },
+		"CMAKE_SHARED_LINKER_FLAGS": "-fuse-ld=mold",
+		"BUILD_WITH_QT6": "ON"
+            },  
+            "inherits": [
+                "base-qt6"
+            ]
+        }, 
         {
-            "name": "pch",
-            "displayName": "Build with PCH support.",
-            "generator": "Ninja",
-            "binaryDir": "${sourceDir}/build-pch",
+            "name": "dev-clang-qt6-asan",
+            "displayName": "dev-clang-qt6-asan",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Debug",
-		"COMPILE_WITH_CMAKE_PCH_SUPPORT": "ON",
-                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+		"ECM_ENABLE_SANITIZERS" : "'address;undefined'",
+		"CMAKE_SHARED_LINKER_FLAGS": "-fuse-ld=mold",
+                "BUILD_WITH_QT6": "ON" 
             },
-            "installDir": "$env{KF5}"
+            "environment": {
+                "CXX": "clang++",
+                "CCACHE_DISABLE": "ON"
+            },
+            "inherits": [
+                "base-qt6"
+            ]
         },
+        {       
+            "name": "dev-clang-qt6",
+            "displayName": "dev-clang-qt6",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+                "CMAKE_SHARED_LINKER_FLAGS": "-fuse-ld=mold",
+                "BUILD_WITH_QT6": "ON"
+            },
+            "environment": {
+                "CXX": "clang++",
+                "CCACHE_DISABLE": "ON"
+            },  
+            "inherits": [
+                "base-qt6"
+            ]   
+        },  
+	
         {
             "name": "dev-clang",
             "displayName": "dev-clang",
-            "generator": "Ninja",
-            "binaryDir": "${sourceDir}/build-clang",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Debug",
                 "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
@@ -61,46 +149,57 @@
                 "CXX": "clang++",
                 "CCACHE_DISABLE": "ON"
             },
-            "installDir": "$env{KF5}"
+            "inherits": [
+                "base"
+            ]
         },
         {
             "name": "unity",
             "displayName": "Build with CMake unity support.",
-            "generator": "Ninja",
-            "binaryDir": "${sourceDir}/build-unity",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Debug",
-                "USE_UNITY_CMAKE_SUPPORT": "ON",
-                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+                "USE_UNITY_CMAKE_SUPPORT": "ON"
             },
-            "installDir": "$env{KF5}"
+            "inherits": [
+                "base"
+            ]
         },
         {
             "name": "release",
             "displayName": "Build as release mode.",
-            "generator": "Ninja",
-            "binaryDir": "${sourceDir}/build-release",
             "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Release"
+                "CMAKE_BUILD_TYPE": "Release",
+		"BUILD_TESTING": "OFF"
             },
-            "installDir": "$env{KF5}"
+            "inherits": [
+                "base"
+            ]
         },
         {
             "name": "profile",
             "displayName": "profile",
-            "generator": "Ninja",
-            "binaryDir": "${sourceDir}/build-profile",
             "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "RelWithDebInfo",
-                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+                "CMAKE_BUILD_TYPE": "RelWithDebInfo"
             },
-            "installDir": "$env{KF5}"
+            "inherits": [
+                "base"
+            ]
+	},
+	{
+            "name": "coverage",
+            "displayName": "coverage",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "USE_UNITY_CMAKE_SUPPORT": "OFF",
+                "BUILD_COVERAGE": "ON" 
+            },
+            "inherits": [
+                "base"
+            ]
         },
         {
             "name": "clazy",
             "displayName": "clazy",
-            "generator": "Ninja",
-            "binaryDir": "${sourceDir}/build-clazy",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Debug"
             },
@@ -108,9 +207,22 @@
                 "CXX": "clazy",
                 "CCACHE_DISABLE": "ON"
             },
-            "installDir": "$env{KF5}"
+            "inherits": [
+                "base"
+            ]
+        },
+        {
+            "name": "pch",
+            "displayName": "pch",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "USE_PRECOMPILED_HEADERS": "ON",
+                "BUILD_COVERAGE": "ON"
+            },
+            "inherits": [
+                "base"
+            ]
         }
-
     ],
     "buildPresets": [
         {
@@ -118,8 +230,32 @@
             "configurePreset": "dev"
         },
         {
-            "name": "dev-disable-deprecated",
-            "configurePreset": "dev-disable-deprecated"
+            "name": "dev-clang-qt6-asan",
+            "configurePreset": "dev-clang-qt6-asan"
+        },
+        {
+            "name": "dev-clang-qt6",
+            "configurePreset": "dev-clang-qt6"
+        },
+	{
+            "name": "dev-mold",
+            "configurePreset": "dev-mold"
+        },
+        {   
+            "name": "dev-mold-qt6",
+            "configurePreset": "dev-mold-qt6"
+        },
+        {
+            "name": "dev-qt6",
+            "configurePreset": "dev-qt6"
+        },
+        {       
+            "name": "release-qt6",
+            "configurePreset": "release-qt6"
+        },
+        {
+            "name": "dev-clang",
+            "configurePreset": "dev-clang"
         },
         {
             "name": "pch",
@@ -130,17 +266,21 @@
             "configurePreset": "release"
         },
         {
-            "name": "dev-clang",
-            "configurePreset": "dev-clang"
-        },
-        {
-            "name": "asan",
-            "configurePreset": "asan"
-        },
-        {
             "name": "unity",
             "configurePreset": "unity"
         },
+        {
+            "name": "coverage",
+            "configurePreset": "coverage"
+        },
+	{
+            "name": "asan",
+            "configurePreset": "asan"
+        },
+        {   
+            "name": "asan-qt6",
+            "configurePreset": "asan-qt6"
+        },	
         {
             "name": "clazy",
             "configurePreset": "clazy",
@@ -151,17 +291,29 @@
         }
     ],
     "testPresets": [
-    { 
+    {
       "name": "dev",
       "configurePreset": "dev",
       "output": {"outputOnFailure": true},
       "execution": {"noTestsAction": "error", "stopOnFailure": false}
     },
-    { 
+    {
       "name": "asan",
       "configurePreset": "asan",
       "output": {"outputOnFailure": true},
       "execution": {"noTestsAction": "error", "stopOnFailure": true}
+    },
+    {
+      "name": "unity",
+      "configurePreset": "unity",
+      "output": {"outputOnFailure": true},
+      "execution": {"noTestsAction": "error", "stopOnFailure": true}
+    },
+    {
+      "name": "coverage",
+      "configurePreset": "coverage",
+      "output": {"outputOnFailure": true},
+      "execution": {"noTestsAction": "error", "stopOnFailure": true}
     }
-    ]
+  ]
 }
