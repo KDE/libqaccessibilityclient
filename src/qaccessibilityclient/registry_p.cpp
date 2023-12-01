@@ -16,7 +16,6 @@
 #include <QDBusArgument>
 #include <QDBusMetaType>
 
-#include <QDebug>
 #include <QDBusMessage>
 #include <QStringList>
 #include <qurl.h>
