@@ -12,7 +12,6 @@
 #include <QDBusArgument>
 #include <QDBusReply>
 #include <QDBusPendingCall>
-#include <QDBusInterface>
 #include <QDBusArgument>
 #include <QDBusMetaType>
 
@@ -23,7 +22,6 @@
 #include "atspi/atspi-constants.h"
 
 #include <QString>
-#include <QHash>
 
 // interface names from at-spi2-core/atspi/atspi-misc-private.h
 #define ATSPI_DBUS_NAME_REGISTRY "org.a11y.atspi.Registry"

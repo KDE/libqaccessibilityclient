@@ -12,7 +12,6 @@
 #include <QObject>
 #include <QMap>
 #include <QDBusContext>
-#include <QDBusArgument>
 #include <QSignalMapper>
 #include <QSharedPointer>
 

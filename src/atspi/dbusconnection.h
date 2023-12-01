@@ -7,7 +7,6 @@
 #ifndef DBUSCONNECTION_H
 #define DBUSCONNECTION_H
 
-#include <QString>
 #include <QObject>
 #include <QDBusConnection>
 #include <QDBusPendingCallWatcher>

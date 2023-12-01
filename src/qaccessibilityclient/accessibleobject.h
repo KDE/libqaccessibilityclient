@@ -7,7 +7,6 @@
 #ifndef QACCESSIBILITYCLIENT_ACCESSIBLEOBJECT_H
 #define QACCESSIBILITYCLIENT_ACCESSIBLEOBJECT_H
 
-#include <QtGlobal>
 
 namespace QAccessibleClient {
     class AccessibleObject;

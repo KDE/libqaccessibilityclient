@@ -8,7 +8,6 @@
 #define QACCESSIBILITYCLIENT_ACCESSIBLEOBJECT_P_H
 
 #include <QString>
-#include <QList>
 #include <QSharedPointer>
 #include <QAction>
 
