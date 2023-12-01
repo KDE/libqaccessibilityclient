@@ -95,8 +95,8 @@ private:
     void init();
 
     QDBusConnection m_connection;
-    mutable Status m_status;
-    QDBusPendingCallWatcher *m_initWatcher;
+    mutable Status m_status = Disconnected;
+    QDBusPendingCallWatcher *m_initWatcher = nullptr;
 };
 }
 
