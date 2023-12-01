@@ -28,7 +28,6 @@ class QDBusPendingCallWatcher;
 namespace QAccessibleClient {
 
 class DBusConnection;
-class AtSpiDBus;
 
 class RegistryPrivate :public QObject, public QDBusContext
 {
