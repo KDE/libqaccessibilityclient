@@ -37,7 +37,7 @@ find_package(Qt${QT_MAJOR_VERSION} ${REQUIRED_QT_VERSION} CONFIG REQUIRED COMPON
 
 if (QT_MAJOR_VERSION STREQUAL "6")
     ecm_set_disabled_deprecation_versions(
-        QT 6.5
+        QT 6.6
     )
 else()
     ecm_set_disabled_deprecation_versions(
