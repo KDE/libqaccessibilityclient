@@ -36,6 +36,7 @@ set_target_properties(QAccessibilityClient PROPERTIES
 
 target_sources(QAccessibilityClient PRIVATE
     qaccessibilityclient/accessibleobject_p.cpp
+    qaccessibilityclient/accessibleobject_p.h
     qaccessibilityclient/accessibleobject.cpp
     qaccessibilityclient/accessibleobject.h
     qaccessibilityclient/registry.cpp
