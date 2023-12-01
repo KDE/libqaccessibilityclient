@@ -6,6 +6,7 @@
 
 #include "registry_p.h"
 #include "registry.h"
+#include "qaccessibilityclient_debug.h"
 
 #include <QDBusMessage>
 #include <QDBusArgument>
@@ -134,7 +135,7 @@ void RegistryPrivate::setEnabled(bool enable)
     message.setArguments(QVariantList() << QLatin1String("org.a11y.Status") << QLatin1String("IsEnabled") << QVariant::fromValue(QDBusVariant(enable)));
     QDBusMessage reply = QDBusConnection::sessionBus().call(message);
     if (reply.type() == QDBusMessage::ErrorMessage) {
-        qWarning() << "Could not set org.a11y.Status.isEnabled." << reply.errorName() << reply.errorMessage();
+        qCWarning(LIBQACCESSIBILITYCLIENT_LOG) << "Could not set org.a11y.Status.isEnabled." << reply.errorName() << reply.errorMessage();
     }
 }
 
@@ -158,7 +159,7 @@ void RegistryPrivate::setScreenReaderEnabled(bool enable)
     message.setArguments(QVariantList() << QLatin1String("org.a11y.Status") << QLatin1String("ScreenReaderEnabled") << QVariant::fromValue(QDBusVariant(enable)));
     QDBusMessage reply = QDBusConnection::sessionBus().call(message);
     if (reply.type() == QDBusMessage::ErrorMessage) {
-        qWarning() << "Could not set org.a11y.Status.ScreenReaderEnabled." << reply.errorName() << reply.errorMessage();
+        qCWarning(LIBQACCESSIBILITYCLIENT_LOG) << "Could not set org.a11y.Status.ScreenReaderEnabled." << reply.errorName() << reply.errorMessage();
     }
 }
 
@@ -180,7 +181,7 @@ void RegistryPrivate::connectionFetched()
     if (session.isConnected()) {
         bool connected = session.connect(QLatin1String("org.a11y.Bus"), QLatin1String("/org/a11y/bus"), QLatin1String("org.freedesktop.DBus.Properties"), QLatin1String("PropertiesChanged"), this, SLOT(a11yConnectionChanged(QString,QVariantMap,QStringList)));
         if (!connected)
-            qWarning() << Q_FUNC_INFO << "Failed to connect with signal org.a11y.Status.PropertiesChanged on org.a11y.Bus";
+            qCWarning(LIBQACCESSIBILITYCLIENT_LOG) << Q_FUNC_INFO << "Failed to connect with signal org.a11y.Status.PropertiesChanged on org.a11y.Bus";
     }
 
     if (m_pendingSubscriptions > 0) {
@@ -268,7 +269,7 @@ void RegistryPrivate::subscribeEventListeners(const Registry::EventListeners &li
             !activated || !deactivated || !desktopCreated || !desktopDestroyed ||
             !raised || !lowered || !moved || !resized || !shaded || !unshaded
         ) {
-            qWarning() << "Could not subscribe to Window event(s)."
+            qCWarning(LIBQACCESSIBILITYCLIENT_LOG) << "Could not subscribe to Window event(s)."
                        << "created:" << created << "destroyed:" << destroyed
                        << "closed:" << closed << "reparented:" << reparented
                        << "minimized:" << minimized << "maximized:" << maximized << "restored:" << restored
@@ -288,7 +289,7 @@ void RegistryPrivate::subscribeEventListeners(const Registry::EventListeners &li
         bool success = conn.connection().connect(
                     QString(), QLatin1String(""), QLatin1String("org.a11y.atspi.Event.Object"), QLatin1String("ChildrenChanged"),
                     this, SLOT(slotChildrenChanged(QString,int,int,QDBusVariant,QAccessibleClient::QSpiObjectReference)));
-        if (!success) qWarning() << "Could not subscribe to accessibility ChildrenChanged events.";
+        if (!success) qCWarning(LIBQACCESSIBILITYCLIENT_LOG) << "Could not subscribe to accessibility ChildrenChanged events.";
     }
 
     if (removedListeners.testFlag(Registry::VisibleDataChanged)) {
@@ -298,7 +299,7 @@ void RegistryPrivate::subscribeEventListeners(const Registry::EventListeners &li
         bool success = conn.connection().connect(
                     QString(), QLatin1String(""), QLatin1String("org.a11y.atspi.Event.Object"), QLatin1String("VisibleDataChanged"),
                     this, SLOT(slotVisibleDataChanged(QString,int,int,QDBusVariant,QAccessibleClient::QSpiObjectReference)));
-        if (!success) qWarning() << "Could not subscribe to accessibility VisibleDataChanged events.";
+        if (!success) qCWarning(LIBQACCESSIBILITYCLIENT_LOG) << "Could not subscribe to accessibility VisibleDataChanged events.";
     }
 
     if (removedListeners.testFlag(Registry::SelectionChanged)) {
@@ -308,7 +309,7 @@ void RegistryPrivate::subscribeEventListeners(const Registry::EventListeners &li
         bool success = conn.connection().connect(
                     QString(), QLatin1String(""), QLatin1String("org.a11y.atspi.Event.Object"), QLatin1String("SelectionChanged"),
                     this, SLOT(slotSelectionChanged(QString,int,int,QDBusVariant,QAccessibleClient::QSpiObjectReference)));
-        if (!success) qWarning() << "Could not subscribe to accessibility SelectionChanged events.";
+        if (!success) qCWarning(LIBQACCESSIBILITYCLIENT_LOG) << "Could not subscribe to accessibility SelectionChanged events.";
     }
 
 
@@ -319,7 +320,7 @@ void RegistryPrivate::subscribeEventListeners(const Registry::EventListeners &li
         bool success = conn.connection().connect(
                     QString(), QLatin1String(""), QLatin1String("org.a11y.atspi.Event.Object"), QLatin1String("ModelChanged"),
                     this, SLOT(slotModelChanged(QString,int,int,QDBusVariant,QAccessibleClient::QSpiObjectReference)));
-        if (!success) qWarning() << "Could not subscribe to accessibility ModelChanged events.";
+        if (!success) qCWarning(LIBQACCESSIBILITYCLIENT_LOG) << "Could not subscribe to accessibility ModelChanged events.";
     }
 
     // we need state-changed-focus for focus events
@@ -332,7 +333,7 @@ void RegistryPrivate::subscribeEventListeners(const Registry::EventListeners &li
         bool success = conn.connection().connect(
                     QString(), QLatin1String(""), QLatin1String("org.a11y.atspi.Event.Object"), QLatin1String("StateChanged"),
                     this, SLOT(slotStateChanged(QString,int,int,QDBusVariant,QAccessibleClient::QSpiObjectReference)));
-        if (!success) qWarning() << "Could not subscribe to accessibility Focus events.";
+        if (!success) qCWarning(LIBQACCESSIBILITYCLIENT_LOG) << "Could not subscribe to accessibility Focus events.";
     }
 
     if (removedListeners.testFlag(Registry::TextChanged)) {
@@ -342,7 +343,7 @@ void RegistryPrivate::subscribeEventListeners(const Registry::EventListeners &li
         bool success = conn.connection().connect(
                     QString(), QLatin1String(""), QLatin1String("org.a11y.atspi.Event.Object"), QLatin1String("TextChanged"),
                     this, SLOT(slotTextChanged(QString,int,int,QDBusVariant,QAccessibleClient::QSpiObjectReference)));
-        if (!success) qWarning() << "Could not subscribe to accessibility TextChanged events.";
+        if (!success) qCWarning(LIBQACCESSIBILITYCLIENT_LOG) << "Could not subscribe to accessibility TextChanged events.";
     }
 
     if (removedListeners.testFlag(Registry::TextCaretMoved)) {
@@ -352,7 +353,7 @@ void RegistryPrivate::subscribeEventListeners(const Registry::EventListeners &li
         bool success = conn.connection().connect(
                     QString(), QLatin1String(""), QLatin1String("org.a11y.atspi.Event.Object"), QLatin1String("TextCaretMoved"),
                     this, SLOT(slotTextCaretMoved(QString,int,int,QDBusVariant,QAccessibleClient::QSpiObjectReference)));
-        if (!success) qWarning() << "Could not subscribe to accessibility TextCaretMoved events.";
+        if (!success) qCWarning(LIBQACCESSIBILITYCLIENT_LOG) << "Could not subscribe to accessibility TextCaretMoved events.";
     }
 
     if (removedListeners.testFlag(Registry::TextSelectionChanged)) {
@@ -362,7 +363,7 @@ void RegistryPrivate::subscribeEventListeners(const Registry::EventListeners &li
         bool success = conn.connection().connect(
                     QString(), QLatin1String(""), QLatin1String("org.a11y.atspi.Event.Object"), QLatin1String("TextSelectionChanged"),
                     this, SLOT(slotTextSelectionChanged(QString,int,int,QDBusVariant,QAccessibleClient::QSpiObjectReference)));
-        if (!success) qWarning() << "Could not subscribe to accessibility TextSelectionChanged events.";
+        if (!success) qCWarning(LIBQACCESSIBILITYCLIENT_LOG) << "Could not subscribe to accessibility TextSelectionChanged events.";
     }
 
     if (removedListeners.testFlag(Registry::PropertyChanged)) {
@@ -372,7 +373,7 @@ void RegistryPrivate::subscribeEventListeners(const Registry::EventListeners &li
         bool success = conn.connection().connect(
                     QString(), QLatin1String(""), QLatin1String("org.a11y.atspi.Event.Object"), QLatin1String("PropertyChange"),
                     this, SLOT(slotPropertyChange(QString,int,int,QDBusVariant,QAccessibleClient::QSpiObjectReference)));
-        if (!success) qWarning() << "Could not subscribe to accessibility PropertyChange events.";
+        if (!success) qCWarning(LIBQACCESSIBILITYCLIENT_LOG) << "Could not subscribe to accessibility PropertyChange events.";
     }
 
     for (const QString &subscription : std::as_const(newSubscriptions)) {
@@ -441,7 +442,7 @@ Registry::EventListeners RegistryPrivate::eventListeners() const
 void RegistryPrivate::slotSubscribeEventListenerFinished(QDBusPendingCallWatcher *call)
 {
     if (call->isError()) {
-        qWarning() << "Could not subscribe to accessibility event: " << call->error().type() << call->error().message();
+        qCWarning(LIBQACCESSIBILITYCLIENT_LOG) << "Could not subscribe to accessibility event: " << call->error().type() << call->error().message();
     }
     call->deleteLater();
 }
@@ -476,7 +477,7 @@ AccessibleObject RegistryPrivate::parentAccessible(const AccessibleObject &objec
     arg >> ref;
 
     if (ref.path.path() == object.d->path) {
-        qWarning() << "WARNING: Accessible claims to be its own parent: " << object;
+        qCWarning(LIBQACCESSIBILITYCLIENT_LOG) << "WARNING: Accessible claims to be its own parent: " << object;
         return AccessibleObject();
     }
 
@@ -501,10 +502,10 @@ int RegistryPrivate::indexInParent(const AccessibleObject &object) const
     if (!reply.isValid()) {
         QDBusReply<uint> reply2 = conn.connection().call(message);
         if (reply2.isValid()) {
-            qWarning() << "Found old api returning uint in GetIndexInParent." << reply.error().message();
+            qCWarning(LIBQACCESSIBILITYCLIENT_LOG) << "Found old api returning uint in GetIndexInParent." << reply.error().message();
             return static_cast<int>(reply.value());
         }
-        qWarning() << "Could not access index in parent." << reply.error().message();
+        qCWarning(LIBQACCESSIBILITYCLIENT_LOG) << "Could not access index in parent." << reply.error().message();
         return -1;
     }
     return reply.value();
@@ -520,7 +521,7 @@ AccessibleObject RegistryPrivate::child(const AccessibleObject &object, int inde
 
     QDBusReply<QSpiObjectReference> reply = conn.connection().call(message);
     if (!reply.isValid()) {
-        qWarning() << "Could not access child." << reply.error().message();
+        qCWarning(LIBQACCESSIBILITYCLIENT_LOG) << "Could not access child." << reply.error().message();
         return AccessibleObject();
     }
     const QSpiObjectReference child = reply.value();
@@ -536,7 +537,7 @@ QList<AccessibleObject> RegistryPrivate::children(const AccessibleObject &object
 
     QDBusReply<QSpiObjectReferenceList> reply = conn.connection().call(message, QDBus::Block, 500);
     if (!reply.isValid()) {
-        qWarning() << "Could not access children." << reply.error().message();
+        qCWarning(LIBQACCESSIBILITYCLIENT_LOG) << "Could not access children." << reply.error().message();
         return accs;
     }
 
@@ -586,7 +587,7 @@ AccessibleObject::Role RegistryPrivate::role(const AccessibleObject &object) con
 
     QDBusReply<uint> reply = conn.connection().call(message);
     if (!reply.isValid()) {
-        qWarning() << "Could not access role." << reply.error().message();
+        qCWarning(LIBQACCESSIBILITYCLIENT_LOG) << "Could not access role." << reply.error().message();
         return AccessibleObject::NoRole;
     }
     return atspiRoleToRole(static_cast<AtspiRole>(reply.value()));
@@ -710,7 +711,7 @@ QString RegistryPrivate::roleName(const AccessibleObject &object) const
 
     QDBusReply<QString> reply = conn.connection().call(message);
     if (!reply.isValid()) {
-        qWarning() << "Could not access roleName." << reply.error().message();
+        qCWarning(LIBQACCESSIBILITYCLIENT_LOG) << "Could not access roleName." << reply.error().message();
         return QString();
     }
     return reply.value();
@@ -723,7 +724,7 @@ QString RegistryPrivate::localizedRoleName(const AccessibleObject &object) const
 
     QDBusReply<QString> reply = conn.connection().call(message);
     if (!reply.isValid()) {
-        qWarning() << "Could not access localizedRoleName." << reply.error().message();\
+        qCWarning(LIBQACCESSIBILITYCLIENT_LOG) << "Could not access localizedRoleName." << reply.error().message();\
         return QString();
     }
     return reply.value();
@@ -742,11 +743,11 @@ quint64 RegistryPrivate::state(const AccessibleObject &object) const
 
     QDBusReply<QVector<quint32> > reply = conn.connection().call(message);
     if (!reply.isValid()) {
-        qWarning() << "Could not access state." << reply.error().message();
+        qCWarning(LIBQACCESSIBILITYCLIENT_LOG) << "Could not access state." << reply.error().message();
         return 0;
     }
     if (reply.value().size() < 2) {
-        qWarning() << "Did not receive expected reply.";
+        qCWarning(LIBQACCESSIBILITYCLIENT_LOG) << "Did not receive expected reply.";
         return 0;
     }
     quint32 low = reply.value().at(0);
@@ -766,7 +767,7 @@ int RegistryPrivate::layer(const AccessibleObject &object) const
                 object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Component"), QLatin1String("GetLayer"));
     QDBusReply<uint> reply = conn.connection().call(message);
     if (!reply.isValid()) {
-        qWarning() << "Could not access layer." << reply.error().message();
+        qCWarning(LIBQACCESSIBILITYCLIENT_LOG) << "Could not access layer." << reply.error().message();
         return 1;
     }
     return reply.value();
@@ -778,7 +779,7 @@ int RegistryPrivate::mdiZOrder(const AccessibleObject &object) const
                 object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Component"), QLatin1String("GetMDIZOrder"));
     QDBusReply<short> reply = conn.connection().call(message);
     if (!reply.isValid()) {
-        qWarning() << "Could not access mdiZOrder." << reply.error().message();
+        qCWarning(LIBQACCESSIBILITYCLIENT_LOG) << "Could not access mdiZOrder." << reply.error().message();
         return 0;
     }
     return reply.value();
@@ -790,7 +791,7 @@ double RegistryPrivate::alpha(const AccessibleObject &object) const
                 object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Component"), QLatin1String("GetAlpha"));
     QDBusReply<double> reply = conn.connection().call(message);
     if (!reply.isValid()) {
-        qWarning() << "Could not access alpha." << reply.error().message();
+        qCWarning(LIBQACCESSIBILITYCLIENT_LOG) << "Could not access alpha." << reply.error().message();
         return 1.0;
     }
     return reply.value();
@@ -807,7 +808,7 @@ QRect RegistryPrivate::boundingRect(const AccessibleObject &object) const
 
     QDBusReply< QRect > reply = conn.connection().call(message);
     if(!reply.isValid()){
-        qWarning() << "Could not get extents." << reply.error().message();
+        qCWarning(LIBQACCESSIBILITYCLIENT_LOG) << "Could not get extents." << reply.error().message();
         return QRect();
     }
 
@@ -832,7 +833,7 @@ QRect RegistryPrivate::characterRect(const AccessibleObject &object, int offset)
         if (reply.error().type() == QDBusError::InvalidSignature) {
             QDBusMessage reply2 = conn.connection().call(message);
             if (reply2.signature() != QLatin1String("iiii")) {
-                qWarning() << "Could not get Character Extents. " << reply.error().message();
+                qCWarning(LIBQACCESSIBILITYCLIENT_LOG) << "Could not get Character Extents. " << reply.error().message();
                 return QRect();
             }
             QList<QVariant> args = reply2.arguments();
@@ -858,7 +859,7 @@ AccessibleObject::Interfaces RegistryPrivate::supportedInterfaces(const Accessib
 
     QDBusReply<QStringList > reply = conn.connection().call(message);
     if(!reply.isValid()){
-        qWarning() << "Could not get Interfaces. " << reply.error().message();
+        qCWarning(LIBQACCESSIBILITYCLIENT_LOG) << "Could not get Interfaces. " << reply.error().message();
         return AccessibleObject::NoInterface;
     }
 
@@ -878,14 +879,14 @@ AccessibleObject::Interfaces RegistryPrivate::supportedInterfaces(const Accessib
 int RegistryPrivate::caretOffset(const AccessibleObject &object) const
 {
     QVariant offset= getProperty(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Text"), QLatin1String("CaretOffset"));
-    if (offset.isNull()) qWarning() << "Could not get caret offset";
+    if (offset.isNull()) qCWarning(LIBQACCESSIBILITYCLIENT_LOG) << "Could not get caret offset";
     return offset.toInt();
 }
 
 int RegistryPrivate::characterCount(const AccessibleObject &object) const
 {
     QVariant count = getProperty(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Text"), QLatin1String("CharacterCount"));
-    if (count.isNull()) qWarning() << "Could not get character count";
+    if (count.isNull()) qCWarning(LIBQACCESSIBILITYCLIENT_LOG) << "Could not get character count";
     return count.toInt();
 }
 
@@ -895,7 +896,7 @@ QList< QPair<int,int> > RegistryPrivate::textSelections(const AccessibleObject &
     QDBusMessage message = QDBusMessage::createMethodCall(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Text"), QLatin1String("GetNSelections"));
     QDBusReply<int> reply = conn.connection().call(message);
     if (!reply.isValid()) {
-        qWarning() << "Could not access GetNSelections." << reply.error().message();
+        qCWarning(LIBQACCESSIBILITYCLIENT_LOG) << "Could not access GetNSelections." << reply.error().message();
         return result;
     }
     int count = reply.value();
@@ -905,7 +906,7 @@ QList< QPair<int,int> > RegistryPrivate::textSelections(const AccessibleObject &
         m = conn.connection().call(m);
         QList<QVariant> args = m.arguments();
         if (args.count() < 2) {
-            qWarning() << "Invalid number of arguments. Expected=2 Actual=" << args.count();
+            qCWarning(LIBQACCESSIBILITYCLIENT_LOG) << "Invalid number of arguments. Expected=2 Actual=" << args.count();
             continue;
         }
         int startOffset = args[0].toInt();
@@ -922,7 +923,7 @@ void RegistryPrivate::setTextSelections(const AccessibleObject &object, const QL
     QDBusMessage message = QDBusMessage::createMethodCall(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Text"), QLatin1String("GetNSelections"));
     QDBusReply<int> reply = conn.connection().call(message);
     if (!reply.isValid()) {
-        qWarning() << "Could not access GetNSelections." << reply.error().message();
+        qCWarning(LIBQACCESSIBILITYCLIENT_LOG) << "Could not access GetNSelections." << reply.error().message();
         return;
     }
     int count = reply.value();
@@ -934,7 +935,7 @@ void RegistryPrivate::setTextSelections(const AccessibleObject &object, const QL
         m.setArguments(QVariantList() << i << p.first << p.second);
         QDBusReply<bool> r = conn.connection().call(m);
         if (!r.isValid()) {
-            qWarning() << "Failed call text.SetSelection." << r.error().message();
+            qCWarning(LIBQACCESSIBILITYCLIENT_LOG) << "Failed call text.SetSelection." << r.error().message();
             continue;
         }
     }
@@ -944,7 +945,7 @@ void RegistryPrivate::setTextSelections(const AccessibleObject &object, const QL
         m.setArguments(QVariantList() << k);
         QDBusReply<bool> r = conn.connection().call(m);
         if (!r.isValid()) {
-            qWarning() << "Failed call text.RemoveSelection." << r.error().message();
+            qCWarning(LIBQACCESSIBILITYCLIENT_LOG) << "Failed call text.RemoveSelection." << r.error().message();
             continue;
         }
     }
@@ -956,7 +957,7 @@ void RegistryPrivate::setTextSelections(const AccessibleObject &object, const QL
         m.setArguments(QVariantList() << p.first << p.second);
         QDBusReply<bool> r = conn.connection().call(m);
         if (!r.isValid()) {
-            qWarning() << "Failed call text.AddSelection." << r.error().message();
+            qCWarning(LIBQACCESSIBILITYCLIENT_LOG) << "Failed call text.AddSelection." << r.error().message();
             continue;
         }
     }
@@ -968,7 +969,7 @@ QString RegistryPrivate::text(const AccessibleObject &object, int startOffset, i
     message.setArguments(QVariantList() << startOffset << endOffset);
     QDBusReply<QString> reply = conn.connection().call(message);
     if (!reply.isValid()) {
-        qWarning() << "Could not access text." << reply.error().message();
+        qCWarning(LIBQACCESSIBILITYCLIENT_LOG) << "Could not access text." << reply.error().message();
         return QString();
     }
     return reply.value();
@@ -980,7 +981,7 @@ QString RegistryPrivate::textWithBoundary(const AccessibleObject &object, int of
     message.setArguments(QVariantList() << offset << static_cast<AtspiTextBoundaryType>(boundary));
     QDBusMessage reply = conn.connection().call(message);
     if (reply.type() != QDBusMessage::ReplyMessage || reply.signature() != QLatin1String("sii")) {
-        qWarning() << "Could not access text." << reply.errorMessage();
+        qCWarning(LIBQACCESSIBILITYCLIENT_LOG) << "Could not access text." << reply.errorMessage();
         if (startOffset)
             *startOffset = 0;
         if (endOffset)
@@ -1000,7 +1001,7 @@ bool RegistryPrivate::setText(const AccessibleObject &object, const QString &tex
     message.setArguments(QVariantList() << text);
     QDBusReply<bool> reply = conn.connection().call(message);
     if (!reply.isValid()) {
-        qWarning() << "Could not set text." << reply.error().message();
+        qCWarning(LIBQACCESSIBILITYCLIENT_LOG) << "Could not set text." << reply.error().message();
         return false;
     }
     return reply.value();
@@ -1012,7 +1013,7 @@ bool RegistryPrivate::insertText(const AccessibleObject &object, const QString &
     message.setArguments(QVariantList() << position << text << length);
     QDBusReply<bool> reply = conn.connection().call(message);
     if (!reply.isValid()) {
-        qWarning() << "Could not insert text." << reply.error().message();
+        qCWarning(LIBQACCESSIBILITYCLIENT_LOG) << "Could not insert text." << reply.error().message();
         return false;
     }
     return reply.value();
@@ -1032,7 +1033,7 @@ bool RegistryPrivate::cutText(const AccessibleObject &object, int startPos, int 
     message.setArguments(QVariantList() << startPos << endPos);
     QDBusReply<bool> reply = conn.connection().call(message);
     if (!reply.isValid()) {
-        qWarning() << "Could not cut text." << reply.error().message();
+        qCWarning(LIBQACCESSIBILITYCLIENT_LOG) << "Could not cut text." << reply.error().message();
         return false;
     }
     return reply.value();
@@ -1044,7 +1045,7 @@ bool RegistryPrivate::deleteText(const AccessibleObject &object, int startPos, i
     message.setArguments(QVariantList() << startPos << endPos);
     QDBusReply<bool> reply = conn.connection().call(message);
     if (!reply.isValid()) {
-        qWarning() << "Could not delete text." << reply.error().message();
+        qCWarning(LIBQACCESSIBILITYCLIENT_LOG) << "Could not delete text." << reply.error().message();
         return false;
     }
     return reply.value();
@@ -1056,7 +1057,7 @@ bool RegistryPrivate::pasteText(const AccessibleObject &object, int position)
     message.setArguments(QVariantList() << position);
     QDBusReply<bool> reply = conn.connection().call(message);
     if (!reply.isValid()) {
-        qWarning() << "Could not paste text." << reply.error().message();
+        qCWarning(LIBQACCESSIBILITYCLIENT_LOG) << "Could not paste text." << reply.error().message();
         return false;
     }
     return reply.value();
@@ -1068,7 +1069,7 @@ AccessibleObject RegistryPrivate::application(const AccessibleObject &object) co
             object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Accessible"), QLatin1String("GetApplication"));
     QDBusReply<QSpiObjectReference> reply = conn.connection().call(message);
     if (!reply.isValid()) {
-        qWarning() << "Could not access application." << reply.error().message();
+        qCWarning(LIBQACCESSIBILITYCLIENT_LOG) << "Could not access application." << reply.error().message();
         return AccessibleObject();
     }
     const QSpiObjectReference child = reply.value();
@@ -1107,7 +1108,7 @@ QString RegistryPrivate::appLocale(const AccessibleObject &object, uint lctype) 
 
     QDBusReply<QString> reply = conn.connection().call(message, QDBus::Block, 500);
     if (!reply.isValid()) {
-        qWarning() << "Could not access appLocale." << reply.error().message();
+        qCWarning(LIBQACCESSIBILITYCLIENT_LOG) << "Could not access appLocale." << reply.error().message();
         return QString();
     }
     return reply.value();
@@ -1118,7 +1119,7 @@ QString RegistryPrivate::appBusAddress(const AccessibleObject &object) const
     QDBusMessage message = QDBusMessage::createMethodCall(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Application"), QLatin1String("GetApplicationBusAddress"));
     QDBusReply<QString> reply = conn.connection().call(message);
     if (!reply.isValid()) {
-        qWarning() << Q_FUNC_INFO << "Could not access application bus address. Error: " << reply.error().message() << " in response to: " << message;
+        qCWarning(LIBQACCESSIBILITYCLIENT_LOG) << Q_FUNC_INFO << "Could not access application bus address. Error: " << reply.error().message() << " in response to: " << message;
         return QString();
     }
     return reply.value();
@@ -1159,7 +1160,7 @@ bool RegistryPrivate::setCurrentValue(const AccessibleObject &object, double val
 
     QDBusReply<bool> reply = conn.connection().call(message);
     if (!reply.isValid()) {
-        qWarning() << "Could not set text." << reply.error().message();
+        qCWarning(LIBQACCESSIBILITYCLIENT_LOG) << "Could not set text." << reply.error().message();
         return false;
     }
     return reply.value();
@@ -1173,7 +1174,7 @@ QList<AccessibleObject> RegistryPrivate::selection(const AccessibleObject &objec
         QDBusMessage message = QDBusMessage::createMethodCall(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Selection"), QLatin1String("GetSelectedChild"));
         QDBusReply<QSpiObjectReference> reply = conn.connection().call(message);
         if (!reply.isValid()) {
-            qWarning() << "Could not access selection." << reply.error().message();
+            qCWarning(LIBQACCESSIBILITYCLIENT_LOG) << "Could not access selection." << reply.error().message();
             return QList<AccessibleObject>();
         }
         const QSpiObjectReference ref = reply.value();
@@ -1187,7 +1188,7 @@ QString RegistryPrivate::imageDescription(const AccessibleObject &object) const
     QDBusMessage message = QDBusMessage::createMethodCall(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Image"), QLatin1String("ImageDescription"));
     QDBusReply<QString> reply = conn.connection().call(message);
     if (!reply.isValid()) {
-        qWarning() << "Could not access imageDescription." << reply.error().message();
+        qCWarning(LIBQACCESSIBILITYCLIENT_LOG) << "Could not access imageDescription." << reply.error().message();
         return QString();
     }
     return reply.value();
@@ -1198,7 +1199,7 @@ QString RegistryPrivate::imageLocale(const AccessibleObject &object) const
     QDBusMessage message = QDBusMessage::createMethodCall(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Image"), QLatin1String("ImageLocale"));
     QDBusReply<QString> reply = conn.connection().call(message, QDBus::Block, 500);
     if (!reply.isValid()) {
-        qWarning() << "Could not access imageLocale." << reply.error().message();
+        qCWarning(LIBQACCESSIBILITYCLIENT_LOG) << "Could not access imageLocale." << reply.error().message();
         return QString();
     }
     return reply.value();
@@ -1213,7 +1214,7 @@ QRect RegistryPrivate::imageRect(const AccessibleObject &object) const
     message.setArguments(args);
     QDBusReply<QRect> reply = conn.connection().call(message);
     if (!reply.isValid()) {
-        qWarning() << "Could not access imageRect." << reply.error().message();
+        qCWarning(LIBQACCESSIBILITYCLIENT_LOG) << "Could not access imageRect." << reply.error().message();
         return QRect();
     }
     return QRect( reply.value() );
@@ -1226,7 +1227,7 @@ QVector< QSharedPointer<QAction> > RegistryPrivate::actions(const AccessibleObje
 
     QDBusReply<QSpiActionArray> reply = conn.connection().call(message, QDBus::Block, 500);
     if (!reply.isValid()) {
-        qWarning() << "Could not access actions." << reply.error().message();
+        qCWarning(LIBQACCESSIBILITYCLIENT_LOG) << "Could not access actions." << reply.error().message();
         return QVector< QSharedPointer<QAction> >();
     }
 
@@ -1265,14 +1266,14 @@ void RegistryPrivate::actionTriggered(const QString &action)
 
     QDBusReply<bool> reply = conn.connection().call(message, QDBus::Block, 500);
     if (!reply.isValid()) {
-        qWarning() << "Could not execute action=" << action << reply.error().message();
+        qCWarning(LIBQACCESSIBILITYCLIENT_LOG) << "Could not execute action=" << action << reply.error().message();
         return;
     }
 
     if (reply.value()) {
         qDebug() << "Successful executed action=" << action;
     } else {
-        qWarning() << "Failed to execute action=" << action;
+        qCWarning(LIBQACCESSIBILITYCLIENT_LOG) << "Failed to execute action=" << action;
     }
 }
 
@@ -1469,7 +1470,7 @@ void RegistryPrivate::slotChildrenChanged(const QString &state, int detail1, int
 //    qDebug() << Q_FUNC_INFO << state << detail1 << detail2 << args.variant() << reference.path.path();
     QAccessibleClient::AccessibleObject parentAccessible = accessibleFromContext();
     if (!parentAccessible.isValid()) {
-        qWarning() << Q_FUNC_INFO << "Children change with invalid parent." << reference.path.path();
+        qCWarning(LIBQACCESSIBILITYCLIENT_LOG) << Q_FUNC_INFO << "Children change with invalid parent." << reference.path.path();
         return;
     }
 
@@ -1479,7 +1480,7 @@ void RegistryPrivate::slotChildrenChanged(const QString &state, int detail1, int
     } else if (state == QLatin1String("remove")) {
         Q_EMIT q->childRemoved(parentAccessible, index);
     } else {
-        qWarning() << "Invalid state in ChildrenChanged." << state;
+        qCWarning(LIBQACCESSIBILITYCLIENT_LOG) << "Invalid state in ChildrenChanged." << state;
     }
 }
 

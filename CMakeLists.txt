@@ -17,6 +17,7 @@ include(KDECompilerSettings NO_POLICY_SCOPE)
 include(ECMSetupVersion)
 include(ECMGenerateExportHeader)
 include(ECMDeprecationSettings)
+include(ECMQtDeclareLoggingCategory)
 include(CMakePackageConfigHelpers)
 
 if(BUILD_TESTING)
@@ -50,5 +51,11 @@ if(BUILD_TESTING)
     add_subdirectory(tests)
     add_subdirectory(examples)
 endif()
+
+ecm_qt_install_logging_categories(
+        EXPORT LIBQACCESSIBILITYCLIENT
+        FILE libqaccessibilityclient.categories
+        DESTINATION ${KDE_INSTALL_LOGGINGCATEGORIESDIR}
+        )
 
 feature_summary(WHAT REQUIRED_PACKAGES_NOT_FOUND FATAL_ON_MISSING_REQUIRED_PACKAGES)

@@ -24,6 +24,9 @@ ecm_setup_version(${PROJECT_VERSION}
 
 add_library(QAccessibilityClient SHARED)
 
+ecm_qt_declare_logging_category(QAccessibilityClient HEADER qaccessibilityclient_debug.h IDENTIFIER LIBQACCESSIBILITYCLIENT_LOG
+    CATEGORY_NAME org.kde.qaccessibilityclient DESCRIPTION "QAccessibilityClient" EXPORT LIBQACCESSIBILITYCLIENT)
+
 set_target_properties(QAccessibilityClient PROPERTIES
     OUTPUT_NAME ${QACCESSIBILITYCLIENT_LIB_NAME}
     EXPORT_NAME ${QACCESSIBILITYCLIENT_TARGET_EXPORT_NAME}
