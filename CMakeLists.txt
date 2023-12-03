@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16.0)
 
-project(QAccessibilityClient VERSION "0.5.0")
+project(QAccessibilityClient VERSION "0.6.0")
 
 include(FeatureSummary)
 set(KF5_MIN_VERSION "5.91.0")
