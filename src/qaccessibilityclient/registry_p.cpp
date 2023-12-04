@@ -747,9 +747,9 @@ quint64 RegistryPrivate::state(const AccessibleObject &object) const
         qCWarning(LIBQACCESSIBILITYCLIENT_LOG) << "Did not receive expected reply.";
         return 0;
     }
-    quint32 low = reply.value().at(0);
-    quint32 high = reply.value().at(1);
-    quint64 state = low + (static_cast<quint64>(high) << 32);
+    const quint32 low = reply.value().at(0);
+    const quint32 high = reply.value().at(1);
+    const quint64 state = low + (static_cast<quint64>(high) << 32);
 
     if (m_cache) {
         m_cache->setState(object, state);
@@ -1075,19 +1075,19 @@ AccessibleObject RegistryPrivate::application(const AccessibleObject &object) co
 
 QString RegistryPrivate::appToolkitName(const AccessibleObject &object) const
 {
-    QVariant v = getProperty(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Application"), QLatin1String("ToolkitName"));
+    const QVariant v = getProperty(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Application"), QLatin1String("ToolkitName"));
     return v.toString();
 }
 
 QString RegistryPrivate::appVersion(const AccessibleObject &object) const
 {
-    QVariant v = getProperty(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Application"), QLatin1String("Version"));
+    const QVariant v = getProperty(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Application"), QLatin1String("Version"));
     return v.toString();
 }
 
 int RegistryPrivate::appId(const AccessibleObject &object) const
 {
-    QVariant v = getProperty(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Application"), QLatin1String("Id"));
+    const QVariant v = getProperty(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Application"), QLatin1String("Id"));
     return v.toInt();
 }
 
@@ -1124,25 +1124,25 @@ QString RegistryPrivate::appBusAddress(const AccessibleObject &object) const
 
 double RegistryPrivate::minimumValue(const AccessibleObject &object) const
 {
-    QVariant v = getProperty(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Value"), QLatin1String("MinimumValue"));
+    const QVariant v = getProperty(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Value"), QLatin1String("MinimumValue"));
     return v.toDouble();
 }
 
 double RegistryPrivate::maximumValue(const AccessibleObject &object) const
 {
-    QVariant v = getProperty(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Value"), QLatin1String("MaximumValue"));
+    const QVariant v = getProperty(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Value"), QLatin1String("MaximumValue"));
     return v.toDouble();
 }
 
 double RegistryPrivate::minimumValueIncrement(const AccessibleObject &object) const
 {
-    QVariant v = getProperty(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Value"), QLatin1String("MinimumIncrement"));
+    const QVariant v = getProperty(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Value"), QLatin1String("MinimumIncrement"));
     return v.toDouble();
 }
 
 double RegistryPrivate::currentValue(const AccessibleObject &object) const
 {
-    QVariant v = getProperty(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Value"), QLatin1String("CurrentValue"));
+    const QVariant v = getProperty(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Value"), QLatin1String("CurrentValue"));
     return v.toDouble();
 }
 
@@ -1193,8 +1193,8 @@ QString RegistryPrivate::imageDescription(const AccessibleObject &object) const
 
 QString RegistryPrivate::imageLocale(const AccessibleObject &object) const
 {
-    QDBusMessage message = QDBusMessage::createMethodCall(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Image"), QLatin1String("ImageLocale"));
-    QDBusReply<QString> reply = conn.connection().call(message, QDBus::Block, 500);
+    const QDBusMessage message = QDBusMessage::createMethodCall(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Image"), QLatin1String("ImageLocale"));
+    const QDBusReply<QString> reply = conn.connection().call(message, QDBus::Block, 500);
     if (!reply.isValid()) {
         qCWarning(LIBQACCESSIBILITYCLIENT_LOG) << "Could not access imageLocale." << reply.error().message();
         return QString();
@@ -1219,21 +1219,21 @@ QRect RegistryPrivate::imageRect(const AccessibleObject &object) const
 
 QVector< QSharedPointer<QAction> > RegistryPrivate::actions(const AccessibleObject &object)
 {
-    QDBusMessage message = QDBusMessage::createMethodCall (
+    const QDBusMessage message = QDBusMessage::createMethodCall (
                 object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Action"), QLatin1String("GetActions"));
 
-    QDBusReply<QSpiActionArray> reply = conn.connection().call(message, QDBus::Block, 500);
+    const QDBusReply<QSpiActionArray> reply = conn.connection().call(message, QDBus::Block, 500);
     if (!reply.isValid()) {
         qCWarning(LIBQACCESSIBILITYCLIENT_LOG) << "Could not access actions." << reply.error().message();
         return QVector< QSharedPointer<QAction> >();
     }
 
-    QSpiActionArray actionArray = reply.value();
+    const QSpiActionArray actionArray = reply.value();
     QVector< QSharedPointer<QAction> > list;
     for(int i = 0; i < actionArray.count(); ++i) {
         const QSpiAction &a = actionArray[i];
         QAction *action = new QAction();
-        QString id = QString(QLatin1String("%1;%2;%3")).arg(object.d->service).arg(object.d->path).arg(i);
+        const QString id = QString(QLatin1String("%1;%2;%3")).arg(object.d->service).arg(object.d->path).arg(i);
         action->setObjectName(id);
         action->setText(a.name);
         action->setWhatsThis(a.description);
@@ -1248,11 +1248,11 @@ QVector< QSharedPointer<QAction> > RegistryPrivate::actions(const AccessibleObje
 
 void RegistryPrivate::actionTriggered(const QString &action)
 {
-    QStringList actionParts = action.split(QLatin1Char(';'));
+    const QStringList actionParts = action.split(QLatin1Char(';'));
     Q_ASSERT(actionParts.count() == 3);
-    QString service = actionParts[0];
-    QString path = actionParts[1];
-    int index = actionParts[2].toInt();
+    const QString service = actionParts[0];
+    const QString path = actionParts[1];
+    const int index = actionParts[2].toInt();
 
     QDBusMessage message = QDBusMessage::createMethodCall (
                 service, path, QLatin1String("org.a11y.atspi.Action"), QLatin1String("DoAction"));
@@ -1284,11 +1284,11 @@ QVariant RegistryPrivate::getProperty(const QString &service, const QString &pat
                 service, path, QLatin1String("org.freedesktop.DBus.Properties"), QLatin1String("Get"));
 
     message.setArguments(args);
-    QDBusMessage reply = conn.connection().call(message, QDBus::Block, 500);
+    const QDBusMessage reply = conn.connection().call(message, QDBus::Block, 500);
     if (reply.arguments().isEmpty())
         return QVariant();
 
-    QDBusVariant v = reply.arguments().at(0).value<QDBusVariant>();
+    const QDBusVariant v = reply.arguments().at(0).value<QDBusVariant>();
     return v.variant();
 }
 
@@ -1471,7 +1471,7 @@ void RegistryPrivate::slotChildrenChanged(const QString &state, int detail1, int
         return;
     }
 
-    int index = detail1;
+    const int index = detail1;
     if (state == QLatin1String("add")) {
         Q_EMIT q->childAdded(parentAccessible, index);
     } else if (state == QLatin1String("remove")) {
@@ -1508,8 +1508,8 @@ void RegistryPrivate::slotTextSelectionChanged(const QString &/*state*/, int /*d
 
 void RegistryPrivate::slotTextChanged(const QString &change, int start, int end, const QDBusVariant &textVariant, const QSpiObjectReference &reference)
 {
-    AccessibleObject object(accessibleFromContext());
-    QString text = textVariant.variant().toString();
+    const AccessibleObject object(accessibleFromContext());
+    const QString text = textVariant.variant().toString();
 
     if (change == QLatin1String("insert")) {
         Q_EMIT q->textInserted(object, text, start, end);
