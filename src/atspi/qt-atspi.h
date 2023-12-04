@@ -68,5 +68,5 @@ Q_DECLARE_METATYPE(QAccessibleClient::QSpiObjectReference);
 Q_DECLARE_METATYPE(QAccessibleClient::QSpiObjectReferenceList);
 Q_DECLARE_METATYPE(QAccessibleClient::QSpiAction)
 Q_DECLARE_METATYPE(QAccessibleClient::QSpiActionArray)
-
+QDebug operator<<(QDebug d, const QAccessibleClient::QSpiAction &t);
 #endif

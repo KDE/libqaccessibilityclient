@@ -66,3 +66,10 @@ const QDBusArgument &operator>>(const QDBusArgument &argument, QAccessibleClient
 }
 
 }
+QDebug operator<<(QDebug d, const QAccessibleClient::QSpiAction &t)
+{
+    d << "name " << t.name;
+    d << "description " << t.description;
+    d << "keyBinding " << t.keyBinding;
+    return d;
+}
