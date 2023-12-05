@@ -12,6 +12,7 @@
 #include <QList>
 #include <QString>
 #include <QDBusArgument>
+#include <QDebug>
 
 namespace QAccessibleClient {
 
