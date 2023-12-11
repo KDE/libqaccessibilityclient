@@ -1230,15 +1230,17 @@ QVector< QSharedPointer<QAction> > RegistryPrivate::actions(const AccessibleObje
 
     const QSpiActionArray actionArray = reply.value();
     QVector< QSharedPointer<QAction> > list;
-    for(int i = 0; i < actionArray.count(); ++i) {
+    for(int i = 0, total = actionArray.count(); i < total; ++i) {
         const QSpiAction &a = actionArray[i];
         QAction *action = new QAction();
-        const QString id = QString(QLatin1String("%1;%2;%3")).arg(object.d->service).arg(object.d->path).arg(i);
+        const QString id = QStringLiteral("%1;%2;%3").arg(object.d->service).arg(object.d->path).arg(i);
         action->setObjectName(id);
         action->setText(a.name);
         action->setWhatsThis(a.description);
-        QKeySequence shortcut(a.keyBinding);
-        action->setShortcut(shortcut);
+        if (!a.keyBinding.isEmpty()) {
+            const QKeySequence shortcut(a.keyBinding);
+            action->setShortcut(std::move(shortcut));
+        }
         m_actionMapper.setMapping(action, id);
         connect(action, SIGNAL(triggered()), &m_actionMapper, SLOT(map()));
         list.append(QSharedPointer<QAction>(action));
@@ -1250,9 +1252,9 @@ void RegistryPrivate::actionTriggered(const QString &action)
 {
     const QStringList actionParts = action.split(QLatin1Char(';'));
     Q_ASSERT(actionParts.count() == 3);
-    const QString service = actionParts[0];
-    const QString path = actionParts[1];
-    const int index = actionParts[2].toInt();
+    const QString service = actionParts.at(0);
+    const QString path = actionParts.at(1);
+    const int index = actionParts.at(2).toInt();
 
     QDBusMessage message = QDBusMessage::createMethodCall (
                 service, path, QLatin1String("org.a11y.atspi.Action"), QLatin1String("DoAction"));
