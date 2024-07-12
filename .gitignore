@@ -2,6 +2,7 @@
 CMakeLists.txt.user*
 *.kdev4
 build*/
+/compile_commands.json
 
 callgrind.out.*
 pcviewer.cfg
