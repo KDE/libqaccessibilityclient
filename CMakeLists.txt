@@ -19,6 +19,7 @@ include(ECMGenerateExportHeader)
 include(ECMDeprecationSettings)
 include(ECMQtDeclareLoggingCategory)
 include(CMakePackageConfigHelpers)
+include(ECMGenerateQDoc)
 
 if(BUILD_TESTING)
     enable_testing()
