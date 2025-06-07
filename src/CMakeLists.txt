@@ -1,16 +1,8 @@
-if (QT_MAJOR_VERSION STREQUAL "5")
-    set(QACCESSIBILITYCLIENT_LIB_NAME "qaccessibilityclient-qt5")
-    set(QACCESSIBILITYCLIENT_CMAKECONFIG_NAME "QAccessibilityClient")
-    set(QACCESSIBILITYCLIENT_CMAKECONFIG_TARGETS_FILENAME "QAccessibilityClient")
-    set(QACCESSIBILITYCLIENT_TARGET_EXPORT_NAME "qaccessibilityclient-qt5")
-    set(QACCESSIBILITYCLIENT_INSTALL_INCLUDEDIR "${KDE_INSTALL_INCLUDEDIR}/QAccessibilityClient")
-else()
-    set(QACCESSIBILITYCLIENT_LIB_NAME "qaccessibilityclient-qt6")
-    set(QACCESSIBILITYCLIENT_CMAKECONFIG_NAME "QAccessibilityClient6")
-    set(QACCESSIBILITYCLIENT_CMAKECONFIG_TARGETS_FILENAME "QAccessibilityClient6Targets")
-    set(QACCESSIBILITYCLIENT_TARGET_EXPORT_NAME "QAccessibilityClient6")
-    set(QACCESSIBILITYCLIENT_INSTALL_INCLUDEDIR "${KDE_INSTALL_INCLUDEDIR}/QAccessibilityClient6")
-endif()
+set(QACCESSIBILITYCLIENT_LIB_NAME "qaccessibilityclient-qt6")
+set(QACCESSIBILITYCLIENT_CMAKECONFIG_NAME "QAccessibilityClient6")
+set(QACCESSIBILITYCLIENT_CMAKECONFIG_TARGETS_FILENAME "QAccessibilityClient6Targets")
+set(QACCESSIBILITYCLIENT_TARGET_EXPORT_NAME "QAccessibilityClient6")
+set(QACCESSIBILITYCLIENT_INSTALL_INCLUDEDIR "${KDE_INSTALL_INCLUDEDIR}/QAccessibilityClient6")
 
 add_definitions(-DQT_NO_CAST_FROM_ASCII -DQT_NO_CAST_TO_ASCII)
 add_definitions(-DQACCESSIBILITYCLIENT_LIBRARY)
@@ -52,17 +44,7 @@ target_sources(QAccessibilityClient PRIVATE
     atspi/qt-atspi.h
 )
 
-if (QT_MAJOR_VERSION STREQUAL "5")
-    set(_generate_export_header_version_args)
-else()
-    # For Qt6/KF6 world transitively include the version header
-    if(ECM_VERSION VERSION_LESS "5.106")
-        set(include_version_header_code "#include \"libqaccessibilityclient-version.h\"\n")
-        set(_generate_export_header_version_args CUSTOM_CONTENT_FROM_VARIABLE include_version_header_code)
-    else()
-        set(_generate_export_header_version_args USE_VERSION_HEADER "\"libqaccessibilityclient-version.h\"")
-    endif()
-endif()
+set(_generate_export_header_version_args USE_VERSION_HEADER "\"libqaccessibilityclient-version.h\"")
 
 ecm_generate_export_header(QAccessibilityClient
     BASE_NAME qaccessibilityclient
@@ -73,10 +55,10 @@ ecm_generate_export_header(QAccessibilityClient
 
 target_link_libraries(QAccessibilityClient
     PUBLIC
-        Qt${QT_MAJOR_VERSION}::Widgets
-        Qt${QT_MAJOR_VERSION}::Core
+        Qt6::Widgets
+        Qt6::Core
     PRIVATE
-        Qt${QT_MAJOR_VERSION}::DBus
+        Qt6::DBus
 )
 
 target_include_directories(QAccessibilityClient

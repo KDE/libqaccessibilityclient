@@ -18,7 +18,7 @@ target_sources(dumper PRIVATE
 
 target_link_libraries(dumper
     QAccessibilityClient
-    Qt${QT_MAJOR_VERSION}::Widgets
+    Qt6::Widgets
 )
 
 install(TARGETS dumper DESTINATION bin)

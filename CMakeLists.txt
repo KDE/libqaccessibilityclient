@@ -3,10 +3,10 @@ cmake_minimum_required(VERSION 3.16.0)
 project(QAccessibilityClient VERSION "0.6.0")
 
 include(FeatureSummary)
-set(KF5_MIN_VERSION "5.91.0")
-set(REQUIRED_QT_VERSION "5.15.2")
+set(KF_MIN_VERSION "6.0.0")
+set(REQUIRED_QT_VERSION "6.5.0")
 
-find_package(ECM ${KF5_MIN_VERSION} REQUIRED NO_MODULE)
+find_package(ECM ${KF_MIN_VERSION} REQUIRED NO_MODULE)
 set_package_properties(ECM PROPERTIES TYPE REQUIRED DESCRIPTION "Extra CMake Modules." URL "https://api.kde.org/frameworks/extra-cmake-modules/html/index.html")
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH})
 
@@ -25,25 +25,15 @@ if(BUILD_TESTING)
     set(QT_OTHER_COMPONENTS Test)
 endif()
 
-if (QT_MAJOR_VERSION STREQUAL "6")
-    set(REQUIRED_QT_VERSION "6.5.0")
-endif()
-
-find_package(Qt${QT_MAJOR_VERSION} ${REQUIRED_QT_VERSION} CONFIG REQUIRED COMPONENTS
+find_package(Qt6 ${REQUIRED_QT_VERSION} CONFIG REQUIRED COMPONENTS
     Widgets
     DBus
     ${QT_OTHER_COMPONENTS}
 )
 
-if (QT_MAJOR_VERSION STREQUAL "6")
-    ecm_set_disabled_deprecation_versions(
-        QT 6.6
-    )
-else()
-    ecm_set_disabled_deprecation_versions(
-        QT 5.15.2
-    )
-endif()
+ecm_set_disabled_deprecation_versions(
+    QT 6.6
+)
 
 add_subdirectory(src)
 
