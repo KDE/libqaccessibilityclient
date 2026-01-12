@@ -2,7 +2,7 @@
     \page qaccessibilityclient-index.html
     \title Qt Accessibility Client
 
-    Todo
+    Accessibilty tools helper library used by screen readers
 
     \section1 Using the Module
 
