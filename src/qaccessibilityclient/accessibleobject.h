@@ -28,8 +28,10 @@ class RegistryPrivate;
     QACCESSIBILITYCLIENT_EXPORT QDebug operator<<(QDebug, const AccessibleObject &);
 #endif
 
-/**
-    This class represents an accessible object.
+/*!
+    \inmodule QAccessibilityClient
+    \class QAccessibleClient::AccessibleObject
+    \brief This class represents an accessible object.
 
     An accessible object equals usually a visible widget or some kind
     of other element the user can interact with but can also present
@@ -42,8 +44,9 @@ class QACCESSIBILITYCLIENT_EXPORT AccessibleObject
 {
 public:
 
-    /**
-      This enum describes the different interfaces that an
+    /*!
+      \enum QAccessibleClient::AccessibleObject::Interface
+      \brief This enum describes the different interfaces that an
       AccessibleObject can implement.
 
       Each AccessibleObject must implement the AccessibleInterface, otherwise
@@ -51,6 +54,30 @@ public:
 
       If the ActionInterface is implement the object
       will have a list of actions that can be invoked.
+
+      \value NoInterface
+      \value AccessibleInterface
+      \value CacheInterface
+      \value ActionInterface
+      \value ApplicationInterface
+      \value CollectionInterface
+      \value ComponentInterface
+      \value DocumentInterface
+      \value EditableTextInterface
+      \value EventKeyboardInterface
+      \value EventMouseInterface
+      \value EventObjectInterface
+      \value HyperlinkInterface
+      \value HypertextInterface
+      \value ImageInterface
+      \value SelectionInterface
+      \value TableInterface
+      \value TextInterface
+      \value ValueInterface
+      \value SocketInterface
+      \value EventWindowInterface
+      \value EventFocusInterface
+      \value InvalidInterface
     */
     enum Interface {
         NoInterface = 0x0,
@@ -80,12 +107,61 @@ public:
     };
     Q_DECLARE_FLAGS(Interfaces, Interface)
 
-    /**
+    /*!
+      \enum QAccessibleClient::AccessibleObject::Role
       The role indicates the type of UI element that an AccessibleObject
       represents.
+
+      \value NoRole
+             The object is invalid and has no role set. This is generally a bug.
+      \value CheckBox
+      \value CheckableMenuItem
+      \value ColumnHeader
+      \value ComboBox
+      \value DesktopFrame
+      \value Dial
+      \value Dialog
+      \value Filler
+      \value Frame
+      \value Icon
+      \value Label
+      \value ListView
+      \value ListItem
+      \value Menu
+      \value MenuBar
+      \value MenuItem
+      \value Tab
+      \value TabContainer
+      \value PasswordText
+      \value PopupMenu
+      \value ProgressBar
+      \value Button
+      \value RadioButton
+      \value RadioMenuItem
+      \value RowHeader
+      \value ScrollBar
+      \value ScrollArea
+      \value Separator
+      \value Slider
+      \value SpinButton
+      \value StatusBar
+      \value TableView
+      \value TableCell
+      \value TableColumnHeader
+      \value TableColumn
+      \value TableRowHeader
+      \value TableRow
+      \value Terminal
+      \value Text
+      \value ToggleButton
+      \value ToolBar
+      \value ToolTip
+      \value TreeView
+      \value Window
+      \value TreeIte
      */
     enum Role {
-        NoRole, /*!< The object is invalid and has no role set. This is generally a bug. */
+        NoRole,
         CheckBox,
         CheckableMenuItem,
         ColumnHeader,
@@ -170,9 +246,17 @@ public:
 //    LayeredPane    = 0x00000080,
     };
 
-    /**
+    /*!
+        \enum QAccessibleClient::AccessibleObject::TextBoundary
         \brief The TextBoundaries enum represents the different boundaries when
         asking for text at a certain offset.
+        \value CharBoundary
+        \value WordStartBoundary
+        \value WordEndBoundary
+        \value SentenceStartBoundary
+        \value SentenceEndBoundary
+        \value LineStartBoundary
+        \value LineEndBoundar
      */
     enum TextBoundary {
         CharBoundary,
@@ -184,85 +268,84 @@ public:
         LineEndBoundary
     };
 
-    /**
+    /*!
         \brief Construct an invalid AccessibleObject.
      */
     AccessibleObject();
 
-    /**
+    /*!
         \brief Copy constructor.
      */
     AccessibleObject(const AccessibleObject &other);
 
-    /**
-      Destroys the AccessibleObject
+    /*!
+      Destroys the AccessibleObject.
      */
     ~AccessibleObject();
 
-    /**
-      Assignment operator
+    /*!
+      Assignment operator.
      */
     AccessibleObject &operator=(const AccessibleObject &other);
-    /**
-      Comparison operator
+    /*!
+      Comparison operator.
      */
     bool operator==(const AccessibleObject &other) const;
-    /**
-      Inequality operator
+    /*!
+      Inequality operator.
      */
     inline bool operator!=(const AccessibleObject &other) const {
         return !operator==(other);
     }
 
-    /**
+    /*!
         \brief Returns a unique identifier for the object.
      */
     QString id() const;
 
-    /**
+    /*!
         \brief Returns a QUrl that references the AccessibleObject.
 
-        This can be used to serialize/unserialize an AccessibleObject
+        This can be used to serialize/deserialize an AccessibleObject
         to pass it around as string and restore the AccessibleObject
         by using Registry::accessibleFromUrl later on.
 
         The returned QUrl returns a scheme of "accessibleobject", the
-        dbus path as url path and the dbus service as url fragment.
+        D-Bus path as url path and the D-Bus service as url fragment.
      */
     QUrl url() const;
 
-    /**
-        \brief Returns true if this object is valid.
+    /*!
+        \brief Returns \c true if this object is valid.
 
         Invalid objects are for example returned when asking for the
         parent of the top most item, or for a child that is out of range.
      */
     bool isValid() const;
 
-    /**
+    /*!
         \brief Returns this object's parent.
-        \return The parent AccessibleObject
      */
     AccessibleObject parent() const;
 
-    /**
-        \brief Returns this accessible's index in it's parent's list of children.
-        \return index
+    /*!
+        \brief Returns this accessible's index in its parent's list of children.
      */
     int indexInParent() const;
 
-    /**
+    /*!
         \brief Returns this accessible's children in a list.
-        \return children
      */
     QList<AccessibleObject> children() const;
 
-    /**
-        \brief Returns this accessible's children according to there roles.
-        \param roles The list of roles to query.
-        \return A vector that contains the children of this object according
+    /*!
+        \brief Returns this accessible's children according to their \a roles.
+
+        Returns a vector that contains the children of this object according
         to there roles. The number of vector-items equals to the number and
-        sorting of the roles items. Example code demonstrating usage:
+        sorting of the roles items.
+
+        Example usage:
         \code
         QList<Role> roles;
         roles << Label << CheckBox;
@@ -274,21 +357,19 @@ public:
      */
     QVector< QList<AccessibleObject> > children(const QList<Role> &roles) const;
 
-    /**
+    /*!
         \brief Returns the number of children for this accessible.
-        \return number of children
      */
     int childCount() const;
 
-    /**
+    /*!
         \brief Returns a specific child at position \a index.
 
         The list of children is 0-based.
-        \return number of children
      */
     AccessibleObject child(int index) const;
 
-   /**
+   /*!
         \brief Returns the accessible id of this accessible.
 
         This is an id which is stable over application development.
@@ -296,7 +377,7 @@ public:
      */
     QString accessibleId() const;
 
-    /**
+    /*!
         \brief Returns the name of this accessible.
 
         The name is a short descriptive one or two words.
@@ -304,7 +385,7 @@ public:
      */
     QString name() const;
 
-    /**
+    /*!
         \brief Returns the description for this accessible.
 
         The description is more of an explanation than the name.
@@ -312,32 +393,32 @@ public:
      */
     QString description() const;
 
-    /**
+    /*!
         \brief Returns the role as integer value of this accessible.
      */
     Role role() const;
 
-    /**
+    /*!
         \brief Returns the name of the role of this accessible.
 
-        This name is not localized to allow tools to work with the english string.
+        This name is not localized to allow tools to work with the English string.
      */
     QString roleName() const;
 
-    /**
+    /*!
         \brief Returns the name of the role of this accessible.
 
         This name is localized and can be presented to the user.
      */
     QString localizedRoleName() const;
 
-    /**
+    /*!
         \brief The ComponentLayer in which this object resides.
      */
     int layer() const;
 
-    /**
-        \brief Obtain the relative stacking order (i.e. 'Z' order) of an object.
+    /*!
+        \brief Obtain the relative stacking order ('Z' order) of an object.
 
         Larger values indicate that an object is on "top" of the stack, therefore
         objects with smaller MDIZOrder may be obscured by objects with a larger
@@ -345,7 +426,7 @@ public:
      */
     int mdiZOrder() const;
 
-    /**
+    /*!
         \brief  Obtain the alpha value of the component.
 
         An alpha value of 1.0 or greater indicates that the object is fully opaque,
@@ -358,55 +439,48 @@ public:
      */
     double alpha() const;
 
-    /**
+    /*!
         \brief Returns a bounding rectangle for the accessible.
 
-        It returns a QRect that bounds the accessible. This can be used to get the focus coordinates.
-
-        \return QRect that bounds the accessible.
+        This can be used to get the focus coordinates.
     */
     QRect boundingRect() const;
 
-    /**
+    /*!
         \brief Returns a bounding rectangle for the character at position \a offset.
 
         This function is only supported for accessibles that implement the text interface.
         It will return an empty rectangle for invalid offsets or accessibles.
-
-        \return QRect that bounds the character.
     */
     QRect characterRect(int offset) const;
 
-    /**
-        \brief Returns List of interfaces supported by the accessible.
+    /*!
+        \brief Returns a QStringList of interfaces supported by the accessible.
 
-        This function provides a list of accessibile interfaces that are implemented
+        This function provides a list of accessible interfaces that are implemented
         by an accessible object. This can be used to avoid calling functions that
         are not supported by the accessible.
-
-        \return QStringList that contains list of supported interfaces
     */
     Interfaces supportedInterfaces() const;
 
-    /**
+    /*!
         \brief Returns the offset of the caret from the beginning of the text.
 
         This function provides the current offset of the caret from the beginning of
         the text in an accessible that implements org.a11y.atspi.Text.
-
-        \return Caret Offset as an integer
     */
     int caretOffset() const;
 
-    /**
+    /*!
         \brief Returns the number of characters.
-
-        \return Number of characters.
     */
     int characterCount() const;
 
-    /**
+    /*!
         \brief Returns a list of selections the text has.
+
+        Every item in that list is a pair of integers
+        representing startOffset and endOffset of the selection.
 
         Code to demonstrate usage:
         \code
@@ -416,34 +490,32 @@ public:
         QString allText = acc.text();
         QString selText = allText.mid(startOffset, endOffset - startOffset);
         \endcode
-
-        \return The list of selections where every item in that list
-        is a pair of integers representing startOffset and endOffset
-        of the selection.
     */
     QList< QPair<int,int> > textSelections() const;
 
-    /**
-      Set text \a selections, usually only one selection will be set,
-      use a list containing one QPair with the start and end offsets for that.
+    /*!
+      Sets text \a selections.
+
+      Usually only one selection will be set,
+      use a list of QPairs with the start and end offsets for that.
      */
     void setTextSelections(const QList< QPair<int,int> > &selections);
 
-    /**
+    /*!
         \brief Returns the text of the TextInterface.
 
         This function provides the current text as displayed by the
         org.a11y.atspi.Text TextInterface component.
 
-        \param startOffset The start caret offset to return the text from.
-        \param endOffset The end caret offset to return the text from. If -1
+        \a startOffset The start caret offset to return the text from.
+
+        \a endOffset The end caret offset to return the text from. If -1
         then the endOffset is the end of the string what means all characters
         are included.
-        \return The text as displayed by the TextInterface.
     */
     QString text(int startOffset = 0, int endOffset = -1) const;
 
-    /**
+    /*!
         \brief Returns the text of the TextInterface by boundary.
 
         Especially for larger text fields it may be more performant and easier to
@@ -452,109 +524,106 @@ public:
         For example the line where the cursor is currently can be retrieved with this function
         in a convenient way.
 
-        \param offset is the position of the requested text.
-        \param startOffset returns the beginning of the offset, for example the start of the line when
-            asking for line boundaries.
-        \param endOffset returns the end of the text section
-        \return the text at the offset.
+        \a offset The position of the requested text.
+
+        \a startOffset
+               The beginning of the offset, for example the start of the line when
+               asking for line boundaries.
+
+        \a endOffset The end of the text section
     */
     QString textWithBoundary(int offset, TextBoundary boundary, int *startOffset = nullptr, int *endOffset = nullptr) const;
 
-    /**
-        \brief Set the text of the EditableTextInterface.
+    /*!
+        \brief Sets the \a text of the EditableTextInterface.
 
-        \param text The text to set.
-        \return true on success and false on error.
+        Returns \c true on success, \c false otherwise.
     */
     bool setText(const QString &text);
 
-    /**
-        \brief Insert the text into the EditableTextInterface.
-
-        \param text The text to insert.
-        \param position The caret position at which to insert the text.
-        \param length The length of the text to insert.
-        \return true on success and false on error.
+    /*!
+        \brief Inserts \a text into the EditableTextInterface
+        at caret \a position with the given \a length.
     */
     bool insertText(const QString &text, int position = 0, int length = -1);
 
-    /**
-        \brief Copy the text from the EditableTextInterface into the clipboard.
+    /*!
+        \brief Copy the text from the EditableTextInterface into the clipboard
+        starting from the caret position \a startPos until \a endPos.
 
-        \param startPos The caret position from which to start to copy the text from.
-        \param endPos The caret position from which to end to copy the text from.
-        \return true on success and false on error.
+        Returns \c true on success, \c false otherwise.
     */
     bool copyText(int startPos, int endPos);
 
-    /**
-        \brief Cut the text from the EditableTextInterface into the clipboard.
+    /*!
+        \brief Cut the text from the EditableTextInterface into the clipboard
+        starting from the caret position \a startPos until \a endPos.
 
-        \param startPos The caret position from which to start to cut the text from.
-        \param endPos The caret position from which to end to cut the text from.
-        \return true on success and false on error.
+        Returns \c true on success, \c false otherwise.
     */
     bool cutText(int startPos, int endPos);
 
-    /**
-        \brief Delete the text from the EditableTextInterface.
+    /*!
+        \brief Delete the text from the EditableTextInterface
+        starting from the caret position \a startPos until \a endPos.
 
-        \param startPos The caret position from which to start to delete the text.
-        \param endPos The caret position from which to end to delete the text.
-        \return true on success and false on error.
+        Returns \c true on success, \c false otherwise.
     */
     bool deleteText(int startPos, int endPos);
 
-    /**
-        \brief Paste the text from the clipboard into the EditableTextInterface.
+    /*!
+        \brief Paste the text from the clipboard into the EditableTextInterface
+        at the given caret \a position.
 
-        \param position The caret position at which to insert the text into.
-        \return true on success and false on error.
+        Returns \c true on success, \c false otherwise.
     */
     bool pasteText(int position);
 
-    /**
-        \brief Returns focus-point of the object
-
-        \return The Focus Point of the object
+    /*!
+        \brief Returns the focus point of the object.
     */
     QPoint focusPoint() const;
 
-    /**
+    /*!
         \brief Returns the application object.
 
-        \return The top-level application object that expose an
+        Returns the top-level application object that expose an
         org.a11y.atspi.Application accessibility interface.
     */
     AccessibleObject application() const;
 
-    /**
+    /*!
         \brief Returns the toolkit name.
 
-        \return The tookit name. This can be for example "Qt"
-        or "gtk".
+        This can be for example "Qt" or "gtk".
     */
     QString appToolkitName() const;
 
-    /**
+    /*!
         \brief Returns the toolkit version.
 
-        \return The tookit version. This can be for example "4.8.3"
-        for Qt 4.8.3.
+        This can be for example "4.8.3" for Qt 4.8.3.
     */
     QString appVersion() const;
 
-    /**
+    /*!
         \brief Returns the unique application identifier.
 
-        \return The app id. The identifier will not last over session
-        and everytime the app quits and restarts it gets another
+        The identifier will not last over the session
+        and every time the app quits and restarts it gets another
         identifier that persists as long as the application is running.
     */
     int appId() const;
 
-    /**
-      The type of locale
+    /*!
+      \enum QAccessibleClient::AccessibleObject::LocaleType
+      \brief The type of locale.
+      \value LocaleTypeMessages
+      \value LocaleTypeCollate
+      \value LocaleTypeCType
+      \value LocaleTypeMonetary
+      \value LocaleTypeNumeric
+      \value LocaleTypeTime
      */
     enum LocaleType {
         LocaleTypeMessages,
@@ -565,41 +634,42 @@ public:
         LocaleTypeTime
     };
 
-    /**
+    /*!
         \brief The application locale.
 
-        \param  lctype The \a LocaleType for which the locale is queried.
-        \return A string compliant with the POSIX standard for locale description.
+        Returns a string compliant with the POSIX standard for the locale description.
+
+        The locale will be queried against the LocaleType \a lctype.
     */
     QString appLocale(LocaleType lctype = LocaleTypeMessages) const;
 
-    /**
-        \brief The application dbus address.
+    /*!
+        \brief The application D-Bus address.
     */
     QString appBusAddress() const;
 
-    /**
+    /*!
         \brief The minimum value allowed by this valuator.
 
-        If both, the \a minimumValue and \a maximumValue, are zero then
-        there is no minimum or maximum values. The \a currentValue has
+        If both, the minimumValue and maximumValue are zero then
+        there are no minimum or maximum values. The currentValue has
         no range restrictions.
     */
     double minimumValue() const;
 
-    /**
+    /*!
         \brief The maximum value allowed by this valuator.
 
-        If both, the \a minimumValue and \a maximumValue, are zero then
-        there is no minimum or maximum values. The \a currentValue has
+        If both, the minimumValue and maximumValue, are zero then
+        there is no minimum or maximum values. The currentValue has
         no range restrictions.
     */
     double maximumValue() const;
 
-    /**
+    /*!
         \brief The smallest incremental change which this valuator allows.
 
-        This is a helper value to know in what steps the \a currentValue
+        This is a helper value to know in what steps the currentValue
         is incremented or decremented.
 
         If 0, the incremental changes to the valuator are limited only by
@@ -607,48 +677,47 @@ public:
     */
     double minimumValueIncrement() const;
 
-    /**
+    /*!
         \brief The current value of the valuator.
 
         This is the value the org.a11y.atspi.Value accessibility interface has.
     */
     double currentValue() const;
 
-    /**
-        \brief Set the value of the valuator.
+    /*!
+        \brief Sets the \a value of the valuator.
 
-        \param value the value to set.
-        \return true on success and false on error.
+        Returns \c true on success, \c false otherwise.
     */
     bool setCurrentValue(const double value);
 
-    /**
+    /*!
         \brief Returns the selection of accessible objects.
     */
     QList<AccessibleObject> selection() const;
 
-    /**
+    /*!
         \brief A description text of the image.
 
         It is recommended that imageDescription be the shorter of the available image
         descriptions, for instance "alt text" in HTML images, and a longer description
-        be provided in Accessible::accessible-description, if available. A short, one
-        or two word label for the image should be provided in Accessible::accessible-name.
+        be provided in QAccessible::Description, if available. A short, one
+        or two word label for the image should be provided in QAccessible::Name.
 
-        \return A UTF-8 string providing a textual description of what is visually
+        Returns a UTF-8 string providing a textual description of what is visually
         depicted in the image.
     */
     QString imageDescription() const;
 
-    /**
+    /*!
         \brief The locale of the image.
 
-        \return A string corresponding to the POSIX LC_MESSAGES locale used by the
+        Returns a string corresponding to the POSIX LC_MESSAGES locale used by the
         imageDescription.
     */
     QString imageLocale() const;
 
-    /**
+    /*!
         \brief The image boundaries.
 
         Obtain a bounding box which entirely contains the image contents, as
@@ -659,13 +728,13 @@ public:
 
         This method returns the bounds of the current onscreen view, and not the
         nominal size of the source data in the event that the original image has
-        been rescaled.\
+        been rescaled.
 
-        \return A BoundingBox enclosing the image's onscreen representation.
+        Returns a BoundingBox enclosing the image's onscreen representation.
     */
     QRect imageRect() const;
 
-    /**
+    /*!
         \brief Returns a list of actions supported by this accessible.
 
         Just trigger() the action to execute the underlying method at the accessible.
@@ -673,39 +742,39 @@ public:
     QVector< QSharedPointer<QAction> > actions() const;
 
     // states
-    /// Returns if the AccessibleObject is currently active
+    /*! Returns if the AccessibleObject is currently active. */
     bool isActive() const;
-    /// Returns if the AccessibleObject is checkable (often indicates a check action)
+    /*! Returns if the AccessibleObject is checkable (often indicates a check action). */
     bool isCheckable() const;
-    /// Returns if the AccessibleObject is currently checked
+    /*! Returns if the AccessibleObject is currently checked. */
     bool isChecked() const;
-    /// Returns if the AccessibleObject is defunct - that means it does not properly respont to requests
-    /// and should be ignored for accessibility purposes
+    /*! Returns if the AccessibleObject is defunct. That means it does not properly respond to requests
+        and should be ignored for accessibility purposes. */
     bool isDefunct() const;
-    /// Returns if the AccessibleObject is an editable text
+    /*! Returns if the AccessibleObject is an editable text. */
     bool isEditable() const;
-    /// Returns if the AccessibleObject is currently enabled
+    /*! Returns if the AccessibleObject is currently enabled. */
     bool isEnabled() const;
-    /// Returns if the AccessibleObject can be expanded to show more information
+    /*! Returns if the AccessibleObject can be expanded to show more information. */
     bool isExpandable() const;
-    /// Returns if the AccessibleObject is currently expanded
+    /*! Returns if the AccessibleObject is currently expanded. */
     bool isExpanded() const;
-    /// Returns if the AccessibleObject is focusable
+    /*! Returns if the AccessibleObject is focusable. */
     bool isFocusable() const;
-    /// Returns if the AccessibleObject is currently focused
+    /*! Returns if the AccessibleObject is currently focused. */
     bool isFocused() const;
-    /// Returns if the AccessibleObject is a multi line text edit
+    /*! Returns if the AccessibleObject is a multiline text edit. */
     bool isMultiLine() const;
-    /// Returns if the AccessibleObject is selectable
+    /*! Returns if the AccessibleObject is selectable. */
     bool isSelectable() const;
-    /// Returns if the AccessibleObject is currently selected
+    /*! Returns if the AccessibleObject is currently selected. */
     bool isSelected() const;
-    /// Returns if the AccessibleObject reacts to input events
+    /*! Returns if the AccessibleObject reacts to input events. */
     bool isSensitive() const;
-    /// Returns if the AccessibleObject is a single line text edit
+    /*! Returns if the AccessibleObject is a single line text edit. */
     bool isSingleLine() const;
 
-    /**
+    /*!
       \brief Return a string representing states of this object.
 
       This is useful for debugging applications.
@@ -721,8 +790,8 @@ public:
      */
 //    bool isTransient() const;
 
-    /// Returns if the AccessibleObject is currently visible (it can still be off the screen,
-    /// but there is nothing preventing the user from seeing it in general)
+    /*! Returns if the AccessibleObject is currently visible (it can still be off the screen,
+        but there is nothing preventing the user from seeing it in general). */
     bool isVisible() const;
 
     /*
@@ -737,15 +806,15 @@ public:
 //    bool isRequired() const;
 //    bool isAnimated() const;
 //    bool isInvalidEntry() const;
-    /// Returns if the AccessibleObject is the default widget (e.g. a button in a dialog)
+    /*! Returns if the AccessibleObject is the default widget (e.g. a button in a dialog). */
     bool isDefault() const;
 //    bool isVisited() const;
 
-    /// Returns if the AccessibleObject allows text selections
+    /*! Returns if the AccessibleObject allows text selections. */
     bool hasSelectableText() const;
-    /// Returns if the AccessibleObject has a tool tip
+    /*! Returns if the AccessibleObject has a tool tip. */
     bool hasToolTip() const;
-    /// Returns if the AccessibleObject supports automatic text completion
+    /*! Returns if the AccessibleObject supports automatic text completion. */
     bool supportsAutocompletion() const;
 
 private:
