@@ -1,7 +1,4 @@
-set(QACCESSIBILITYCLIENT_LIB_NAME "qaccessibilityclient-qt6")
 set(QACCESSIBILITYCLIENT_CMAKECONFIG_NAME "QAccessibilityClient6")
-set(QACCESSIBILITYCLIENT_CMAKECONFIG_TARGETS_FILENAME "QAccessibilityClient6Targets")
-set(QACCESSIBILITYCLIENT_TARGET_EXPORT_NAME "QAccessibilityClient6")
 set(QACCESSIBILITYCLIENT_INSTALL_INCLUDEDIR "${KDE_INSTALL_INCLUDEDIR}/QAccessibilityClient6")
 
 add_definitions(-DQT_NO_CAST_FROM_ASCII -DQT_NO_CAST_TO_ASCII)
@@ -21,8 +18,8 @@ ecm_qt_declare_logging_category(QAccessibilityClient HEADER qaccessibilityclient
     CATEGORY_NAME org.kde.qaccessibilityclient DESCRIPTION "QAccessibilityClient" EXPORT LIBQACCESSIBILITYCLIENT)
 
 set_target_properties(QAccessibilityClient PROPERTIES
-    OUTPUT_NAME ${QACCESSIBILITYCLIENT_LIB_NAME}
-    EXPORT_NAME ${QACCESSIBILITYCLIENT_TARGET_EXPORT_NAME}
+    OUTPUT_NAME "qaccessibilityclient-qt6"
+    EXPORT_NAME "QAccessibilityClient6"
     VERSION   ${QACCESSIBILITYCLIENT_VERSION}
     SOVERSION ${QACCESSIBILITYCLIENT_SOVERSION}
 )
@@ -45,13 +42,11 @@ target_sources(QAccessibilityClient PRIVATE
     atspi/qt-atspi.h
 )
 
-set(_generate_export_header_version_args USE_VERSION_HEADER "\"libqaccessibilityclient-version.h\"")
-
 ecm_generate_export_header(QAccessibilityClient
     BASE_NAME qaccessibilityclient
     VERSION ${QACCESSIBILITYCLIENT_VERSION}
     DEPRECATED_BASE_VERSION 0
-    ${_generate_export_header_version_args}
+    USE_VERSION_HEADER "\"libqaccessibilityclient-version.h\""
 )
 
 target_link_libraries(QAccessibilityClient
@@ -82,7 +77,7 @@ install(FILES
 set(_QAccessibilityClient_CONFIG_DEST "${KDE_INSTALL_CMAKEPACKAGEDIR}/${QACCESSIBILITYCLIENT_CMAKECONFIG_NAME}")
 
 install(EXPORT QAccessibilityClient
-    FILE ${QACCESSIBILITYCLIENT_CMAKECONFIG_TARGETS_FILENAME}.cmake
+    FILE "${QACCESSIBILITYCLIENT_CMAKECONFIG_NAME}Targets.cmake"
     DESTINATION ${_QAccessibilityClient_CONFIG_DEST}
 )
 
