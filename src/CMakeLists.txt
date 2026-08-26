@@ -41,6 +41,12 @@ target_sources(QAccessibilityClient PRIVATE
     atspi/qt-atspi.h
 )
 
+set(QAccessibilityClient_HEADERS
+    qaccessibilityclient/accessibleobject.h
+    qaccessibilityclient/registry.h
+    qaccessibilityclient/registrycache_p.h
+)
+
 ecm_generate_export_header(QAccessibilityClient
     BASE_NAME qaccessibilityclient
     VERSION ${QACCESSIBILITYCLIENT_VERSION}
@@ -65,9 +71,7 @@ install(TARGETS QAccessibilityClient EXPORT QAccessibilityClient ${KDE_INSTALL_T
 
 install(FILES
     ${CMAKE_CURRENT_BINARY_DIR}/qaccessibilityclient_export.h
-    qaccessibilityclient/accessibleobject.h
-    qaccessibilityclient/registry.h
-    qaccessibilityclient/registrycache_p.h
+    ${QAccessibilityClient_HEADERS}
     ${CMAKE_CURRENT_BINARY_DIR}/libqaccessibilityclient-version.h
     DESTINATION ${QACCESSIBILITYCLIENT_INSTALL_INCLUDEDIR}/qaccessibilityclient
     COMPONENT Devel
@@ -90,3 +94,19 @@ install( FILES
          "${CMAKE_CURRENT_BINARY_DIR}/${QACCESSIBILITYCLIENT_CMAKECONFIG_NAME}Config.cmake"
          "${CMAKE_CURRENT_BINARY_DIR}/${QACCESSIBILITYCLIENT_CMAKECONFIG_NAME}ConfigVersion.cmake"
          DESTINATION "${_QAccessibilityClient_CONFIG_DEST}" )
+
+if(${ECM_VERSION} VERSION_GREATER_EQUAL 6.30)
+include(ECMInstalledLibraryCheck)
+
+ecm_add_installed_library_check(QAccessibilityClient
+    PACKAGE_NAME "${QACCESSIBILITYCLIENT_CMAKECONFIG_NAME}"
+    NO_PACKAGE_TARGET_NAMESPACE
+)
+
+ecm_installed_library_check_include_strings(QAccessibilityClient
+    HEADERS ${QAccessibilityClient_HEADERS}
+    PREFIX qaccessibilityclient
+)
+
+ecm_installed_library_check_version_preprocessor_macros(QAccessibilityClient)
+endif()
