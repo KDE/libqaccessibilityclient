@@ -22,7 +22,6 @@ include(CMakePackageConfigHelpers)
 include(ECMGenerateQDoc)
 
 if(BUILD_TESTING)
-    enable_testing()
     set(QT_OTHER_COMPONENTS Test)
 endif()
 
