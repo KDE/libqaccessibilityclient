@@ -7,4 +7,4 @@ Dependencies:
     'frameworks/extra-cmake-modules': '@latest-kf6'
 
 Options:
-  run-installed-library-check: True
+  run-installed-library-check-on: ['@all']
