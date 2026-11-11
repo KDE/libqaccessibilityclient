@@ -9,7 +9,7 @@
 
 #include "accessibleobject.h"
 
-#include <QPair>
+#include <utility>
 
 namespace QAccessibleClient {
 
@@ -43,11 +43,11 @@ public:
     }
     void add(const QString &id, const QSharedPointer<AccessibleObjectPrivate> &objectPrivate) override
     {
-        accessibleObjectsHash[id] = QPair<QWeakPointer<AccessibleObjectPrivate>, AccessibleObjectPrivate*>(objectPrivate, objectPrivate.data());
+        accessibleObjectsHash[id] = std::pair<QWeakPointer<AccessibleObjectPrivate>, AccessibleObjectPrivate*>(objectPrivate, objectPrivate.data());
     }
     bool remove(const QString &id) override
     {
-        QPair<QWeakPointer<AccessibleObjectPrivate>, AccessibleObjectPrivate*> data = accessibleObjectsHash.take(id);
+        std::pair<QWeakPointer<AccessibleObjectPrivate>, AccessibleObjectPrivate*> data = accessibleObjectsHash.take(id);
         return (interfaceHash.remove(data.second) >= 1) || (stateHash.remove(data.second) >= 1);
     }
     void clear() override
@@ -83,7 +83,7 @@ public:
     }
 
 private:
-    QHash<QString, QPair<QWeakPointer<AccessibleObjectPrivate>, AccessibleObjectPrivate*> > accessibleObjectsHash;
+    QHash<QString, std::pair<QWeakPointer<AccessibleObjectPrivate>, AccessibleObjectPrivate*> > accessibleObjectsHash;
     QHash<AccessibleObjectPrivate*, AccessibleObject::Interfaces> interfaceHash;
     QHash<AccessibleObjectPrivate*, qint64> stateHash;
 };

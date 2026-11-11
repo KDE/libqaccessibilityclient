@@ -283,15 +283,15 @@ bool AccessibleObject::pasteText(int position)
     return false;
 }
 
-QList< QPair<int,int> > AccessibleObject::textSelections() const
+QList< std::pair<int,int> > AccessibleObject::textSelections() const
 {
     if(supportedInterfaces() & AccessibleObject::Text)
         return d->registryPrivate->textSelections(*this);
     qCWarning(LIBQACCESSIBILITYCLIENT_LOG) << "textSelections called on accessible that does not implement text";
-    return QList< QPair<int,int> >();
+    return QList< std::pair<int,int> >();
 }
 
-void AccessibleObject::setTextSelections(const QList< QPair<int,int> > &selections)
+void AccessibleObject::setTextSelections(const QList< std::pair<int,int> > &selections)
 {
     if(supportedInterfaces() & AccessibleObject::Text)
         return d->registryPrivate->setTextSelections(*this, selections);

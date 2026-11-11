@@ -22,6 +22,8 @@
 #include "atspi/qt-atspi.h"
 #include "cachestrategy_p.h"
 
+#include <utility>
+
 class QDBusPendingCallWatcher;
 
 namespace QAccessibleClient {
@@ -64,8 +66,8 @@ public:
 
     int caretOffset(const AccessibleObject &object) const;
     int characterCount(const AccessibleObject &object) const;
-    QList< QPair<int,int> > textSelections(const AccessibleObject &object) const;
-    void setTextSelections(const AccessibleObject &object, const QList< QPair<int,int> > &selections);
+    QList< std::pair<int,int> > textSelections(const AccessibleObject &object) const;
+    void setTextSelections(const AccessibleObject &object, const QList< std::pair<int,int> > &selections);
     QString text(const AccessibleObject &object, int startOffset = 0, int endOffset = -1) const;
     QString textWithBoundary(const AccessibleObject &object, int offset, AccessibleObject::TextBoundary boundary, int *startOffset, int *endOffset) const;
 

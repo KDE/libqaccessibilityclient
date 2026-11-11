@@ -887,9 +887,9 @@ int RegistryPrivate::characterCount(const AccessibleObject &object) const
     return count.toInt();
 }
 
-QList< QPair<int,int> > RegistryPrivate::textSelections(const AccessibleObject &object) const
+QList< std::pair<int,int> > RegistryPrivate::textSelections(const AccessibleObject &object) const
 {
-    QList< QPair<int,int> > result;
+    QList< std::pair<int,int> > result;
     QDBusMessage message = QDBusMessage::createMethodCall(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Text"), QLatin1String("GetNSelections"));
     QDBusReply<int> reply = conn.connection().call(message);
     if (!reply.isValid()) {
@@ -910,12 +910,12 @@ QList< QPair<int,int> > RegistryPrivate::textSelections(const AccessibleObject &
         int endOffset = args[1].toInt();
         if (startOffset > endOffset)
             qSwap(startOffset, endOffset);
-        result.append(qMakePair(startOffset, endOffset));
+        result.append(std::make_pair(startOffset, endOffset));
     }
     return result;
 }
 
-void RegistryPrivate::setTextSelections(const AccessibleObject &object, const QList< QPair<int,int> > &selections)
+void RegistryPrivate::setTextSelections(const AccessibleObject &object, const QList< std::pair<int,int> > &selections)
 {
     QDBusMessage message = QDBusMessage::createMethodCall(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Text"), QLatin1String("GetNSelections"));
     QDBusReply<int> reply = conn.connection().call(message);
@@ -927,7 +927,7 @@ void RegistryPrivate::setTextSelections(const AccessibleObject &object, const QL
     int setSel = qMin(selections.count(), count);
     for(int i = 0; i < setSel; ++i) {
         Q_ASSERT(i < selections.count());
-        QPair<int,int> p = selections[i];
+        const std::pair<int,int> p = selections[i];
         QDBusMessage m = QDBusMessage::createMethodCall(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Text"), QLatin1String("SetSelection"));
         m.setArguments(QVariantList() << i << p.first << p.second);
         QDBusReply<bool> r = conn.connection().call(m);
@@ -949,7 +949,7 @@ void RegistryPrivate::setTextSelections(const AccessibleObject &object, const QL
     int addSel = qMax(0, selections.count() - count);
     for(int i = 0, k = count; i < addSel; ++i, ++k) {
         Q_ASSERT(k < selections.count());
-        QPair<int,int> p = selections[k];
+        const std::pair<int,int> p = selections[k];
         QDBusMessage m = QDBusMessage::createMethodCall(object.d->service, object.d->path, QLatin1String("org.a11y.atspi.Text"), QLatin1String("AddSelection"));
         m.setArguments(QVariantList() << p.first << p.second);
         QDBusReply<bool> r = conn.connection().call(m);

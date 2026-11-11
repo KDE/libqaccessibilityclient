@@ -18,6 +18,8 @@ namespace QAccessibleClient {
 
 #include "qaccessibilityclient_export.h"
 
+#include <utility>
+
 namespace QAccessibleClient {
 
 class AccessibleObjectPrivate;
@@ -484,22 +486,22 @@ public:
 
         Code to demonstrate usage:
         \code
-        QList< QPair<int,int> > sel = acc.textSelections();
+        QList< std::pair<int,int> > sel = acc.textSelections();
         int startOffset = sel[0].first;
         int endOffset = sel[0].second;
         QString allText = acc.text();
         QString selText = allText.mid(startOffset, endOffset - startOffset);
         \endcode
     */
-    QList< QPair<int,int> > textSelections() const;
+    QList< std::pair<int,int> > textSelections() const;
 
     /*!
       Sets text \a selections.
 
       Usually only one selection will be set,
-      use a list of QPairs with the start and end offsets for that.
+      use a list of std::pairs with the start and end offsets for that.
      */
-    void setTextSelections(const QList< QPair<int,int> > &selections);
+    void setTextSelections(const QList< std::pair<int,int> > &selections);
 
     /*!
         \brief Returns the text of the TextInterface.
